@@ -3,7 +3,10 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Read the DB access info from wikid.conf
-eval( file_get_contents( '/var/www/tools/wikid.conf' ) );
+foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
+	if ( preg_match( '|^\s*\$(wgDB.+?)\s*=\s*[\'"](.+?)["\']|m', $line, $m ) )
+		$$m[1] = $m[2];
+}
 
 # Constants
 define( 'WIKIA_VERSION', '1.0.1, 2009-08-26');
