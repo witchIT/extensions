@@ -3,10 +3,10 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Read the DB access info from wikid.conf
-include( '/var/www/tools/wikid.conf' );
+eval( file_get_contents( '/var/www/tools/wikid.conf' ) );
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.0, 2009-08-26');
+define( 'WIKIA_VERSION', '1.0.1, 2009-08-26');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
