@@ -43,16 +43,24 @@ class SpecialWikidAdmin extends SpecialPage {
 		if ( $wgRequest->getVal( 'job' ) > 0 ) {
 		}
 		
+		elseif ( $wgRequest->getText( 'wpStart' ) ) {
+			$this->startJob( $wgRequest->getText( 'wpType' ) );
+		}
+		
 		else {
 		
 			# Render as a table with pause/start/stop for each
+			$wgOut->addWikiText( "== Currently executing work ==\n" );
 			$wgOut->addHtml( $this->renderWork() );
 			
 			# Render ability to start a new job and supply optional args
+			$wgOut->addWikiText( "\n\n== Start a new job ==\n" );
 			
+
 			# Render a list of previously run jobs from the job log
+			$wgOut->addWikiText( "\n\n== Job history ==\n" );
 			#foreach ( $log as $line ) {
-			#	$url = $wgTitle->getLocalUrl( "job=$id" );
+			#	$url = $wgTpecialPagesitle->getLocalUrl( "job=$id" );
 			#}
 		}
 		
@@ -83,6 +91,16 @@ class SpecialWikidAdmin extends SpecialPage {
 		return $html;
 	}
 
+	/*
+	 * Send a start jon request to the local peer
+	 */
+	function startJob( $type ) {
+		global $wgEventPipePort;
+		if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
+			fputs( $handle, "GET StartJob?$type HTTP/1.0\n\n\x00" );
+			fclose( $handle ); 
+		}
+	}
 }
 
 /*
@@ -90,7 +108,7 @@ class SpecialWikidAdmin extends SpecialPage {
  */
 function wfSetupWikidAdmin() {
 	global $wgLanguageCode, $wgMessageCache;
-	$wgMessageCache->addMessages( array( 'wikidadmin' => 'Wikid Administration' ) );
+	$wgMessageCache->addMessages( array( 'wikidadmin' => 'Wiki Daemon Administration' ) );
 	SpecialPage::addPage( new SpecialWikidAdmin() );
 }
 

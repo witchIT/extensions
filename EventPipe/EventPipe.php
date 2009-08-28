@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'EVENTPIPE_VERSION', '1.0.4, 2009-05-30' );
+define( 'EVENTPIPE_VERSION', '1.1.0, 2009-08-28' );
 
 $wgEventPipePort = '1729';
 $wgEventPipeList = array( 'RevisionInsertComplete', 'UserLoginComplete', 'PrefsPasswordAudit', 'AddNewAccount' );
@@ -36,16 +36,17 @@ function wfSetupEventPipe() {
  * Forward the hooks name, args and the request global to the pipe
  */
 function wfEventPipeSend( $hook, $args ) {
-	global $wgEventPipePort, $wgSitename, $wgSerevr, $wgScript;
+	global $wgEventPipePort, $wgSitename, $wgServer, $wgScript;
 	if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
-		$data = var_export( array(
+		$data = serialize( array(
 			'wgSitename' => $wgSitename,
 			'wgScript'   => $wgServer.$wgScript,
-			$args,
-			$_REQUEST
-		), true );
+			'args'       => $args,
+			'REQUEST'    => $_REQUEST
+		) );
 		fputs( $handle, "GET $hook?$data HTTP/1.0\n\n\x00" );
-		fclose( $handle ); 
+		fclose( $handle );
+		file_put_contents('/var/www/test',var_export($args,true));
 	}
 	return true;
 }
