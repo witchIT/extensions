@@ -46,7 +46,6 @@ function wfEventPipeSend( $hook, $args ) {
 		) );
 		fputs( $handle, "GET $hook?$data HTTP/1.0\n\n\x00" );
 		fclose( $handle );
-		file_put_contents('/var/www/test',var_export($args,true));
 	}
 	return true;
 }

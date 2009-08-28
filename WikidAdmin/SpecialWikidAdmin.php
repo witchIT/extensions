@@ -97,7 +97,8 @@ class SpecialWikidAdmin extends SpecialPage {
 	function startJob( $type ) {
 		global $wgEventPipePort;
 		if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
-			fputs( $handle, "GET StartJob?$type HTTP/1.0\n\n\x00" );
+			$data = serialize( array( 'type' => $type ) );
+			fputs( $handle, "GET StartJob?$data HTTP/1.0\n\n\x00" );
 			fclose( $handle ); 
 		}
 	}
