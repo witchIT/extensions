@@ -38,17 +38,7 @@ class SpecialWikidAdmin extends SpecialPage {
 		global $wgParser, $wgOut, $wgRequest;
 		$wgParser->disableCache();
 		$this->setHeaders();
-		
-		
-		# Read in wikid.work
-		$wkfile = '/var/www/tools/wikid.work';
-		if ( !file_exists( $wkfile ) ) {
-			$wgOut->addWikiText( "''Error: No work file found!''", true );
-			return;
-		}
-		
-		$work = unserialize( file_get_contents( $wkfile ) );
-		
+				
 		# Render specific information on a specific job run ( start time, duration, status, revisions )
 		if ( $wgRequest->getVal( 'job' ) > 0 ) {
 		}
@@ -56,19 +46,9 @@ class SpecialWikidAdmin extends SpecialPage {
 		else {
 		
 			# Render as a table with pause/start/stop for each
-			if ( count( $work ) > 0 ) {
-				$wgOut->addWikiText( "{|\n!Type!!Start!!Progress!!Status\n", true );
-				foreach ( $work as $id => $job ) {
-					$type  = $job['type'];
-					$start = $job['start'];
-					$len   = $job['length'];
-					$wptr  = $job['wptr'];
-					$pause = $job['paused'];
-					$data  = $job['data'];
-					$wgOut->addWikiText( "|-\n$type||$start||$wptr of $len||$pause\n", true );
-				}
-				$wgOut->addWikiText( "|}\n", true );
-			} else $wgOut->addWikiText( "''There are currently no active jobs''", true );
+			$wgOut->addHtml( $this->renderWork() );
+			
+			# Render ability to start a new job and supply optional args
 			
 			# Render a list of previously run jobs from the job log
 			#foreach ( $log as $line ) {
@@ -77,6 +57,32 @@ class SpecialWikidAdmin extends SpecialPage {
 		}
 		
 	}
+
+	/*
+	 * Return html table of the current work underway
+	 * - called from both special page and statically by ajax handler
+	 */
+	function renderWork() {
+		$wkfile = '/var/www/tools/wikid.work';
+		if ( file_exists( $wkfile ) ) {
+			$work = unserialize( file_get_contents( $wkfile ) );
+			if ( count( $work ) > 0 ) {
+				$html = "<table class=\"wikidwork\"><tr><th>Type</th><th>Start</th><th>Progress</th><th>Status</th></tr>\n";
+				foreach ( $work as $id => $job ) {
+					$type  = $job['type'];
+					$start = $job['start'];
+					$len   = $job['length'];
+					$wptr  = $job['wptr'];
+					$pause = $job['paused'];
+					$data  = $job['data'];
+					$html .= "<tr><td>$type</td><td>$start</td><td>$wptr of $len</td><td>$pause</td>\n";
+				}
+				$html .= "</table>\n";
+			} else $html =  "<i>There are currently no active jobs</i>\n";
+		} else $html = "<i>No work file found!</i>\n";
+		return $html;
+	}
+
 }
 
 /*
