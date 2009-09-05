@@ -61,7 +61,8 @@ function wfTransformChanges() {
 	$title = $wgOut->getPageTitle();
 	if ( $title != wfMsgForContent( 'recentchanges' ) && $title != wfMsgForContent( 'watchlist' ) ) return true;
 	$text =& $wgOut->mBodytext;
-	$text = preg_replace( '|(</ul>\\s*)?<h4>(.+?)</h4>\\s*(<ul class="special">)<li.*?>|s', '$3<li $2>', $text );
+	$text = preg_replace( '|<li[^>]+>|s', '<li>', $text );
+	$text = preg_replace( '|(</ul>\\s*)?<h4>(.+?)</h4>\\s*(<ul class="special">)<li>|s', '$3<li $2>', $text );
 
 	# Edits by Fish1203
 	# (http://www.mediawiki.org/wiki/User:Fish1203)
