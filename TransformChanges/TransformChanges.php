@@ -13,7 +13,7 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRANSFORMCHANGES_VERSION', '1.1.6, 2009-03-24' );
+define( 'TRANSFORMCHANGES_VERSION', '1.1.7, 2009-09-05' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "TransformChanges",
@@ -51,7 +51,7 @@ function wfRunSpecialPageExecuteAfterPageHook() {
 	$oldOut = $wgOut;
 	$wgOut = new OutputPage2();
 	foreach ( array_keys( get_class_vars( 'OutputPage' ) ) as $k ) $wgOut->$k = $oldOut->$k;
-	
+
 	return true;
 }
 
@@ -61,7 +61,7 @@ function wfTransformChanges() {
 	$title = $wgOut->getPageTitle();
 	if ( $title != wfMsgForContent( 'recentchanges' ) && $title != wfMsgForContent( 'watchlist' ) ) return true;
 	$text =& $wgOut->mBodytext;
-	$text = preg_replace( '|(</ul>\\s*)?<h4>(.+?)</h4>\\s*(<ul class="special">)<li>|s', '$3<li $2>', $text );
+	$text = preg_replace( '|(</ul>\\s*)?<h4>(.+?)</h4>\\s*(<ul class="special">)<li.*?>|s', '$3<li $2>', $text );
 
 	# Edits by Fish1203
 	# (http://www.mediawiki.org/wiki/User:Fish1203)
@@ -142,7 +142,7 @@ function wfTransformChangesLI( $match ) {
 		$row .= $head;
 		$head = '';
 	}
-	$row .= "<tr class=\"$wgTransformChangesRow\">";
+	$row .= "<tr class=\"mw-line-$wgTransformChangesRow\">";
 
 	if (preg_match( '%^(.*?);(&#32;|\\s+)(\\d+:\\d+)(.+?)(<a.+?</a>\\))(</span>)?\\s*(.*?)$%', $text, $m ) ) {
 		list( , $diff,, $time, $bytes, $user,, $comment ) = $m;
