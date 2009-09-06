@@ -11,7 +11,7 @@
 
 if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'WIKIDADMIN_VERSION', '1.0.5, 2009-09-06' );
+define( 'WIKIDADMIN_VERSION', '1.0.6, 2009-09-07' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -148,11 +148,14 @@ class SpecialWikidAdmin extends SpecialPage {
 function wfWikidAdminRenderWork() {
 	global $wgWikidWork;
 	if ( !is_array( $wgWikidWork ) ) wfWikidAdminLoadWork();
-	$unset = '<i>unset</i>';
-	$title = Title::makeTitle( NS_SPECIAL, 'WikidAdmin' );
-	$class = '';
 	if ( count( $wgWikidWork ) > 0 ) {
-		$html = "<table class=\"changes\"><tr><th>ID</th><th>Type</th><th>Start</th><th>Progress</th><th>Status</th><th>State</th></tr>\n";
+		$unset = '<i>unset</i>';
+		$title = Title::makeTitle( NS_SPECIAL, 'WikidAdmin' );
+		$class = '';
+		$cols  = array( 'ID', 'Type', 'Start', 'Progress', 'State', 'Status' );
+		$html  = "<table class=\"changes\"><tr>\n";
+		foreach( $cols as $col ) $html .= "<th id=\"wa-work-" . strtolower( $col ) . "\">$col</th>\n";
+		$html .= "</tr>\n";
 		foreach ( $wgWikidWork as $job ) {
 			$class  = $class == 'odd' ? 'even' : 'odd';
 			$id     = isset( $job['id'] )       ? $job['id']     : $unset;
@@ -169,7 +172,7 @@ function wfWikidAdminRenderWork() {
 			$state  = ( $paused ? "Paused" : "Running" ) . "&nbsp;<small>($plink|$slink)</small>";
 			$progress = ( $wptr == $unset || $len == $unset ) ? $unset : "$wptr of $len";
 			$html .= "<tr class=\"mw-line-$class\">";
-			$html .= "<td><b>$id</b></td><td>$type</td><td>$start</td><td>$progress</td><td>$status</td><td>$state</td>";
+			$html .= "<td><b>$id</b></td><td>$type</td><td>$start</td><td>$progress</td><td>$state</td><td>$status</td>";
 			$html .= "</tr>\n";
 		}
 		$html .= "</table>\n";
@@ -200,7 +203,10 @@ function wfWikidAdminRenderWorkHistory() {
 
 		# Render the table if any items
 		if ( count( $hist ) > 0 ) {
-			$html = "<table class=\"changes\"><tr><th>ID</th><th>Type</th><th>Start</th><th>Progress</th><th>Results</th></tr>\n";
+			$cols  = array( 'ID', 'Type', 'Start', 'Progress', 'Results' );
+			$html  = "<table class=\"changes\"><tr>\n";
+			foreach( $cols as $col ) $html .= "<th id=\"wa-hist-" . strtolower( $col ) . "\">$col</th>\n";
+			$html .= "</tr>\n";
 			$contrib = Title::newFromText( 'Contributions', NS_SPECIAL );
 			foreach ( $hist as $id => $job ) {
 				$type      = $job['Type'];
