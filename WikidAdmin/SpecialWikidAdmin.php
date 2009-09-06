@@ -11,7 +11,7 @@
 
 if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'WIKIDADMIN_VERSION', '1.0.3, 2009-09-05' );
+define( 'WIKIDADMIN_VERSION', '1.0.5, 2009-09-06' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -58,29 +58,34 @@ class SpecialWikidAdmin extends SpecialPage {
 			$this->startJob( $wgRequest->getText( 'wpType' ) );
 		}
 
+		# Cancel a job
+		if ( $wgRequest->getText( 'action' ) == 'stop' ) {
+			$this->stopJob( $wgRequest->getText( 'id' ) );
+		}
+
 		# Pause/continue a job
 		if ( $wgRequest->getText( 'action' ) == 'pause' ) {
 			$this->pauseJob( $wgRequest->getText( 'id' ) );
 		}
 
-		# Render as a table with pause/start/stop for each
-		$wgOut->addWikiText( "== Currently executing work ==\n" );
-		$wgOut->addHtml( '<div id="current-work">' . wfWikidAdminRenderWork() . '</div>' );
-		$wgOut->addHtml( "<script type='$wgJsMimeType'>wikidAdminCurrentTimer();</script>" );
-
 		# Render ability to start a new job and supply optional args
-		$wgOut->addWikiText( "\n\n== Start a new job ==\n" );
+		$wgOut->addWikiText( "== Start a new job ==\n" );
 		if ( count( $wgWikidTypes ) ) {
 			$html = '<form method="POST">';
 			$html .= 'Type: <select name="wpType">';
 			foreach( $wgWikidTypes as $type ) $html .= "<option>$type</option>";
 			$html .= '</select>&nbsp;<input name="wpStart" type="submit" value="Start" />';
-			$html .= '</form>';
+			$html .= '</form><br />';
 			$wgOut->addHtml( $html );
-		} else $wgOut->addHtml( '<i>There are no job types defined</i>' );
+		} else $wgOut->addHtml( '<i>There are no job types defined</i><br />' );
+
+		# Render as a table with pause/continue/cancel for each
+		$wgOut->addWikiText( "\n== Currently executing work ==\n" );
+		$wgOut->addHtml( '<div id="current-work">' . wfWikidAdminRenderWork() . '</div>' );
+		$wgOut->addHtml( "<script type='$wgJsMimeType'>wikidAdminCurrentTimer();</script><br />" );
 
 		# Render a list of previously run jobs from the job log
-		$wgOut->addWikiText( "\n\n== Work history ==\n" );
+		$wgOut->addWikiText( "== Work history ==\n" );
 		$wgOut->addHtml( '<div id="work-history">' . wfWikidAdminRenderWorkHistory() . '</div>' );
 		$wgOut->addHtml( "<script type='$wgJsMimeType'>wikidAdminHistoryTimer();</script>" );
 
@@ -98,6 +103,22 @@ class SpecialWikidAdmin extends SpecialPage {
 				'wgScript'   => $wgServer . $wgScript
 			) );
 			fputs( $handle, "GET StartJob?$data HTTP/1.0\n\n\x00" );
+			fclose( $handle ); 
+		}
+	}
+
+	/**
+	 * Send a stop job request to the local peer
+	 */
+	function stopJob( $id ) {
+		global $wgEventPipePort, $wgSitename, $wgServer, $wgScript;
+		if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
+			$data = serialize( array(
+				'id'         => $id,
+				'wgSitename' => $wgSitename,
+				'wgScript'   => $wgServer . $wgScript
+			) );
+			fputs( $handle, "GET StopJob?$data HTTP/1.0\n\n\x00" );
 			fclose( $handle ); 
 		}
 	}
@@ -129,20 +150,27 @@ function wfWikidAdminRenderWork() {
 	if ( !is_array( $wgWikidWork ) ) wfWikidAdminLoadWork();
 	$unset = '<i>unset</i>';
 	$title = Title::makeTitle( NS_SPECIAL, 'WikidAdmin' );
+	$class = '';
 	if ( count( $wgWikidWork ) > 0 ) {
-		$html = "<table><tr><th>ID</th><th>Type</th><th>Start</th><th>Progress</th><th>Status</th><th>Actions</th></tr>\n";
+		$html = "<table class=\"changes\"><tr><th>ID</th><th>Type</th><th>Start</th><th>Progress</th><th>Status</th><th>State</th></tr>\n";
 		foreach ( $wgWikidWork as $job ) {
+			$class  = $class == 'odd' ? 'even' : 'odd';
 			$id     = isset( $job['id'] )       ? $job['id']     : $unset;
 			$type   = isset( $job['type'] )     ? $job['type']   : $unset;
 			$start  = isset( $job['start'] )    ? $job['start']  : $unset;
 			$len    = isset( $job['length'] )   ? $job['length'] : $unset;
 			$wptr   = isset( $job['progress'] ) ? $job['wptr']   : $unset;
-			$pause  = isset( $job['paused'] )   ? $job['paused'] : $unset;
+			$paused = isset( $job['paused'] )   ? $job['paused'] : false;
 			$status = isset( $job['status'] )   ? $job['status'] : $unset;
-			$link   = Title::makeTitle( NS_SPECIAL, 'WikidAdmin' )->getLocalUrl( "id=$id&action=pause" );
-			$link   = "<a href=\"$link\">" . ( $pause == $unset ? "Pause" : "Continue" ) . "</a>";
+			$plink  = $title->getLocalUrl( "id=$id&action=pause" );
+			$plink  = "<a href=\"$plink\">" . ( $paused ? "continue" : "pause" ) . "</a>";
+			$slink  = $title->getLocalUrl( "id=$id&action=stop" );
+			$slink  = "<a href=\"$slink\">cancel</a>";
+			$state  = ( $paused ? "Paused" : "Running" ) . "&nbsp;<small>($plink|$slink)</small>";
 			$progress = ( $wptr == $unset || $len == $unset ) ? $unset : "$wptr of $len";
-			$html .= "<tr><td><b>$id</b></td><td>$type</td><td>$start</td><td>$progress</td><td>$status</td><td>$link</td>\n";
+			$html .= "<tr class=\"mw-line-$class\">";
+			$html .= "<td><b>$id</b></td><td>$type</td><td>$start</td><td>$progress</td><td>$status</td><td>$state</td>";
+			$html .= "</tr>\n";
 		}
 		$html .= "</table>\n";
 	} else $html = "<i>There are currently no active jobs</i>\n";
@@ -172,7 +200,7 @@ function wfWikidAdminRenderWorkHistory() {
 
 		# Render the table if any items
 		if ( count( $hist ) > 0 ) {
-			$html = "<table><tr><th>ID</th><th>Type</th><th>Start</th><th>Progress</th><th>Results</th></tr>\n";
+			$html = "<table class=\"changes\"><tr><th>ID</th><th>Type</th><th>Start</th><th>Progress</th><th>Results</th></tr>\n";
 			$contrib = Title::newFromText( 'Contributions', NS_SPECIAL );
 			foreach ( $hist as $id => $job ) {
 				$type      = $job['Type'];
