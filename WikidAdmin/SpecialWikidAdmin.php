@@ -71,7 +71,8 @@ class SpecialWikidAdmin extends SpecialPage {
 		# Render ability to start a new job and supply optional args
 		$wgOut->addWikiText( "== Start a new job ==\n" );
 		if ( count( $wgWikidTypes ) ) {
-			$html = '<form method="POST">';
+			$url = Title::newFromText( 'WikidAdmin', NS_SPECIAL )->getLocalUrl();
+			$html = "<form action=\"$url\" method=\"POST\">";
 			$html .= 'Type: <select name="wpType">';
 			foreach( $wgWikidTypes as $type ) $html .= "<option>$type</option>";
 			$html .= '</select>&nbsp;<input name="wpStart" type="submit" value="Start" />';
@@ -158,13 +159,13 @@ function wfWikidAdminRenderWork() {
 		$html .= "</tr>\n";
 		foreach ( $wgWikidWork as $job ) {
 			$class  = $class == 'odd' ? 'even' : 'odd';
-			$id     = isset( $job['id'] )       ? $job['id']     : $unset;
-			$type   = isset( $job['type'] )     ? $job['type']   : $unset;
-			$start  = isset( $job['start'] )    ? $job['start']  : $unset;
-			$len    = isset( $job['length'] )   ? $job['length'] : $unset;
-			$wptr   = isset( $job['progress'] ) ? $job['wptr']   : $unset;
-			$paused = isset( $job['paused'] )   ? $job['paused'] : false;
-			$status = isset( $job['status'] )   ? $job['status'] : $unset;
+			$id     = isset( $job['id'] )     ? $job['id']     : $unset;
+			$type   = isset( $job['type'] )   ? $job['type']   : $unset;
+			$start  = isset( $job['start'] )  ? wfTimestamp( TS_DB, $job['start'] ) : $unset;
+			$len    = isset( $job['length'] ) ? $job['length'] : $unset;
+			$wptr   = isset( $job['wptr'] )   ? $job['wptr']   : $unset;
+			$paused = isset( $job['paused'] ) ? $job['paused'] : false;
+			$status = isset( $job['status'] ) ? $job['status'] : $unset;
 			$plink  = $title->getLocalUrl( "id=$id&action=pause" );
 			$plink  = "<a href=\"$plink\">" . ( $paused ? "continue" : "pause" ) . "</a>";
 			$slink  = $title->getLocalUrl( "id=$id&action=stop" );
@@ -172,7 +173,7 @@ function wfWikidAdminRenderWork() {
 			$state  = ( $paused ? "Paused" : "Running" ) . "&nbsp;<small>($plink|$slink)</small>";
 			$progress = ( $wptr == $unset || $len == $unset ) ? $unset : "$wptr of $len";
 			$html .= "<tr class=\"mw-line-$class\">";
-			$html .= "<td><b>$id</b></td><td>$type</td><td>$start</td><td>$progress</td><td>$state</td><td>$status</td>";
+			$html .= "<td>$id</td><td>$type</td><td>$start</td><td>$progress</td><td>$state</td><td>$status</td>";
 			$html .= "</tr>\n";
 		}
 		$html .= "</table>\n";
@@ -185,48 +186,54 @@ function wfWikidAdminRenderWork() {
  */
 function wfWikidAdminRenderWorkHistory() {
 	$log = '/var/www/tools/wikid.work.log';
-	if ( file_exists( $log ) && preg_match_all( "|^\[(.+?)\]\n(.+?)\n\n|sm", file_get_contents( $log ), $m ) ) {
+	if ( file_exists( $log ) ) {
 
-		# Extract the matched work items into a hash by id ($tmp)
-		$tmp = array();
-		foreach ( $m[1] as $i => $id ) {
-			if ( preg_match_all( "|^\s*(.+?)\s*:\s*(.*?)\s*$|sm", $m[2][$i], $n ) ) {
-				foreach( $n[1] as $j => $k ) $tmp[$id][$k] = $n[2][$j];
+		if ( preg_match_all( "|^\[(.+?)\]\n(.+?)\n\n|sm", file_get_contents( $log ), $m ) ) {
+
+			# Extract the matched work items into a hash by id ($tmp)
+			$tmp = array();
+			$n = 0;
+			foreach ( $m[1] as $i => $id ) {
+				if ( preg_match_all( "|^\s*(.+?)\s*:\s*(.*?)\s*$|sm", $m[2][$i], $m2 ) ) {
+					$m2[1][] = 'id';
+					$m2[2][] = $id;
+					$tmp[$n] = array();
+					foreach( $m2[1] as $j => $k ) $tmp[$n][$k] = $m2[2][$j];
+					$n++;
+				}
 			}
-		}
 
-		# Take most recent 100 items ($hist)
-		$hist = array();
-		$n = count( $tmp );
-		if ( $n > 100 ) $n = 100;
-		for ( $i = 0; $i < $n; $i++ ) $hist[] = array_pop( $tmp );
+			# Take most recent 100 items ($hist)
+			$hist = array();
+			$n = count( $tmp );
+			if ( $n > 100 ) $n = 100;
+			for ( $i = 0; $i < $n; $i++ ) $hist[] = array_pop( $tmp );
+		} else $hist = array();
 
 		# Render the table if any items
 		if ( count( $hist ) > 0 ) {
-			$cols  = array( 'ID', 'Type', 'Start', 'Progress', 'Results' );
+			$cols  = array( 'ID', 'Type', 'Start', 'Finish', 'Results' );
 			$html  = "<table class=\"changes\"><tr>\n";
 			foreach( $cols as $col ) $html .= "<th id=\"wa-hist-" . strtolower( $col ) . "\">$col</th>\n";
 			$html .= "</tr>\n";
 			$contrib = Title::newFromText( 'Contributions', NS_SPECIAL );
-			foreach ( $hist as $id => $job ) {
+			foreach ( $hist as $job ) {
+				$id        = $job['id'];
 				$type      = $job['Type'];
 				$user      = $job['User'];
-				$start     = $job['Start'];
-				$finish    = $job['Finish'];
+				$start     = wfTimestamp( TS_DB, $job['Start'] );
+				$finish    = wfTimestamp( TS_DB, $job['Finish'] );
 				$progress  = $job['Progress'];
 				$errors    = $job['Errors'];
 				$revisions = $job['Revisions'];
-				if ( $revisions > 0 ) {
-					$offset = wfTimestamp( TS_MW, $finish );
-					$url    = $contrib->getLocalUrl( "target=$user&offset=$offset&limit=$revisions" );
-					$link   = "<a href=\"$url\">$revisions revisions</a>";
-				} else $link = "<i>no changes</i>";
+				$results   = '';
+				if ( $progress > 0 ) $results .= "<li>$progress completed</li>"; else $results .= "<li>$progress</li>";
+				if ( $revisions > 0 ) $results .= "<li>$revisions items changed</li>";
+				else $results .= "<li><i>no changes</i></li>";
 				if ( $errors ) {
-					$results = '<ul>';
 					foreach( explode( '|', $errors ) as $err ) $results .= "<li>$err</li>\n";
-					$results .= '</ul>';
-				} else $results = $link;
-				$html .= "<tr><td>$id</td><td>$type</td><td>$start</td><td>$progress</td><td>$results</td>\n";
+				}
+				$html .= "<tr><td>$id</td><td>$type</td><td>$start</td><td>$finish</td><td><ul>$results</ul></td>\n";
 			}
 			$html .= "</table>\n";
 		} else $html = "<i>There are no jobs in the work log</i>\n";
