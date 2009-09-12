@@ -11,7 +11,7 @@
 
 if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'WIKIDADMIN_VERSION', '1.0.6, 2009-09-07' );
+define( 'WIKIDADMIN_VERSION', '1.1.0, 2009-09-12' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -36,7 +36,7 @@ class SpecialWikidAdmin extends SpecialPage {
 	}
 
 	function execute( $param ) {
-		global $wgWikidWork, $wgWikidTypes, $wgParser, $wgOut, $wgRequest, $wgJsMimeType;
+		global $wgWikidWork, $wgWikidTypes, $wgParser, $wgOut, $wgHooks, $wgRequest, $wgJsMimeType;
 		$wgParser->disableCache();
 		$this->setHeaders();
 		wfWikidAdminLoadWork();
@@ -50,8 +50,7 @@ class SpecialWikidAdmin extends SpecialPage {
 			function wikidAdminHistoryTimer() {
 				setTimeout('wikidAdminHistoryTimer()',10000);
 				sajax_do_call('wfWikidAdminRenderWorkHistory',[],document.getElementById('work-history'));
-			}
-			</script>");
+			}</script>");
 
 		# Start a new job instance if wpStart & wpType posted
 		if ( $wgRequest->getText( 'wpStart' ) ) {
@@ -73,10 +72,33 @@ class SpecialWikidAdmin extends SpecialPage {
 		if ( count( $wgWikidTypes ) ) {
 			$url = Title::newFromText( 'WikidAdmin', NS_SPECIAL )->getLocalUrl();
 			$html = "<form action=\"$url\" method=\"POST\">";
-			$html .= 'Type: <select name="wpType">';
+			$html = "<table><tr>\n";
+			$html .= '<td>Type: <select name="wpType" id="wpType" onchange="wikidAdminShowTypeForm()" >';
 			foreach( $wgWikidTypes as $type ) $html .= "<option>$type</option>";
-			$html .= '</select>&nbsp;<input name="wpStart" type="submit" value="Start" />';
-			$html .= '</form><br />';
+			$html .= "</select></td><td>";
+
+			# Render forms for types
+			$forms = array();
+			foreach( $wgWikidTypes as $type ) {
+				if ( isset( $wgHooks["WikidAdminTypeForm_$type"] ) ) {
+					$form = '';
+					wfRunHooks( "WikidAdminTypeForm_$type", array( &$this, &$form ) );
+					$html .= "<div id=\"form-$type\" style=\"display:none\" >$form</div>";
+					$forms[] = "'$type'";
+				}
+			}
+
+			# and the script to switch the visible one
+			$forms = join( ',', $forms );
+			$wgOut->addScript("<script type='$wgJsMimeType'>
+			function wikidAdminShowTypeForm() {
+				var type = document.getElementById('wpType').value;
+				var forms = [$forms];
+				for( i in forms ) document.getElementById('form-'+forms[i]).style.display = forms[i] == type ? '' : 'none';
+			}</script>");
+
+			$html .= '</td><td><input name="wpStart" type="submit" value="Start" /></td>';
+			$html .= '</tr></table></form><br />';
 			$wgOut->addHtml( $html );
 		} else $wgOut->addHtml( '<i>There are no job types defined</i><br />' );
 
