@@ -128,7 +128,7 @@ class SpecialWikidAdmin extends SpecialPage {
 			$args['type']       = $type;
 			$args['wgSitename'] = $wgSitename;
 			$args['wgScript']   = $wgServer . $wgScript;
-			$data = serialize( $args ) );
+			$data = serialize( $args );
 			fputs( $handle, "GET StartJob?$data HTTP/1.0\n\n\x00" );
 			fclose( $handle ); 
 		}
