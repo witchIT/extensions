@@ -11,7 +11,7 @@
 
 if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'WIKIDADMIN_VERSION', '1.1.0, 2009-09-12' );
+define( 'WIKIDADMIN_VERSION', '1.1.1, 2009-09-14' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -54,7 +54,11 @@ class SpecialWikidAdmin extends SpecialPage {
 
 		# Start a new job instance if wpStart & wpType posted
 		if ( $wgRequest->getText( 'wpStart' ) ) {
-			$this->startJob( $wgRequest->getText( 'wpType' ) );
+			$type = $wgRequest->getText( 'wpType' );
+			$start = true;
+			$args  = array();
+			wfRunHooks( "WikidAdminTypeFormProcess_$type", array( &$this, &$args, &$start ) );
+			if ( $start ) $this->startJob( $type, $args );
 		}
 
 		# Cancel a job
@@ -80,9 +84,10 @@ class SpecialWikidAdmin extends SpecialPage {
 			# Render forms for types
 			$forms = array();
 			foreach( $wgWikidTypes as $type ) {
-				if ( isset( $wgHooks["WikidAdminTypeForm_$type"] ) ) {
+				$hook = "WikidAdminTypeFormRender_$type";
+				if ( isset( $wgHooks[$hook] ) ) {
 					$form = '';
-					wfRunHooks( "WikidAdminTypeForm_$type", array( &$this, &$form ) );
+					wfRunHooks( $hook, array( &$this, &$form ) );
 					$html .= "<div id=\"form-$type\" style=\"display:none\" >$form</div>";
 					$forms[] = "'$type'";
 				}
@@ -117,14 +122,13 @@ class SpecialWikidAdmin extends SpecialPage {
 	/**
 	 * Send a start job request to the local peer
 	 */
-	function startJob( $type ) {
+	function startJob( $type, &$args ) {
 		global $wgEventPipePort, $wgSitename, $wgServer, $wgScript;
 		if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
-			$data = serialize( array(
-				'type'       => $type,
-				'wgSitename' => $wgSitename,
-				'wgScript'   => $wgServer . $wgScript
-			) );
+			$args['type']       = $type;
+			$args['wgSitename'] = $wgSitename;
+			$args['wgScript']   = $wgServer . $wgScript;
+			$data = serialize( $args ) );
 			fputs( $handle, "GET StartJob?$data HTTP/1.0\n\n\x00" );
 			fclose( $handle ); 
 		}
