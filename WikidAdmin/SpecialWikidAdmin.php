@@ -76,7 +76,7 @@ class SpecialWikidAdmin extends SpecialPage {
 		if ( count( $wgWikidTypes ) ) {
 			$url = Title::newFromText( 'WikidAdmin', NS_SPECIAL )->getLocalUrl();
 			$html = "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">";
-			$html = "<table><tr valign=\"top\">\n";
+			$html .= "<table><tr valign=\"top\">\n";
 			$html .= '<td>Type: <select name="wpType" id="wpType" onchange="wikidAdminShowTypeForm()" >';
 			foreach( $wgWikidTypes as $type ) $html .= "<option>$type</option>";
 			$html .= "</select></td><td>";
