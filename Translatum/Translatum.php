@@ -63,6 +63,7 @@ class Translatum {
 
 		return true;
 	}
+}
 
 /**
  * Called from $wgExtensionFunctions array when initialising extensions
