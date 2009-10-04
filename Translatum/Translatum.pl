@@ -1,7 +1,10 @@
 #!/usr/bin/perl
 require('/var/www/tools/wiki.pl');
+require('/var/www/tools/wikid.conf');
 
-wikiLogin( $wiki, $user, $pass ) or die "Couldn't log into wiki!";
+$file = $ARGV[0];
+
+wikiLogin( $wiki, $wikiuser, $wikipass ) or die "Couldn't log into wiki!";
 open CSV, '<', $file             or die "Could not open CSV file '$file'!";
 for (<CSV>) {
 	s/^"//; s/"\s*$//;
@@ -10,6 +13,6 @@ for (<CSV>) {
 	$gr    =~ s/\s*;;\s*/ &#0124; /g;
 	$text  = "{{Glossary\n | en  = $en\n | gr  = $gr | url = $url\n | src = $src\n}}\n\n";
 	$text .= "[[Category:$_]]" for split '\s*;;\s*', $cats;
-	wikiEdit( $wiki, $en, $text, "Glossary entry imported from row ".++$i." of $file" );
+	wikiEdit( $wiki, $en, $text, "Glossary entry imported from row " . ++$i . " of $file" );
 }
 
