@@ -16,7 +16,7 @@
 #                    an article called "term" containing "#REDIRECT [[term (ITEM)]]"
 # "term (Item)" where the item is not all caps, is treated as just a single term
 
-# DUPLICATE ENTRIES
+# DUPLICATEs
 # currently if the title for a newly imported row already exists it will be overwritten
 # the original content will still be available from the title's history as usual
 
@@ -50,7 +50,7 @@ for ( <CSV> ) {
 	$text  = "#REDIRECT [[$title]]";
 	for ( @enlist, @grlist ) {
 		wikiEdit( $wiki, $1, $text ) unless $_ eq $title;
-		if ( /^(.+) \(([A-Z])\)/ ) {
+		if ( /^(.+) \(([A-ZΑ-Ω])\)/ ) {
 			wikiEdit( $wiki, $1, $text );
 			wikiEdit( $wiki, $2, $text );
 		}
