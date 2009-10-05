@@ -20,6 +20,9 @@
 # currently if the title for a newly imported row already exists it will be overwritten
 # the original content will still be available from the title's history as usual
 
+# GREEK CHARACTERS
+# currently the test for initialism (all upper case) only works for A-Z
+
 require('/var/www/tools/wiki.pl');
 require('/var/www/tools/wikid.conf');
 
@@ -49,8 +52,9 @@ for ( <CSV> ) {
 	# Create redirects for synonyms and initialisms
 	$text  = "#REDIRECT [[$title]]";
 	for ( @enlist, @grlist ) {
-		wikiEdit( $wiki, $1, $text ) unless $_ eq $title;
-		if ( /^(.+) \(([A-Z\x00C1-\x00D9\x0391-\x03A9])\)/ ) {
+		wikiEdit( $wiki, $_, $text ) unless $_ eq $title;
+		print lc $_ . "\n";
+		if ( /^(.+) \(([A-Z]+)\)/ ) {
 			wikiEdit( $wiki, $1, $text );
 			wikiEdit( $wiki, $2, $text );
 		}
