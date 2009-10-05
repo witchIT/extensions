@@ -39,14 +39,22 @@ for ( <CSV> ) {
 	@grlist = split /\s*;;\s*/, $gr;
 	$en     =~ s/\s*;;\s*/ &#0124; /g;
 	$gr     =~ s/\s*;;\s*/ &#0124; /g;
-	$title  = $enlist[0];
 
-	# Create definition content including category links
+	# Create/overwrite the primary definition article
+	$title  = $enlist[0];
 	$text  = "{{Glossary\n | en  = $en\n | gr  = $gr\n | url = $url\n | src = $src\n}}\n\n";
 	$text .= "[[Category:$_]]" for split '\s*;;\s*', $cats;
+	wikiEdit( $wiki, $title, $text, "Glossary entry imported from row " . ++$row . " of $file" );
 
-	# Create/overwrite the article
-	wikiEdit( $wiki, $en, $text, "Glossary entry imported from row " . ++$i . " of $file" );
+	# Create redirects for synonyms and initialisms
+	$text  = "#REDIRECT [[$title]]";
+	for ( @enlist, @grlist ) {
+		wikiEdit( $wiki, $1, $text ) unless $_ eq $title;
+		if ( /^(.+) \(([A-Z])\)/ ) {
+			wikiEdit( $wiki, $1, $text );
+			wikiEdit( $wiki, $2, $text );
+		}
+	}
 
 }
 
