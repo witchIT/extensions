@@ -50,7 +50,7 @@ for ( <CSV> ) {
 	$text  = "#REDIRECT [[$title]]";
 	for ( @enlist, @grlist ) {
 		wikiEdit( $wiki, $1, $text ) unless $_ eq $title;
-		if ( /^(.+) \(([A-ZΑ-Ω])\)/ ) {
+		if ( /^(.+) \(([A-Z\x00C1-\x00D9\x0391-\x03A9])\)/ ) {
 			wikiEdit( $wiki, $1, $text );
 			wikiEdit( $wiki, $2, $text );
 		}
