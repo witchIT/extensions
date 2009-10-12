@@ -53,7 +53,7 @@ class SpecialWikiaAdmin extends SpecialPage {
 		$this->sitename = $wgRequest->getText( 'wpSitename' );
 		$this->domains  = $wgRequest->getText( 'wpDomains' );
 		$this->codebase = $wgRequest->getText( 'wpCodebase' );
-		$this->user     = $wgRequest->getText( 'wpUser', 'WikiSysop' );
+		$this->user     = ucfirst( $wgRequest->getText( 'wpUser', 'WikiSysop' ) );
 		$this->pass     = $wgRequest->getText( 'wpPass' );
 		$this->pass2    = $wgRequest->getText( 'wpPass2' );
 
@@ -167,12 +167,14 @@ class SpecialWikiaAdmin extends SpecialPage {
 			file_put_contents( "$dir/LocalSettings.php", $ls );
 			
 			# Add the database template to the "wikia" DB
-			shell_exec( "/var/www/tools/add-db /var/www/empty-{$this->codebase}.sql wikia.{$id}_" );
+			$this->result = exec( "/var/www/tools/add-db --sysop={$this->user}:{$this->pass} /var/www/empty-{$this->codebase}.sql wikia.{$id}_" );
 
 			# Add the domain symlinks
 			foreach( split( "\n", $this->domains ) as $domain ) {
 				shell_exec( "ln -s $dir /var/www/domains/$domain" );
 			}
+			
+			#$this->result = "\"{$this->sitename}\" set up with ID \"$id\"";
 		}
 
 	}
