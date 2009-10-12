@@ -12,7 +12,7 @@
 
 if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'WIKIAADMIN_VERSION', '0.0.2, 2009-10-12' );
+define( 'WIKIAADMIN_VERSION', '1.0.0, 2009-10-13' );
 
 $wgWikiaAdminDomains = array();
 
@@ -61,8 +61,9 @@ class SpecialWikiaAdmin extends SpecialPage {
 		if ( $wgRequest->getText( 'wpSubmit' ) ) $this->processForm();
 
 		# Render any errors or results set during processing
-		if ( !empty( $this->error ) ) $wgOut->addHtml( $this->error );
-		if ( !empty( $this->result ) ) $wgOut->addHtml( $this->result );
+		if ( !empty( $this->error ) ) $wgOut->addHtml( "<div class='errorbox'>{$this->error}</div>" );
+		if ( !empty( $this->result ) ) $wgOut->addHtml( "<div class='successbox'>{$this->result}</div>" );
+		$wgOut->addHtml( "<div style=\"clear: both\"></div>" );
 
 		# Render the form
 		$this->renderForm();
@@ -153,7 +154,7 @@ class SpecialWikiaAdmin extends SpecialPage {
 			$id = $this->newid;
 
 			# Create the wiki dir and codebase symlink
-			if ( !is_dir( $mw ) ) return $this->error = "MediaWiki codebasee '$mw' not found!";
+			if ( !is_dir( $mw ) ) return $this->error = "MediaWiki codebase '$mw' not found!";
 			shell_exec( "mkdir $dir" );
 			shell_exec( "mkdir -m 777 $dir/files" );
 			shell_exec( "ln -s $mw $dir/wiki" );
@@ -167,18 +168,16 @@ class SpecialWikiaAdmin extends SpecialPage {
 			file_put_contents( "$dir/LocalSettings.php", $ls );
 			
 			# Add the database template to the "wikia" DB
-			$this->result = exec( "/var/www/tools/add-db --sysop={$this->user}:{$this->pass} /var/www/empty-{$this->codebase}.sql wikia.{$id}_" );
+			$cmd = "/var/www/tools/add-db --sysop={$this->user}:{$this->pass} /var/www/empty-{$this->codebase}.sql wikia.{$id}_";
+			$result = shell_exec( "$cmd 2>&1" );
+			ereg( 'successfully', $result ) ? $this->result = "Wiki \"{$this->sitename}\" ($id) created successfully!" : $this->error = $result;
 
 			# Add the domain symlinks
 			foreach( split( "\n", $this->domains ) as $domain ) {
 				shell_exec( "ln -s $dir /var/www/domains/$domain" );
 			}
-			
-			#$this->result = "\"{$this->sitename}\" set up with ID \"$id\"";
 		}
-
 	}
-
 }
 
 /*
