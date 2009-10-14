@@ -11,10 +11,9 @@
 # INITIALISMS
 # these are matched as all items that are all caps, in brackets, following a term
 # when an initialism is encountered, it is created as a redirect to the main article for the term
-# i.e. "term (ITEM)" becomes an article called "term (ITEM)" containing the term's definition, and also:
-#                    an article called "ITEM" containing "#REDIRECT [[term (ITEM)]]"
-#                    an article called "term" containing "#REDIRECT [[term (ITEM)]]"
-# "term (Item)" where the item is not all caps, is treated as just a single term
+# i.e. "term (ITEM)" becomes an article called "term" containing the term's definition, and also:
+#                    an article called "ITEM" containing "#REDIRECT [[term]]"
+# "term (Item)" where the item is not all caps, is treated as just a single term (not working for greek caps)
 
 # DUPLICATEs
 # currently if the title for a newly imported row already exists it will be overwritten
@@ -43,21 +42,22 @@ for ( <CSV> ) {
 	$en     =~ s/\s*;;\s*/ &#0124; /g;
 	$gr     =~ s/\s*;;\s*/ &#0124; /g;
 
+	# Separate out acronyms and merge into one list and define the main content title
+	@titles = ();
+	push @titles, /^(.+) \(([A-Z]+)\)/ ? ( $1, $2 ) : $_ for ( @enlist, @grlist )
+	$title = $titles[0];
+
 	# Create/overwrite the primary definition article
-	$title  = $enlist[0];
 	$text  = "{{Glossary\n | en  = $en\n | gr  = $gr\n | url = $url\n | src = $src\n}}\n\n";
 	$text .= "[[Category:$_]]" for split '\s*;;\s*', $cats;
-	wikiEdit( $wiki, $title, $text, "Glossary entry imported from row " . ++$row . " of $file" );
+	$comment = "Glossary entry imported from row " . ++$row . " of $file";
 
-	# Create redirects for synonyms and initialisms
-	$text  = "#REDIRECT [[$title]]";
-	for ( @enlist, @grlist ) {
-		wikiEdit( $wiki, $_, $text ) unless $_ eq $title;
+	# Create the articles, the first is the real content, subsequent ones are redirects
+	for @titles {
 		print lc $_ . "\n";
-		if ( /^(.+) \(([A-Z]+)\)/ ) {
-			wikiEdit( $wiki, $1, $text );
-			wikiEdit( $wiki, $2, $text );
-		}
+		wikiEdit( $wiki, $_, $text, $comment );
+		$text = "#REDIRECT [[$title]]" if $comment;
+		$comment = '';
 	}
 
 }
