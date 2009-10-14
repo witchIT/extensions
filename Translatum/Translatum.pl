@@ -44,7 +44,7 @@ for ( <CSV> ) {
 
 	# Separate out acronyms and merge into one list and define the main content title
 	@titles = ();
-	push @titles, /^(.+) \(([A-Z]+)\)/ ? ( $1, $2 ) : $_ for ( @enlist, @grlist )
+	push @titles, /^(.+) \(([A-Z]+)\)/ ? ( $1, $2 ) : $_ for ( @enlist, @grlist );
 	$title = $titles[0];
 
 	# Create/overwrite the primary definition article
