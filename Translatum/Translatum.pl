@@ -53,7 +53,7 @@ for ( <CSV> ) {
 	$comment = "Glossary entry imported from row " . ++$row . " of $file";
 
 	# Create the articles, the first is the real content, subsequent ones are redirects
-	for @titles {
+	for ( @titles ) {
 		print lc $_ . "\n";
 		wikiEdit( $wiki, $_, $text, $comment );
 		$text = "#REDIRECT [[$title]]" if $comment;
