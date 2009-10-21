@@ -19,9 +19,6 @@
 # currently if the title for a newly imported row already exists it will be overwritten
 # the original content will still be available from the title's history as usual
 
-# GREEK CHARACTERS
-# currently the test for initialism (all upper case) only works for A-Z
-
 require('/var/www/tools/wiki.pl');
 require('/var/www/tools/wikid.conf');
 
@@ -55,10 +52,9 @@ for ( <CSV> ) {
 	# Create the articles, the first is the real content, subsequent ones are redirects
 	for ( @titles ) {
 		print lc $_ . "\n";
-		#wikiEdit( $wiki, $_, $text, $comment );
+		wikiEdit( $wiki, $_, $text, $comment );
 		$text = "#REDIRECT [[$title]]" if $comment;
 		$comment = '';
 	}
 
 }
-
