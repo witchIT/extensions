@@ -44,7 +44,7 @@ for ( <CSV> ) {
 
 	# Separate out acronyms and merge into one list and define the main content title
 	@titles = ();
-	push @titles, /^(.+) \(([A-Z]+)\)/ ? ( $1, $2 ) : $_ for ( @enlist, @grlist );
+	push @titles, /^(.+) \(([A-ZΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ]+)\)/ ? ( $1, $2 ) : $_ for ( @enlist, @grlist );
 	$title = $titles[0];
 
 	# Create/overwrite the primary definition article
@@ -55,7 +55,7 @@ for ( <CSV> ) {
 	# Create the articles, the first is the real content, subsequent ones are redirects
 	for ( @titles ) {
 		print lc $_ . "\n";
-		wikiEdit( $wiki, $_, $text, $comment );
+		#wikiEdit( $wiki, $_, $text, $comment );
 		$text = "#REDIRECT [[$title]]" if $comment;
 		$comment = '';
 	}
