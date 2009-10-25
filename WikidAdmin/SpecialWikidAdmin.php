@@ -220,7 +220,7 @@ function wfWikidAdminRenderWorkHistory() {
 			$tmp = array();
 			$n = 0;
 			foreach ( $m[1] as $i => $id ) {
-				if ( preg_match_all( "|^\s*(.+?)\s*:\s*(.*?)\s*$|sm", $m[2][$i], $m2 ) ) {
+				if ( preg_match_all( "|^\s*(.+?)\s*: (.*?)\s*?$|sm", $m[2][$i], $m2 ) ) {
 					$m2[1][] = 'id';
 					$m2[2][] = $id;
 					$tmp[$n] = array();
@@ -253,7 +253,8 @@ function wfWikidAdminRenderWorkHistory() {
 				$errors    = $job['Errors'];
 				$revisions = $job['Revisions'];
 				$results   = '';
-				if ( $progress > 0 ) $results .= "<li>$progress completed</li>"; else $results .= "<li>$progress</li>";
+				if ( $progress > 0 ) $results .= "<li>$progress completed</li>";
+				elseif ( $progress ) $results .= "<li>$progress</li>";
 				if ( $revisions > 0 ) $results .= "<li>$revisions items changed</li>";
 				else $results .= "<li><i>no changes</i></li>";
 				if ( $errors ) {
