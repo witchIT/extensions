@@ -20,7 +20,10 @@
 # the original content will still be available from the title's history as usual
 
 require('/var/www/tools/wiki.pl');
-require('/var/www/tools/wikid.conf');
+
+$wiki       = 'http://wiki.translatum.gr/w/index.php';
+$wikiuser   = '****';
+$wikipass   = '****';
 
 # Log into the target wiki
 wikiLogin( $wiki, $wikiuser, $wikipass ) or die "Couldn't log into wiki!";
