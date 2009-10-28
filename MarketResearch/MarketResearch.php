@@ -11,7 +11,7 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'MARKETRESEARCH_VERSION', '1.0.1, 2009-10-29' );
+define( 'MARKETRESEARCH_VERSION', '1.0.2, 2009-10-29' );
 
 $wgMarketResearchPartner  = 'partnerid-not-set';
 $wgMarketResearchSearch   = 'http://www.marketresearch.com/feed/search_results.asp?bquery=$2&partnerid=$1';
@@ -96,7 +96,7 @@ function wfMarketResearchTag( $input ) {
 			# render this item
 			$html .= "<div class=\"marketresearch-item\">\n<h3>$title by $vendor</h3>\n<p>$desc</p>\n$link\n</div>";
 		}
-	} else $html = 'no valid XML returned';
+	} else $html = "no valid XML returned or found in cache!<br /><br />The following content was returned:<br /><pre>$xml</pre>";
 
 	return "<div class=\"marketresearch\">$html</div>";
 }
