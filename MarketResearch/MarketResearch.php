@@ -1,6 +1,6 @@
 <?php
 /**
- * MarketResearch extension{{php}}{{Category:Extensions|MarketResearch}}
+ * MarketResearch extension
  *
  * Version 0.0.1 started 2008-07-12
  * 
@@ -11,7 +11,7 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'MARKETRESEARCH_VERSION', '1.0.0, 2009-10-28' );
+define( 'MARKETRESEARCH_VERSION', '1.0.1, 2009-10-29' );
 
 $wgMarketResearchPartner  = 'partnerid-not-set';
 $wgMarketResearchSearch   = 'http://www.marketresearch.com/feed/search_results.asp?bquery=$2&partnerid=$1';
@@ -64,7 +64,7 @@ function wfMarketResearchTag( $input ) {
 	# If no XML yet, read from feed and store in cache
 	if ( $xml === false ) {
 		$xml = file_get_contents( $search );
-		if ($wgMarketResearchTable) {
+		if ( $wgMarketResearchTable ) {
 			$row = array(
 				'mrc_keywords' => $keywords,
 				'mrc_time'     => $ts,
@@ -119,7 +119,7 @@ class SpecialMarketResearch extends SpecialPage {
 		$title    = Title::makeTitle( NS_SPECIAL, 'MarketResearch' );
 		$keywords = $wgRequest->getText( 'keywords' );
 		$product  = $wgRequest->getText( 'productid' );
-		$return   = urlencode( $wgRequest->getText( 'returnURL' ) );
+		$return   = $wgRequest->getText( 'returnURL' );
 
 		# Read query XML from cache
 		$db = &wfGetDB( DB_SLAVE );
