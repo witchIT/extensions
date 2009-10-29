@@ -11,7 +11,7 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'MARKETRESEARCH_VERSION', '1.1.0, 2009-10-29' );
+define( 'MARKETRESEARCH_VERSION', '1.2.1, 2009-10-29' );
 
 $wgMarketResearchPartner  = 'partnerid-not-set';
 $wgMarketResearchSearch   = 'http://www.marketresearch.com/feed/search_results.asp?bquery=$2&partnerid=$1';
@@ -41,68 +41,14 @@ require_once "$IP/includes/SpecialPage.php";
  * The callback function for converting the input text to HTML output
  */
 function wfMarketResearchTag( $input ) {
-	global $wgTitle, $wgMarketResearchPartner, $wgMarketResearchSearch, $wgMarketResearchDescSize,
-		$wgMarketResearchTable, $wgMarketResearchExpiry, $wgMarketResearchImages;
+	global $wgTitle, $wgMarketResearchPartner, $wgMarketResearchSearch, $wgMarketResearchDescSize, $wgMarketResearchImages;
 
 	# Add keywords and product id into feed URL
 	$keywords = preg_split( '/[\x00-\x1f+,]+/', strtolower( trim( $input ) ) );
-	$search   = str_replace( '$1', $wgMarketResearchPartner, $wgMarketResearchSearch );
-	$search   = str_replace( '$2', join( '+', $keywords ), $search );
 	$keywords = join( ',', $keywords );
-	$ts       = time();
-	$db       = &wfGetDB( DB_MASTER );
 	$return   = urlencode( $wgTitle->getFullURL() );
 	$html     = "";
-	$xml      = false;
-	$doc      = false;
-
-	# Remove expired items & attempt to read current item
-	if ( $wgMarketResearchTable ) {
-
-		# Auto-expire items which are really old
-		$db->delete( $wgMarketResearchTable, array( "mrc_time < " . ( $ts - 10 * $wgMarketResearchExpiry ) ), __FUNCTION__ );
-
-		# Read current cache entry for this item if one exists
-		# - if this cache item is older than the expiry time, ensure an attempt will be made to renew it
-		if ( $row = $db->selectRow( $wgMarketResearchTable, 'mrc_xml,mrc_time', "mrc_keywords = '$keywords'", __FUNCTION__ ) ) {
-			$xml = $row->mrc_xml;
-			$doc = new DOMDocument();
-			$doc->loadXML( $xml );
-			if ( $row->mrc_time < $ts - $wgMarketResearchExpiry ) $xml = false;
-		}
-
-	}
-
-	# Load the item from the source (and cache if enabled)
-	if ( $xml === false ) {
-
-		# Attempt to load XML and convert to a DOM object
-		$xml = file_get_contents( $search );
-		$tmp = new DOMDocument();
-		$tmp->loadXML( $xml );
-
-		# Try again if it failed to load or convert
-		if ( !is_object( $tmp ) ) {
-			$xml = file_get_contents( $search );
-			$tmp = new DOMDocument();
-			$tmp->loadXML( $xml );
-		}
-
-		# If it loaded, update or create cache entry
-		if ( is_object( $tmp ) ) {
-			$doc = $tmp;
-			if ( $wgMarketResearchTable ) {
-				$db->delete( $wgMarketResearchTable, array( "mrc_keywords = '$keywords'" ), __FUNCTION__ );
-				$row = array(
-					'mrc_keywords' => $keywords,
-					'mrc_time'     => $ts,
-					'mrc_xml'      => $xml
-				);
-				$db->insert( $wgMarketResearchTable, $row, __FUNCTION__ );
-			}
-		}
-
-	}
+	$doc      = wfMarketResearchRetrieve( $keywords );
 
 	# Render the item if a DOM object has been created
 	if ( is_object( $doc ) ) {
@@ -140,7 +86,7 @@ class SpecialMarketResearch extends SpecialPage {
  
 	public function execute( $param ) {
 		global $wgOut, $wgParser, $wgRequest,
-			$wgMarketResearchTable, $wgMarketResearchPartner, $wgMarketResearchCart, $wgMarketResearchView,
+			$wgMarketResearchPartner, $wgMarketResearchCart, $wgMarketResearchView,
 			$wgMarketResearchLink, $wgMarketResearchName, $wgMarketResearchImages;
 		
 		$this->setHeaders();
@@ -148,14 +94,7 @@ class SpecialMarketResearch extends SpecialPage {
 		$keywords = $wgRequest->getText( 'keywords' );
 		$product  = $wgRequest->getText( 'productid' );
 		$return   = $wgRequest->getText( 'returnURL' );
-
-		# Read query XML from cache
-		$db = &wfGetDB( DB_SLAVE );
-		if ( $row = $db->selectRow( $wgMarketResearchTable, 'mrc_xml', "mrc_keywords = '$keywords'", __FUNCTION__ ) ) {
-			$doc = new DOMDocument();
-			$xml = $row->mrc_xml;
-			$doc->loadXML( $xml );
-		} else $doc = false;
+		$doc      = wfMarketResearchRetrieve( $keywords );
 
 		# Parse XML and render
 		if ( is_object( $doc ) ) {
@@ -182,7 +121,7 @@ class SpecialMarketResearch extends SpecialPage {
 			$wgOut->addHTML( "<input type=\"hidden\" name=\"partnerid\" value=\"$wgMarketResearchPartner\" />\n" );
 			$wgOut->addHTML( "<input type=\"hidden\" name=\"returnURL\" value=\"$return\" />\n" );
 			$wgOut->addHTML( "</form>\n" );
-		} else $html = "no valid XML returned or found in cache!<br /><br />The following content was returned:<br /><pre>$xml</pre>";
+		} else $html = "no valid XML found!";
 	}
 }
 
@@ -201,7 +140,7 @@ function wfSetupMarketResearch() {
 		$result = $db->query( $query );
 	}
 
-	# If the table couldn't be created, disable IPN and add error to site notice
+	# If the table couldn't be created, disable cache and add error to site notice
 	if ( !$db->tableExists( $wgMarketResearchTable ) ) {
 		global $wgSiteNotice;
 		$wgMarketResearchTable = false;
@@ -218,3 +157,65 @@ function wfSetupMarketResearch() {
 	SpecialPage::addPage( new SpecialMarketResearch() );
 }
 
+/**
+ * Retrieve a DOM object for the requested keywords
+ */
+function wfMarketResearchRetrieve( $keywords ) {
+	global $wgMarketResearchTable, $wgMarketResearchExpiry, $wgMarketResearchPartner, $wgMarketResearchSearch;
+	$ts  = time();
+	$db  = &wfGetDB( DB_MASTER );
+	$xml = false;
+	$doc = false;
+
+	# Remove expired items & attempt to read current item
+	if ( $wgMarketResearchTable ) {
+
+		# Auto-expire items which are really old
+		if ( isset( $_REQUEST['mrpurge'] ) ) $wgMarketResearchExpiry = 0;
+		$db->delete( $wgMarketResearchTable, array( "mrc_time < " . ( $ts - 10 * $wgMarketResearchExpiry ) ), __FUNCTION__ );
+
+		# Read current cache entry for this item if one exists
+		# - if this cache item is older than the expiry time, ensure an attempt will be made to renew it
+		if ( $row = $db->selectRow( $wgMarketResearchTable, 'mrc_xml,mrc_time', "mrc_keywords = '$keywords'", __FUNCTION__ ) ) {
+			$xml = $row->mrc_xml;
+			$doc = new DOMDocument();
+			$doc->loadXML( $xml );
+			if ( $row->mrc_time < $ts - $wgMarketResearchExpiry ) $xml = false;
+		}
+
+	}
+
+	# Load the item from the source (and cache if enabled)
+	if ( $xml === false ) {
+
+		# Attempt to load XML and convert to a DOM object
+		$search = str_replace( '$1', $wgMarketResearchPartner, $wgMarketResearchSearch );
+		$search = str_replace( '$2', join( '+', split( ',', $keywords ) ), $search );
+		$xml = file_get_contents( $search );
+		$tmp = new DOMDocument();
+		$tmp->loadXML( $xml );
+
+		# Try again if it failed to load or convert
+		if ( !is_object( $tmp ) ) {
+			$xml = file_get_contents( $search );
+			$tmp = new DOMDocument();
+			$tmp->loadXML( $xml );
+		}
+
+		# If it loaded, update or create cache entry
+		if ( is_object( $tmp ) ) {
+			$doc = $tmp;
+			if ( $wgMarketResearchTable ) {
+				$db->delete( $wgMarketResearchTable, array( "mrc_keywords = '$keywords'" ), __FUNCTION__ );
+				$row = array(
+					'mrc_keywords' => $keywords,
+					'mrc_time'     => $ts,
+					'mrc_xml'      => $xml
+				);
+				$db->insert( $wgMarketResearchTable, $row, __FUNCTION__ );
+			}
+		}
+	}
+	
+	return $doc;
+}
