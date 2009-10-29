@@ -11,7 +11,7 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'MARKETRESEARCH_VERSION', '1.0.2, 2009-10-29' );
+define( 'MARKETRESEARCH_VERSION', '1.1.0, 2009-10-29' );
 
 $wgMarketResearchPartner  = 'partnerid-not-set';
 $wgMarketResearchSearch   = 'http://www.marketresearch.com/feed/search_results.asp?bquery=$2&partnerid=$1';
@@ -28,7 +28,8 @@ $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'MarketResearch',
 	'author'      => '[http://www.organicdesign.co.nz/nad Nad] for [http://www.wikiexpert.com WikiExpert]',
 	'url'         => 'http://www.organicdesign.co.nz/Extension:MarketResearch',
-	'description' => 'Display market research information'
+	'description' => 'Display market research information',
+	'version'     => MARKETRESEARCH_VERSION
 );
 
 $wgSpecialPages['MarketResearch'] = 'SpecialMarketResearch';
@@ -52,31 +53,58 @@ function wfMarketResearchTag( $input ) {
 	$db       = &wfGetDB( DB_MASTER );
 	$return   = urlencode( $wgTitle->getFullURL() );
 	$html     = "";
+	$xml      = false;
+	$doc      = false;
 
 	# Remove expired items & attempt to read current item
-	$xml = false;
 	if ( $wgMarketResearchTable ) {
-		$db->delete( $wgMarketResearchTable, array( "mrc_time < " . ( $ts-$wgMarketResearchExpiry ) ), __FUNCTION__ );
-		if ( $row = $db->selectRow( $wgMarketResearchTable, 'mrc_xml', "mrc_keywords = '$keywords'", __FUNCTION__ ) )
+
+		# Auto-expire items which are really old
+		$db->delete( $wgMarketResearchTable, array( "mrc_time < " . ( $ts - 10 * $wgMarketResearchExpiry ) ), __FUNCTION__ );
+
+		# Read current cache entry for this item if one exists
+		# - if this cache item is older than the expiry time, ensure an attempt will be made to renew it
+		if ( $row = $db->selectRow( $wgMarketResearchTable, 'mrc_xml', "mrc_keywords = '$keywords'", __FUNCTION__ ) ) {
 			$xml = $row->mrc_xml;
-	}
-
-	# If no XML yet, read from feed and store in cache
-	if ( $xml === false ) {
-		$xml = file_get_contents( $search );
-		if ( $wgMarketResearchTable ) {
-			$row = array(
-				'mrc_keywords' => $keywords,
-				'mrc_time'     => $ts,
-				'mrc_xml'      => $xml
-			);
-			$db->insert( $wgMarketResearchTable, $row, __FUNCTION__ );
+			$doc = new DOMDocument();
+			$doc->loadXML( $xml );
+			if ( $row->mrc_time < $ts - $wgMarketResearchExpiry ) $xml = false;
 		}
+
 	}
 
-	# Read the feed into a DOM object
-	$doc = new DOMDocument();
-	$doc->loadXML( $xml );
+	# Load the item from the source (and cache if enabled)
+	if ( $xml === false ) {
+
+		# Attempt to load XML and convert to a DOM object
+		$xml = file_get_contents( $search );
+		$tmp = new DOMDocument();
+		$tmp->loadXML( $xml );
+
+		# Try again if it failed to load or convert
+		if ( !is_object( $tmp ) ) {
+			$xml = file_get_contents( $search );
+			$tmp = new DOMDocument();
+			$tmp->loadXML( $xml );
+		}
+
+		# If it loaded, update or create cache entry
+		if ( is_object( $tmp ) ) {
+			$doc = $tmp;
+			if ( $wgMarketResearchTable ) {
+				$db->delete( $wgMarketResearchTable, array( "mrc_keywords = '$keywords'" ), __FUNCTION__ );
+				$row = array(
+					'mrc_keywords' => $keywords,
+					'mrc_time'     => $ts,
+					'mrc_xml'      => $xml
+				);
+				$db->insert( $wgMarketResearchTable, $row, __FUNCTION__ );
+			}
+		}
+
+	}
+
+	# Render the item if a DOM object has been created
 	if ( is_object( $doc ) ) {
 
 		$jump = Title::makeTitle( NS_SPECIAL, 'MarketResearch' );
@@ -154,7 +182,7 @@ class SpecialMarketResearch extends SpecialPage {
 			$wgOut->addHTML( "<input type=\"hidden\" name=\"partnerid\" value=\"$wgMarketResearchPartner\" />\n" );
 			$wgOut->addHTML( "<input type=\"hidden\" name=\"returnURL\" value=\"$return\" />\n" );
 			$wgOut->addHTML( "</form>\n" );
-		} else $wgOut->addWikiText( 'no valid XML returned' );
+		} else $html = "no valid XML returned or found in cache!<br /><br />The following content was returned:<br /><pre>$xml</pre>";
 	}
 }
 
