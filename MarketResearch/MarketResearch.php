@@ -64,7 +64,7 @@ function wfMarketResearchTag( $input ) {
 
 		# Read current cache entry for this item if one exists
 		# - if this cache item is older than the expiry time, ensure an attempt will be made to renew it
-		if ( $row = $db->selectRow( $wgMarketResearchTable, 'mrc_xml', "mrc_keywords = '$keywords'", __FUNCTION__ ) ) {
+		if ( $row = $db->selectRow( $wgMarketResearchTable, 'mrc_xml,mrc_time', "mrc_keywords = '$keywords'", __FUNCTION__ ) ) {
 			$xml = $row->mrc_xml;
 			$doc = new DOMDocument();
 			$doc->loadXML( $xml );
