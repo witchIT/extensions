@@ -30,7 +30,7 @@ $wgExtensionCredits['other'][] = $wgExtensionCredits['specialpage'][] = array(
 # Process posted contact details
 if ( isset( $_POST['wpFirstName'] ) ) $_POST['wpRealName'] = $_POST['wpFirstName'] . ' ' . $_POST['wpLastName'];
 
-class wgIntegratePerson {
+class IntegratePerson {
 
 	var $JS = '';
 	
