@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'EVENTPIPE_VERSION', '1.1.0, 2009-08-28' );
+define( 'EVENTPIPE_VERSION', '1.1.1, 2009-11-02' );
 
 $wgEventPipePort = '1729';
 $wgEventPipeList = array( 'RevisionInsertComplete', 'UserLoginComplete', 'PrefsPasswordAudit', 'AddNewAccount' );
@@ -40,6 +40,7 @@ function wfEventPipeSend( $hook, $args ) {
 	if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
 		$data = serialize( array(
 			'wgSitename' => $wgSitename,
+			'wgServer'   => $wgServer,
 			'wgScript'   => $wgServer.$wgScript,
 			'args'       => $args,
 			'REQUEST'    => $_REQUEST
