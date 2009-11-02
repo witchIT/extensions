@@ -10,7 +10,7 @@
 if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
 if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
 
-define( 'INTEGRATEPERSON_VERSION', '0.0.2, 2009-11-02' );
+define( 'INTEGRATEPERSON_VERSION', '0.1.0, 2009-11-02' );
 
 $wgAutoConfirmCount = 10^10;
 
@@ -18,7 +18,7 @@ $wgIPDefaultImage = '';
 $wgIPMaxImageSize = 100000;
 $wgIPPersonType   = 'Person';
 
-$wgExtensionFunctions[] = 'wfSetupIntegratePerswon';
+$wgExtensionFunctions[] = 'wfSetupIntegratePerson';
 $wgExtensionCredits['other'][] = $wgExtensionCredits['specialpage'][] = array(
 	'name'        => 'IntegratePerson',
 	'author'      => '[http://www.organicdesign.co.nz/User:Nad User:Nad]',
@@ -37,12 +37,11 @@ class IntegratePerson {
 	function __construct() {
 		global $wgUser, $wgHooks, $wgMessageCache, $wgParser, $awcSearchByPref, $wgGroupPermissions, $wgWhitelistRead, $wgRequest;
 
-		#$wgHooks['AbortNewAccount'][]            = $this;   # Save the extra prefs after posting account-create
-		#$wgHooks['UserCreateForm'][]             = $this;   # Modify the create-account form to add new prefs
+		$wgHooks['AbortNewAccount'][]             = $this;   # Save the extra prefs after posting account-create
+		$wgHooks['UserCreateForm'][]              = $this;   # Modify the create-account form to add new prefs
 		$wgHooks['RenderPreferencesForm'][]       = $this;   # Add the new pref tab
 		$wgHooks['SavePreferences'][]             = $this;   # Save the extra posted data to the user object's options
 		$wgHooks['SpecialPageExecuteAfterPage'][] = $this;   # Modify preferences forms enctype and onsubmit
-		$wgHooks['OutputPageBeforeHTML'][]        = $this;   # Add profile info to user pages
 
 		# Modify login form messages to say email and name compulsory
 #		$wgMessageCache->addMessages(array('prefs-help-email' => '<div class="error">Required</div>'));
@@ -95,7 +94,7 @@ class IntegratePerson {
 	}
 	
 	/**
-	 * Update the user object when the prefs from the form are saved
+	 * Update the Person record when the prefs from the form are saved
 	 */
 	function onSavePreferences( &$form, &$user ) {
 		$this->setOptions( $user );
@@ -103,7 +102,7 @@ class IntegratePerson {
 	}
 	
 	/**
-	 * Update the user object with extra prefs in the account-creation form
+	 * Update the Person record with extra prefs in the account-creation form
 	 */
 	function onAbortNewAccount( &$user, &$error ) {
 		$this->setOptions( $user );
