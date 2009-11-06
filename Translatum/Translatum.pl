@@ -56,7 +56,7 @@ for ( <CSV> ) {
 	for ( @titles ) {
 		print lc $_ . "\n";
 		wikiEdit( $wiki, $_, $text, $comment );
-		$text = "#REDIRECT [[$title]]" if $comment;
+		$text = "#REDIRECT [[$title]]" unless $comment;
 		$comment = '';
 	}
 
