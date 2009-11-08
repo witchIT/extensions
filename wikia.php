@@ -142,9 +142,15 @@ function domainRedirect( $list ) {
 			if ( ereg( $regexp, $d ) ) header( "Location: $wgServer/$title" ) && die;
 }
 
+# Load the messages
+$wgExtensionFunctions[] = 'odLoadMessages';
+function odLoadMessages() {
+#	wfLoadExtensionMessages( 'wikia' );
+}
+
 # Block problem users, bots and requests
-$wgExtensionFunctions[] = 'LogActivity';
-function LogActivity() {
+$wgExtensionFunctions[] = 'odLogActivity';
+function odLogActivity() {
 	global $wgUser, $wgShortName, $wgRequest;
 	$user = $wgUser->getUserPage()->getText();
 	$sesh = ereg( '_session=([0-9a-z]+)', isset( $_SERVER['HTTP_COOKIE'] ) ? $_SERVER['HTTP_COOKIE'] : '', $m ) ? $m[1] : '';
