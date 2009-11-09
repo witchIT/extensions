@@ -145,7 +145,7 @@ function domainRedirect( $list ) {
 # Load the messages
 $wgExtensionFunctions[] = 'odLoadMessages';
 function odLoadMessages() {
-#	wfLoadExtensionMessages( 'wikia' );
+	#wfLoadExtensionMessages( '/var/www/extensions/wikia' );
 }
 
 # Block problem users, bots and requests
