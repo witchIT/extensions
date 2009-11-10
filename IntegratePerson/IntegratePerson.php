@@ -72,7 +72,7 @@ class IntegratePerson {
 		}
 
 		# Account-creation
-		if ( $wgTitle->getPrefixedText() == 'Special:UserLogin' && $wgReuqest->getText( 'type' ) == 'signup' ) {
+		if ( $wgTitle->getPrefixedText() == 'Special:UserLogin' && $wgRequest->getText( 'type' ) == 'signup' ) {
 			$this->jsAccountCreate( $out );
 			$wgHooks['BeforePageDisplay'][] = array( $this, 'modAccountCreate' );
 		}
