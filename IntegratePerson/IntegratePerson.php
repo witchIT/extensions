@@ -116,62 +116,6 @@ class IntegratePerson {
 	}
 
 	/**
-	 * Get an option from the passed user or array (or it can be false)
-	 */
-	function getOption( &$obj, $opt, $default = '' ) {
-		if ( is_object( $obj ) ) return $obj->getOption( $opt );
-		if ( is_array( $obj ) && array_key_exists( $opt, $obj ) ) return $obj[$opt];
-		return $default;
-	}
-
-	/**
-	 * Hack to add onSubmit for validation and enctype for image upload to form tag
-	 */
-	function onSpecialPageExecuteAfterPage( &$special, $par, $func ) {
-		global $wgOut;
-		if ( $special->mName == 'Preferences' ) {
-			$wgOut->mBodytext = str_replace(
-				'<form',
-				'<form onsubmit="return ipValidate(this)" enctype="multipart/form-data"',
-				$wgOut->mBodytext
-			);
-		}
-		return true;
-	}
-	
-	/**
-	 * Add the new prefs to a new tab in the preferences form
-	 */
-	function onRenderPreferencesForm( &$form, &$out ) {
-		$out->addHTML( '<fieldset><legend>' . wfMsg( 'ip-preftab' ) . '</legend>' . wfMsg( 'ip-prefmsg' ) . $this->renderPrefs() . '</fieldset>' );
-		return true;
-	}
-
-	/**
-	 * Add the new prefs to the "create new account" form
-	 */
-	function onUserCreateForm( &$template ) {
-		$template->data['header'] = $this->renderPrefs();
-		return true;
-	}
-	
-	/**
-	 * Update the Person record when the prefs from the form are saved
-	 */
-	function onSavePreferences( &$form, &$user ) {
-		$this->setOptions( $user );
-		return true;
-	}
-	
-	/**
-	 * Update the Person record with extra prefs in the account-creation form
-	 */
-	function onAbortNewAccount( &$user, &$error ) {
-		$this->setOptions( $user );
-		return true;
-	}
-	
-	/**
 	 * Set fields in Person Record from posted form
 	 */
 	function setOptions( &$user ) {
@@ -181,22 +125,6 @@ class IntegratePerson {
 		$wgSpecialRecordAdmin->filter = $posted;
 	}
 	
-	/**
-	 * Return the HTML for the Person preference tab
-	 */
-	function renderPrefs() {
-		global $wgUser, $wgOut, $wgHooks, $wgSpecialRecordAdmin, $wgIPPersonType;
-		$wgOut->addScript( "<script type='text/javascript'>{$this->JS}</script>" );
-		$html = "<div class=ip-prefs><table>" .
-
-		$wgSpecialRecordAdmin->preProcessForm( $wgIPPersonType );
-		$wgSpecialRecordAdmin->examineForm();
-
-		$html .= "</table></div>";
-		$html .= "<script type='text/javascript'>ipAddValidation()</script>";
-		return $html;
-	}
-
 	/**
 	 * Process uploaded image file
 	 */
