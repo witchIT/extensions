@@ -14,7 +14,6 @@ define( 'INTEGRATEPERSON_VERSION', '0.2.0, 2009-11-10' );
 
 $wgAutoConfirmCount = 10^10;
 
-$wgIPPersonalUrls = array();
 $wgIPDefaultImage = '';
 $wgIPMaxImageSize = 100000;
 $wgIPPersonType   = 'Person';
@@ -41,7 +40,7 @@ class IntegratePerson {
 #		$wgMessageCache->addMessages(array('prefs-help-realname' => '<div class="error">Required</div>'));
 
 		$wgHooks['PersonalUrls'][] = $this;
-		$wgHooks['OutputPageBeforeHTML'][] = $this;
+		$wgHooks['BeforePageDisplay'][] = $this;
 
 		# Process an uploaded profile image if one was posted
 		if ( array_key_exists( 'wpProfileImage', $_FILES ) && $_FILES['wpProfileImage']['size'] > 0 )
@@ -52,66 +51,67 @@ class IntegratePerson {
 	}
 
 	/**
-	 * Add items in $wgIPPersonalUrls to personal URL's
+	 * Modify personal URL's
 	 */
-	function onPersonalUrls( &$personal_urls, &$title ) {
-		global $wgIPPersonalUrls;
+	function onPersonalUrls( &$urls, &$title ) {
+		global $wgUser;
+		if ( $person = $wgUser->getRealName() ) {
+			$userpage = array_shift( $urls );
+			$talkpage = array_shift( $urls );
+			$mycat    = str_replace( '$1', $person, '/Category:$1' );
+			$mywork   = str_replace( '$1', $person, '/wiki/index.php?title=Category:Activities&Person=$1' );
+			$urls     = array(
+				'userpage' => $userpage,
+				'talkpage' => $talkpage,
+				'mycat'    => array( 'text' => 'My category', 'href' => $mycat  ),
+				'mywork'   => array( 'text' => 'My worklog',  'href' => $mywork )
+			) + $urls;
+		}
 		return true;
 	}
 
 	/**
 	 * Determine which JS and page modifications should be added
 	 */
-	function onOutputPageBeforeHTML( &$out, &$text ) {
-		global $wgHooks, $wgTitle, $wgReuqest;
+	function onBeforePageDisplay( &$out, $skin = false ) {
+		global $wgHooks, $wgTitle, $wgRequest;
 
 		# Preferences
-		if ( $wgTitle->getPrefixedText() == 'Special:Preferences' ) {
-			$this->jsPreferences( $out );
-			$wgHooks['BeforePageDisplay'][] = array( $this, 'modPreferences' );
-		}
+		if ( $wgTitle->getPrefixedText() == 'Special:Preferences' ) $this->modPreferences( $out );
 
 		# Account-creation
-		if ( $wgTitle->getPrefixedText() == 'Special:UserLogin' && $wgRequest->getText( 'type' ) == 'signup' ) {
-			$this->jsAccountCreate( $out );
-			$wgHooks['BeforePageDisplay'][] = array( $this, 'modAccountCreate' );
-		}
+		if ( $wgTitle->getPrefixedText() == 'Special:UserLogin' && $wgRequest->getText( 'type' ) == 'signup' ) $this->modAccountCreate( $out );
 
+		return true;
 	}
 
-	# Add JS to prefs page
-	function jsPreferences( &$out ) {
-		print "prefs";
+	/**
+	 * Modify the prefs page
+	 */
+	function modPreferences( &$out ) {
+		global $wgJsMimeType;
+
+		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
-			function wikidAdminShowTypeForm() {
-				var type = document.getElementById('wpType').value;
-				var forms = [$forms];
-				for( i in forms ) document.getElementById('form-'+forms[i]).style.display = forms[i] == type ? '' : 'none';
-			}</script>"
-		);
+		</script>" );
+
+		# Modify the form
+
 		return true;
 	}
 
-	# Modify the account-create page before rendering
-	function modPreferences( &$out, $skin = false ) {
-		return true;
-	}
-
-	# Add JS to account-create page
-	function jsAccountCreate( &$out ) {
-		print "create";
+	/**
+	 * Modify the account-create page
+	 */
+	function modAccountCreate( &$out ) {
+		global $wgJsMimeType;
+		
+		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
-			function wikidAdminShowTypeForm() {
-				var type = document.getElementById('wpType').value;
-				var forms = [$forms];
-				for( i in forms ) document.getElementById('form-'+forms[i]).style.display = forms[i] == type ? '' : 'none';
-			}</script>"
-		);
-		return true;
-	}
+		</script>" );
 
-	# Modify the account-create page before rendering
-	function modAccountCreate( &$out, $skin = false ) {
+		# Modify the form
+
 		return true;
 	}
 
