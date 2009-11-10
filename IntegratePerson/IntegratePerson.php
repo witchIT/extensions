@@ -10,10 +10,11 @@
 if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
 if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
 
-define( 'INTEGRATEPERSON_VERSION', '0.1.0, 2009-11-02' );
+define( 'INTEGRATEPERSON_VERSION', '0.2.0, 2009-11-10' );
 
 $wgAutoConfirmCount = 10^10;
 
+$wgIPPersonalUrls = array();
 $wgIPDefaultImage = '';
 $wgIPMaxImageSize = 100000;
 $wgIPPersonType   = 'Person';
@@ -32,25 +33,86 @@ if ( isset( $_POST['wpFirstName'] ) ) $_POST['wpRealName'] = $_POST['wpFirstName
 
 class IntegratePerson {
 
-	var $JS = '';
-	
 	function __construct() {
-		global $wgUser, $wgHooks, $wgMessageCache, $wgParser, $awcSearchByPref, $wgGroupPermissions, $wgWhitelistRead, $wgRequest;
-
-		$wgHooks['AbortNewAccount'][]             = $this;   # Save the extra prefs after posting account-create
-		$wgHooks['UserCreateForm'][]              = $this;   # Modify the create-account form to add new prefs
-		$wgHooks['RenderPreferencesForm'][]       = $this;   # Add the new pref tab
-		$wgHooks['SavePreferences'][]             = $this;   # Save the extra posted data to the user object's options
-		$wgHooks['SpecialPageExecuteAfterPage'][] = $this;   # Modify preferences forms enctype and onsubmit
+		global $wgHooks, $wgMessageCache, $wgParser;
 
 		# Modify login form messages to say email and name compulsory
 #		$wgMessageCache->addMessages(array('prefs-help-email' => '<div class="error">Required</div>'));
 #		$wgMessageCache->addMessages(array('prefs-help-realname' => '<div class="error">Required</div>'));
 
+		$wgHooks['PersonalUrls'][] = $this;
+		$wgHooks['OutputPageBeforeHTML'][] = $this;
+
 		# Process an uploaded profile image if one was posted
 		if ( array_key_exists( 'wpProfileImage', $_FILES ) && $_FILES['wpProfileImage']['size'] > 0 )
 			$this->processUploadedImage( $_FILES['wpProfileImage'] );
 
+
+
+	}
+
+	/**
+	 * Add items in $wgIPPersonalUrls to personal URL's
+	 */
+	function onPersonalUrls( &$personal_urls, &$title ) {
+		global $wgIPPersonalUrls;
+		return true;
+	}
+
+	/**
+	 * Determine which JS and page modifications should be added
+	 */
+	function onOutputPageBeforeHTML( &$out, &$text ) {
+		global $wgHooks, $wgTitle, $wgReuqest;
+
+		# Preferences
+		if ( $wgTitle->getPrefixedText() == 'Special:Preferences' ) {
+			$this->jsPreferences( $out );
+			$wgHooks['BeforePageDisplay'][] = array( $this, 'modPreferences' );
+		}
+
+		# Account-creation
+		if ( $wgTitle->getPrefixedText() == 'Special:UserLogin' && $wgReuqest->getText( 'type' ) == 'signup' ) {
+			$this->jsAccountCreate( $out );
+			$wgHooks['BeforePageDisplay'][] = array( $this, 'modAccountCreate' );
+		}
+
+	}
+
+	# Add JS to prefs page
+	function jsPreferences( &$out ) {
+		print "prefs";
+		$out->addScript( "<script type='$wgJsMimeType'>
+			function wikidAdminShowTypeForm() {
+				var type = document.getElementById('wpType').value;
+				var forms = [$forms];
+				for( i in forms ) document.getElementById('form-'+forms[i]).style.display = forms[i] == type ? '' : 'none';
+			}</script>"
+		);
+		return true;
+	}
+
+	# Modify the account-create page before rendering
+	function modPreferences( &$out, $skin = false ) {
+		return true;
+	}
+
+	# Add JS to account-create page
+	function jsAccountCreate( &$out ) {
+		print "create";
+		$out->addScript( "<script type='$wgJsMimeType'>
+			function wikidAdminShowTypeForm() {
+				var type = document.getElementById('wpType').value;
+				var forms = [$forms];
+				for( i in forms ) document.getElementById('form-'+forms[i]).style.display = forms[i] == type ? '' : 'none';
+			}</script>"
+		);
+		return true;
+	}
+
+	# Modify the account-create page before rendering
+	function modAccountCreate( &$out, $skin = false ) {
+		return true;
 	}
 
 	/**
@@ -134,7 +196,7 @@ class IntegratePerson {
 		$html .= "<script type='text/javascript'>ipAddValidation()</script>";
 		return $html;
 	}
-	
+
 	/**
 	 * Process uploaded image file
 	 */
