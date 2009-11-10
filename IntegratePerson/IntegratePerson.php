@@ -93,9 +93,17 @@ class IntegratePerson {
 
 		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
+			function ipSubmit() {
+				alert('foo');
+			}
 		</script>" );
 
 		# Modify the form
+		$out->mBodytext = str_replace(
+			'<form',
+			'<form onsubmit="return ipSubmit(this)" enctype="multipart/form-data"',
+			$out->mBodytext
+		);
 
 		return true;
 	}
@@ -108,9 +116,17 @@ class IntegratePerson {
 		
 		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
+			function ipSubmit() {
+				alert('foo');
+			}
 		</script>" );
 
 		# Modify the form
+		$out->mBodytext = str_replace(
+			'<form',
+			'<form onsubmit="return ipSubmit(this)" enctype="multipart/form-data"',
+			$out->mBodytext
+		);
 
 		return true;
 	}
