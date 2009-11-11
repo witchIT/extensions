@@ -26,7 +26,7 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
 	global $wgJsMimeType, $wgScriptPath;
 	foreach ( glob( dirname( __FILE__ ) . "/*.js" ) as $file ) {
 		$file = ereg_replace( "^.*/extensions/", "$wgScriptPath/extensions/", $file );
-		$out->addScript( "<script type='$wgJsMimeType'>$file</script>" );
+		$out->addScript( "<script src='$file' type='$wgJsMimeType'></script>" );
 	}
 	return true;
 }
