@@ -9,7 +9,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.1, 2009-08-26');
+define( 'WIKIA_VERSION', '1.0.2, 2009-11-11');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -145,7 +145,8 @@ function domainRedirect( $list ) {
 # Load the messages
 $wgExtensionFunctions[] = 'odLoadMessages';
 function odLoadMessages() {
-	#wfLoadExtensionMessages( '/var/www/extensions/wikia' );
+	global $wgMessageCache;
+	$wgMessageCache->loadMessagesFile( dirname( __FILE__ ) . '/wikia.i18n.php' );
 }
 
 # Block problem users, bots and requests
