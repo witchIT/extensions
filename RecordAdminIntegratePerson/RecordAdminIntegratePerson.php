@@ -94,7 +94,7 @@ class RAIntegratePerson {
 			function ipSubmit() {
 				alert('foo');
 			}
-			function ipOnloadLast() {
+			function ipOnload() {
 				$('#enotifwatchlistpages').attr('checked','yes');
 				$('#enotifusertalkpages').attr('checked','yes');
 				$('#enotifminoredits').attr('checked','');
@@ -112,9 +112,6 @@ class RAIntegratePerson {
 				$('#mw-preferences-form table tr:nth-child(12)').hide();
 				$('#mw-preferences-form table tr:nth-child(15)').hide();
 				$('#mw-preferences-form table tr:nth-child(16)').hide();
-			}
-			function ipOnload() {
-				addOnloadHook(ipOnloadLast);
 			}
 			addOnloadHook(ipOnload);
 		</script>" );
