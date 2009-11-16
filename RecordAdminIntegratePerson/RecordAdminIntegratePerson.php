@@ -10,7 +10,7 @@
 if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
 if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
 
-define( 'RAINTEGRATEPERSON_VERSION', '0.2.2, 2009-11-10' );
+define( 'RAINTEGRATEPERSON_VERSION', '0.2.5, 2009-11-16' );
 
 $wgAutoConfirmCount = 10^10;
 
@@ -19,7 +19,7 @@ $wgIPMaxImageSize = 100000;
 $wgIPPersonType   = 'Person';
 
 $wgExtensionFunctions[] = 'wfSetupRAIntegratePerson';
-$wgExtensionCredits['other'][] = $wgExtensionCredits['specialpage'][] = array(
+$wgExtensionCredits['other'][] = array(
 	'name'        => 'RecordAdminIntegratePerson',
 	'author'      => '[http://www.organicdesign.co.nz/User:Nad User:Nad]',
 	'description' => 'Integrates Person records (see RecordAdmin extension) into user preferences and account creation forms',
@@ -95,31 +95,39 @@ class RAIntegratePerson {
 				alert('foo');
 			}
 			function ipOnload() {
-				$('#enotifwatchlistpages').attr('checked','yes');
-				$('#enotifusertalkpages').attr('checked','yes');
-				$('#enotifminoredits').attr('checked','');
+
+				// Defaults for email options
+				$('#mw-input-enotifwatchlistpages').attr('checked','yes');
+				$('#mw-input-enotifusertalkpages').attr('checked','yes');
+				$('#mw-input-enotifminoredits').attr('checked','');
 				$('#wpEmailFlag').attr('checked','');
-				$('#ccmeonemails').attr('checked','');
-				$('#mw-preferences-form table tr:nth-child(3)').hide();
-				$('#mw-preferences-form table tr:nth-child(4)').hide();
-				$('#mw-preferences-form table tr:nth-child(5)').hide();
-				$('#mw-preferences-form table tr:nth-child(6)').hide();
-				$('#mw-preferences-form table tr:nth-child(7)').hide();
-				$('#mw-preferences-form table tr:nth-child(8)').hide();
-				$('#mw-preferences-form table tr:nth-child(9)').hide();
-				$('#mw-preferences-form table tr:nth-child(10)').hide();
-				$('#mw-preferences-form table tr:nth-child(11)').hide();
-				$('#mw-preferences-form table tr:nth-child(12)').hide();
-				$('#mw-preferences-form table tr:nth-child(15)').hide();
-				$('#mw-preferences-form table tr:nth-child(16)').hide();
+				$('#mw-input-ccmeonemails').attr('checked','');
+
+				$('fieldset#prefsection-0 fieldset:nth-child(6)').hide(); // internationalisation
+				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // signature
+				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // email options
+				
+				$('table#mw-htmlform-info tr:nth-child(6)').hide();       // real name
+				$('table#mw-htmlform-info tr:nth-child(7)').hide();       // real name comment
+				$('table#mw-htmlform-info tr:nth-child(8)').hide();       // gender
+				$('table#mw-htmlform-info tr:nth-child(9)').hide();       // gender comment
+				
 			}
 			addOnloadHook(ipOnload);
 		</script>" );
 
-		# Modify the form
+		# Modify the forms enctype to allow uploaded image
 		$out->mBodytext = str_replace(
 			'<form',
 			'<form onsubmit="return ipSubmit(this)" enctype="multipart/form-data"',
+			$out->mBodytext
+		);
+
+		# Integrate the Person record
+		$form = $this->getForm();
+		$out->mBodytext = preg_replace(
+			"|(<fieldset>\s*<legend>Internationalisation)|s",
+			"$form$1",
 			$out->mBodytext
 		);
 
@@ -138,19 +146,43 @@ class RAIntegratePerson {
 				alert('foo');
 			}
 			function ipOnload() {
-				alert('bar');
+				$('fieldset#login table tr:nth-child(4)').hide(); // email
+				$('fieldset#login table tr:nth-child(5)').hide(); // real name
+				$('fieldset#login table tr:nth-child(7)').hide(); // submit buttons
 			}
 			addOnloadHook(ipOnload);
 		</script>" );
 
-		# Modify the form
+		# Modify the forms enctype to allow uploaded image
 		$out->mBodytext = str_replace(
 			'<form',
 			'<form onsubmit="return ipSubmit(this)" enctype="multipart/form-data"',
 			$out->mBodytext
 		);
 
+		# Integrate the Person record
+		$submit = '<input type="submit" name="wpCreateaccount" id="wpCreateaccount" value="Create account" />
+					<input type="submit" name="wpCreateaccountMail" id="wpCreateaccountMail" value="by e-mail" />';
+
+		$form = $this->getForm();
+		$out->mBodytext = preg_replace(
+			"|(<table.+?</table>)|s",
+			"<fieldset id='login'><legend>Login details</legend>$1</fieldset>$form$submit",
+			$out->mBodytext
+		);
+
 		return true;
+	}
+
+	/**
+	 * Get the HTML for the Person form from RecordAdmin
+	 */
+	function getForm() {
+		global $wgSpecialRecordAdmin;
+		$wgSpecialRecordAdmin->preProcessForm( 'Person' );
+		$form = $wgSpecialRecordAdmin->form ;
+		$form = preg_replace( "|(^.+)<tr.+?Administration.+$|ms", "$1</table></td></tr></table></fieldset>", $form );
+		return $form;
 	}
 
 	/**
