@@ -7,8 +7,16 @@
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
  * @licence GNU General Public Licence 2.0 or later
  */
-if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
-if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
+
+# Check dependency extensions
+if ( !defined( 'MEDIAWIKI' ) )                     die( 'Not an entry point.' );
+if ( !defined( 'RECORDADMIN_VERSION' ) )           die( 'This extension depends on the RecordAdmin extension' );
+if ( !defined( 'JAVASCRIPT_VERSION' ) )            die( 'This extension depends on the JavaScript extension' );
+
+# Ensure running at least MediaWiki version 1.16
+if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
+	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
+
 
 define( 'RAINTEGRATEPERSON_VERSION', '0.2.5, 2009-11-16' );
 
@@ -96,21 +104,23 @@ class RAIntegratePerson {
 			}
 			function ipOnload() {
 
-				// Defaults for email options
+				// Hide fieldsets
+				$('fieldset#prefsection-0 fieldset:nth-child(6)').hide(); // internationalisation
+				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // signature
+				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // email options
+
+				// Defaults for the hidden email options
 				$('#mw-input-enotifwatchlistpages').attr('checked','yes');
 				$('#mw-input-enotifusertalkpages').attr('checked','yes');
 				$('#mw-input-enotifminoredits').attr('checked','');
 				$('#wpEmailFlag').attr('checked','');
 				$('#mw-input-ccmeonemails').attr('checked','');
 
-				$('fieldset#prefsection-0 fieldset:nth-child(6)').hide(); // internationalisation
-				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // signature
-				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // email options
-				
-				$('table#mw-htmlform-info tr:nth-child(6)').hide();       // real name
-				$('table#mw-htmlform-info tr:nth-child(7)').hide();       // real name comment
-				$('table#mw-htmlform-info tr:nth-child(8)').hide();       // gender
-				$('table#mw-htmlform-info tr:nth-child(9)').hide();       // gender comment
+				// Hide items in the Basic Information fieldset
+				$('table#mw-htmlform-info tr:nth-child(6)').hide(); // real name
+				$('table#mw-htmlform-info tr:nth-child(7)').hide(); // real name comment
+				$('table#mw-htmlform-info tr:nth-child(8)').hide(); // gender
+				$('table#mw-htmlform-info tr:nth-child(9)').hide(); // gender comment
 				
 			}
 			addOnloadHook(ipOnload);
@@ -146,6 +156,8 @@ class RAIntegratePerson {
 				alert('foo');
 			}
 			function ipOnload() {
+				
+				// Hide items in the current form
 				$('fieldset#login table tr:nth-child(4)').hide(); // email
 				$('fieldset#login table tr:nth-child(5)').hide(); // real name
 				$('fieldset#login table tr:nth-child(7)').hide(); // submit buttons
@@ -160,11 +172,10 @@ class RAIntegratePerson {
 			$out->mBodytext
 		);
 
-		# Integrate the Person record
-		$submit = '<input type="submit" name="wpCreateaccount" id="wpCreateaccount" value="Create account" />
-					<input type="submit" name="wpCreateaccountMail" id="wpCreateaccountMail" value="by e-mail" />';
-
+		# Integrate the Person record and add new submits at the bottom
 		$form = $this->getForm();
+		$submit = '<input type="submit" name="wpCreateaccount" id="wpCreateaccount" value="Create account" />';
+		$submit .= '<input type="submit" name="wpCreateaccountMail" id="wpCreateaccountMail" value="by e-mail" />';
 		$out->mBodytext = preg_replace(
 			"|(<table.+?</table>)|s",
 			"<fieldset id='login'><legend>Login details</legend>$1</fieldset>$form$submit",
