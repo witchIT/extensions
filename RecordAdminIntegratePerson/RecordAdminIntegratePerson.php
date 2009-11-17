@@ -18,7 +18,7 @@ if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
 
-define( 'RAINTEGRATEPERSON_VERSION', '0.2.5, 2009-11-16' );
+define( 'RAINTEGRATEPERSON_VERSION', '0.2.8, 2009-11-17' );
 
 $wgAutoConfirmCount = 10^10;
 
@@ -189,11 +189,22 @@ class RAIntegratePerson {
 	 * Get the HTML for the Person form from RecordAdmin
 	 */
 	function getForm() {
-		global $wgSpecialRecordAdmin;
+		global $wgSpecialRecordAdmin, $wgUser, $wgTitle;
+
+		# Use RecordAdmin to create, examine and populate the form
+		$wgSpecialRecordAdmin->title = $wgTitle;
 		$wgSpecialRecordAdmin->preProcessForm( 'Person' );
-		$form = $wgSpecialRecordAdmin->form ;
-		$form = preg_replace( "|(^.+)<tr.+?Administration.+$|ms", "$1</table></td></tr></table></fieldset>", $form );
-		return $form;
+		$wgSpecialRecordAdmin->examineForm();
+
+		# If the user has a Person record, populate the form with its data
+		if ( $title = Title::newFromText( $wgUser->getRealName() ) ) {
+			$record = new Article( $title );
+			$record = $record->getContent();
+			$wgSpecialRecordAdmin->populateForm( $record );
+		}
+
+		# Return the form minus the Adminstration section
+		return preg_replace( "|(^.+)<tr.+?Administration.+$|ms", "$1</table></td></tr></table></fieldset>", $wgSpecialRecordAdmin->form );
 	}
 
 	/**
