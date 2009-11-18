@@ -18,7 +18,7 @@ if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
 
-define( 'RAINTEGRATEPERSON_VERSION', '0.2.8, 2009-11-17' );
+define( 'RAINTEGRATEPERSON_VERSION', '0.2.9, 2009-11-17' );
 
 $wgAutoConfirmCount = 10^10;
 
@@ -41,7 +41,7 @@ if ( isset( $_POST['wpFirstName'] ) ) $_POST['wpRealName'] = $_POST['wpFirstName
 class RAIntegratePerson {
 
 	function __construct() {
-		global $wgRequest, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin;
+		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin;
 
 		# Modify login form messages to say email and name compulsory
 #		$wgMessageCache->addMessages(array('prefs-help-email' => '<div class="error">Required</div>'));
@@ -50,6 +50,7 @@ class RAIntegratePerson {
 		$wgHooks['PersonalUrls'][] = $this;
 
 		$title = $wgSpecialRecordAdmin->title = Title::newFromText( $wgRequest->getText( 'title' ) );
+		if ( !is_object( $wgTitle ) ) $wgTitle = $title;
 		if ( is_object( $title ) ) {
 
 			# Hook rendering mods into prefs
