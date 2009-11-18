@@ -49,9 +49,8 @@ class RAIntegratePerson {
 
 		$wgHooks['PersonalUrls'][] = $this;
 
-		$title = Title::newFromText( $wgRequest->getText( 'title' ) );
+		$title = $wgSpecialRecordAdmin->title = Title::newFromText( $wgRequest->getText( 'title' ) );
 		if ( is_object( $title ) ) {
-			$wgSpecialRecordAdmin->title = $title;
 
 			# Hook rendering mods into prefs
 			if ( $title->getPrefixedText() == 'Special:Preferences' ) {
@@ -213,10 +212,6 @@ class RAIntegratePerson {
 	function processForm( ) {
 		global $wgUser, $wgSpecialRecordAdmin, $wgIPPersonType;
 
-		# Get the title if the users Person record and bail if invalid
-		$title = Title::newFromText( $wgUser->getRealName() );
-		if ( !is_object( $title ) ) return false;
-
 		# Update the record values from posted data
 		$this->getForm();
 		$posted = false;
@@ -229,9 +224,14 @@ class RAIntegratePerson {
 				$posted = true;
 			}
 		}
-		
+
 		# If any values were posted update or ceate the record
 		if ( $posted ) {
+
+			# Get the title if the users Person record and bail if invalid
+			$name = $wgSpecialRecordAdmin->values['FirstName'] . ' ' . $wgSpecialRecordAdmin->values['Surname'];
+			$title = Title::newFromText( $name );
+			if ( !is_object( $title ) ) return false;
 
 			# Construct the record brace text
 			$record = '';
