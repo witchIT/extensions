@@ -153,6 +153,7 @@ class RAIntegratePerson {
 		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
 			function ipSubmit() {
+				document.getElementById('wpRealName').value = document.getElementById('FirstName').value + ' ' + document.getElementById('Surname').value
 			}
 			function ipOnload() {
 				
