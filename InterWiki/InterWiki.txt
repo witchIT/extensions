@@ -1,0 +1,33 @@
+{{#security:*|sysop}}{{#filesync:/var/www/extensions/InterWiki/InterWiki.txt}}{{Info|Wikimedia master interwiki table is [[M:Interwiki map|Interwiki map]]}}
+<pre>
+GNU              | http://www.gnu.org/$1
+Commons          | http://commons.wikimedia.org/wiki/$1
+Google,G         | http://www.google.com/search?q=$1
+Meta,M           | http://meta.wikipedia.org/wiki/$1 | trans
+MediaWiki,MW     | http://www.mediawiki.org/wiki/$1
+Doc              | http://svn.wikimedia.org/doc/$1
+OD               | http://www.organicdesign.co.nz/wiki/index.php?title=$1 | trans
+PERL             | http://perldoc.perl.org/functions/$1.html
+PHP              | http://www.php.net/$1
+SQL              | http://www.w3schools.com/sql/sql_$1.asp
+WikiPedia,W      | http://en.wikipedia.org/wiki/$1
+Wiktionary       | http://en.wiktionary.org/wiki/$1
+Wikiquote        | http://en.wikiquote.org/wiki/$1
+WikiBooks        | http://en.wikibooks.org/wiki/$1
+Peerix           | http://www.peerix.org/wiki/index.php?title=$1
+News             | http://en.wikinews.org/wiki/$1
+OO               | http://wiki.services.openoffice.org/wiki/$1
+AWG              | http://awg.energyalternatives.co.nz/wiki/index.php?title=$1
+WikiFS           | http://www.wikifs.org/wiki/index.php?title=$1
+Product          | http://www.productwiki.info/wiki/index.php?title=$1
+Zenovia,Z        | http://www.zenovia.net/wiki/index.php?title=$1
+WikiChat,WC      | http://www.wikichat.org/wiki/index.php?title=$1
+WikiExpert,WX    | http://www.wikiexpert.com/wiki/index.php?title=$1
+SMW              | http://ontoworld.org/wiki/$1
+SF               | http://discoursedb.org/$1
+Nomad            | http://www.nomadit.info/wiki/index.php?title=$1
+LNS              | http://www.literacynorthshore.org/wiki/index.php?title=$1
+DPL              | http://semeb.com/dpldemo/index.php?title=$1
+MWL              | http://www.mediawikilite.org/$1
+P2P              | http://www.p2pfoundation.net/$1
+</pre>
