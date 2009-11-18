@@ -41,14 +41,30 @@ if ( isset( $_POST['wpFirstName'] ) ) $_POST['wpRealName'] = $_POST['wpFirstName
 class RAIntegratePerson {
 
 	function __construct() {
-		global $wgHooks, $wgMessageCache, $wgParser;
+		global $wgRequest, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin;
 
 		# Modify login form messages to say email and name compulsory
 #		$wgMessageCache->addMessages(array('prefs-help-email' => '<div class="error">Required</div>'));
 #		$wgMessageCache->addMessages(array('prefs-help-realname' => '<div class="error">Required</div>'));
 
 		$wgHooks['PersonalUrls'][] = $this;
-		$wgHooks['BeforePageDisplay'][] = $this;
+
+		$title = Title::newFromText( $wgRequest->getText( 'title' ) );
+		if ( is_object( $title ) ) {
+			$wgSpecialRecordAdmin->title = $title;
+
+			# Hook rendering mods into prefs
+			if ( $title->getPrefixedText() == 'Special:Preferences' ) {
+				$wgHooks['BeforePageDisplay'][] = array( $this, 'modPreferences' );
+				$this->processForm();
+			}
+
+			# Hook rendering mods into account-creation
+			if ( $title->getPrefixedText() == 'Special:UserLogin' && $wgRequest->getText( 'type' ) == 'signup' ) {
+				$wgHooks['BeforePageDisplay'][] = array( $this, 'modAccountCreate' );
+				$this->processForm();
+			}
+		}
 
 		# Process an uploaded profile image if one was posted
 		if ( array_key_exists( 'wpIPImage', $_FILES ) && $_FILES['wpIPImage']['size'] > 0 )
@@ -77,30 +93,14 @@ class RAIntegratePerson {
 	}
 
 	/**
-	 * Determine which JS and page modifications should be added
-	 */
-	function onBeforePageDisplay( &$out, $skin = false ) {
-		global $wgHooks, $wgTitle, $wgRequest;
-
-		# Preferences
-		if ( $wgTitle->getPrefixedText() == 'Special:Preferences' ) $this->modPreferences( $out );
-
-		# Account-creation
-		if ( $wgTitle->getPrefixedText() == 'Special:UserLogin' && $wgRequest->getText( 'type' ) == 'signup' ) $this->modAccountCreate( $out );
-
-		return true;
-	}
-
-	/**
 	 * Modify the prefs page
 	 */
-	function modPreferences( &$out ) {
+	function modPreferences( &$out, $skin = false ) {
 		global $wgJsMimeType;
 
 		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
 			function ipSubmit() {
-				alert('foo');
 			}
 			function ipOnload() {
 
@@ -147,13 +147,12 @@ class RAIntegratePerson {
 	/**
 	 * Modify the account-create page
 	 */
-	function modAccountCreate( &$out ) {
+	function modAccountCreate( &$out, $skin = false ) {
 		global $wgJsMimeType;
 		
 		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
 			function ipSubmit() {
-				alert('foo');
 			}
 			function ipOnload() {
 				
@@ -189,15 +188,15 @@ class RAIntegratePerson {
 	 * Get the HTML for the Person form from RecordAdmin
 	 */
 	function getForm() {
-		global $wgSpecialRecordAdmin, $wgUser, $wgTitle;
+		global $wgSpecialRecordAdmin, $wgIPPersonType, $wgUser;
 
 		# Use RecordAdmin to create, examine and populate the form
-		$wgSpecialRecordAdmin->title = $wgTitle;
-		$wgSpecialRecordAdmin->preProcessForm( 'Person' );
+		$wgSpecialRecordAdmin->preProcessForm( $wgIPPersonType );
 		$wgSpecialRecordAdmin->examineForm();
 
 		# If the user has a Person record, populate the form with its data
-		if ( $title = Title::newFromText( $wgUser->getRealName() ) ) {
+		$title = Title::newFromText( $wgUser->getRealName() );
+		if ( is_object( $title ) && $title->exists() ) {
 			$record = new Article( $title );
 			$record = $record->getContent();
 			$wgSpecialRecordAdmin->populateForm( $record );
@@ -208,13 +207,47 @@ class RAIntegratePerson {
 	}
 
 	/**
-	 * Set fields in Person Record from posted form
+	 * Process any posted inputs from the Person record
 	 */
-	function setOptions( &$user ) {
-		global $wgSpecialRecordAdmin;
-		$posted = array();
-		foreach ( $_REQUEST as $k => $v ) if ( preg_match( '|^ra_(\\w+)|', $k, $m ) ) $posted[$m[1]] = is_array( $v ) ? join( "\n", $v ) : $v;
-		$wgSpecialRecordAdmin->filter = $posted;
+	function processForm( ) {
+		global $wgUser, $wgSpecialRecordAdmin, $wgIPPersonType;
+
+		# Get the title if the users Person record and bail if invalid
+		$title = Title::newFromText( $wgUser->getRealName() );
+		if ( !is_object( $title ) ) return false;
+
+		# Update the record values from posted data
+		$this->getForm();
+		$posted = false;
+		foreach ( $_REQUEST as $k => $v ) if ( preg_match( '|^ra_(\\w+)|', $k, $m ) ) {
+			$k = $m[1];
+			if ( isset( $wgSpecialRecordAdmin->types[$k] ) ) {
+				if ( is_array( $v ) ) $v = join( "\n", $v );
+				elseif ( $wgSpecialRecordAdmin->types[$k] == 'bool' ) $v = 'yes';
+				$wgSpecialRecordAdmin->values[$k] = $v;
+				$posted = true;
+			}
+		}
+		
+		# If any values were posted update or ceate the record
+		if ( $posted ) {
+
+			# Construct the record brace text
+			$record = '';
+			foreach ( $wgSpecialRecordAdmin->values as $k => $v ) $record .= "| $k = $v\n";
+			$record = "{{" . "$wgIPPersonType\n$record}}";
+
+			# Create or update the article
+			$page = $_REQUEST['title'];
+			$article = new Article( $title );
+			if ( $title->exists() ) {
+				$text = $article->getContent();
+				foreach ( $wgSpecialRecordAdmin->examineBraces( $text ) as $brace ) if ( $brace['NAME'] == $wgIPPersonType ) $braces = $brace;
+				$text = substr_replace( $text, $record, $braces['OFFSET'], $braces['LENGTH'] );
+				$success = $article->doEdit( $text, "Record updated via $page", EDIT_UPDATE );
+			} else $success = $article->doEdit( $record, "Record created via $page", EDIT_NEW );
+
+		}
 	}
 	
 	/**
