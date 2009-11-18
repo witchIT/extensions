@@ -1,5 +1,5 @@
 <?php
-# Extension:InterWiki
+# Extension:InterWiki{{php}}{{Category:Extensions|InterWiki}}
 # - See http://www.mediawiki.org/wiki/Extension:InterWiki for installation and usage details
 # - Licenced under LGPL (http://www.gnu.org/copyleft/lesser.html)
 # - Author: http://www.organicdesign.co.nz/nad
@@ -7,7 +7,7 @@
  
 if (!defined('MEDIAWIKI')) die('Not an entry point.');
  
-define('INTERWIKI_VERSION','0.0.3, 2007-11-09');
+define('INTERWIKI_VERSION','1.0.0, 2008-09-09');
 
 $wgInterWikiFile        = 'InterWiki.txt';
 $wgInterWikiFile        = dirname(__FILE__)."/$wgInterWikiFile";
@@ -33,12 +33,14 @@ function wfInterWikiSetup() {
 	if ($result instanceof ResultWrapper) $result = $result->result;
 	while ($row = $db->fetchRow($result)) $iw[strtolower($row[0])] = array($row[1],$row[2],$row[3]);
 	$db->freeResult($result);
+
 	
 	# Read InterWiki file into an array of (prefix,url,local,trans)
 	# - local is set automatically if $wgServer matches the URL
 	$iwf = array() ;
-	foreach (file($wgInterWikiFile) as $line) if (preg_match("/^\\s*(.+?)\\s*\\|\\s*(http.+?)\\s*(\\|(.+?)\\s*)?$/",$line,$matches)) {
-		list(,$wikis,$url,,$flags) = $matches;
+	foreach (file($wgInterWikiFile) as $line) if (preg_match("/^\\s*(.+?)\\s*\\|\\s*(http.+?)\\s*(\\|\\s*(.+?)\\s*)?$/",$line,$matches)) {
+		list(,$wikis,$url) = $matches;
+		$flags = isset($matches[4]) ? $matches[4] : '';
 		$wikis = preg_split("/\\s*,\\s*/",strtolower($wikis));
 		$flags = preg_split("/\\s*,\\s*/",strtolower($flags));
 		$local = (in_array('local',$flags) || (stripos($url,$wgServer) !== false)) ? 1 : 0;
@@ -63,4 +65,3 @@ function wfInterWikiSetup() {
 	foreach ($upd as $w => $i) $db->query("UPDATE $tbl SET iw_url='$i[0]',iw_local=$i[1],iw_trans=$i[2] WHERE iw_prefix='$w'");
 	foreach ($del as $w)       $db->query("DELETE FROM $tbl WHERE iw_prefix = '$w'");
 	}
-
