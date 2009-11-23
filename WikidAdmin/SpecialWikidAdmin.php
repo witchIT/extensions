@@ -11,7 +11,7 @@
 
 if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'WIKIDADMIN_VERSION', '1.1.1, 2009-09-14' );
+define( 'WIKIDADMIN_VERSION', '1.1.2, 2009-11-23' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -57,7 +57,7 @@ class SpecialWikidAdmin extends SpecialPage {
 			$type = $wgRequest->getText( 'wpType' );
 			$start = true;
 			$args  = array();
-			wfRunHooks( "WikidAdminTypeFormProcess_$type", array( &$this, &$args, &$start ) );
+			wfRunHooks( "WikidAdminTypeFormProcess_$type", array( &$args, &$start ) );
 			if ( $start ) $this->startJob( $type, $args );
 		}
 
@@ -87,7 +87,7 @@ class SpecialWikidAdmin extends SpecialPage {
 				$hook = "WikidAdminTypeFormRender_$type";
 				if ( isset( $wgHooks[$hook] ) ) {
 					$form = '';
-					wfRunHooks( $hook, array( &$this, &$form ) );
+					wfRunHooks( $hook, array( &$form ) );
 					$html .= "<div id=\"form-$type\" style=\"display:none\" >$form</div>";
 					$forms[] = "'$type'";
 				}
