@@ -46,8 +46,7 @@ class OrganicDesignTemplate extends QuickTemplate {
 		global $wgRequest, $wgVersion;
 		$this->skin = $skin = $this->data['skin'];
 		$action = $wgRequest->getText( 'action' );
-		$css = $this->html( 'csslinks' );
-		if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) >= 0 ) $css = str_replace( 'main.css', 'main116.css', $css );
+		if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) >= 0 ) $css = str_replace( 'main.css', 'main116.css', $this->data['csslinks'] );
 
 		// Suppress warnings to prevent notices about missing indexes in $this->data
 		wfSuppressWarnings();
@@ -60,7 +59,7 @@ class OrganicDesignTemplate extends QuickTemplate {
 		<meta http-equiv="Content-Type" content="<?php $this->text('mimetype') ?>; charset=<?php $this->text('charset') ?>" />
 		<?php $this->html('headlinks') ?>
 		<title><?php $this->text('pagetitle') ?></title>
-		<?php $css ?>
+		<?php print $css ?>
 
 		<!--[if lt IE 7]><script type="<?php $this->text('jsmimetype') ?>" src="<?php $this->text('stylepath') ?>/common/IEFixes.js?<?php echo $GLOBALS['wgStyleVersion'] ?>"></script>
 		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
@@ -90,9 +89,9 @@ class OrganicDesignTemplate extends QuickTemplate {
 <body<?php if($this->data['body_ondblclick']) { ?> ondblclick="<?php $this->text('body_ondblclick') ?>"<?php } ?>
 <?php if($this->data['body_onload']) { ?> onload="<?php $this->text('body_onload') ?>"<?php } ?>
  class="mediawiki <?php $this->text('dir') ?> <?php $this->text('pageclass') ?> <?php $this->text('skinnameclass') ?>">
-	<table cellpadding="0" cellspacing="0" width="100%"><tr><td align="center">
+	<table class="pageWrapper" cellpadding="0" cellspacing="0" width="100%"><tr><td align="center">
 	<table id="globalWrapper" cellpadding="0" cellspacing="0"><tr><td>
-	<table id="pageWrapper" cellpadding="0" cellspacing="0" width="100%"><tr><td id="column-one"><div id="c1-div">
+	<table class="pageWrapper" cellpadding="0" cellspacing="0" width="100%"><tr><td id="column-one"><div id="c1-div">
 	<script type="<?php $this->text('jsmimetype') ?>"> if (window.isMSIE55) fixalpha(); </script>
 
 	<div class="portlet" id="p-personal">

@@ -67,7 +67,7 @@ table {
 	color: black;
 	/* we don't want the bottom borders of <h2>s to be visible through
 	   floated tables */
-	background-color: white;
+	/* background-color: white; */
 }
 fieldset table, table.pageWrapper {
 	background: none;
