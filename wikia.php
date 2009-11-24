@@ -71,8 +71,8 @@ $wgGroupPermissions['sysop']['upload_by_url'] = true;
 
 # Allow fallback to OD images
 $wgUseSharedUploads       = true;
-$wgSharedUploadDirectory  = '/var/www/wikis/files';
-$wgSharedUploadPath       = 'http://localhost/files';
+$wgSharedUploadDirectory  = '/var/www/wikis/od/files';
+$wgSharedUploadPath       = 'http://www.organicdesign.co.nz/files';
 
 # Global wikia configuration
 $settings                 = '/var/www/wikis';
@@ -113,7 +113,7 @@ if ( $wgSiteDown && !$wgCommandLineMode ) {
 	while( @ob_end_clean() );
 	$msg = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>Down for maintenance</title></head>
 	<body bgcolor="white"><table width="100%"><tr><td align="center">
-	<img border="0" src="http://www.localhost/files/9/9c/Cone.png" style="padding-top:100px"/><br>
+	<img border="0" src="http://www.organicdesign.co.nz/files/9/9c/Cone.png" style="padding-top:100px"/><br>
 	<div style="font-family:sans;font-weight:bold;color:#89a;font-size:16pt;padding-top:25px">
 	' . $wgSitename . ' is temporarily down for maintenance,<br><br><small>please try again soon.</small>
 	</div></td></tr></table></body></html>';
@@ -129,7 +129,7 @@ if ( $wgEmergencyContact === false ) $wgEmergencyContact = $wgPasswordSender = '
 $wgNoReplyAddress = "";
 
 # Include a special page for listing current wikia and their domains
-if ( ereg( 'localhost', $domain ) ) include( 'extensions/SpecialWikiaInfo.php' );
+if ( ereg( 'organicdesign.co.nz', $domain ) ) include( 'extensions/SpecialWikiaInfo.php' );
 
 # Map naked URL to different articles depending on domain
 function domainRedirect( $list ) {
