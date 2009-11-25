@@ -18,13 +18,14 @@ if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
 
-define( 'RAINTEGRATEPERSON_VERSION', '0.2.9, 2009-11-17' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.0.0, 2009-11-25' );
 
-$wgAutoConfirmCount = 10^10;
-
-$wgIPDefaultImage = '';
-$wgIPMaxImageSize = 100000;
-$wgIPPersonType   = 'Person';
+$wgAutoConfirmCount  = 10^10;
+$wgIPDefaultImage    = '';
+$wgIPMaxImageSize    = 100000;
+$wgIPPersonType      = 'Person';
+$wgIPFixUserLinks    = false;
+$wgIPAddPersonalUrls = true;
 
 $wgExtensionFunctions[] = 'wfSetupRAIntegratePerson';
 $wgExtensionCredits['other'][] = array(
@@ -41,13 +42,14 @@ if ( isset( $_POST['wpFirstName'] ) ) $_POST['wpRealName'] = $_POST['wpFirstName
 class RAIntegratePerson {
 
 	function __construct() {
-		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin;
+		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
 
 		# Modify login form messages to say email and name compulsory
 #		$wgMessageCache->addMessages(array('prefs-help-email' => '<div class="error">Required</div>'));
 #		$wgMessageCache->addMessages(array('prefs-help-realname' => '<div class="error">Required</div>'));
 
-		$wgHooks['PersonalUrls'][] = $this;
+		if ( $wgIPAddPersonalUrls ) $wgHooks['PersonalUrls'][] = array( $this, 'addPersonalUrls' );
+		if ( $wgIPFixUserLinks )    $wgHooks['BeforePageDisplay'][] = array( $this, 'fixUserLinks');
 
 		$title = $wgSpecialRecordAdmin->title = Title::newFromText( $wgRequest->getText( 'title' ) );
 		if ( !is_object( $wgTitle ) ) $wgTitle = $title;
@@ -73,9 +75,9 @@ class RAIntegratePerson {
 	}
 
 	/**
-	 * Modify personal URL's
+	 * Add 'My Worklog' and 'My category' to personal URL's
 	 */
-	function onPersonalUrls( &$urls, &$title ) {
+	function addPersonalUrls( &$urls, &$title ) {
 		global $wgUser;
 		if ( $person = $wgUser->getRealName() ) {
 			$userpage = array_shift( $urls );
@@ -90,6 +92,33 @@ class RAIntegratePerson {
 			) + $urls;
 		}
 		return true;
+	}
+
+	/**
+	 * Change links to user page to link to the Person record instead
+	 * (still in testing)
+	 */
+	function fixUserLinks( &$out, $skin = false ) {
+		$out->mBodytext = preg_replace_callback(
+			'%(<a [^<>]*?href=[\'"][^"\']+?)(User|User.talk):([^"\']+?)([#/&?][^"\']*)?([\'"][^<>]*>)([^<>]+)</a>%',
+			array( $this, 'fixUserLinksCallback' ),
+			$out->mBodytext
+		);
+		return true;
+	}
+
+	function fixUserLinksCallback( $m ) {
+		$link   = $m[0];
+		$ns     = $m[2] == 'User' ? '' : 'Talk:';
+		$name   = $m[3];
+		$qs     = $m[4];
+		$anchor = $m[6];
+		$user   = User::newFromName( $name );
+		if ( is_object( $user ) && $user->idFromName( $name ) && $real = $user->getRealName() ) {
+			if ( $anchor == $name ) $anchor = $real;
+			$link = "$m[1]$ns$real$m[3]$anchor</a>";
+		}
+		return $link;
 	}
 
 	/**

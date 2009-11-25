@@ -11,7 +11,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  
-define( 'RECORDADMINCREATEFORM_VERSION', '1.0.1, 2009-11-25' );
+define( 'RECORDADMINCREATEFORM_VERSION', '1.0.2, 2009-11-25' );
  
 $wgExtensionFunctions[] = 'efSetupRecordAdminCreateForm';
 
@@ -37,22 +37,16 @@ function efRecordAdminCreateForm (&$out) {
 	$res = $dbr->select( $cl, 'cl_from', "cl_to = $cat", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 	while ( $row = $dbr->fetchRow( $res ) ) $options .= '<option>' . Title::newFromID( $row[0] )->getText() . '</option>';
 
-	$out->mBodytext .= "<script type='text/javascript'>
-		function RACreateNewRecord(form) {
-			var ranewurl = '$wgServerName/wiki/index.php?title=Special:RecordAdmin&wpTitle=';
-			ranewurl += document.getElementById('wpTitle').value;
-			ranewurl += '&wpType=';
-			ranewurl += document.getElementById('wpType').value;
-			window.open(ranewurl);
-		}
-		</script>
-		<div class='RACreateForm'>
-			<form onsubmit='return RACreateNewRecord(this)'>Title:&nbsp;&nbsp;
-				<input id='wpTitle' name='wpTitle' />&nbsp;&nbsp;&nbsp;&nbsp;
-				<select id='wpType' name='wpType'>$options</select>&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type='submit' value='Create Record' />
-			</form>
-		</div>";
+	# Post the form to Special:RecordAdmin
+	$action = Title::makeTitle( NS_SPECIAL, 'RecordAdmin' )->getLocalUrl();
+
+	# Add a form to the page
+	$out->mBodytext .= "
+		<form id='RACreateForm' method='POST' action='$action'>
+			Create a new <select name='wpType'>$options</select>
+			called <input name='wpTitle' />
+			<input type='submit' value='Create' />
+		</form>";
 
 	return true;
 }
