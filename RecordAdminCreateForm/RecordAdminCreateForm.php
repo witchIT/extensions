@@ -1,8 +1,7 @@
 <?php
 /**
- * RecordAdminCreateForm extension - An extension to enable the creation of any RA record from any page. Made with [http://www.organicdesign.co.nz/Template:Extension Template:Extension].
- *{{php}}{{Category:Extensions|RecordAdminCreateForm}}{{Category:Jack}}
- * See http://www.mediawiki.org/wiki/Extension:RecordAdminCreateForm for installation and usage details
+ * RecordAdminCreateForm extension - An extension to enable the creation of any RA record from any page.
+ * See http://www.organicdesign.co.nz/Extension:RecordAdminCreateForm for installation and usage details
  *
  * @package MediaWiki
  * @subpackage Extensions
@@ -10,11 +9,11 @@
  * @copyright © 2008 [http://www.organicdesign.co.nz/wiki/User:Jack User:Jack]
  * @licence GNU General Public Licence 2.0 or later
  */
-if (!defined('MEDIAWIKI')) die('Not an entry point.');
+if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  
-define('RECORDADMINCREATEFORM_VERSION', '1.0.0, 2009-11-11');
+define( 'RECORDADMINCREATEFORM_VERSION', '1.0.1, 2009-11-25' );
  
-$wgExtensionFunctions[]        = 'efSetupRecordAdminCreateForm';
+$wgExtensionFunctions[] = 'efSetupRecordAdminCreateForm';
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'RecordAdminCreateForm',
@@ -23,13 +22,21 @@ $wgExtensionCredits['parserhook'][] = array(
 	'url'         => 'http://www.organicdesign.co.nz/Extension:RecordAdminCreateForm',
 	'version'     => RECORDADMINCREATEFORM_VERSION
 	);
- 
+
 /**
  * Function called from the hook BeforePageDisplay, creates a form which links to a new RA form page with title and type arguments in the url.
  */
-
 function efRecordAdminCreateForm (&$out) {
-	
+	global $wgRecordAdminCategory;
+
+	# Make options list from items in records cat
+	$options = '';
+	$dbr = &wfGetDB(DB_SLAVE);
+	$cl  = $dbr->tableName( 'categorylinks' );
+	$cat = $dbr->addQuotes( $wgRecordAdminCategory );
+	$res = $dbr->select( $cl, 'cl_from', "cl_to = $cat", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
+	while ( $row = $dbr->fetchRow( $res ) ) $options .= '<option>' . Title::newFromID( $row[0] )->getText() . '</option>';
+
 	$out->mBodytext .= "<script type='text/javascript'>
 		function RACreateNewRecord(form) {
 			var ranewurl = '$wgServerName/wiki/index.php?title=Special:RecordAdmin&wpTitle=';
@@ -39,19 +46,10 @@ function efRecordAdminCreateForm (&$out) {
 			window.open(ranewurl);
 		}
 		</script>
-		<div class = 'RACreateForm'>
+		<div class='RACreateForm'>
 			<form onsubmit='return RACreateNewRecord(this)'>Title:&nbsp;&nbsp;
 				<input id='wpTitle' name='wpTitle' />&nbsp;&nbsp;&nbsp;&nbsp;
-					<select id='wpType' name='wpType'>
-						<option>Activity</option>
-						<option>Department</option>
-						<option>Issue</option>
-						<option>Organisation</option>
-						<option>Person</option>
-						<option>Project</option>
-						<option>Role</option>
-						<option>SOP</option>
-					</select>&nbsp;&nbsp;&nbsp;&nbsp;
+				<select id='wpType' name='wpType'>$options</select>&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type='submit' value='Create Record' />
 			</form>
 		</div>";
@@ -62,7 +60,6 @@ function efRecordAdminCreateForm (&$out) {
 /**
  * Setup function
  */
- 
 function efSetupRecordAdminCreateForm() {
 	global $wgHooks;
 	$wgHooks['BeforePageDisplay'][] = 'efRecordAdminCreateForm';
