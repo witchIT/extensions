@@ -1864,3 +1864,61 @@ span.searchmatch {
 	top: 197px;
 	right: 64px;
 }
+
+
+/**
+ * Recent changes
+ */
+
+table.changes {
+	border:none;
+	width:100%
+}
+
+table.changes th {
+	background: #dfdfdf;
+	color: #4E507F;
+	text-align: center;
+	white-space: nowrap;
+}
+
+table.changes tr {
+	margin:0;
+	padding:0;
+}
+	
+table.changes td {
+	margin:0;
+	padding: 1px 4px;
+	vertical-align: top;
+}
+
+table.changes td.heading {
+	font-size: 110%;
+	font-weight:bold;
+	padding-top:10px;
+}
+
+table.changes td.comment {
+	width:100%;
+}
+
+table.changes td.talk,
+table.changes td.diff {
+	font-size: 90%;
+}
+
+table.changes td.user,
+table.changes td.talk,
+table.changes td.diff,
+table.changes td.info {
+	white-space: nowrap;
+}
+
+tr.mw-line-odd {
+	background: #fff;
+}
+
+tr.mw-line-even {
+	background: #eee;
+}
