@@ -41,7 +41,7 @@ function wfEventPipeSend( $hook, $args ) {
 		$data = serialize( array(
 			'wgSitename' => $wgSitename,
 			'wgServer'   => $wgServer,
-			'wgScript'   => $wgServer.$wgScript,
+			'wgScript'   => $wgServer . $wgScript,
 			'args'       => $args,
 			'REQUEST'    => $_REQUEST
 		) );
