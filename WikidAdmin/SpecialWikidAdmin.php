@@ -11,7 +11,7 @@
 if ( !defined('MEDIAWIKI' ) )            die( 'Not an entry point.' );
 if ( !defined( 'EVENTPIPE_VERSION' ) ) die( 'This extension depends on the EventPipe extension' );
 
-define( 'WIKIDADMIN_VERSION', '1.1.3, 2009-11-26' );
+define( 'WIKIDADMIN_VERSION', '1.1.4, 2009-11-26' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -123,47 +123,22 @@ class SpecialWikidAdmin extends SpecialPage {
 	 * Send a start job request to the local peer
 	 */
 	function startJob( $type, &$args ) {
-		global $wgEventPipePort, $wgSitename, $wgServer, $wgScript;
-		if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
-			$args['type']       = $type;
-			$args['wgSitename'] = $wgSitename;
-			$args['wgScript']   = $wgServer . $wgScript;
-			$data = serialize( $args );
-			fputs( $handle, "GET StartJob?$data HTTP/1.0\n\n\x00" );
-			fclose( $handle ); 
-		}
+		$args['type'] = $type;
+		wfEventPipeSend( 'StartJob', $args );
 	}
 
 	/**
 	 * Send a stop job request to the local peer
 	 */
 	function stopJob( $id ) {
-		global $wgEventPipePort, $wgSitename, $wgServer, $wgScript;
-		if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
-			$data = serialize( array(
-				'id'         => $id,
-				'wgSitename' => $wgSitename,
-				'wgScript'   => $wgServer . $wgScript
-			) );
-			fputs( $handle, "GET StopJob?$data HTTP/1.0\n\n\x00" );
-			fclose( $handle ); 
-		}
+		wfEventPipeSend( 'StopJob', $id );
 	}
 
 	/**
 	 * Send a pause job request to the local peer
 	 */
 	function pauseJob( $id ) {
-		global $wgEventPipePort, $wgSitename, $wgServer, $wgScript;
-		if ( $handle = fsockopen( '127.0.0.1', $wgEventPipePort ) ) {
-			$data = serialize( array(
-				'id'         => $id,
-				'wgSitename' => $wgSitename,
-				'wgScript'   => $wgServer . $wgScript
-			) );
-			fputs( $handle, "GET PauseJobToggle?$data HTTP/1.0\n\n\x00" );
-			fclose( $handle ); 
-		}
+		wfEventPipeSend( 'PauseJobToggle', $id );
 	}
 
 }
