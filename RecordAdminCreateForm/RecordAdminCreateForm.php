@@ -9,10 +9,11 @@
  * @copyright © 2008 [http://www.organicdesign.co.nz/wiki/User:Jack User:Jack]
  * @licence GNU General Public Licence 2.0 or later
  */
-if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
- 
-define( 'RECORDADMINCREATEFORM_VERSION', '1.0.2, 2009-11-25' );
- 
+if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
+if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
+
+define( 'RECORDADMINCREATEFORM_VERSION', '1.0.3, 2009-11-26' );
+
 $wgExtensionFunctions[] = 'efSetupRecordAdminCreateForm';
 
 $wgExtensionCredits['parserhook'][] = array(
@@ -21,7 +22,7 @@ $wgExtensionCredits['parserhook'][] = array(
 	'description' => 'An extension to enable the creation of any RA record from any page. Made with [http://www.organicdesign.co.nz/Template:Extension Template:Extension].',
 	'url'         => 'http://www.organicdesign.co.nz/Extension:RecordAdminCreateForm',
 	'version'     => RECORDADMINCREATEFORM_VERSION
-	);
+);
 
 /**
  * Function called from the hook BeforePageDisplay, creates a form which links to a new RA form page with title and type arguments in the url.
