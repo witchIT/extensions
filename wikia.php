@@ -9,7 +9,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.2, 2009-11-11');
+define( 'WIKIA_VERSION', '1.0.3, 2009-11-29');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -68,6 +68,9 @@ $wgFileExtensions         = array(
 	'avi', 'divx', 'mpeg', 'mpg', 'ogv', 'ogm', 'mp3', 'mp4', 'flv'
 );
 $wgGroupPermissions['sysop']['upload_by_url'] = true;
+
+# Messages
+$wgExtensionMessagesFiles['OD'] = dirname( __FILE__ ) . '/wikia.i18n.php';
 
 # Allow fallback to OD images
 $wgUseSharedUploads       = true;
@@ -140,13 +143,6 @@ function domainRedirect( $list ) {
 	if ( empty( $t ) || $t == 'Main_Page' )
 		foreach ( $list as $regexp => $title )
 			if ( ereg( $regexp, $d ) ) header( "Location: $wgServer/$title" ) && die;
-}
-
-# Load the messages
-$wgExtensionFunctions[] = 'odLoadMessages';
-function odLoadMessages() {
-	global $wgMessageCache;
-	$wgMessageCache->loadMessagesFile( dirname( __FILE__ ) . '/wikia.i18n.php' );
 }
 
 # Block problem users, bots and requests
