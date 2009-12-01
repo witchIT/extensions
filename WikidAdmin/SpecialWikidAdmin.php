@@ -11,7 +11,7 @@
 if ( !defined('MEDIAWIKI' ) )            die( 'Not an entry point.' );
 if ( !defined( 'EVENTPIPE_VERSION' ) ) die( 'This extension depends on the EventPipe extension' );
 
-define( 'WIKIDADMIN_VERSION', '1.1.4, 2009-11-26' );
+define( 'WIKIDADMIN_VERSION', '1.1.5, 2009-12-01' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -77,7 +77,7 @@ class SpecialWikidAdmin extends SpecialPage {
 			$url = Title::newFromText( 'WikidAdmin', NS_SPECIAL )->getLocalUrl();
 			$html = "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">";
 			$html .= "<table><tr valign=\"top\">\n";
-			$html .= '<td>Type: <select name="wpType" id="wpType" onchange="wikidAdminShowTypeForm()" >';
+			$html .= '<td>Type: <select name="wpType" id="wpType" onchange="wikidAdminShowTypeForm()" ><option />';
 			foreach( $wgWikidTypes as $type ) $html .= "<option>$type</option>";
 			$html .= "</select></td><td>";
 
