@@ -2,14 +2,13 @@
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
-# Read the DB access info from wikid.conf
+# Read the DB access and bot name info from wikid.conf
 foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
-	if ( preg_match( '|^\s*\$(wgDB.+?)\s*=\s*[\'"](.+?)["\']|m', $line, $m ) )
-		$$m[1] = $m[2];
+	if ( preg_match( '|^\s*\$(wgDB.+?)\s*=\s*[\'"](.+?)["\']|m', $line, $m ) ) $$m[1] = $m[2];
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.3, 2009-11-29');
+define( 'WIKIA_VERSION', '1.0.4, 2009-12-02');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -143,6 +142,18 @@ function domainRedirect( $list ) {
 	if ( empty( $t ) || $t == 'Main_Page' )
 		foreach ( $list as $regexp => $title )
 			if ( ereg( $regexp, $d ) ) header( "Location: $wgServer/$title" ) && die;
+}
+
+# Automatically log the server user in
+$wgHooks['UserLoadFromSession'][] = 'odWikidAccess';
+$wgWikidUserId = 1;
+function odWikidAccess( &$user, &$result ) {
+	global $wgWikidUserId;
+	if ( $wgWikidUserId && $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ) {
+		$user->setId( $wgWikidUserId );
+		$result = false;
+	}
+	return true;
 }
 
 # Block problem users, bots and requests
