@@ -3,12 +3,14 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Read the DB access and bot name info from wikid.conf
+$wgWikidAddr = '127.0.0.1';
 foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
+	if ( preg_match( '|^\s*\$addr\s*=\s*[\'"](.+?)["\']|m', $line, $m ) ) $wgWikidAddr = $m[1];
 	if ( preg_match( '|^\s*\$(wgDB.+?)\s*=\s*[\'"](.+?)["\']|m', $line, $m ) ) $$m[1] = $m[2];
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.4, 2009-12-02');
+define( 'WIKIA_VERSION', '1.0.5, 2009-12-02');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -148,8 +150,8 @@ function domainRedirect( $list ) {
 $wgHooks['UserLoadFromSession'][] = 'odWikidAccess';
 $wgWikidUserId = 1;
 function odWikidAccess( &$user, &$result ) {
-	global $wgWikidUserId;
-	if ( $wgWikidUserId && $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ) {
+	global $wgWikidUserId, $wgWikidAddr;
+	if ( $wgWikidUserId && $_SERVER['REMOTE_ADDR'] == $wgWikidAddr ) {
 		$user->setId( $wgWikidUserId );
 		$result = false;
 	}
