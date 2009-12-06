@@ -18,7 +18,7 @@ if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.0.0, 2009-11-25' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.0.1, 2009-12-07' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -130,6 +130,8 @@ class RAIntegratePerson {
 		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
 			function ipSubmit() {
+				document.getElementById('mw-input-realname').value = document.getElementById('FirstName').value + ' ' + document.getElementById('Surname').value
+				document.getElementById('mw-input-emailaddress').value = document.getElementById('Email').value
 			}
 			function ipOnload() {
 
@@ -183,6 +185,7 @@ class RAIntegratePerson {
 		$out->addScript( "<script type='$wgJsMimeType'>
 			function ipSubmit() {
 				document.getElementById('wpRealName').value = document.getElementById('FirstName').value + ' ' + document.getElementById('Surname').value
+				document.getElementById('wpEmail').value = document.getElementById('Email').value
 			}
 			function ipOnload() {
 				
