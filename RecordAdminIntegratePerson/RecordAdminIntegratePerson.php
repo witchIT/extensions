@@ -18,7 +18,7 @@ if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.0.1, 2009-12-07' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.0.2, 2009-12-07' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -236,7 +236,7 @@ class RAIntegratePerson {
 		}
 
 		# Return the form minus the Adminstration section
-		return preg_replace( "|(^.+)<tr.+?Administration.+$|ms", "$1</table></td></tr></table></fieldset>", $wgSpecialRecordAdmin->form );
+		return preg_replace( "|(^.+)<fieldset.+?Administration.+$|ms", "$1", $wgSpecialRecordAdmin->form );
 	}
 
 	/**
