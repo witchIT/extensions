@@ -12,7 +12,7 @@
  */
 if (!defined('MEDIAWIKI')) die('Not an entry point.');
  
-define('EXTRAMAGIC_VERSION', '2.0.3, 2009-07-20');
+define('EXTRAMAGIC_VERSION', '2.0.4, 2009-12-07');
  
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -23,7 +23,7 @@ $wgExtensionCredits['parserhook'][] = array(
 );
  
  
-$wgCustomVariables = array( 'CURRENTUSER', 'CURRENTUSERREALNAME', 'CURRENTLANG', 'CURRENTSKIN', 'IPADDRESS', 'DOMAIN', 'NUMBERINGOFF', 'GUID' );
+$wgCustomVariables = array( 'CURRENTUSER', 'CURRENTPERSON', 'CURRENTLANG', 'CURRENTSKIN', 'IPADDRESS', 'DOMAIN', 'NUMBERINGOFF', 'GUID' );
  
 $wgExtensionFunctions[]                    = 'efSetupExtraMagic';
 $wgHooks['MagicWordMagicWords'][]          = 'efAddCustomVariable';
@@ -90,7 +90,7 @@ function efGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
 			$ret = $wgUser->mName;
 		break;
  
-		case MAG_CURRENTUSERREALNAME:
+		case MAG_CURRENTPERSON:
 			global $wgUser;
 			$parser->disableCache();
 			$ret = $wgUser->getRealName();
