@@ -1,3 +1,4 @@
+// A fix for table.js to allow it to handle dates which include HH:MM time
 Sort.date.formats[0] = {
 	re : /(\d{2,4})-(\d{1,2})-(\d{1,2})\D*((\d\d):(\d\d))?/,
 	f  : function( x ) {
