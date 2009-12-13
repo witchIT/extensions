@@ -1,3 +1,8 @@
+/*
+ * Various patches and JS additions needed by wikis in the OD wikia
+ * - this starts with 'zzz' to ensure it loads after other JS
+ */
+
 // A fix for table.js to allow it to handle dates which include HH:MM time
 Sort.date.formats[0] = {
 	re : /(\d{2,4})-(\d{1,2})-(\d{1,2})\D*((\d\d):(\d\d))?/,
@@ -8,3 +13,4 @@ Sort.date.formats[0] = {
 		return d.getTime();
 	}
 }
+
