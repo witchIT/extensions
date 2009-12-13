@@ -14,3 +14,8 @@ Sort.date.formats[0] = {
 	}
 }
 
+// Make vanadium validation not work for RecordAdmin searches
+function odOnLoadHook() {
+	$('#ra-find').attr('onClick','Vanadium={}');
+}
+addOnloadHook(odOnLoadHook);
