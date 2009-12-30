@@ -10,9 +10,9 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
-if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
+if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'The RecordAdminCreateForm extension depends on the RecordAdmin extension' );
 
-define( 'RECORDADMINCREATEFORM_VERSION', '1.0.3, 2009-11-26' );
+define( 'RECORDADMINCREATEFORM_VERSION', '1.0.4, 2009-12-30' );
 
 $wgExtensionFunctions[] = 'efSetupRecordAdminCreateForm';
 
