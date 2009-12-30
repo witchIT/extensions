@@ -47,13 +47,6 @@ function wfEventPipeSend( $hook, $args ) {
 		) );
 		fputs( $handle, "GET $hook?$data HTTP/1.0\n\n\x00" );
 		fclose( $handle );
-		$data = serialize( array(
-			'wgSitename' => $wgSitename,
-			'wgServer'   => $wgServer,
-			'wgScript'   => $wgServer . $wgScript,
-			'args'       => 'testMessage'
-		) );
-		file_put_contents( '/home/nad/wikid-event.txt', "RpcMessage?$data" );
 	}
 	return true;
 }
