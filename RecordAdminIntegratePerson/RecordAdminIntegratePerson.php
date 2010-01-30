@@ -9,16 +9,15 @@
  */
 
 # Check dependency extensions
-if ( !defined( 'MEDIAWIKI' ) )                     die( 'Not an entry point.' );
-if ( !defined( 'RECORDADMIN_VERSION' ) )           die( 'This extension depends on the RecordAdmin extension' );
-if ( !defined( 'JAVASCRIPT_VERSION' ) )            die( 'This extension depends on the JavaScript extension' );
+if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
+if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
+if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'This extension depends on the JavaScript extension' );
 
 # Ensure running at least MediaWiki version 1.16
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-
-define( 'RAINTEGRATEPERSON_VERSION', '1.0.2, 2009-12-07' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.1.0, 2010-01-30' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -266,6 +265,17 @@ class RAIntegratePerson {
 			$title = Title::newFromText( $name );
 			if ( !is_object( $title ) ) return false;
 
+			# Change the user page to a redirect and grab any existing content
+			$redirect = "#redirect [[$name]]";
+			$userpage = $wgUser->getUserPage();
+			$usertext = '';
+			if ( $userpage->exists() ) {
+				$article = new Article( $userpage );
+				$text = $article->getContent();
+				if ( !preg_match( '/^#redirect/', $text ) ) $usertext = "\n\n== Content original user page ==\n$text";
+				$success = $article->doEdit( $redirect, "Changed userpage to redirect to [[$name]]", EDIT_UPDATE );
+			} else $success = $article->doEdit( $redirect, "Created redirect to [[$name]]", EDIT_NEW );
+
 			# Construct the record brace text
 			$record = '';
 			foreach ( $wgSpecialRecordAdmin->values as $k => $v ) $record .= "| $k = $v\n";
@@ -276,10 +286,14 @@ class RAIntegratePerson {
 			$article = new Article( $title );
 			if ( $title->exists() ) {
 				$text = $article->getContent();
+				$braces = false;
 				foreach ( $wgSpecialRecordAdmin->examineBraces( $text ) as $brace ) if ( $brace['NAME'] == $wgIPPersonType ) $braces = $brace;
-				$text = substr_replace( $text, $record, $braces['OFFSET'], $braces['LENGTH'] );
+				if ( $braces ) $text = substr_replace( $text, $record, $braces['OFFSET'], $braces['LENGTH'] );
+				elseif ( $text ) $text = "$record\n\n$text";
+				else $text = $record;
+				$text .= $usertext;
 				$success = $article->doEdit( $text, "Record updated via $page", EDIT_UPDATE );
-			} else $success = $article->doEdit( $record, "Record created via $page", EDIT_NEW );
+			} else $success = $article->doEdit( "$record$usertext", "Record created via $page", EDIT_NEW );
 
 		}
 	}
