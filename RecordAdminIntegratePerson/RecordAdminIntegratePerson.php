@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'This extension depends on the Jav
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.1.0, 2010-01-30' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.1.1, 2010-02-04' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -268,9 +268,9 @@ class RAIntegratePerson {
 			# Change the user page to a redirect and grab any existing content
 			$redirect = "#redirect [[$name]]";
 			$userpage = $wgUser->getUserPage();
+			$article  = new Article( $userpage );
 			$usertext = '';
 			if ( $userpage->exists() ) {
-				$article = new Article( $userpage );
 				$text = $article->getContent();
 				if ( !preg_match( '/^#redirect/', $text ) ) $usertext = "\n\n== Content original user page ==\n$text";
 				$success = $article->doEdit( $redirect, "Changed userpage to redirect to [[$name]]", EDIT_UPDATE );
