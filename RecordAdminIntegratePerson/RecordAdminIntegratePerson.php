@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'This extension depends on the Jav
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.1.2, 2010-02-08' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.1.3, 2010-02-08' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -261,7 +261,7 @@ class RAIntegratePerson {
 		if ( $posted ) {
 
 			# If new user created, use the username from the posted data, otehrwise use $wgUser
-			$user = in_array( 'wpName', $_REQUEST ) ? User::newFromName( $_REQUEST['wpName'] ) : $wgUser;
+			$user = array_key_exists( 'wpName', $_REQUEST ) ? User::newFromName( $_REQUEST['wpName'] ) : $wgUser;
 			$userpage = $user->getUserPage();
 
 			# Get the title if the users Person record and bail if invalid
