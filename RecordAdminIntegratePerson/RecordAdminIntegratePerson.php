@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'This extension depends on the Jav
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.1.3, 2010-02-08' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.1.4, 2010-02-08' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -263,6 +263,7 @@ class RAIntegratePerson {
 			# If new user created, use the username from the posted data, otehrwise use $wgUser
 			$user = array_key_exists( 'wpName', $_REQUEST ) ? User::newFromName( $_REQUEST['wpName'] ) : $wgUser;
 			$userpage = $user->getUserPage();
+			$username = $user->getName();
 
 			# Get the title if the users Person record and bail if invalid
 			$name = $wgSpecialRecordAdmin->values['FirstName'] . ' ' . $wgSpecialRecordAdmin->values['Surname'];
@@ -280,9 +281,9 @@ class RAIntegratePerson {
 			} else $success = $article->doEdit( $redirect, "Created redirect to [[$name]]", EDIT_NEW );
 
 			# Construct the record brace text
-			$record = '';
-			foreach ( $wgSpecialRecordAdmin->values as $k => $v ) $record .= "| $k = $v\n";
-			$record = "{{" . "$wgIPPersonType\n$record}}";
+			$record = " | User = $username\n";
+			foreach ( $wgSpecialRecordAdmin->values as $k => $v ) $record .= " | $k = $v\n";
+			$record = "{{" . "$wgIPPersonType\n$record\n}}";
 
 			# Create or update the article
 			$page = $_REQUEST['title'];
