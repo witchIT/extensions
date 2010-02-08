@@ -206,40 +206,17 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 	padding-top: .5em;
 	padding-bottom: .17em;
-
 }
-h1 { 
-	font-size: 188%;
-	margin-top:3px; 
-	margin-right:3px;
-	color:#618C33;
-	font-weight:lighter;
-}
-h1 .editsection { font-size: 53%; }
-h2 { 
-	font-size: 150%;
-	color:#618C33;
-	font-weight:100;
-	margin:0px;
-}
+h1 { font-size: 188%; color: #3E5A1F;}
+h1 .editsection { font-size: 53%;  color: #3E5A1F;}
+h2 { font-size: 150%; }
 h2 .editsection { font-size: 67%; }
 h3, h4, h5, h6 {
-	border-bottom: none;
 	font-weight: bold;
 }
-h3 { 
-	font-size: 140%;
-	color:#999999;
-	font-weight:100;
-	margin:0px;
-}
-h3 .editsection { font-size: 76%; font-weight: normal; }
-h4 { 
-	color:#444444;
-	font-weight:100;
-	font-size: 108%;
-	margin:0px;
-}
+h3 { font-size: 132%;  color: #3E5A1F;}
+h3 .editsection { font-size: 76%; font-weight: normal;  color: #3E5A1F;}
+h4 { font-size: 116%; }
 h4 .editsection { font-size: 86%; font-weight: normal; }
 h5 { font-size: 100%; }
 h5 .editsection { font-weight: normal; }
