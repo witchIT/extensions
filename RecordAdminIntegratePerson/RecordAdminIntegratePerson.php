@@ -264,6 +264,7 @@ class RAIntegratePerson {
 			$user = array_key_exists( 'wpName', $_REQUEST ) ? User::newFromName( $_REQUEST['wpName'] ) : $wgUser;
 			$userpage = $user->getUserPage();
 			$username = $user->getName();
+			$wgSpecialRecordAdmin->values['User'] = $username;
 
 			# Get the title if the users Person record and bail if invalid
 			$name = $wgSpecialRecordAdmin->values['FirstName'] . ' ' . $wgSpecialRecordAdmin->values['Surname'];
@@ -281,9 +282,9 @@ class RAIntegratePerson {
 			} else $success = $article->doEdit( $redirect, "Created redirect to [[$name]]", EDIT_NEW );
 
 			# Construct the record brace text
-			$record = " | User = $username\n";
+			$record = '';
 			foreach ( $wgSpecialRecordAdmin->values as $k => $v ) $record .= " | $k = $v\n";
-			$record = "{{" . "$wgIPPersonType\n$record\n}}";
+			$record = "{{" . "$wgIPPersonType\n$record}}";
 
 			# Create or update the article
 			$page = $_REQUEST['title'];
