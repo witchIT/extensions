@@ -207,29 +207,28 @@ h1, h2, h3, h4, h5, h6 {
 	padding-top: .5em;
 	padding-bottom: .17em;
 	font-family: sans-serif;
+}
+h1 { font-size: 188%;}
+h1 .editsection { font-size: 53%;}
+h2 { font-size: 150%;   color: #3E5A1F;}
+h2 .editsection { font-size: 67%; color: #3E5A1F;}
+h2, h3, h4, h5, h6 {
 	font-weight: bold;
 }
-h1 { font-size: 188%; color:}
-h1 .editsection { font-size: 53%;}
-h2 { font-size: 150%; color: #3E5A1F;}
-h2 .editsection { font-size: 67%; color: #3E5A1F;}
-h3, h4, h5, h6 {
-
-}
-h3 { font-size: 135%;}
-h3 .editsection { font-size: 76%; font-weight: normal; }
-h4 { font-size: 120%; }
+h3 { font-size: 132%;}
+h3 .editsection { font-size: 76%; font-weight: normal;}
+h4 { font-size: 116%; }
 h4 .editsection { font-size: 86%; font-weight: normal; }
-h5 { font-size: 105%; }
-h5 .editsection { font-weight: normal;
-h6 { font-size: 100%;  color: #3E5A1F; }
-h6 .editsection { font-size: 125%; font-weight: normal; color: #3E5A1F;}}
+h5 { font-size: 105%; color: #3E5A1F; }
+h5 .editsection { font-weight: normal; }
+h6 { font-size: 100%;}
+h6 .editsection { font-size: 125%; font-weight: normal; }
 
 /*td {
 	font-family: Tahoma, Arial;
 	margin: 0px;
-}*/
-
+}
+*/
 ul {
 	line-height: 1.5em;
 	list-style-type: round;
