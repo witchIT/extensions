@@ -206,6 +206,7 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 	padding-top: .5em;
 	padding-bottom: .17em;
+	font-family: sans-serif;
 }
 h1 { font-size: 188%; color: #3E5A1F;}
 h1 .editsection { font-size: 53%;  color: #3E5A1F;}
@@ -223,10 +224,10 @@ h5 .editsection { font-weight: normal; }
 h6 { font-size: 80%;  }
 h6 .editsection { font-size: 125%; font-weight: normal; }
 
-td {
+/*td {
 	font-family: Tahoma, Arial;
 	margin: 0px;
-}
+}*/
 
 ul {
 	line-height: 1.5em;
