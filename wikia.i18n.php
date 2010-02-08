@@ -16,7 +16,7 @@ $messages['en'] = array(
 	'od-nospec' => 'There is no specification yet, you can create one after submitting this form.',
 	'od-nospec-form' => 'There is no specification yet, you can create one after submitting this form. This should lead to a complete set of Milestone Tasks.',
 	'od-nospec-template' => 'By clicking on the Specifications link below you can create a complete set of Milestone Tasks and their Due Dates.',
-	'od-nofaq' => 'After you complete this form, you can then write the Position Description, FAQ, Best Practice and Contract articles for this Role.',
+	'od-nofaq' => 'After you submit this form, you can write Position Description, FAQ, Best Practice and Contract articles for this Role.',
 	'od-multiselect-click' => 'Ctrl-click to multi-select.',
 	'od-knowledge' => 'Includes: Explicit information requirements for the job e.g. product or process specifications, orders, priorities, records, QC records, other organisational documentation needs etc. Example: Familiarity with telephone system, Skype, Microsoft Word, Microsoft Excel, Back Office protocols etc.',
 	'od-resources' => 'Includes: Specific tools or resources needed to carry out the task.',
@@ -25,9 +25,9 @@ $messages['en'] = array(
 	'od-sop' => 'Includes: Steps taken to complete the task - could refer to operational manuals or flow charts. Throughput requirements for the job (how fast should the job be done, what are the time constraints/ limits for the job).',
 	'od-contingency' => 'Includes: Contingencies (how to deal with things when they don’t go according to plan).', 
 	'od-description-clear' => 'Make the description clear, assuming no prior context, even if raising it to yourself.',
-	'od-datepicker-use' => 'Use the Datepicker to select the Date.',
-	'od-calendar-use' => 'Use the Datepicker, then Go to your Calendar.',
-	'od-calendar-form' => 'Use the Datepicker, then submit Form or Search to go to the Date.',
+	'od-datepicker-use' => 'Use Datepicker to select Date.',
+	'od-calendar-use' => 'Use Datepicker, then Go to your Calendar.',
+	'od-calendar-form' => 'Use Datepicker, then Submit or Search for Date.',
 );
 
 
