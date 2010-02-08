@@ -208,7 +208,7 @@ h1, h2, h3, h4, h5, h6 {
 	padding-bottom: .17em;
 	font-family: sans-serif;
 }
-h1 { font-size: 200%;  color: #6E993D; }
+h1 { font-size: 188%;  color: #6E993D; }
 h1 .editsection { font-size: 53%;}
 h2 { font-size: 150%;   color: #3E5A1F;}
 h2 .editsection { font-size: 67%; color: #3E5A1F;}
@@ -219,7 +219,7 @@ h3 { font-size: 132%;  color: #3E5A1F; }
 h3 .editsection { font-size: 76%; font-weight: normal;  color: #3E5A1F; }
 h4 { font-size: 116%; }
 h4 .editsection { font-size: 86%; font-weight: normal; }
-h5 { font-size: 105%;}
+h5 { font-size: 106%;}
 h5 .editsection { font-weight: normal; }
 h6 { font-size: 100%;}
 h6 .editsection { font-size: 125%; font-weight: normal; }
