@@ -343,10 +343,10 @@ span.subpages {
 
 /* Some space under the headers in the content area */
 #bodyContent h1, #bodyContent h2 {
-	/*margin-bottom: .2em;*/
+	margin-bottom: .2em;
 }
 #bodyContent h3, #bodyContent h4, #bodyContent h5 {
-	/*margin-bottom: .1em;*/
+	margin-bottom: .1em;
 }
 .firstHeading {
 	margin-bottom: .1em;
