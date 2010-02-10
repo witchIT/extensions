@@ -25,9 +25,10 @@ $messages['en'] = array(
 	'od-sop' => 'Includes: Steps taken to complete the task - could refer to operational manuals or flow charts. Throughput requirements for the job (how fast should the job be done, what are the time constraints/ limits for the job).',
 	'od-contingency' => 'Includes: Contingencies (how to deal with things when they don’t go according to plan).', 
 	'od-description-clear' => 'Make the description clear, assuming no prior context, even if raising it to yourself.',
-	'od-datepicker-use' => 'Use Datepicker to select Date.',
-	'od-calendar-use' => 'Use Datepicker, then Go to your Calendar.',
-	'od-calendar-form' => 'Use Datepicker, then Submit or Search for Date.',
+	'od-datepicker-use' => 'Use Datepicker to select Date',
+	'od-calendar-use' => 'Use Datepicker, then Go to your Calendar',
+	'od-calendar-form' => 'Use Datepicker, then Submit or Search for Date',
+	'od-calendar-another' => 'Use Datepicker, then Go to another Date',
 );
 
 
