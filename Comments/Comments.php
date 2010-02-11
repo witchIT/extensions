@@ -34,6 +34,15 @@ class Comments {
 		global $wgHooks, $wgParser, $wgPdfBookMagic;
 		$wgHooks['UnknownAction'][] = $this;
 
+	# change the discussion link to go to bottom of page
+	
+	# render the bottom of page
+	# - <a name> for link to go to
+	# - loop using stripes classes and auto-sign
+	# - reply and new-thread buttons
+
+	# - Ajaxly update the talk article
+
 	}
 
 }
