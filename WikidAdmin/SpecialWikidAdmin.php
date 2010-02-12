@@ -8,10 +8,10 @@
  * @copyright © 2009 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
-if ( !defined('MEDIAWIKI' ) )            die( 'Not an entry point.' );
-if ( !defined( 'EVENTPIPE_VERSION' ) ) die( 'This extension depends on the EventPipe extension' );
+if ( !defined('MEDIAWIKI' ) )          die( 'Not an entry point.' );
+if ( !defined( 'EVENTPIPE_VERSION' ) ) die( 'The WikidAdmin special page extension depends on the EventPipe extension' );
 
-define( 'WIKIDADMIN_VERSION', '1.1.5, 2009-12-01' );
+define( 'WIKIDADMIN_VERSION', '1.1.6, 2010-02-13' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
