@@ -64,6 +64,19 @@ if ( !$wgCommandLineMode ) {
 	$wgGroupPermissions['user']['createaccount']  = true;
 	$wgWhitelistRead = array( "Special:Userlogin", "-", "MediaWiki:Common.css" );
 
+	# Allow articles in Category:Public to be publically accessible
+	$wgHooks['UserGetRights'][] = 'wfPublicCat';
+	function wfPublicCat() {
+		global $wgTitle, $wgWhitelistRead;
+		$id   = $wgTitle->getArticleID();
+		$dbr  = wfGetDB( DB_SLAVE );
+		$cat  = $dbr->addQuotes( 'Public' );
+		$cl   = $dbr->tableName( 'categorylinks' );
+		if ( $dbr->selectRow( $cl, '0', "cl_from = $id AND cl_to = $cat" ) )
+			$wgWhitelistRead[] = $wgTitle->getText();
+		return true;
+	}
+
 	# Bot jobs
 	include( '/var/www/tools/jobs/ImportCSV.php' );
 	include( '/var/www/tools/jobs/ModifyRecords.php' );
