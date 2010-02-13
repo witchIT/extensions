@@ -17,7 +17,9 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'COMMENTS_VERSION', '0.0.1, 2010-02-11' );
 
-$wgExtensionFunctions[]        = 'wfSetupComments';
+$wgAjaxExportList[] = 'Comments::ajaxHandler';
+
+$wgExtensionFunctions[] = 'wfSetupComments';
 
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
@@ -32,17 +34,56 @@ class Comments {
 
 	function Comments() {
 		global $wgHooks, $wgParser, $wgPdfBookMagic;
-		$wgHooks['UnknownAction'][] = $this;
 
-	# change the discussion link to go to bottom of page
-	
-	# render the bottom of page
-	# - <a name> for link to go to
-	# - loop using stripes classes and auto-sign
-	# - reply and new-thread buttons
+		$wgHooks['OutputPageBeforeHTML'][] = $this;
 
-	# - Ajaxly update the talk article
+		# change the discussion link to go to bottom of page
+		
+		# render the bottom of page
+		# - <a name> for link to go to
+		# - loop using stripes classes and auto-sign
+		# - reply and new-thread buttons
 
+		# - Ajaxly update the talk article
+
+
+
+		# Add an "edit with form" action link
+		# - it should link to the <a name...> rendered at the bottom of the content
+		# - it should be a link to the main content#talk if not on main content
+		$wgHooks['SkinTemplateTabs'][] = $this;
+		$qs = "wpType={$this->type}&wpRecord=" . $title->getPrefixedText();
+		$this->acturl = Title::makeTitle( NS_SPECIAL, 'RecordAdmin' )->getLocalURL( $qs );
+
+	}
+
+
+
+
+	/**
+	 * Render the comments at the end of rendered page
+	 */
+	function onOutputPageBeforeHTML( ) {
+		
+		# render an <a name...>
+		
+		# get the talk page content
+		
+		# extract structured thread/user based info
+		
+		# build the output
+		# - ajax: sajax_do_call( "Comments::ajaxHandler", [a, b] , callback );
+		# - http://www.mediawiki.org/wiki/Manual:Ajax
+		
+		# add to page output
+		
+		return true;
+	}
+
+	/**
+	 * Return the content for an AJAX request from the comments area
+	 */
+	function ajaxHandler() {
 	}
 
 }
