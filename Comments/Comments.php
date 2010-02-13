@@ -70,6 +70,8 @@ class Comments {
 		# get the talk page content
 		
 		# extract structured thread/user based info
+		# - official items are a group of colon-indented paragraphs following by a colon-indented sig
+		# - if there is other content not in the correct format, prepend a warning and link to the actual talk article
 		
 		# build the output
 		# - ajax: sajax_do_call( "Comments::ajaxHandler", [a, b] , callback );
