@@ -32,10 +32,11 @@ $wgExtensionCredits['other'][] = array(
 
 class Comments {
 
-	function Comments() {
+	function __construct() {
 		global $wgHooks, $wgParser, $wgPdfBookMagic;
 
 		$wgHooks['OutputPageBeforeHTML'][] = $this;
+		$wgHooks['SkinTemplateTabs'][] = $this;
 
 		# change the discussion link to go to bottom of page
 		
@@ -46,24 +47,20 @@ class Comments {
 
 		# - Ajaxly update the talk article
 
-
-
-		# Add an "edit with form" action link
-		# - it should link to the <a name...> rendered at the bottom of the content
-		# - it should be a link to the main content#talk if not on main content
-		$wgHooks['SkinTemplateTabs'][] = $this;
-		$qs = "wpType={$this->type}&wpRecord=" . $title->getPrefixedText();
-		$this->acturl = Title::makeTitle( NS_SPECIAL, 'RecordAdmin' )->getLocalURL( $qs );
-
 	}
 
-
-
+	/**
+	 * Modify the talk action link
+	 */
+	function onSkinTemplateTabs( $skin, &$actions ) {
+		$actions['talk']['href'] => '/foo';
+		return true;
+	}
 
 	/**
 	 * Render the comments at the end of rendered page
 	 */
-	function onOutputPageBeforeHTML( ) {
+	function onOutputPageBeforeHTML( &$out, &$text ) {
 		
 		# render an <a name...>
 		
