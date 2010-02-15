@@ -29,8 +29,8 @@ $messages['en'] = array(
 	'od-calendar-use' => 'Use Datepicker, then Go to your Calendar',
 	'od-calendar-form' => 'Use Datepicker, then Submit or Search for Date',
 	'od-calendar-another' => 'Use Datepicker, then Go to another Date',
-	'od-textbox-alias' => 'Other email addresses pointing here. Write every entry on a new line.',
-	'od-textbox-forward' => 'Other addesses your emails will go to. Write every entry on a new line.',
+	'od-textbox-alias' => 'Different email addresses that point here. Write every entry on a new line.',
+	'od-textbox-forward' => 'Other addresses that your emails are sent to. Write every entry on a new line.',
 );
 
 
