@@ -29,6 +29,7 @@ $messages['en'] = array(
 	'od-calendar-use' => 'Use Datepicker, then Go to your Calendar',
 	'od-calendar-form' => 'Use Datepicker, then Submit or Search for Date',
 	'od-calendar-another' => 'Use Datepicker, then Go to another Date',
+	'od-textbox-newline' => 'Write every new entry on a new line underneath',
 );
 
 
