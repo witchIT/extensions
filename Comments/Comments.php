@@ -15,7 +15,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'COMMENTS_VERSION', '0.0.1, 2010-02-11' );
+define( 'COMMENTS_VERSION', '0.0.2, 2010-02-15' );
 
 $wgAjaxExportList[] = 'Comments::ajaxHandler';
 
@@ -35,7 +35,7 @@ class Comments {
 	function __construct() {
 		global $wgHooks, $wgParser, $wgPdfBookMagic;
 
-		$wgHooks['OutputPageBeforeHTML'][] = $this;
+		$wgHooks['BeforePageDisplay'][] = $this;
 		$wgHooks['SkinTemplateTabs'][] = $this;
 
 		# change the discussion link to go to bottom of page
@@ -46,23 +46,45 @@ class Comments {
 		# - reply and new-thread buttons
 
 		# - Ajaxly update the talk article
-
 	}
 
 	/**
 	 * Modify the talk action link
 	 */
 	function onSkinTemplateTabs( $skin, &$actions ) {
-		$actions['talk']['href'] => '/foo';
+		global $wgTitle;
+		$ns = $wgTitle->getNamespace();
+		
+		if ( $ns == NS_SPECIAL ) {
+			# is special, no talk link at all
+		}
+		
+		elseif ( $ns & 1 ) {
+			# is a talk page, keep link normal
+		}
+		
+		else {
+			# is not a talk page or special page, link to a <a name>
+			$actions['talk']['href'] = '#ajax-comments';
+		}
+		
 		return true;
 	}
 
 	/**
 	 * Render the comments at the end of rendered page
 	 */
-	function onOutputPageBeforeHTML( &$out, &$text ) {
-		
+	function onBeforePageDisplay( &$out, $skin = false ) {
+		global $wgTitle;
+
+		# Bail if special or talk page
+		$ns = $wgTitle->getNamespace();
+		if ( $ns == NS_SPECIAL || $ns & 1 ) return true;
+
 		# render an <a name...>
+		$out->addHTML( '<div id="ajax-comments">where is this?</div>' );
+
+
 		
 		# get the talk page content
 		
