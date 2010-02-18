@@ -1,0 +1,56 @@
+/*If you want to change the height, change the #p-logo height px value, then raise or lower the first three px values (content margin-top, column-one padding-top and p-cactions top) below.*/
+
+/* To change the width, change the #p-logo width px value*/
+
+/*If you want to center a logo vertically in its space, change the #p-logo top px value. Change the left value to move it right.*/
+
+#content {
+
+}
+
+body {
+background-image:none;
+background-color:#F7F7F2
+
+}
+
+#column-one {
+  /*  padding-top:65px;*/
+}
+
+#column-content {
+
+}
+
+#p-cactions {
+    top:81px;
+}
+
+#p-logo {
+    height:50px;
+    width:240px;
+    margin-bottom:10px;
+    top:10px;
+    left:5px;
+}
+
+#p-logo a, #p-logo a:hover {
+    height:50px;
+    width:100%;
+}
+
+#top-div {
+	height:100px;
+}
+
+#contentSub {display:none}
+
+a, h2, h3, #p-cactions li a, #p-personal li a {
+	color: #39463E;
+}
+
+h1 {color: #5C574A}
+
+#p-cactions li, #p-cactions li.selected {
+	padding-top:0.1em;
+}
