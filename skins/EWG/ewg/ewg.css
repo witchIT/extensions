@@ -44,7 +44,7 @@ h2, h3, #p-cactions li a, #p-personal li a {
 	color: #39463E;
 }
 
-h1 {color: #3D2566}
+h1 {color: #5F5447}
 
 #p-cactions li, #p-cactions li.selected {
 	padding-top:0.1em;
@@ -1134,7 +1134,7 @@ table.date_maintable table td p, table.date_maintable table th p {text-align:lef
 	padding-left:10px;
 	padding-top:2px;
 	padding-bottom:2px; 
-	background-color:#BFBFBA; 
+	background-color:#B19879; 
 	color:#ffffff; 
 	font-size: 110%; 
 	width: 100%;
