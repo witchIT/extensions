@@ -18,7 +18,7 @@
 }
 
 #p-cactions {
-    top:81px;
+    top:80px;
 }
 
 #p-logo {
@@ -44,10 +44,10 @@ h2, h3, #p-cactions li a, #p-personal li a {
 	color: #39463E;
 }
 
-h1 {color: #5C574A}
+h1 {color: #3D2566}
 
 #p-cactions li, #p-cactions li.selected {
-	padding-top:0.2em;
+	padding-top:0.1em;
 }
 
 /*Common.css*/
