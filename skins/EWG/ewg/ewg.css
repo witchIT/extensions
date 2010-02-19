@@ -1053,7 +1053,7 @@ body.fd-drag-active
     margin: 0 20px 0 0;
 }
 form.recordadmin, .recordadmin-template {
-    background-color: #F0F0E9;
+    background-color: #EDEDE8;
     border: 1px solid #aaa;
     padding: 10px;
     display: table;
@@ -1109,7 +1109,7 @@ width:120px;
 }
 
 .recordadmin-create, .recordadmin-create table {
-background: #F0F0E9;
+background: #EDEDE8;
 }
 
 .recordadmin-create label, .activity-record label, .department-record label, .date-record label, .document-record label, .organisation-record label, .person-record label, .role-record label, .procedure-record label, .project-record label, .task-record label, .prefsection label, #userlogin fieldset label { padding-left:10px }
