@@ -52,5 +52,5 @@ a, h2, h3, #p-cactions li a, #p-personal li a {
 h1 {color: #5C574A}
 
 #p-cactions li, #p-cactions li.selected {
-	padding-top:0.1em;
+	padding-top:0.2em;
 }

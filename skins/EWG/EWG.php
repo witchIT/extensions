@@ -167,7 +167,6 @@ if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
 if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
 echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
-?><br /><?php
 $this->searchBox();
 ?>
 				</td><!-- end of the left (by default at least) column -->
