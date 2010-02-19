@@ -1047,13 +1047,13 @@ body.fd-drag-active
     margin: 0 0 10px 0;    
 }
 #bodyContent .recordadmin-menubar a {
-    color: #618C33;
+    color: #3D2566;
     font-size: 105%;
     font-weight: bold;
     margin: 0 20px 0 0;
 }
 form.recordadmin, .recordadmin-template {
-    background-color: #f6f6f9;
+    background-color: #F7F7F2;
     border: 1px solid #aaa;
     padding: 10px;
     display: table;
@@ -1063,7 +1063,7 @@ form.recordadmin h2 {
     padding: 0 30px 10px 0;
     margin: 0;
 }
-tr.stripe { background: #f6f6f9; }
+tr.stripe { background: #F7F7F2; }
 .tabsetjsprefs tr.stripe { background: white; }
 	table.sortable tr.odd {
     background-color: white;

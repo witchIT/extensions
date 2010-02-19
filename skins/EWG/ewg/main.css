@@ -698,7 +698,7 @@ special external link styling */
 ** Search portlet
 */
 #p-search {
-	width:225px;
+	width:15em;
 	margin-left:0.5em;
 	margin-right:0.5em;
 }
@@ -712,7 +712,7 @@ input.searchButton {
 	font-weight: bold;
 }
 #searchInput {
-	width: 225px;
+	width: 14em;
 	margin: 0;
 	font-size: 95%;
 }
