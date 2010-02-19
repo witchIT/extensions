@@ -8,11 +8,6 @@
 
 }
 
-body {
-background-image:none;
-background-color:#F7F7F2
-
-}
 
 #column-one {
   /*  padding-top:65px;*/
@@ -1139,7 +1134,7 @@ table.date_maintable table td p, table.date_maintable table th p {text-align:lef
 	padding-left:10px;
 	padding-top:2px;
 	padding-bottom:2px; 
-	background-color:#D1CFCD; 
+	background-color:#BFBFBA; 
 	color:#ffffff; 
 	font-size: 110%; 
 	width: 100%;
