@@ -1109,7 +1109,7 @@ width:120px;
 }
 
 .recordadmin-create, .recordadmin-create table {
-background: #F6F6F9;
+background: #F7F7F2;
 }
 
 .recordadmin-create label, .activity-record label, .department-record label, .date-record label, .document-record label, .organisation-record label, .person-record label, .role-record label, .procedure-record label, .project-record label, .task-record label, .prefsection label, #userlogin fieldset label { padding-left:10px }
