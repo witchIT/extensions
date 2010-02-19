@@ -1579,23 +1579,6 @@ margin: 0 0.3em 0 0;
 padding: 0 0 0.1em; 
 }
 
-/*Form template CSS*/
-.recordadmin fieldset td,
-fieldset th {
-    vertical-align: top;
-text-align:left; 
-}
-.recordadmin fieldset th { padding: 3px 10px 0 0; text-align:left;}
-.recordadmin fieldset td + th { padding-left: 20px;}
-.recordadmin fieldset table th { padding: 3px 10px 0 0; text-align:left;}
-.recordadmin fieldset table td + th { padding-left: 20px; }
-
-.template_maintable th { padding: 0 10px 0 0; text-align:left;}
-.template_maintable td + th { padding-left: 20px; }
-
-table.recordadmin-create th { padding: 0 10px 0 0; text-align:left;}
-table.recordadmin-create td + th { padding-left: 20px; }
-
 #column-one {
 padding-top:0;
 }
