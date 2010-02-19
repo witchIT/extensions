@@ -1200,7 +1200,7 @@ input.vanadium-valid ~ .vanadium-valid-advice {
 }
 
 fieldset table textarea {
-min-width:400px;
+/*min-width:400px;*/
 }
 
 /*Float-right without any margins or anything else*/
