@@ -225,13 +225,13 @@ blockquote {
 	font-style: italic;
 }*/
 code {
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 }
 pre {
 	padding: 1em;
 	border: 1px dashed #2f6fab;
 	color: black;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	line-height: 1.1em;
 }
 
@@ -325,7 +325,7 @@ span.subpages {
 
 .catlinks {
 	border: 1px solid #aaa;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	padding: 5px;
 	margin-top: 1em;
 	clear: both;
@@ -372,7 +372,7 @@ table.small {
 .toc,
 .mw-warning {
 	border: 1px solid #aaa;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	padding: 5px;
 	font-size: 95%;
 }
@@ -449,7 +449,7 @@ div.thumb {
 div.thumbinner {
 	border: 1px solid #ccc;
 	padding: 3px !important;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	font-size: 94%;
 	text-align: center;
 	overflow: hidden;
@@ -510,7 +510,7 @@ table.rimage {
 }
 .toccolours {
 	border: 1px solid #aaa;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	padding: 5px;
 	font-size: 95%;
 }
@@ -968,7 +968,7 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 }
 #preftoc li.selected {
 	font-weight: bold;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	border: 1px solid #aaa;
 	border-bottom: none;
 	cursor: default;
@@ -1186,7 +1186,7 @@ table.gallery tr {
 
 table.gallery td {
 	vertical-align: top;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	border: solid 2px white;
 }
 /* Keep this temporarily so that cached pages will display right */
@@ -1287,7 +1287,7 @@ table.mw_metadata td, table.mw_metadata th {
 }
 
 table.mw_metadata th {
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 }
 
 table.mw_metadata td {
@@ -1303,7 +1303,7 @@ table.collapsed tr.collapsable {
 ul#filetoc {
 	text-align: center;
 	border: 1px solid #aaaaaa;
-	background-color: #f9f9f9;
+	background-color: #F7F7F2;
 	padding: 5px;
 	font-size: 95%;
 	margin-bottom: 0.5em;
