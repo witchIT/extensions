@@ -991,7 +991,6 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 	text-decoration: none;
 }
 #prefcontrol {
-	padding-top: 2em;
 	clear: both;
 }
 #preferences {
@@ -1008,7 +1007,6 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 }
 .prefsection fieldset {
 	border: 1px solid #aaa;
-	float: left;
 	margin-right: 2em;
 }
 .prefsection legend {
