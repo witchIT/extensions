@@ -270,6 +270,7 @@ span.subpages {
 	   When bug 2013 is fixed properly, they should be removed. */
 	line-height: 1.2em;
 	padding-bottom: 0;
+	margin-left:0.7em;
 }
 
 /* user notification thing */
