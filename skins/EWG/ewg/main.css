@@ -225,13 +225,13 @@ blockquote {
 	font-style: italic;
 }*/
 code {
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 }
 pre {
 	padding: 1em;
 	border: 1px dashed #2f6fab;
 	color: black;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	line-height: 1.1em;
 }
 
@@ -325,7 +325,7 @@ span.subpages {
 
 .catlinks {
 	border: 1px solid #aaa;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	padding: 5px;
 	margin-top: 1em;
 	clear: both;
@@ -372,7 +372,7 @@ table.small {
 .toc,
 .mw-warning {
 	border: 1px solid #aaa;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	padding: 5px;
 	font-size: 95%;
 }
@@ -449,7 +449,7 @@ div.thumb {
 div.thumbinner {
 	border: 1px solid #ccc;
 	padding: 3px !important;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	font-size: 94%;
 	text-align: center;
 	overflow: hidden;
@@ -510,7 +510,7 @@ table.rimage {
 }
 .toccolours {
 	border: 1px solid #aaa;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	padding: 5px;
 	font-size: 95%;
 }
@@ -968,7 +968,7 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 }
 #preftoc li.selected {
 	font-weight: bold;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	border: 1px solid #aaa;
 	border-bottom: none;
 	cursor: default;
@@ -1000,7 +1000,7 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 	border: 1px solid #aaa;
 	clear: both;
 	padding: 1.5em;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 }
 .prefsection {
 	border: none;
@@ -1048,7 +1048,7 @@ div#userlogin form#userlogin2 {
 	border: 1px solid #aaa;
 	clear: both;
 	padding: 1.5em 2em;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	float: left;
 }
 .rtl div#userloginForm form,
@@ -1058,7 +1058,7 @@ div#userlogin form#userlogin2 {
 
 div#userloginForm table,
 div#userlogin form#userlogin2 table {
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 }
 
 div#userloginForm h2,
@@ -1186,7 +1186,7 @@ table.gallery tr {
 
 table.gallery td {
 	vertical-align: top;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	border: solid 2px white;
 }
 /* Keep this temporarily so that cached pages will display right */
@@ -1287,7 +1287,7 @@ table.mw_metadata td, table.mw_metadata th {
 }
 
 table.mw_metadata th {
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 }
 
 table.mw_metadata td {
@@ -1303,7 +1303,7 @@ table.collapsed tr.collapsable {
 ul#filetoc {
 	text-align: center;
 	border: 1px solid #aaaaaa;
-	background-color: #EDEDE8;
+	background-color: #F0F0EB;
 	padding: 5px;
 	font-size: 95%;
 	margin-bottom: 0.5em;
