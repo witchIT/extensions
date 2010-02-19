@@ -1046,7 +1046,7 @@ body.fd-drag-active
 	font-size: 14pt;
 	color: #000000;
 	line-height: 1px;
-	padding: 0 0 30px 0;
+	padding: 20px 0 20px 0;
 }
 .recordadmin-menubar {
     margin: 0 0 10px 0;    
@@ -1139,7 +1139,7 @@ table.date_maintable table td p, table.date_maintable table th p {text-align:lef
 	padding-left:10px;
 	padding-top:2px;
 	padding-bottom:2px; 
-	background-color:#A1B38F; 
+	background-color:#D0CCC8; 
 	color:#ffffff; 
 	font-size: 110%; 
 	width: 100%;
