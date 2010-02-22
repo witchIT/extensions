@@ -62,7 +62,7 @@ function efRecordAdminCreateForm (&$out) {
 			<div class='pBody'>
 				<form id='RACreateForm' method='POST' action='$action'>
 					<select name='wpType'>$options</select>
-					<br /><input type='submit' class='raCreateButton' value='Go' />
+					<input type='submit' class='raCreateButton' value='Go' />
 				</form>
 			</div>
 		</div>
