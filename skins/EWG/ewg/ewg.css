@@ -1262,7 +1262,7 @@ input.raCreateButton {
 	font-size:91%;
 	font-weight:normal;
 	white-space:nowrap;
-	line-height:auto;
+	line-height:1.2;
  }
 
 #p-search {
