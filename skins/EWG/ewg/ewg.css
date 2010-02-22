@@ -1227,7 +1227,6 @@ th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:
 ** Ra-create portlet
 */
 #p-racreate {
-	width:14.5em;
 	margin-left:0.7em;
 	margin-right:0.7em;
 }
@@ -1249,14 +1248,14 @@ input.raCreateButton {
 
 #p-racreate {
 	position: absolute;
-	top: 4.3em;
-	right: 19.2em;
+	top: 3.3em;
+	right: 89.2em;
 	margin: 0;
 }
 #p-search {
 	position: absolute;
-	top: 7.3em;
-	right: 19.2em;
+	top: 3.3em;
+	right: 15.2em;
 	margin: 0;
 }
 
