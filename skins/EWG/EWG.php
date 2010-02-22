@@ -102,7 +102,28 @@ class EWGTemplate extends QuickTemplate {
 <?php if($this->data['body_onload']) { ?> onload="<?php $this->text('body_onload') ?>"<?php } ?>
  class="mediawiki <?php $this->text('nsclass') ?> <?php $this->text('dir') ?> <?php $this->text('pageclass') ?>">
 	<div id="globalWrapper">
-							<div id="p-cactions" class="portlet">
+					<div class="portlet" id="p-personal">
+						<h5><?php $this->msg('personaltools') ?></h5>
+						<div class="pBody">
+							<ul>
+				<?php 			foreach($this->data['personal_urls'] as $key => $item) { ?>
+								<li id="pt-<?php echo Sanitizer::escapeId($key) ?>"<?php
+									if ($item['active']) { ?> class="active"<?php } ?>><a href="<?php
+								echo htmlspecialchars($item['href']) ?>"<?php echo $skin->tooltipAndAccesskey('pt-'.$key) ?><?php
+								if(!empty($item['class'])) { ?> class="<?php
+								echo htmlspecialchars($item['class']) ?>"<?php } ?>><?php
+								echo htmlspecialchars($item['text']) ?></a></li>
+				<?php			} ?>
+							</ul>
+						</div>
+					</div>
+					<?php $this->searchBox(); ?>
+					<div class="portlet" id="p-logo">
+						<a style="background-image: url(<?php $this->text('logopath') ?>);" <?php
+							?>href="<?php echo htmlspecialchars($this->data['nav_urls']['mainpage']['href'])?>"<?php
+							echo $skin->tooltipAndAccesskey('n-mainpage') ?>></a>
+					</div>
+					<div id="p-cactions" class="portlet">
 						<h5><?php $this->msg('views') ?></h5>
 						<div class="pBody">
 							<ul>
@@ -130,26 +151,6 @@ class EWGTemplate extends QuickTemplate {
 							</ul>
 						</div>
 					</div>
-					<div class="portlet" id="p-personal">
-						<h5><?php $this->msg('personaltools') ?></h5>
-						<div class="pBody">
-							<ul>
-				<?php 			foreach($this->data['personal_urls'] as $key => $item) { ?>
-								<li id="pt-<?php echo Sanitizer::escapeId($key) ?>"<?php
-									if ($item['active']) { ?> class="active"<?php } ?>><a href="<?php
-								echo htmlspecialchars($item['href']) ?>"<?php echo $skin->tooltipAndAccesskey('pt-'.$key) ?><?php
-								if(!empty($item['class'])) { ?> class="<?php
-								echo htmlspecialchars($item['class']) ?>"<?php } ?>><?php
-								echo htmlspecialchars($item['text']) ?></a></li>
-				<?php			} ?>
-							</ul>
-						</div>
-					</div>
-					<div class="portlet" id="p-logo">
-						<a style="background-image: url(<?php $this->text('logopath') ?>);" <?php
-							?>href="<?php echo htmlspecialchars($this->data['nav_urls']['mainpage']['href'])?>"<?php
-							echo $skin->tooltipAndAccesskey('n-mainpage') ?>></a>
-					</div>
 		<table id="column-content" width="!00%" cellpadding="0" cellspacing="0">
 			<tr>
 				<td colspan="2">
@@ -167,7 +168,6 @@ if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
 if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
 echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
-$this->searchBox();
 ?>
 				</td><!-- end of the left (by default at least) column -->
 				<td id="content" width="100%">

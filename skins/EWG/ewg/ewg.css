@@ -46,10 +46,6 @@ h2, h3, #p-cactions li a, #p-personal li a {
 
 h1 {color: #5F5447}
 
-#p-cactions li, #p-cactions li.selected {
-	padding-top:0.1em;
-}
-
 /*Common.css*/
 
 table.changes            { border:none; width:100% }
@@ -1227,4 +1223,76 @@ th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:
 .cal_cell_person_hour .Activity-record th {display:none}
 .prefsection table.date_maintable {border: 1px solid #bbbbbb; border-collapse:collapse;}
 
+/*Create record form*/
+
+#RACreateForm {
+
+
+#RACreateForm select
+
+#RACreateForm input
+
+
+#p-personal {
+	width: 100%;
+	white-space: nowrap;
+	padding: 0;
+	margin: 0;
+	border: none;
+	background: none;
+	overflow: visible;
+	line-height: 1.2em;
+}
+#p-racreate {
+	position: absolute;
+	top: 1.3em;
+	left: 19.2em;
+	margin: 0;
+	white-space: nowrap;
+	width: 76%;
+	line-height: 1.1em;
+	overflow: visible;
+	background: none;
+	border-collapse: collapse;
+	padding-left: 1em;
+	list-style: none;
+	font-size: 95%;
+}
+
+/*
+** Ra-create portlet
+*/
+#p-racreate {
+	width:14.5em;
+	margin-left:0.7em;
+	margin-right:0.7em;
+}
+input.raCreateButton {
+	margin-top: 1px;
+	font-size: 95%;
+	padding-left: .5em;
+	padding-right: .5em;
+}
+/*.recordbuttoncreate {
+	padding-left: .5em;
+	padding-right: .5em;
+	font-weight: bold;
+}*/
+#p-racreate .pBody {
+	padding: .5em .4em .4em .4em;
+	text-align: left;
+}
+
+#p-racreate {
+	position: absolute;
+	top: 4.3em;
+	right: 19.2em;
+	margin: 0;
+}
+#p-search {
+	position: absolute;
+	top: 7.3em;
+	right: 19.2em;
+	margin: 0;
+}
 

@@ -31,23 +31,39 @@ function efRecordAdminCreateForm (&$out) {
 	global $wgRecordAdminCategory;
 
 	# Make options list from items in records cat
-	$options = '';
+	/*$options = '';
 	$dbr = &wfGetDB(DB_SLAVE);
 	$cl  = $dbr->tableName( 'categorylinks' );
 	$cat = $dbr->addQuotes( $wgRecordAdminCategory );
 	$res = $dbr->select( $cl, 'cl_from', "cl_to = $cat", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 	while ( $row = $dbr->fetchRow( $res ) ) $options .= '<option>' . Title::newFromID( $row[0] )->getText() . '</option>';
+	*/
+	
+	# Get an options list from the article 
+	$title    = Title::newFromText('MediaWiki:Od-minform-record-list');
+	$article  = new Article($title);
+	$options = $article->getContent();
 
 	# Post the form to Special:RecordAdmin
 	$action = Title::makeTitle( NS_SPECIAL, 'RecordAdmin' )->getLocalUrl();
 
-	# Add a form to the page
+	/*# Add a form to the page
 	$out->mBodytext .= "
 		<form id='RACreateForm' method='POST' action='$action'>
 			Create a new <select name='wpType'>$options</select>
-			called <input name='wpTitle' />
-			<input type='submit' value='Create' />
+			called <input name='wpTitle' class='raCreateInput' class=':format;/^(vanadium)+$/i />
+			<input type='submit' class='raCreateButton' value='Create' />
 		</form>";
+*/
+	$out->mBodytext .= "
+		<div class='portlet' id='p-racreate'>
+			<div class='pBody'>
+				<form id='RACreateForm' method='POST' action='$action'>
+					Create a new <select name='wpType'>$options</select>
+					<input type='submit' class='raCreateButton' value='Go' />
+				</form>
+			</div>
+		</div>";
 
 	return true;
 }
