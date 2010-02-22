@@ -1246,17 +1246,17 @@ input.raCreateButton {
 	text-align: left;
 }
 
-#p-racreate {
+.racreate-locate {
 	position: absolute;
 	width:20em;
 	top: 2.30em;
-	right: 35.4em;
+	right: 25.4em;
 	margin: 0;
 }
 #p-search {
 	position: absolute;
 	top: 2.0em;
-	right: 15.2em;
+	right: 1.2em;
 	margin: 0;
 }
 

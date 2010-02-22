@@ -56,7 +56,8 @@ function efRecordAdminCreateForm (&$out) {
 		</form>";
 */
 	$out->mBodytext .= "
-	<h5><label>Crete New Record</label></h5>
+	<div class='racreate-locate'>
+		<h5><label>Create New Record</label></h5>
 		<div class='portlet' id='p-racreate'>
 			<div class='pBody'>
 				<form id='RACreateForm' method='POST' action='$action'>
@@ -64,7 +65,8 @@ function efRecordAdminCreateForm (&$out) {
 					<br /><input type='submit' class='raCreateButton' value='Go' />
 				</form>
 			</div>
-		</div>";
+		</div>
+	</div>";
 
 	return true;
 }
