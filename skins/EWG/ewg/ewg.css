@@ -1248,13 +1248,14 @@ input.raCreateButton {
 
 #p-racreate {
 	position: absolute;
-	top: 3.3em;
-	right: 89.2em;
+	width:20px;
+	top: 2.3em;
+	right: 35.4em;
 	margin: 0;
 }
 #p-search {
 	position: absolute;
-	top: 3.3em;
+	top: 2.3em;
 	right: 15.2em;
 	margin: 0;
 }
