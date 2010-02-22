@@ -56,11 +56,12 @@ function efRecordAdminCreateForm (&$out) {
 		</form>";
 */
 	$out->mBodytext .= "
+	<h5><label>Crete New Record</label></h5>
 		<div class='portlet' id='p-racreate'>
 			<div class='pBody'>
 				<form id='RACreateForm' method='POST' action='$action'>
-					Create a New <select name='wpType'>$options</select>
-					<input type='submit' class='raCreateButton' value='Go' />
+					<select name='wpType'>$options</select>
+					<br /><input type='submit' class='raCreateButton' value='Go' />
 				</form>
 			</div>
 		</div>";
