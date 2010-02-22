@@ -56,9 +56,9 @@ function efRecordAdminCreateForm (&$out) {
 		</form>";
 */
 	$out->mBodytext .= "
-	<div class='racreate-locate'>
+	<div class='racreate-locate portlet'>
 		<label>Create New Record</label>
-		<div class='portlet' id='p-racreate'>
+		<div id='p-racreate'>
 			<div class='pBody'>
 				<form id='RACreateForm' method='POST' action='$action'>
 					<select name='wpType'>$options</select>
