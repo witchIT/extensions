@@ -1249,14 +1249,17 @@ input.raCreateButton {
 .racreate-locate {
 	position: absolute;
 	top: 1.8em;
-	right: 20.4em;
+	right: 15.4em;
 	margin: 0;
 }
 
-.racreate-locate select {
+.racreate-locate select  {
 	height:91%;
 	font-size:91%
 }
+
+.racreate-locate label { font-size:91% }
+
 #p-search {
 	position: absolute;
 	top: 1.8em;

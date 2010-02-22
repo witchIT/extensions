@@ -57,7 +57,7 @@ function efRecordAdminCreateForm (&$out) {
 */
 	$out->mBodytext .= "
 	<div class='racreate-locate portlet'>
-		<h5 style='margin-bottom:0'><label>Create New Record</label></h5>
+		<label>Create New Record</label>
 		<div id='p-racreate'>
 			<div class='pBody'>
 				<form id='RACreateForm' method='POST' action='$action'>
