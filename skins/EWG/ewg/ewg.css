@@ -1241,7 +1241,7 @@ input.raCreateButton {
 #p-racreate .pBody {
 	padding: .5em .4em .4em .4em;
 	text-align: left;
-	height:2.1em;
+	height:2em;
 }
 
 #p-racreate {
@@ -1255,12 +1255,12 @@ width:auto;
 }
 
 #p-racreate h5 {margin-bottom:0}
-
+/*
 #p-racreate select  {
 	height:95%;
 	font-size:95%
 }
-/*
+
 #p-racreate label { 
 	font-size:91%;
 	font-weight:normal;
