@@ -4,39 +4,7 @@
 
 /*If you want to center a logo vertically in its space, change the #p-logo top px value. Change the left value to move it right.*/
 
-#content {
 
-}
-
-
-#column-one {
-  /*  padding-top:65px;*/
-}
-
-#column-content {
-
-}
-
-#p-cactions {
-    top:80px;
-}
-
-#p-logo {
-    height:50px;
-    width:240px;
-    margin-bottom:10px;
-    top:10px;
-    left:5px;
-}
-
-#p-logo a, #p-logo a:hover {
-    height:50px;
-    width:100%;
-}
-
-#top-div {
-	height:100px;
-}
 
 
 
