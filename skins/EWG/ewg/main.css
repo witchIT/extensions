@@ -21,6 +21,11 @@
 	padding-top:0;
 }
 
+#top-div {
+	height:100px;
+}
+
+
 #content {
 	background: white;
 	color: black;
