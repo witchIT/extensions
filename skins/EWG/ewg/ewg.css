@@ -40,7 +40,7 @@
 
 #contentSub {display:none}
 
-h2, h3, #p-cactions li a, #p-personal li a {
+h2, h3  {
 	color: #39463E;
 }
 
@@ -506,8 +506,8 @@ display:none;
 }
 
 .fieldname-tooltip {
-float:left;
-margin-right:10px;
+	float:left;
+	margin-right:10px;
 }
 
 /*new datepicker css*/
@@ -1195,24 +1195,20 @@ input.vanadium-valid ~ .vanadium-valid-advice {
   color: green;
 }
 
-fieldset table textarea {
-/*min-width:400px;*/
-}
-
 /*Float-right without any margins or anything else*/
 .floatright-nm {float:right}
 
 /*The red arrow for mandatory fields*/
 .req-arrow {
-background:url(/files/c/c0/Mand-arrow-2pxtop.png) no-repeat center left;
+	background:url(/files/c/c0/Mand-arrow-2pxtop.png) no-repeat center left;
 }
 
 /* The i symbol*/
 .tooltip-nowidth-image {
-background:url(/files/thumb/e/e1/Info.svg/16px-Info.svg.png) no-repeat; 
-width:16px; 
-height:16px;
-vertical-align: text-bottom
+	background:url(/files/thumb/e/e1/Info.svg/16px-Info.svg.png) no-repeat; 
+	width:16px; 
+	height:16px;
+	vertical-align: text-bottom
 }
 
 /*Date Record Styles*/
@@ -1245,29 +1241,17 @@ input.raCreateButton {
 }
 
 #p-racreate {
-margin:0;
-position:absolute;
-right:1em;
-top:2.6em;
-margin-left:0.7em;
-margin-right:0.7em;
-width:auto;
+	margin:0;
+	position:absolute;
+	right:1em;
+	top:2.6em;
+	margin-left:0.7em;
+	margin-right:0.7em;
+	width:auto;
 }
 
 #p-racreate h5 {margin-bottom:0}
-/*
-#p-racreate select  {
-	height:95%;
-	font-size:95%
-}
 
-#p-racreate label { 
-	font-size:91%;
-	font-weight:normal;
-	white-space:nowrap;
-	line-height:1.2;
- }
-*/
 #p-search {
 	position: absolute;
 	top: 3em;
@@ -1276,3 +1260,10 @@ width:auto;
 	width:auto;
 }
 
+/*Sidebar width*/
+
+.dTreeNode {
+max-width:190px;
+}
+
+#contentSub {display:none}
