@@ -46,7 +46,8 @@ class OrganicDesignTemplate extends QuickTemplate {
 		global $wgRequest, $wgVersion;
 		$this->skin = $skin = $this->data['skin'];
 		$action = $wgRequest->getText( 'action' );
-		if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) >= 0 ) $css = str_replace( 'main.css', 'main116.css', $this->data['csslinks'] );
+		$css = $this->data['csslinks'];
+		if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) >= 0 ) $css = str_replace( 'main.css', 'main116.css', $css );
 
 		// Suppress warnings to prevent notices about missing indexes in $this->data
 		wfSuppressWarnings();
