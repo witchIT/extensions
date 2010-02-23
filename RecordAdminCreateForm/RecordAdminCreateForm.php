@@ -51,13 +51,13 @@ function efRecordAdminCreateForm (&$out) {
 	$out->mBodytext .= "
 		<form id='RACreateForm' method='POST' action='$action'>
 			Create a new <select name='wpType'>$options</select>
-			called <input name='wpTitle' class='raCreateInput' class=':format;/^(vanadium)+$/i />
+			called <input name='wpTitle' class='raCreateInput' />
 			<input type='submit' class='raCreateButton' value='Create' />
 		</form>";
 */
 	$out->mBodytext .= "
 	<div class='racreate-locate portlet'>
-		<label>&nbsp;&nbsp;&nbsp;Create New Record</label>
+		<label>&nbsp;&nbsp;&nbsp;&nbsp;Create New Record</label>
 		<div id='p-racreate'>
 			<div class='pBody'>
 				<form id='RACreateForm' method='POST' action='$action'>
