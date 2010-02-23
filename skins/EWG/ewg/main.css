@@ -18,13 +18,11 @@
 
 #column-one {
 	vertical-align:top;
-	padding-top:0;
 }
 
 #top-div {
-	height:100px;
+	height:79px;
 }
-
 
 #content {
 	background: white;
@@ -41,8 +39,6 @@
 	padding-right:5px;
 }
 
-#bodyContent {padding: 1.5em}
-
 /* the left column width is specified in class .portlet */
 
 /* Font size:
@@ -53,7 +49,7 @@
 
 body {
 	font: x-small sans-serif;
-	background: #FCFCF7 url(headbg.jpg) 0 0 no-repeat;
+	background: #f9f9f9 url(headbg.jpg) 0 0 no-repeat;
 	color: black;
 	margin: 0;
 	padding: 0;
@@ -85,11 +81,11 @@ fieldset table {
 }
 a {
 	text-decoration: none;
-	color: #39463E;
+	color: #002bb8;
 	background: none;
 }
 a:visited {
-	color: #330066;
+	color: #5a3696;
 }
 a:active {
 	color: #faa700;
@@ -133,24 +129,25 @@ h1, h2, h3, h4, h5, h6 {
 	background: none;
 	font-weight: normal;
 	margin: 0;
-	padding-top: 1em;
+	padding-top: .5em;
 	padding-bottom: .17em;
-	font-family: sans-serif;
+	border-bottom: 1px solid #aaa;
 }
-h1 { font-size: 188%;  color: #6E993D; }
-h1 .editsection { font-size: 53%;}
-h2 { font-size: 150%;   color: #3E5A1F;}
-h2 .editsection { font-size: 67%; color: #3E5A1F;}
-h2, h3, h4, h5, h6 {
+h1 { font-size: 188%; }
+h1 .editsection { font-size: 53%; }
+h2 { font-size: 150%; }
+h2 .editsection { font-size: 67%; }
+h3, h4, h5, h6 {
+	border-bottom: none;
 	font-weight: bold;
 }
-h3 { font-size: 132%;  color: #3E5A1F; }
-h3 .editsection { font-size: 76%; font-weight: normal;  color: #3E5A1F; }
+h3 { font-size: 132%; }
+h3 .editsection { font-size: 76%; font-weight: normal; }
 h4 { font-size: 116%; }
 h4 .editsection { font-size: 86%; font-weight: normal; }
-h5 { font-size: 106%;}
+h5 { font-size: 100%; }
 h5 .editsection { font-weight: normal; }
-h6 { font-size: 100%;}
+h6 { font-size: 80%;  }
 h6 .editsection { font-size: 125%; font-weight: normal; }
 
 ul {
@@ -233,13 +230,13 @@ blockquote {
 	font-style: italic;
 }*/
 code {
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 }
 pre {
 	padding: 1em;
 	border: 1px dashed #2f6fab;
 	color: black;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	line-height: 1.1em;
 }
 
@@ -278,7 +275,6 @@ span.subpages {
 	   When bug 2013 is fixed properly, they should be removed. */
 	line-height: 1.2em;
 	padding-bottom: 0;
-	margin-left:0.7em;
 }
 
 /* user notification thing */
@@ -334,7 +330,7 @@ span.subpages {
 
 .catlinks {
 	border: 1px solid #aaa;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	padding: 5px;
 	margin-top: 1em;
 	clear: both;
@@ -381,7 +377,7 @@ table.small {
 .toc,
 .mw-warning {
 	border: 1px solid #aaa;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	padding: 5px;
 	font-size: 95%;
 }
@@ -458,7 +454,7 @@ div.thumb {
 div.thumbinner {
 	border: 1px solid #ccc;
 	padding: 3px !important;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	font-size: 94%;
 	text-align: center;
 	overflow: hidden;
@@ -519,7 +515,7 @@ table.rimage {
 }
 .toccolours {
 	border: 1px solid #aaa;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	padding: 5px;
 	font-size: 95%;
 }
@@ -544,6 +540,8 @@ table.rimage {
 }
 #bodyContent a[href ^="https://"],
 .link-https {
+	background: url(lock_icon.gif) center right no-repeat;
+	padding-right: 16px;
 }
 #bodyContent a[href ^="mailto:"],
 .link-mailto {
@@ -705,9 +703,9 @@ special external link styling */
 ** Search portlet
 */
 #p-search {
-	width:14.5em;
-	margin-left:0.7em;
-	margin-right:0.7em;
+	width:18.2em;
+	margin-left:0.5em;
+	margin-right:0.5em;
 }
 input.searchButton {
 	margin-top: 1px;
@@ -719,7 +717,7 @@ input.searchButton {
 	font-weight: bold;
 }
 #searchInput {
-	width: 13.5em;
+	width: 18.2em;
 	margin: 0;
 	font-size: 95%;
 }
@@ -975,7 +973,7 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 }
 #preftoc li.selected {
 	font-weight: bold;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	border: 1px solid #aaa;
 	border-bottom: none;
 	cursor: default;
@@ -999,6 +997,7 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 	text-decoration: none;
 }
 #prefcontrol {
+	padding-top: 2em;
 	clear: both;
 }
 #preferences {
@@ -1006,7 +1005,7 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 	border: 1px solid #aaa;
 	clear: both;
 	padding: 1.5em;
-	background-color: #F5F5F0;
+	background-color: #F9F9F9;
 }
 .prefsection {
 	border: none;
@@ -1015,13 +1014,14 @@ li#ca-watch, li#ca-unwatch, li#ca-varlang-0, li#ca-print {
 }
 .prefsection fieldset {
 	border: 1px solid #aaa;
+	float: left;
 	margin-right: 2em;
 }
 .prefsection legend {
 	font-weight: bold;   
 }
 .prefsection table, .prefsection legend {
-	background-color: #F5F5F0;
+	background-color: #F9F9F9;
 }
 .mainLegend {
 	display: none;
@@ -1053,7 +1053,7 @@ div#userlogin form#userlogin2 {
 	border: 1px solid #aaa;
 	clear: both;
 	padding: 1.5em 2em;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	float: left;
 }
 .rtl div#userloginForm form,
@@ -1063,7 +1063,7 @@ div#userlogin form#userlogin2 {
 
 div#userloginForm table,
 div#userlogin form#userlogin2 table {
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 }
 
 div#userloginForm h2,
@@ -1191,7 +1191,7 @@ table.gallery tr {
 
 table.gallery td {
 	vertical-align: top;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	border: solid 2px white;
 }
 /* Keep this temporarily so that cached pages will display right */
@@ -1292,7 +1292,7 @@ table.mw_metadata td, table.mw_metadata th {
 }
 
 table.mw_metadata th {
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 }
 
 table.mw_metadata td {
@@ -1308,7 +1308,7 @@ table.collapsed tr.collapsable {
 ul#filetoc {
 	text-align: center;
 	border: 1px solid #aaaaaa;
-	background-color: #F5F5F0;
+	background-color: #f9f9f9;
 	padding: 5px;
 	font-size: 95%;
 	margin-bottom: 0.5em;
@@ -1560,5 +1560,3 @@ span.searchmatch {
 .os-suggest {
 	font-size: 127%;
 }
-
-
