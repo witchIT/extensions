@@ -1,6 +1,6 @@
 <?php
 /**
- * OrganicDesign skin (for MW1.14+)
+ * HapuTimes skin (for MW1.14+)
  *
  * Translated from gwicke's previous TAL template version to remove
  * dependency on PHPTAL.
@@ -16,23 +16,23 @@ if( !defined( 'MEDIAWIKI' ) ) die( -1 );
  * @todo document
  * @addtogroup Skins
  */
-class SkinOrganicDesign extends SkinTemplate {
+class SkinHapuTimes extends SkinTemplate {
 	function initPage( &$out ) {
 		SkinTemplate::initPage( $out );
-		$this->skinname  = 'organicdesign';
-		$this->stylename = 'organicdesign';
-		$this->template  = 'OrganicDesignTemplate';
+		$this->skinname  = 'haputimes';
+		$this->stylename = 'haputimes';
+		$this->template  = 'HapuTimesTemplate';
 	}
 	function setupSkinUserCss( $out ) {
 		parent::setupSkinUserCss( $out );
-		$out->addStyle( 'organicdesign/main.css', 'screen' );
+		$out->addStyle( 'haputimes/main.css', 'screen' );
 	}
 }
 /**
  * @todo document
  * @addtogroup Skins
  */
-class OrganicDesignTemplate extends QuickTemplate {
+class HapuTimesTemplate extends QuickTemplate {
 	var $skin;
 	/**
 	 * Template filter callback for MonoBook skin.
@@ -89,9 +89,8 @@ class OrganicDesignTemplate extends QuickTemplate {
 <body<?php if($this->data['body_ondblclick']) { ?> ondblclick="<?php $this->text('body_ondblclick') ?>"<?php } ?>
 <?php if($this->data['body_onload']) { ?> onload="<?php $this->text('body_onload') ?>"<?php } ?>
  class="mediawiki <?php $this->text('dir') ?> <?php $this->text('pageclass') ?> <?php $this->text('skinnameclass') ?>">
-	<table class="pageWrapper" cellpadding="0" cellspacing="0" width="100%"><tr><td align="center">
-	<table id="globalWrapper" cellpadding="0" cellspacing="0"><tr><td>
-	<table class="pageWrapper" cellpadding="0" cellspacing="0" width="100%"><tr><td id="column-one"><div id="c1-div">
+
+<table id="globalWrapper" cellpadding="0" cellspacing="0" border><tr><td colspan="3" id="header">
 	<script type="<?php $this->text('jsmimetype') ?>"> if (window.isMSIE55) fixalpha(); </script>
 
 	<div class="portlet" id="p-personal">
@@ -110,120 +109,88 @@ class OrganicDesignTemplate extends QuickTemplate {
 		</div>
 	</div>
 
-<?php
-# Get avatar image
-global $wgUser,$wgUploadDirectory,$wgUploadPath;
-if ($wgUser->isLoggedIn()) {
-	?><div id="p-avatar"><?php
-	$user  = $wgUser->getName();
-	$title = Title::newFromText("$user.png",NS_IMAGE);
-	$image = Image::newFromTitle($title);
-	if ($image && $image->exists()) {
-		echo "<a href=\"".$title->getLocalUrl()."\"><img src=\"".$image->getThumbnail(50,50)->getUrl()."\" alt=\"$user\"></a>";
-	} else {
-		$upload = Title::newFromText('Upload',NS_SPECIAL);
-		$url = $upload->getLocalUrl("wpDestFile=$user.png");
-		echo "<a href=\"$url\" class=\"new\"><br>user<br>icon</a>";
-	}
-	?></div><?php
-}
-?>
-
-<div id="p-search" class="portlet">
-	<h5><label for="searchInput"><?php $this->msg('search') ?></label></h5>
-	<div id="searchBody" class="pBody">
-		<form action="<?php $this->text('searchaction') ?>" id="searchform"><div>
-			<input id="searchInput" name="search" type="text"<?php echo $skin->tooltipAndAccesskey('search');
-				if( isset( $this->data['search'] ) ) {
-					?> value="<?php $this->text('search') ?>"<?php } ?> />
-			<input type='submit' name="go" class="searchButton" id="searchGoButton"	value="<?php $this->msg('searcharticle') ?>" />&nbsp;
-			<input type='submit' name="fulltext" class="searchButton" id="mw-searchButton" value="<?php $this->msg('searchbutton') ?>" />
-		</div></form>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput"><?php $this->msg('search') ?></label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="<?php $this->text('searchaction') ?>" id="searchform"><div>
+				<input id="searchInput" name="search" type="text"<?php echo $skin->tooltipAndAccesskey('search');
+					if( isset( $this->data['search'] ) ) {
+						?> value="<?php $this->text('search') ?>"<?php } ?> />
+				<input type='submit' name="go" class="searchButton" id="searchGoButton"	value="<?php $this->msg('searcharticle') ?>" />&nbsp;
+				<input type='submit' name="fulltext" class="searchButton" id="mw-searchButton" value="<?php $this->msg('searchbutton') ?>" />
+			</div></form>
+		</div>
 	</div>
-</div>
 
-<?php
-# MediaWiki:Sidebar
-global $wgUser,$wgTitle,$wgParser;
-$side = new Article(Title::newFromText('Sidebar',NS_MEDIAWIKI));
-if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
-else { $psr = new Parser; $opt = NULL; }
-if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
-echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
-?>
-	</div></td><!-- end of the left (by default at least) column -->
-	<td id="contentWrapper">
-		<table cellpadding="0" cellspacing="0" width="100%"><tr>
-		<tr>
-			<td><div id="shadow-tl"></div></td>
-			<td id="shadow-t" align="right"><div id="logo-t"></div></td>
-			<td align="left"><div id="shadow-tr"></div></td>
-		</tr>
-		<td id="shadow-l">
-		<td width="100%" id="content">
-			<div id="p-cactions" class="portlet">
-				<h5><?php $this->msg('views') ?></h5>
-				<div class="pBody">
-					<ul>
-			<?php			foreach($this->data['content_actions'] as $key => $tab) { ?>
-						 <li id="ca-<?php echo Sanitizer::escapeId($key) ?>"<?php
-								if($tab['class']) { ?> class="<?php echo htmlspecialchars($tab['class']) ?>"<?php }
-							 ?>><a href="<?php echo htmlspecialchars($tab['href']) ?>"<?php echo $skin->tooltipAndAccesskey('ca-'.$key) ?>><?php
-							 echo htmlspecialchars($tab['text']) ?></a></li>
-			<?php			 } ?>
-					</ul>
-				</div>
-			</div>
-			<a name="top" id="top"></a>
-			<?php if($this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
-			<h1 class="firstHeading"><?php $this->data['displaytitle']!=""?$this->html('title'):$this->text('title') ?></h1>
-			<div id="bodyContent">
-				<h3 id="siteSub"><?php $this->msg('tagline') ?></h3>
-				<div id="contentSub"><?php $this->html('subtitle') ?></div>
-				<?php if($this->data['undelete']) { ?><div id="contentSub2"><?php     $this->html('undelete') ?></div><?php } ?>
-				<?php if($this->data['newtalk'] ) { ?><div class="usermessage"><?php $this->html('newtalk')  ?></div><?php } ?>
-				<?php if($this->data['showjumplinks']) { ?><div id="jump-to-nav"><?php $this->msg('jumpto') ?> <a href="#column-one"><?php $this->msg('jumptonavigation') ?></a>, <a href="#searchInput"><?php $this->msg('jumptosearch') ?></a></div><?php } ?>
-				<!-- start content -->
-				<?php $this->html('bodytext') ?>
-				<?php if($this->data['catlinks']) { ?><div id="catlinks"><?php       $this->html('catlinks') ?></div><?php } ?>
-				<!-- end content -->
-				<div class="visualClear"></div>
-			</div>
-		</td>
-			<td valign="top" id="shadow-r"><div id="logo-r"></div></td>
-		</tr>
-		<tr>
-			<td><div id="shadow-bl"></div></td>
-			<td><div id="shadow-b"></div></td>
-			<td><div id="shadow-br"></div></td>
-		</tr>
-		</table>
-	</td></tr>
-	</table>
-	</td></tr>
-	<tr><td colspan="2">
-	
-<?php
-# MediaWiki:Footer
-global $wgUser,$wgTitle,$wgParser;
-$side = new Article(Title::newFromText('Footer',NS_MEDIAWIKI));
-if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
-else { $psr = new Parser; $opt = NULL; }
-if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
-echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
-?>
-	
-	</td></tr>
-	</table>
-	<?php $this->html('bottomscripts'); /* JS call to runBodyOnloadHook */ ?>
-</div>
+	<div id="menubar">
+		<?php
+		global $wgUser, $wgTitle, $wgParser;
+		$a = new Article( Title::newFromText( 'Menubar', NS_MEDIAWIKI ) );
+		if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+		else { $psr = new Parser; $opt = NULL; }
+		if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+		echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+		?>
+	</div>
+
+</td></tr>
+
+<tr><td id="sidebar" valign="top">
+	<?php
+	$a = new Article( Title::newFromText( 'Sidebar', NS_MEDIAWIKI ) );
+	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	?>
+</td>
+
+<td id="contentWrapper" valign="top">
+	<div id="p-cactions" class="portlet">
+		<h5><?php $this->msg('views') ?></h5>
+		<div class="pBody">
+			<ul>
+	<?php			foreach($this->data['content_actions'] as $key => $tab) { ?>
+				 <li id="ca-<?php echo Sanitizer::escapeId($key) ?>"<?php
+						if($tab['class']) { ?> class="<?php echo htmlspecialchars($tab['class']) ?>"<?php }
+					 ?>><a href="<?php echo htmlspecialchars($tab['href']) ?>"<?php echo $skin->tooltipAndAccesskey('ca-'.$key) ?>><?php
+					 echo htmlspecialchars($tab['text']) ?></a></li>
+	<?php			 } ?>
+			</ul>
+		</div>
+	</div>
+	<a name="top" id="top"></a>
+	<?php if($this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
+	<h1 class="firstHeading"><?php $this->data['displaytitle']!=""?$this->html('title'):$this->text('title') ?></h1>
+	<div id="bodyContent">
+		<h3 id="siteSub"><?php $this->msg('tagline') ?></h3>
+		<div id="contentSub"><?php $this->html('subtitle') ?></div>
+		<?php if($this->data['undelete']) { ?><div id="contentSub2"><?php     $this->html('undelete') ?></div><?php } ?>
+		<?php if($this->data['newtalk'] ) { ?><div class="usermessage"><?php $this->html('newtalk')  ?></div><?php } ?>
+		<?php if($this->data['showjumplinks']) { ?><div id="jump-to-nav"><?php $this->msg('jumpto') ?> <a href="#column-one"><?php $this->msg('jumptonavigation') ?></a>, <a href="#searchInput"><?php $this->msg('jumptosearch') ?></a></div><?php } ?>
+		<!-- start content -->
+		<?php $this->html('bodytext') ?>
+		<?php if($this->data['catlinks']) { ?><div id="catlinks"><?php       $this->html('catlinks') ?></div><?php } ?>
+		<!-- end content -->
+		<div class="visualClear"></div>
+	</div>
+</td>
+
+<td id="rightnav" valign="top">
+	<?php
+	$a = new Article( Title::newFromText( 'Rightnav', NS_MEDIAWIKI ) );
+	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	?>
+</td></tr>
+
+<tr><td colspan="3" id="footer">
+	<?php
+	$a = new Article( Title::newFromText( 'Footer', NS_MEDIAWIKI ) );
+	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	?>
+</td></tr>
+</table>
+
+<?php $this->html('bottomscripts'); /* JS call to runBodyOnloadHook */ ?>
 <?php $this->html('reporttime') ?>
-<?php if ( $this->data['debug'] ): ?>
-<!-- Debug output:
-<?php $this->text( 'debug' ); ?>
 
--->
-<?php endif; ?>
 </body></html>
 <?php
 	wfRestoreWarnings();
