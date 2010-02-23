@@ -5,23 +5,28 @@
 /*If you want to center a logo vertically in its space, change the #p-logo top px value. Change the left value to move it right.*/
 
 #content {
-    margin-top:79px;
+
 }
 
+
 #column-one {
-    padding-top:65px;
+  /*  padding-top:65px;*/
+}
+
+#column-content {
+
 }
 
 #p-cactions {
-    top:60px;
+    top:80px;
 }
 
 #p-logo {
     height:50px;
-    width:400px;
+    width:240px;
     margin-bottom:10px;
-    top:6px;
-    left:4px;
+    top:10px;
+    left:5px;
 }
 
 #p-logo a, #p-logo a:hover {
@@ -29,249 +34,163 @@
     width:100%;
 }
 
+#top-div {
+	height:100px;
+}
 
+#contentSub {display:none}
 
-/* Date Picker
- *
- * This is a very basic stylesheet for the date-picker. Feel free to create your own.
- */
+h2, h3, #p-cactions li a, #p-personal li a {
+	color: #39463E;
+}
 
-/* The wrapper div */
-div.datePicker {
-        position:absolute;
-        min-width:24em;
-        width:24em;
-        z-index:9999;
-        text-align:center;
+h1 {color: #5F5447}
 
-        /* Change the font-size to suit your design's CSS. The following line is for the demo that has a 12px font-size defined on the body tag */
-        font:900 0.8em/0.8em Verdana, Sans-Serif;
-        
-        /* For Example: If using the YUI font CSS, uncomment the following line to get a 10px font-size within the datePicker */
-        /* font:900 77%/77% Verdana; */
+/*Common.css*/
 
-        background:transparent;
-
-        /* Mozilla & Webkit extensions to stop text-selection. Remove if you wish to validate the CSS */
-        -moz-user-select:none;
-        -khtml-user-select:none;
-}
-/* Styles for the static datePickers */
-div.staticDP {
-        position:relative;
-        top:5px;
-        left:0;
-}
-/* The iframe hack to cover selectlists in Internet Explorer <= v6 */
-iframe.iehack {
-        position:absolute;
-        background:#fff;
-        z-index:9998;
-        padding:0;
-        border:0;
-        display:none;
-        margin:0;
-}
-/* The "button" created beside each input for non-static datePickers */
-#bodyContent a.date-picker-control:link,
-#bodyContent a.date-picker-control:visited,
-#bodyContent a.date-picker-control:hover,
-#bodyContent a.date-picker-control:active,
-#bodyContent a.date-picker-control:focus {
-        position:relative;
-        /* Moz & FF */
-        display: -moz-inline-stack;
-        border:0 none;
-        padding:0;
-        margin:0 0 0 4px;
-        background:transparent url( /files/5/5b/Date.gif ) no-repeat 50% 50%;
-        min-width:16px;
-        line-height:1;
-        cursor:pointer;
-        visibility:visible;
-        text-decoration:none;
-        vertical-align:middle;
-}
-/* Feed IE6 the following rule, IE7 should handle the min-width declared above */
-* html a.date-picker-control { width:16px; }
-a.date-picker-control { display:inline-block; }
-a.date-picker-control span {
-        display:block;
-        width:16px;
-        height:16px;
-        margin:auto 0;
-}
-/* The next & previous buttons */
-div.datePicker th span {
-        display:inline;
-        padding:0;
-        margin:0;
-        color:#000;
-        text-align:center;
-        line-height:1em;
-        border-width:0;
-        font-family: georgia, times new roman, palatino, times, bookman, serif;
-        background:transparent;
-        font-weight:bold;
-        cursor:pointer;
-}
-div.datePicker th span.month-display,
-div.datePicker th span.year-display {
-        font:bold 1.2em Verdana, Sans-Serif;
-        color: #4E507F;
-        cursor:default;
-}
-div.datePicker th span.prev-but,
-div.datePicker th span.next-but {
-        font-size:1.8em;
-        cursor:pointer !important;
-}
-div.datePicker th span.today-but {
-        text-align:center;
-        margin:0 auto;
-        font:normal 1em Verdana, Sans-Serif;
-        width:100%;
-        text-decoration:none;
-        line-height:1.6em;
-        text-transform:uppercase;
-        cursor:pointer !important
-}
-div.datePicker thead th span.fd-disabled {
-        color:#aaa;
-        cursor:default !important;
-}
-/* The mon, tue, wed etc day buttons */
-div.datePicker th span.fd-day-header {
-        text-align:center;
-        margin:0 auto;
-        font:900 1em Verdana, Sans-Serif;
-        height:1.4em;
-        width:2em;
-        text-decoration:none;
-        text-transform:lowercase;
-        line-height:1.4em;
-}
-/* The table */
-div.datePicker table {
-        position:relative;
-        margin:0;
-        padding:0;
-        border:1px solid #ccc;
-        background: #f4f4f4;
-        text-align: center;
-        width:100%;
-        border-spacing:2px;
-        table-layout:fixed;
-        border-collapse:separate;
-}
-/* Common TD & TH styling */
-div.datePicker table td {
-        border:1px solid #ccc;
-        padding:0;
-        text-align:center;
-        vertical-align:middle;
-        /* Opera requires a line-height bigger than 1em in order to redraw properly */
-        line-height:1.2em;
-        cursor:pointer;
-        background:#fff url( /files/6/68/Od-pollen.jpg ) repeat-x 0 -40px;
-        width:3em;
-        height:3em !important;
-        height:2.8em;
-        outline:none;
-}
-div.datePicker table th {
-        border:0 none;
-        padding:0;
-        line-height:1em;
-        font-weight:bold;
-        color:#222;
-        text-align:center;
-        vertical-align:middle;
-}
-div.datePicker table td.date-picker-unused {
-        background:#fff url( /files/1/10/Date-stripes.gif );
-        border-color:#dcdcdc;
-        padding:0;
-        cursor:default !important;
-}
-div.datePicker table thead th.date-picker-title {
-        width:auto;
-        height:auto;
-        padding:0.4em 0;
-}
-/* The "mon tue wed etc" day header button styles */
-div.datePicker table th.date-picker-day-header {
-        text-transform:lowercase;
-        width:3em;
-}
-div.datePicker table th.date-picker-day-header span { display:block; }
-/* The "todays date" style */
-div.datePicker table td.date-picker-today {
-        background:#E2E9FE;
-        color:rgb(100,100,100) !important;
-}
-/* The "selected date" style */
-div.datePicker table td.date-picker-selected-date {
-        color:#333 !important;
-        border-color:#333 !important;
-}
-/* the "highlight days" style */
-td.date-picker-highlight { color:#a86666; }
-/* The date "out of range" style */
-div.datePicker table td.out-of-range {
-        color:#ccc !important;
-        font-style:oblique;
-        background:#fcfcfc !important;
-        cursor:default !important;
-}
-/* The "disabled days" style */
-div.datePicker table td.day-disabled {
-        color:#aaa !important;
-        background:transparent !important;
-        cursor:default !important;
-}
-/* The "active cursor" style */
-div.datePicker table tbody td.date-picker-hover {
-        background:#fff url(../media/bg_header.jpg) no-repeat 0 0;
-        cursor:pointer;
-        border-color:rgb(100,130,170);
-        color:rgb(100,130,170);
-}
-/* Remove the images for Internet Explorer <= v6 using the "* html" hack */
-* html div.datePicker table td { background-image:none; }
-* html div.datePicker table td.date-picker-unused { background:#f2f2f2; }
-
-
-
-
+table.changes            { border:none; width:100% }
+table.changes th         { background: #dfdfdf; color: #4E507F; text-align: center; white-space: nowrap; }
+table.changes tr         { margin:0; padding:0 }
+table.changes td         { margin:0; padding: 1px 4px; vertical-align: top }
+table.changes td.heading { font-size: 110%; font-weight:bold; padding-top:10px }
+table.changes td.comment { width:100% }
+table.changes td.talk,
+table.changes td.diff    { font-size: 90% }
+table.changes td.user,
+table.changes td.talk,
+table.changes td.diff,
+table.changes td.info    { white-space: nowrap; }
+tr.mw-line-odd           { background: #fff; }
+tr.mw-line-even          { background: #eee; }
 
 table.message {
     width: 100%;
     margin: 5px 0 0 0;
     padding: 3px;
     border: 1px solid #ccc;
-    background: #f4f4f4;
+    background: #eee;
     text-align: left;
     vertical-align: top;
     }
-table.message pre { padding: 0; margin: 0; }
-table.message form { background: none; }
 
-.message pre { background: none; border: none; }
+/* Calendar */
+table.calendar          { margin: 0; padding: 10px; }
+table.calendar td       { margin: 0; padding: 2px; vertical-align: top; }
+table.month .heading td { padding:2px; background-color:#ddd; color:#aaa; text-align:center; font-size:120%; font-weight:bold; }
+table.month .dow td     { color:#aaa; text-align:center; font-size:110%; }
+table.month td.today    { background-color:#ddd; }
+table.month td {
+    border: none;
+    margin: 0;
+    padding: 1pt 1.5pt;
+    font-weight: bold;
+    font-size: 8pt;
+    text-align: right;
+    background-color: #eee;
+    }
+.day-active { color:#217A28 }
+.day-empty  { color:#cc0000 }
 
+/* All forms */
+form fieldset     { border: solid 1px #ccc; margin-bottom:10px }
+form legend       { font-weight:bold }
+form h5           { padding: 8px 0 0 0; margin:0; font-weight:normal; font-size:8pt }
+form .editsection { display:none }
+.namespacesettings form { background: none; }
 
+/* SimpleSecurity */
+#security-info-toggle {
+	margin: 0;
+	padding: 0 0 0 30px;
+	background: url(/files/thumb/5/59/Padlock.svg/30px-Padlock.svg.png) no-repeat;
+	}
+#security-info {
+	border-collapse: collapse;
+	margin: 10px 0 0 0;
+	padding: 3px;
+	border: 1px solid #ccc;
+	background: #eee;
+	color: black;
+	text-align: left;
+	font-weight: normal;
+	font-size: 8pt;
+	vertical-align: top;
+	}
+
+/* Workflow */
+.workflow {
+	width: 100px;
+	float: right;
+	border: 2px solid #ccc;
+	padding: 0;
+	margin: 0;
+	}
+.workflow table { width: 100% }
+.workflow td { text-align: center }
+.workflow-state #content {
+	background: white;
+	width: 100px;
+	height: 80px;
+	border-bottom: 2px solid #ccc;
+	text-align: center;
+	vertical-align: center;
+	overflow: hidden;
+	}
+.workflow-state #left,.workflow-state #right {
+	width: 20px;
+	height: 20px;
+	background: #bbb;
+	text-align: center;
+	}
+.workflow-state #title {
+	background: #ccc;
+	text-align: center;
+	}
+.workflow-state .menu a {
+	font-size: 10pt;
+	font-weight: bold;
+	color: white;
+	margin: 0;
+	}
+#catlinks a, #catlinks b { padding: 0 5px; }
+#catlinks a.current {
+	background-color: #3D5270;
+	color: white;
+	}
+
+/* Selenium */
+.selenium table {
+    border: 2px solid #dde;
+    background: white;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+.selenium td {
+    border: none;
+    padding: 4px;
+    margin: 0;
+}
+.selenium tr {
+    background: #dde;
+}
+.selenium tr + tr {
+    font-weight: normal;
+    background: #eef;
+    text-align: left;
+}
 
 /*--------------------------------------------------|
 | dTree 2.05 | www.destroydrop.com/javascript/tree/ |
 |---------------------------------------------------|
 | Copyright (c) 2002-2003 Geir Landr�               |
 |--------------------------------------------------*/
-
 .dtree {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 11px;
         color: #666;
-        /* white-space: nowrap; */
+        white-space: nowrap;
 }
 .dtree img {
         border: 0px;
@@ -283,7 +202,7 @@ table.message form { background: none; }
         text-decoration: none;
 }
 .dtree a.node, .dtree a.nodeSel {
-        /* white-space: nowrap; */
+        white-space: nowrap;
         padding: 1px 2px 1px 2px;
 }
 .dtree a:hover, .dtree a.node:hover, .dtree a.nodeSel:hover {
@@ -297,7 +216,7 @@ table.message form { background: none; }
         overflow: hidden;
 }
 
-/**
+/*
 * Dynamic menus
 */
 .dmenu { width: 180px }
@@ -385,11 +304,7 @@ left: 182px;
 top: -3px;
 }
 
-
-
-/**
- * Dynamic Navigation
- */
+/* Dynamic Navigation */
 div.Boxmerge,
 div.NavFrame {
         margin: 0px;
@@ -435,159 +350,139 @@ div.NavEnd {
         line-height: 1px;
         clear: both;
 }
-a.NavToggle {
+a.NavToggle, a.NavToggle:link, a.NavToggle:visited, a.NavToggle:hover, a.NavToggle:active {
         position: absolute;
         top: 0px;
         right: 3px;
         font-weight: normal;
-        font-size: smaller;
+        font-size: 150%;
+text-decoration:none;
+color:black;
 }
 body div.NavShow {
         display: normal;
 }
 /* end of Dynamic Navigation */
 
-
-
-/**
- * Recent changes
- */
-table.changes            { border:none; width:100% }
-table.changes th         { background: #dfdfdf; color: #4E507F; text-align: center; white-space: nowrap; }
-table.changes tr         { margin:0; padding:0 }
-table.changes td         { margin:0; padding: 1px 4px; vertical-align: top }
-table.changes td.heading { font-size: 110%; font-weight:bold; padding-top:10px }
-table.changes td.comment { width:100% }
-table.changes td.talk,
-table.changes td.diff    { font-size: 90% }
-table.changes td.user,
-table.changes td.talk,
-table.changes td.diff,
-table.changes td.info    { white-space: nowrap; }
-.odd                     { background: #fff; }
-.even                    { background: #eee; }
-
-
-
-/**
- * Section indenting
- */
-/*
-.section-indent h2 + p { margin-left: 3em; }
-.section-indent h2     { margin-left: 2em; }
-.section-indent h3 + p { margin-left: 6em; }
-.section-indent h3     { margin-left: 5em; }
-.section-indent h4 + p { margin-left: 9em; }
-.section-indent h4     { margin-left: 8em; }
-.section-indent h5 + p { margin-left: 12em; }
-.section-indent h5     { margin-left: 11em; }
-*/
-
-.section-indent-2 { margin-left: 0em; }
-.section-indent-3 { margin-left: 3em; }
-.section-indent-4 { margin-left: 6em; }
-.section-indent-5 { margin-left: 9em; }
-
-
-
-/**
- * Breadcrumbs
- */
-.breadcrumbs {
-    position: absolute;
-    right: 13px;
-    top: 23px;
-}
-.breadcrumbs a {
+/* Web site */
+.web-bar li {
+    display: inline;
+    padding: 2px 10px;
+    margin: 0 10px;
     font-weight: bold;
-    font-size: 8pt;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+.web-bar li.selected {
+    border-bottom: 2px solid white;
+}
+.web-bar li .selflink {
+    color: #4E507F;
+}
+.web-bar li a, .web-bar .selflink { font-weight: normal }
+ul.web-bar {
+    width: 100%;
+    list-style: none;
+    padding: 0 0 2px 0;
+    margin: 0 0 15px 0;
+    border-bottom: 1px solid #ccc;
+    overflow: visible;
 }
 
+/* RSS */
+div.rss {
+    margin: 5px 0 20px 0;
+    padding: 5px;
+    border: 1px solid #D0D6F0;
+}
+div.rss h3 {
+    background: #D0D6F0;
+    padding: 2px 5px;
+    margin: 0;
+    font-size: 11pt;
+}
+#content .rss h3 a { color: #4E507F }
+div.rss strong { font-weight: normal }
 
+.news-content img { margin-left: 20px }
 
-/**
- * Autolinks
- */
-/* a.autolink { color: #090; font-weight: bold; } */
+#content .news-container a {
+    color: #D0D6F0;
+    font-weight: bold;
+    font-size: 150%;
+}
+#content .news-container .news-content a {
+    color: #217A28;
+    font-weight: normal;
+    font-size: 100%;
+}
 
-
-
-/**
- * Sidebar
- */
-#p-navigation, #p-tb h5, #p-tb .pBody { display:none }
-
-.standard-table td {
-    background: #f4f4f4;
-    border: 1px solid #ccc;
-    padding: 4px;
+.featured-content ul {
+    list-style: none;
     margin: 0;
 }
-.standard-table th {
-    background: #eee;
-    border: 1px solid #ccc;
-    padding: 4px;
-    margin: 0;
+.featured-content h3 { text-align: center }
+
+/* make the list of references look smaller */
+ol.references {
+    font-size: 100%;
+}
+ 
+.references-small { font-size: 90%;}
+ 
+/* VALIDATOR NOTICE: the following is correct, but the W3C validator doesn't accept it */
+/* -moz-* is a vendor-specific extension (CSS 2.1 4.1.2.1) */
+/* column-count is from the CSS3 module "CSS Multi-column Layout" */
+/* Please ignore any validator errors caused by these two lines */
+.references-2column {
+    font-size: 90%;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    column-count: 2;
+}
+ 
+.same-bg { background: none; }
+ 
+/* Highlight clicked reference in blue to help navigation */
+ol.references > li:target {
+    background-color: #DEF;
+}
+ 
+sup.reference:target { 
+    background-color: #DEF;
+}
+ 
+/* Styling for citations */
+cite {
+    font-style: normal;
+    word-wrap: break-word;
+}
+ 
+/* If there is an inline link to a full citation, the full citation will turn blue when the inline link is clicked */
+cite:target { 
+    background-color: #DEF;
+}
+ 
+/* Do not expand URLs within citations for printing. The URLs should be included explicitly, to avoid confusion */
+ 
+@media print {
+    #content cite a.external.text:after {
+        display: none;
+    }
+}
+ 
+/* For linked citation numbers and document IDs, where the number need not be shown on a screen or a handheld, but should be included in the printed version */
+ 
+@media screen, handheld, projection {
+    cite *.printonly {
+        display: none;
+    }
 }
 
 
-.right-table td {
-    background: #f4f4f4;
-    border: 1px solid #ccc;
-    padding: 4px;
-    margin-left:auto;
-    margin-right:0;
 
-
-}
-
-
-.right-table th {
-    background: #eee;
-    border: 1px solid #ccc;
-    padding: 4px;
-    margin-left:auto;
-    margin-right:0;
-
-}
-
-
-.center-table td {
-    background: #f4f4f4;
-    border: 1px solid #ccc;
-    padding: 4px;
-    margin-left:auto;
-    margin-right:auto;
-}
-
-.center-table th {
-    background: #eee;
-    border: 1px solid #ccc;
-    padding: 4px;
-    margin-left:auto;
-    margin-right:auto;
-}
-
-.left-table td {
-    background: #f4f4f4;
-    border: 1px solid #ccc;
-    padding: 4px;
-    margin-left:0;
-    margin-right:auto;
-}
-
-.left-table th {
-    background: #eee;
-    border: 1px solid #ccc;
-    padding: 4px;
-    margin-left:0;
-    margin-right:auto;
-}
-
-
-/*
- * Tooltips
- */
+/* Tooltips */
 .tooltip + .tooltip { display:none }
 .tooltip:hover + .tooltip, .tooltip + .tooltip:hover {
     display: block;
@@ -598,24 +493,563 @@ table.changes td.info    { white-space: nowrap; }
     background-color: #F9E4D3;
 }
 
+.tooltip-nowidth + .tooltip-nowidth { 
+display:none;
+}
 
+.tooltip-nowidth:hover + .tooltip-nowidth, .tooltip-nowidth + .tooltip-nowidth:hover {
+    display: block;
+    position: absolute;
+    padding: 2px;
+    border: 1px solid black;
+    background-color: #F9E4D3;
+}
+
+.fieldname-tooltip {
+	float:left;
+	margin-right:10px;
+}
+
+/*new datepicker css*/
+/* This is a very basic stylesheet for the date-picker. Feel free to create your own. */
+
+/* Hide the input by using a className */
+input.fd-hidden-input,
+select.fd-hidden-input
+        {
+        display:none;
+        }
+/* Screen reader class - hides it from the visual display */
+.fd-screen-reader
+        {
+        position:absolute;
+        left:-999em;
+        top:0;
+        width:1px;
+        height:1px;
+        overflow:hidden; 
+        outline: 0 none;
+	-moz-outline: 0 none;
+        } 
+/* Disabled datePicker and activation button */
+a.dp-disabled,
+.dp-disabled table
+        {
+        opacity:.3 !important;           
+        filter:alpha(opacity=40);           
+        }
+.dp-disabled,
+.dp-disabled td,
+.dp-disabled th,
+.dp-disabled th span
+        {
+        cursor:default !important;          
+        }
+a.date-picker-control:focus,
+div.datePicker table td:focus 
+        {
+        overflow:hidden;
+        outline:0 none;
+	-moz-outline: 0 none;
+	color:rgb(100,130,170) !important;
+        }
+/* The wrapper div */
+div.datePicker
+        {
+        position:absolute;        
+        z-index:9999;
+        text-align:center;
+
+        /* Change the font-size to suit your design's CSS. The following line is for the demo that has a 12px font-size defined on the body tag */
+        font:900 0.8em/1em Verdana, Sans-Serif;
+
+        /* For Example: If using the YUI font CSS, uncomment the following line to get a 10px font-size within the datePicker */
+        /* font:900 77%/77% Verdana, sans-serif; */
+        
+        /* Or, if you prefer a pixel precision */
+        /* font:900 12px/12px Verdana, sans-serif; */
+        
+        background:transparent;
+
+        /* Mozilla & Webkit extensions to stop text-selection. */
+        -moz-user-select:none;
+        -khtml-user-select:none;                 
+        }  
+/* Styles for the static datePickers */
+div.static-datepicker
+        {
+        position:relative;        
+        top:5px;
+        left:0;
+        }
+div.datePicker table
+        {
+        width:auto;
+        height:auto;
+        border-collapse:separate;         
+        } 
+/* Draggable datepickers */
+div.datePicker tfoot th.drag-enabled,
+div.datePicker thead th.drag-enabled,
+div.datePicker thead th.drag-enabled span
+        {
+        cursor:move;
+        }
+/* The iframe hack to cover selectlists in Internet Explorer <= v6 */
+iframe.iehack
+        {
+        position:absolute;
+        background:#fff;
+        z-index:9998;
+        padding:0;
+        border:0;
+        display:none;
+        margin:0;
+        }
+/* The "button" created beside each input for non-static datePickers */
+a.date-picker-control:link,
+a.date-picker-control:visited
+        {
+        position:relative;
+        /* Moz & FF */
+        display: -moz-inline-stack;
+        border:0 none;
+        padding:0;
+        margin:0 0 0 4px;
+        background:transparent url( /files/5/5b/Date.gif ) no-repeat 50% 50%;
+        min-width:16px;
+        line-height:1;
+        cursor:pointer;
+        visibility:visible;
+        text-decoration:none;
+        vertical-align:top;         
+        }
+a.date-picker-control:hover,
+a.date-picker-control:active,
+a.date-picker-control:focus,
+a.dp-button-active:link,
+a.dp-button-active:visited,
+a.dp-button-active:hover,
+a.dp-button-active:active,
+a.dp-button-active:focus
+        {
+        background:transparent url( /files/5/5b/Date.gif) no-repeat 50% 50% !important;
+        }
+/* Feed IE6 the following rule, IE7 should handle the min-width declared above */
+* html a.date-picker-control
+        {
+        width:16px;
+        }
+/* IE, Safari & Opera. Seperate CSS rule seems to be required. */
+a.date-picker-control
+        {
+        display:inline-block;
+        }
+a.date-picker-control span
+        {
+        display:block;
+        width:16px;
+        height:16px;
+        margin:auto 0;
+        }
+/* Default "button" styles */
+div.datePicker thead th span
+        {
+        display:block;
+        padding:0;
+        margin:0;
+        text-align:center;
+        line-height:1em;
+        border:0 none;
+        background:transparent;
+        font-weight:bold;
+        cursor:pointer;
+        }
+/* The "month, year" display */
+div.datePicker th span.month-display,
+div.datePicker th span.year-display
+        {
+        display:inline;
+        text-transform:uppercase;
+        letter-spacing:1px;
+        font:normal 1.2em Verdana, Sans-Serif;
+        cursor:default;          
+        }
+/* Next & Previous (month, year) buttons */
+div.datePicker th span.prev-but,
+div.datePicker th span.next-but
+        {
+        font-weight:lighter;
+        font-size:2.4em;
+        font-family: georgia, times new roman, palatino, times, bookman, serif;
+        cursor:pointer !important;
+        }
+/* Hover effect for Next & Previous (month, year) buttons */
+div.datePicker th span.prev-but:hover,
+div.datePicker th span.next-but:hover,
+div.datePicker th span.today-but:hover
+        {
+        color:#a84444;
+        }
+/* Today button */
+div.datePicker th span.today-but
+        {
+        text-align:center;
+        margin:0 auto;
+        font:normal 1em Verdana, Sans-Serif;
+        width:100%;
+        text-decoration:none;
+        padding-top:0.3em;
+        text-transform:uppercase;
+        vertical-align:middle;
+        cursor:pointer !important          
+        }
+/* Disabled buttons */ 
+div.dp-disabled th span.prev-but,
+div.dp-disabled th span.next-but,
+div.dp-disabled th span.today-but,
+div.dp-disabled th span.prev-but:hover,
+div.dp-disabled th span.next-but:hover,
+div.dp-disabled th span.today-but:hover,
+div.datePicker th span.prev-but.fd-disabled:hover,
+div.datePicker th span.next-but.fd-disabled:hover,
+div.datePicker thead th span.fd-disabled,
+div.datePicker th span.fd-disabled:hover
+        {
+        color:#aaa;
+        cursor:default !important; 
+        opacity:1;        
+        }   
+/* The mon, tue, wed etc day buttons */
+div.datePicker th span.fd-day-header
+        {
+        text-align:center;
+        margin:0 auto;
+        font:900 1em Verdana, Sans-Serif;
+        text-decoration:none;
+        text-transform:lowercase;
+        cursor:pointer;          
+        }
+/* The table */
+div.datePicker table
+        {               
+        margin:0;
+        padding:0;
+        border:1px solid #ccc;        
+        background:#ffffff;
+        text-align:center;
+        border-spacing:2px;
+        padding:0.3em; 
+        width:auto;             
+        empty-cells:show;   
+        border-radius:0.8em;             
+        -moz-border-radius:0.8em;
+        -moz-box-shadow:0px 0px 5px #aaa;               
+        }
+/* Common TD & TH styling */
+div.datePicker table td,
+div.datePicker table tbody th
+        {                 
+        border:0 none;
+        padding:0;
+        text-align:center;
+        vertical-align:middle;               
+        cursor:pointer;
+        background:#ffffff;
+        width:3em;
+        height:3em;   
+        overflow:hidden;      
+        outline:transparent none 0px;        
+        border:1px solid #ccc;
+        text-transform:none;         
+        -moz-border-radius:2px;         
+        border-radius:2px;
+        }
+div.datePicker table td:focus,
+div.datePicker table td:active
+        {
+        outline:0 none red;
+        }
+div.datePicker table th
+        {
+        border:0 none;
+        padding:0;        
+        font-weight:bold;
+        color:#222;
+        text-align:center;
+        vertical-align:middle; 
+        text-transform:none;        
+        }
+div.datePicker table thead th
+        {
+        height:auto !important;
+        }
+div.datePicker table tbody th
+        {                          
+        border:1px solid #dcdcdc;        
+        }
+/* Week number display */
+div.datePicker table thead th.date-picker-week-header,
+div.datePicker table tbody th.date-picker-week-header
+        {
+        font-style:oblique;  
+        background:transparent;
+        cursor:default;         
+        }
+div.datePicker table thead th.date-picker-week-header
+        {
+        cursor:help;
+        border:0 none;
+        padding:0 0 0.2em 0;
+        }
+/* tfoot status bar */
+div.datePicker tfoot th
+        {
+        cursor:default;
+        font-weight:normal;
+        text-transform:uppercase;
+        letter-spacing:0.1em;
+        border:0 none;
+        background:#fff;
+        height:2.8em;
+        }
+/* TD cell that is _not_ used to display a day of the month */
+div.datePicker table tbody td.date-picker-unused
+        {
+        background:#ffffff;
+        border-color:#dcdcdc;          
+        cursor:default !important;
+        }
+
+/* The TH cell used to display the "month, year" title */
+div.datePicker table thead th.date-picker-title
+        {
+        width:auto;
+        height:auto;
+        padding:0.4em 0;
+        }
+/* The "mon tue wed etc" day header styles */
+div.datePicker table thead th.date-picker-day-header
+        {
+        text-transform:lowercase;
+        cursor:help;
+        height:auto;
+        }
+/* The "todays date" style */
+div.datePicker table tbody td.date-picker-today
+        {
+        background:#ffffff;
+        color:rgb(100,100,100) !important;
+        }
+
+div.datePicker table tbody td.month-out.date-picker-highlight 
+        {
+        color:#aa8866 !important;
+        }
+/* The "highlight days" style */
+div.datePicker table tbody td.date-picker-highlight,
+div.datePicker table thead th.date-picker-highlight
+        {
+        color:#a86666 !important;
+        }
+/* The "active cursor" style */
+div.datePicker table tbody td.date-picker-hover
+        {
+        background:#fff url(../media/bg_header.jpg) no-repeat 0 0;
+        cursor:pointer;
+        border-color:rgb(100,130,170) !important;
+        color:rgb(100,130,170); 
+        text-shadow: 0px 1px 1px #fff;                
+        }
+/* The "disabled days" style */
+div.datePicker table tbody td.day-disabled
+        {          
+        background:#ffffff;
+        color:#aaa !important;
+        cursor:default;
+        text-decoration:line-through;
+        } 
+div.datePicker table tbody td.month-out 
+        {
+        border-color:#ddd;
+        color:#aaa !important;
+        background:#ffffff;                             
+        } 
+/* The "selected date" style */
+div.datePicker table tbody td.date-picker-selected-date
+        {
+        color:#333 !important;
+        border-color:#333 !important;
+        }
+/* The date "out of range" style */
+div.datePicker table tbody td.out-of-range,
+div.datePicker table tbody td.not-selectable
+        {           
+        color:#ccc !important;
+        font-style:oblique;
+        background:#fcfcfc !important;
+        cursor:default !important;              
+        } 
+/* Week number "out of range" && "month-out" styles */
+div.datePicker table tbody th.month-out,
+div.datePicker table tbody th.out-of-range
+        {
+        color:#aaa !important;
+        font-style:oblique;
+        background:#fcfcfc !important;          
+        }
+/* week numbers "out of range" */
+div.datePicker table tbody th.out-of-range
+        {
+        opacity:0.6;
+        filter:alpha(opacity=60);
+        }  
+/* Used when the entire grid is full but the next/prev months dates cannot be selected */
+div.datePicker table tbody td.not-selectable
+        {         
+        opacity:0.8;
+        filter:alpha(opacity=80);        
+        }
+div.datePicker table tbody tr
+        {
+        display:table-row;
+        }
+div.datePicker table tfoot sup
+        {
+        font-size:0.86em;
+        letter-spacing:normal;
+        text-transform:none;
+        height: 0;
+	line-height: 1;
+	position: relative;
+	top: -0.2em;	
+	vertical-align: baseline !important;
+	vertical-align: top;  
+        }
+div.datePicker table thead th.date-picker-day-header,
+div.datePicker table thead span.month-display,
+div.datePicker table thead span.year-display
+        {            
+        text-shadow: 0px 1px 1px #fff;                            
+        }
+/* You can add focus effects (for everything but IE6) like so: */
+
+div.datepicker-focus table.datePickerTable
+        {
+        border-color:#999 !important;         
+        }
+div.datePicker table tbody tr td:focus,
+div.datePicker table tbody td.date-picker-hover 
+        {
+        overflow:hidden;
+        outline:0px solid #ff0000;        
+	-moz-outline: 0 none;
+	-o-highlight:0 none;
+	color:rgb(100,130,170) !important;        	
+        }
+div.static-datepicker table
+        {
+        -moz-box-shadow:0 0 0 transparent;
+        
+        }               
+div.datepicker-focus table
+        {
+        /* Naughty, naughty - but we add a highlight using the table's border colour */
+        outline:none;
+         -moz-box-shadow:0px 0px 5px #aaa;         
+        }    
+       *:-o-prefocus{outline : -o-highlight-border;}
+ 
+/* INTERNET EXPLORER WOES
+   ======================
+   
+   Hover Effects
+   -------------
+   
+   IE cannot deal with :focus on the TR so the datePicker script adds the class "dp-row-highlight" to the
+   row currently being hovered over. This should enable you to add hover effects if desired.
+   
+   e.g. the following rule will highlight the cell borders in another colour when a row is moused over,
+   it looks like crap though so I didn't include the rule within the demo:
+   
+div.datePicker table tbody tr.dp-row-highlight td
+        {
+        border-color:#aaa;
+        }
+*/
+
+/* Remove the images for Internet Explorer <= v6 using the "* html" hack  
+   This is a workaround for a nasty IE6 bug that never caches background images on dynamically created DOM nodes
+   which means that they are downloaded for every cell for every table - nasty! */    
+* html div.datePicker table td
+        {
+        background-image:none;
+        }
+* html div.datePicker table td.date-picker-unused
+        {
+        background:#f2f2f2;
+        }
+body.fd-drag-active 
+        {
+        -webkit-user-select:none;
+        }
+/* Chrome has problems with the -webkit-box-shadow and -webkit-border-radius styles together 
+   Remove one or the other to get things looking less ugly */       
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+        div.datePicker table
+                {
+                border-spacing:0.3em;
+                /* Naughty, naughty */
+                -webkit-box-shadow:0px 0px 5px #aaa;                 
+                -webkit-border-radius:0.8em;                
+                }          
+        div.static-datepicker table
+                {
+                -webkit-box-shadow:0 0 0 transparent;
+                } 
+        div.datepicker-focus table
+                {        
+                -webkit-box-shadow:0px 0px 5px #aaa;       
+                }       
+        div.datePicker table td,
+        div.datePicker table tbody th
+                {
+                padding:0.1em;
+                -webkit-border-radius:2px;
+                }
+        div.datePicker table tbody td.date-picker-hover
+                {                
+                -webkit-box-shadow:0px 0px 1px rgb(100,130,170);
+                }       
+}
+
+/* RECORDADMIN */ 
+
+/* Recordadmin td auto-right and aligned top*/ 
+
+.template_maintable td { width:100%; }
+.template_maintable th, .recordadmin-create th { white-space:nowrap; }
 
 /*
  * RecordAdmin forms and tables
  */
+.recordadmin-typeinfo {
+	font-size: 14pt;
+	color: #000000;
+	line-height: 1px;
+	padding: 10px 0 30px 0;
+}
 .recordadmin-menubar {
     margin: 0 0 10px 0;    
 }
 #bodyContent .recordadmin-menubar a {
-    color: #6C6E9D;
+    color: #3D2566;
+    font-size: 105%;
     font-weight: bold;
-    background: #f6f6f9;
-    border: 1px solid #aaa;
-    padding: 2px 10px;
-    margin: 0 10px 0 0;
+    margin: 0 20px 0 0;
 }
 form.recordadmin, .recordadmin-template {
-    background-color: #f6f6f9;
+    background-color: #F5F5F0;
     border: 1px solid #aaa;
     padding: 10px;
     display: table;
@@ -625,101 +1059,211 @@ form.recordadmin h2 {
     padding: 0 30px 10px 0;
     margin: 0;
 }
-form.recordadmin table { background: none; }
-tr.stripe { background: #f6f6f9; }
-table.sortable tr.odd {
+tr.stripe { background: #F5F5F0; }
+.tabsetjsprefs tr.stripe { background: white; }
+	table.sortable tr.odd {
     background-color: white;
 }
-table.recordadmin td, table.recordadmin th {
+table.recordadmin td,
+table.recordadmin th,
+table.sortable td {
     padding: 0 4px;
     margin: 0;
+   /*  overflow: hidden;
+   white-space: nowrap;*/
+    font-size: 8pt;
+    vertical-align: top;
+    width:auto;
 }
 table.sortable th {
-    text-align: center;
-  /* display: none;*/
-}
-table.sortable td {
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: 8pt;
-   /* display: none;*/
-}
-
-table.recordadmin { width: 100% }
-table.recordadmin p { padding: 0; margin: 0; }
-
-table.recordadmin .col0,
-table.recordadmin .col1,
-table.recordadmin .col2,
-table.recordadmin .col3 {
-    display: table-cell;
-    white-space: nowrap;
-}
-
-table.recordadmin .colOrganisation,
-table.recordadmin .colAssignedTo,
-table.recordadmin .colJob,
-table.recordadmin .colActivity,
-table.recordadmin .colDate,
-table.recordadmin .colTime,
-table.recordadmin .colPerson,
-table.recordadmin .colLead,
-table.recordadmin .colChance,
-table.recordadmin .colStage,
-table.recordadmin .colSource,
-table.recordadmin .colNotes,
-table.recordadmin .colResult,
-table.recordadmin .colTouch,
-table.recordadmin .colValue,
-table.recordadmin .colMarch,
-table.recordadmin .colApril,
-table.recordadmin .colMay,
-table.recordadmin .colJune,
-table.recordadmin .colJuly,
-table.recordadmin .colAugust,
-table.recordadmin .colSeptember,
-table.recordadmin .colProject,
-table.recordadmin .colOwner,
-table.recordadmin .colVertical,
-table.recordadmin .colBilling,
-table.recordadmin .colReporting,
-table.recordadmin .colStep,
-table.recordadmin .colNext,
-table.recordadmin .colComplete,
-table.recordadmin .colHours,
-table.recordadmin .colIssues,
-table.recordadmin .colSWOT,
-table.recordadmin .colLessons,
-table.recordadmin .colGAP,
-table.recordadmin .colEmail {
-    display: table-cell;
-}
-table.Issue-record .col0 { width: 100% }
-
-.Todo-record .colDescription { width: 180px; white-space: normal }
-.Todo-record .colTitle { width: 120px; white-space: normal }
-
-
-/**
- * Compliance checklist
- */
-.compliance-checklist {
-    border: 1px solid #ccc;
-    background: #fcfcfc;
-}
-
-.compliance-checklist th {
     text-align: left;
 }
-.compliance-checklist td {
-    margin: 0;
-    padding: 4px;
-}
-body.page-Special_RecordAdmin table.ComplianceChecklist-record .colRequirement { display: none; }
-body.ns-0 table.ComplianceChecklist-record .colRequirement { display: table-cell; width: 300px; white-space: normal }
-table.ComplianceChecklist-record .colTiming-Limit { display: table-cell; width: 200px; white-space: normal }
-table.ComplianceChecklist-record th.col0 { display: table-cell; width: 240px; white-space: normal }
-table.ComplianceChecklist-record td.col0 { display: table-cell; width: 240px; white-space: normal }
-table.ComplianceChecklist-record .colTopic { display: table-cell; width: 180px; white-space: normal }
-table.ComplianceChecklist-record .colResponsibility { display: table-cell; width: 180px; white-space: normal }
 
+table.recordadmin p { padding: 0; margin: 0; }
+
+table.recordadmin td.long-record-description, table.recordadmin td.colDescription, table.recordadmin td.colTask, table.recordadmin td.colLocation, td.colTask, td.colDescription, td.col-title, th.colTask, th.colDescription, th.col-title, td.colOrganisation, td.colProject, th.colOrganisation, th.colProject { white-space: normal }
+table.recordadmin td.long-record-description pre { overflow: hidden; }
+
+.recordadmin fieldset th, .recordadmin fieldset td, #userlogin fieldset td, #userlogin fieldset th { 
+    padding: 8px 15px 0 0;
+    vertical-align: top;
+    text-align:left;
+ }
+
+.template_maintable th, .template_maintable td { 
+    padding: 4px 15px 0 0;
+    vertical-align: top;
+    text-align:left;
+ }
+
+.template_maintable p {margin: 0 0 0 0}
+
+.template_maintable td + th, .recordadmin fieldset td + th, fieldset.prefsection fieldset table td + th, table .recordadmin-create table td + th, .date_maintable td + th, #userlogin fieldset td + th { padding-left: 20px; }
+
+fieldset.prefsection fieldset table th {
+width:120px;
+}
+
+.recordadmin-create, .recordadmin-create table {
+background: #F5F5F0;
+}
+
+.recordadmin-create label, .activity-record label, .department-record label, .date-record label, .document-record label, .organisation-record label, .person-record label, .role-record label, .procedure-record label, .project-record label, .task-record label, .prefsection label, #userlogin fieldset label { padding-left:10px }
+
+. prefsection .template_maintable label {padding-left:0}
+
+.recordadmin-cat th, .recordadmin-create fieldset th, .activity-record fieldset th, .department-record fieldset th, .date-record fieldset th, .document-record fieldset th, .organisation-record fieldset th, .person-record fieldset th, .role-record fieldset th, .procedure-record fieldset th, .project-record fieldset th, .task-record fieldset th, .prefsection fieldset th, #userlogin fieldset th { font-weight:normal; }
+
+.prefsection fieldset .template_maintable th { font-weight:bold; }
+
+/*max width of form selects*/
+.recordadmin-create select {max-width:435px};
+
+/*Date Record Type*/
+
+table.date_maintable table td, table.date_maintable table th {text-align:left;}
+table.date_maintable table td p, table.date_maintable table th p {text-align:left;}
+
+/* Template CSS */ 
+.dynamicnav_title { width:100%; text-align:left; padding-left:5px } 
+.ra_infobox, .prefsection table.ra_infobox { 
+	padding-left:10px;
+	padding-top:2px;
+	padding-bottom:2px; 
+	background-color:#B19879; 
+	color:#ffffff; 
+	font-size: 110%; 
+	width: 100%;
+	padding-right:20px;
+	margin-bottom:5px;
+}
+.template_maintable { 
+	padding-left: 0; 
+	padding-right: 15px; 
+	padding-bottom: 0;  
+	padding-top: 20px; 
+	background-color:#ffffff; 
+	width: 100%; 
+} 
+.prefsection table.ra_infobox td, .ra_infobox td { 
+	vertical-align:middle;
+	padding-right:10px;
+}
+
+.prefsection table.ra_infobox td:first-child, .ra_infobox td:first-child { 
+	width:50px;
+}
+
+/* Hide unwanted name fields */ 
+.activity-record .recordadmin-create-id {display:none} 
+.person-record .recordadmin-create-id, .date-record .recordadmin-create-id {display:none}
+
+/* Width of templates */
+table.recordadmin-general {width:100%; vertical-align:top}
+
+/*Vertical align*/
+.template_maintable td {vertical-align:top;}
+
+/* Vanadium input styles */
+
+input.vanadium-invalid, select.vanadium-invalid, textarea.vanadium-invalid {
+  border-color: red !important;
+  border-style: solid !important;
+}
+
+input.vanadium-valid, select.vanadium-valid, textarea.vanadium-valid {
+  border-color: #0F0 !important;
+  border-style: solid !important;
+}
+
+.vanadium-message-value {
+  font-style: italic;
+  text-decoration: underline;
+}
+
+
+.vanadium-advice {
+  font-size: 13px;
+}
+100%
+.vanadium-advice.vanadium-invalid, .vanadium-advice.vanadium-invalid * {
+  color: red;
+}
+
+input.vanadium-valid ~ .vanadium-valid-advice {
+  display: inline !important;
+  color: green;
+}
+
+/*Float-right without any margins or anything else*/
+.floatright-nm {float:right}
+
+/*The red arrow for mandatory fields*/
+.req-arrow {
+	background:url(/files/c/c0/Mand-arrow-2pxtop.png) no-repeat center left;
+}
+
+/* The i symbol*/
+.tooltip-nowidth-image {
+	background:url(/files/thumb/e/e1/Info.svg/16px-Info.svg.png) no-repeat; 
+	width:16px; 
+	height:16px;
+	vertical-align: text-bottom
+}
+
+/*Date Record Styles*/
+th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:5px; border: 1px solid #bbbbbb}
+.cal_cell_person_week .NavContent {width:200px;}
+.cal_cell_person_hour {width:100%; vertical-align:top; display:inline; float:left; border-bottom: 1px solid #bbbbbb}
+.cal_cell_person_hour p {margin-top:0; padding-left:5px;}
+.cal_cell_person_hour .Activity-record th {display:none}
+.prefsection table.date_maintable {border: 1px solid #bbbbbb; border-collapse:collapse;}
+
+/*
+** Ra-create portlet
+*/
+
+input.raCreateButton {
+	margin-top: 1px;
+	font-size: 95%;
+	padding-left: .5em;
+	padding-right: .5em;
+}
+/*.recordbuttoncreate {
+	padding-left: .5em;
+	padding-right: .5em;
+	font-weight: bold;
+}*/
+#p-racreate .pBody {
+	padding: .5em .4em .4em .4em;
+	text-align: left;
+	height:2em;
+}
+
+#p-racreate {
+	margin:0;
+	position:absolute;
+	right:1em;
+	top:2.6em;
+	margin-left:0.7em;
+	margin-right:0.7em;
+	width:auto;
+}
+
+#p-racreate h5 {margin-bottom:0}
+
+#p-search {
+	position: absolute;
+	top: 3em;
+	right: 17em;
+	margin: 0;
+	width:auto;
+}
+
+/*Sidebar width*/
+
+.dTreeNode {
+max-width:190px;
+}
+
+#contentSub {display:none}
