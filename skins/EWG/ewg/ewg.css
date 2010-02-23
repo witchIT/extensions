@@ -1250,9 +1250,11 @@ right:1em;
 top:3em;
 margin-left:0.7em;
 margin-right:0.7em;
-height:2.5em;
+height:6.5em;
 width:auto;
 }
+
+#p-racreate h5 {margin-bottom:0}
 /*
 #p-racreate select  {
 	height:91%;
@@ -1269,7 +1271,7 @@ width:auto;
 #p-search {
 	position: absolute;
 	top: 3em;
-	right: 15em;
+	right: 17em;
 	margin: 0;
 	width:auto;
 }
