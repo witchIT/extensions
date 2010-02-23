@@ -102,55 +102,55 @@ class EWGTemplate extends QuickTemplate {
 <?php if($this->data['body_onload']) { ?> onload="<?php $this->text('body_onload') ?>"<?php } ?>
  class="mediawiki <?php $this->text('nsclass') ?> <?php $this->text('dir') ?> <?php $this->text('pageclass') ?>">
 	<div id="globalWrapper">
-					<div class="portlet" id="p-personal">
-						<h5><?php $this->msg('personaltools') ?></h5>
-						<div class="pBody">
-							<ul>
-				<?php 			foreach($this->data['personal_urls'] as $key => $item) { ?>
-								<li id="pt-<?php echo Sanitizer::escapeId($key) ?>"<?php
-									if ($item['active']) { ?> class="active"<?php } ?>><a href="<?php
-								echo htmlspecialchars($item['href']) ?>"<?php echo $skin->tooltipAndAccesskey('pt-'.$key) ?><?php
-								if(!empty($item['class'])) { ?> class="<?php
-								echo htmlspecialchars($item['class']) ?>"<?php } ?>><?php
-								echo htmlspecialchars($item['text']) ?></a></li>
-				<?php			} ?>
-							</ul>
-						</div>
-					</div>
-					<?php $this->searchBox(); ?>
-					<div class="portlet" id="p-logo">
-						<a style="background-image: url(<?php $this->text('logopath') ?>);" <?php
-							?>href="<?php echo htmlspecialchars($this->data['nav_urls']['mainpage']['href'])?>"<?php
-							echo $skin->tooltipAndAccesskey('n-mainpage') ?>></a>
-					</div>
-					<div id="p-cactions" class="portlet">
-						<h5><?php $this->msg('views') ?></h5>
-						<div class="pBody">
-							<ul>
-					<?php		foreach($this->data['content_actions'] as $key => $tab) {
-									echo '
-								 <li id="ca-' . Sanitizer::escapeId($key).'"';
-									if( $tab['class'] ) {
-										echo ' class="'.htmlspecialchars($tab['class']).'"';
-									}
-									echo'><a href="'.htmlspecialchars($tab['href']).'"';
-									# We don't want to give the watch tab an accesskey if the
-									# page is being edited, because that conflicts with the
-									# accesskey on the watch checkbox.  We also don't want to
-									# give the edit tab an accesskey, because that's fairly su-
-									# perfluous and conflicts with an accesskey (Ctrl-E) often
-									# used for editing in Safari.
-									if( in_array( $action, array( 'edit', 'submit' ) )
-									&& in_array( $key, array( 'edit', 'watch', 'unwatch' ))) {
-										echo $skin->tooltip( "ca-$key" );
-									} else {
-										echo $skin->tooltipAndAccesskey( "ca-$key" );
-									}
-									echo '>'.htmlspecialchars($tab['text']).'</a></li>';
-								} ?>
-							</ul>
-						</div>
-					</div>
+		<div id="p-cactions" class="portlet">
+			<h5><?php $this->msg('views') ?></h5>
+			<div class="pBody">
+				<ul>
+		<?php		foreach($this->data['content_actions'] as $key => $tab) {
+						echo '
+					 <li id="ca-' . Sanitizer::escapeId($key).'"';
+						if( $tab['class'] ) {
+							echo ' class="'.htmlspecialchars($tab['class']).'"';
+						}
+						echo'><a href="'.htmlspecialchars($tab['href']).'"';
+						# We don't want to give the watch tab an accesskey if the
+						# page is being edited, because that conflicts with the
+						# accesskey on the watch checkbox.  We also don't want to
+						# give the edit tab an accesskey, because that's fairly su-
+						# perfluous and conflicts with an accesskey (Ctrl-E) often
+						# used for editing in Safari.
+						if( in_array( $action, array( 'edit', 'submit' ) )
+						&& in_array( $key, array( 'edit', 'watch', 'unwatch' ))) {
+							echo $skin->tooltip( "ca-$key" );
+						} else {
+							echo $skin->tooltipAndAccesskey( "ca-$key" );
+						}
+						echo '>'.htmlspecialchars($tab['text']).'</a></li>';
+					} ?>
+				</ul>
+			</div>
+		</div>
+		<div class="portlet" id="p-personal">
+			<h5><?php $this->msg('personaltools') ?></h5>
+			<div class="pBody">
+				<ul>
+	<?php 			foreach($this->data['personal_urls'] as $key => $item) { ?>
+					<li id="pt-<?php echo Sanitizer::escapeId($key) ?>"<?php
+						if ($item['active']) { ?> class="active"<?php } ?>><a href="<?php
+					echo htmlspecialchars($item['href']) ?>"<?php echo $skin->tooltipAndAccesskey('pt-'.$key) ?><?php
+					if(!empty($item['class'])) { ?> class="<?php
+					echo htmlspecialchars($item['class']) ?>"<?php } ?>><?php
+					echo htmlspecialchars($item['text']) ?></a></li>
+	<?php			} ?>
+				</ul>
+			</div>
+		</div>
+		<div class="portlet" id="p-logo">
+			<a style="background-image: url(<?php $this->text('logopath') ?>);" <?php
+				?>href="<?php echo htmlspecialchars($this->data['nav_urls']['mainpage']['href'])?>"<?php
+				echo $skin->tooltipAndAccesskey('n-mainpage') ?>></a>
+		</div>
+<?php $this->searchBox(); ?>
 		<table id="column-content" width="!00%" cellpadding="0" cellspacing="0">
 			<tr>
 				<td colspan="2">
