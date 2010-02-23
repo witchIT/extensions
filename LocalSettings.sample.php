@@ -23,10 +23,10 @@ if ( !$wgCommandLineMode ) {
 	}
 
 	# Redirect main-page requests based on domain
-	domainRedirect(array(
+	domainRedirect( array(
 		'foo.bar$' => 'About Foo',
 		'bar.baz$' => 'About Bar'
-	));
+	) );
 
 	# Example of adding codes for google analytics
 	$wgGoogleTrackingCodes[]  = 'UA-1234567-1';
@@ -41,11 +41,11 @@ if ( !$wgCommandLineMode ) {
 	include( 'extensions/Cite/Cite.php' );
 
 	# OD extensions
+	include( 'extensions/EventPipe/EventPipe.php' );
 	include( 'extensions/InterWiki/InterWiki.php' );
 	include( 'extensions/SpecialNukeDPL.php' );
 	include( 'extensions/WikidAdmin/SpecialWikidAdmin.php' );
 	include( 'extensions/WikiaAdmin/SpecialWikiaAdmin.php' );
-	include( 'extensions/EventPipe/EventPipe.php' );
 	include( 'extensions/JavaScript/JavaScript.php' );
 	include( 'extensions/TransformChanges/TransformChanges.php' );
 	include( 'extensions/TreeAndMenu/TreeAndMenu.php' );
