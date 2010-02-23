@@ -1250,9 +1250,10 @@ right:1em;
 top:3em;
 margin-left:0.7em;
 margin-right:0.7em;
+height:2.5em;
 width:auto;
 }
-
+/*
 #p-racreate select  {
 	height:91%;
 	font-size:95%
@@ -1264,7 +1265,7 @@ width:auto;
 	white-space:nowrap;
 	line-height:1.2;
  }
-
+*/
 #p-search {
 	position: absolute;
 	top: 3em;
