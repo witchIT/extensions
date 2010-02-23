@@ -834,7 +834,9 @@ li#pt-login {
 }
 #p-cactions li {
 	display: inline;
-	border: 1px solid #aaa;
+	border-top: 1px solid #aaaaaa;
+	border-left: 1px solid #aaaaaa;
+	border-right: 1px solid #aaaaaa;
 	border-bottom: none;
 	padding: 0 0 .1em 0;
 	margin: 0 .3em 0 0;
