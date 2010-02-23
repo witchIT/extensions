@@ -88,7 +88,6 @@ class HapuTimesTemplate extends QuickTemplate {
 
 <table id="globalWrapper" cellpadding="0" cellspacing="0" border><tr><td colspan="3" id="header">
 	<script type="<?php $this->text('jsmimetype') ?>"> if (window.isMSIE55) fixalpha(); </script>
-
 	<div class="portlet" id="p-personal">
 		<h5><?php $this->msg('personaltools') ?></h5>
 		<div class="pBody">
@@ -104,7 +103,24 @@ class HapuTimesTemplate extends QuickTemplate {
 			</ul>
 		</div>
 	</div>
+</td></tr>
 
+<tr><td id="menubar" colspan="3">
+	<?php
+	global $wgUser, $wgTitle, $wgParser;
+	$a = new Article( Title::newFromText( 'Menubar', NS_MEDIAWIKI ) );
+	if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+	else { $psr = new Parser; $opt = NULL; }
+	if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	?>
+</td></tr>
+
+<tr><td id="sidebar" valign="top">
+	<?php
+	$a = new Article( Title::newFromText( 'Sidebar', NS_MEDIAWIKI ) );
+	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	?>
 	<div id="p-search" class="portlet">
 		<h5><label for="searchInput"><?php $this->msg('search') ?></label></h5>
 		<div id="searchBody" class="pBody">
@@ -117,25 +133,6 @@ class HapuTimesTemplate extends QuickTemplate {
 			</div></form>
 		</div>
 	</div>
-
-	<div id="menubar">
-		<?php
-		global $wgUser, $wgTitle, $wgParser;
-		$a = new Article( Title::newFromText( 'Menubar', NS_MEDIAWIKI ) );
-		if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
-		else { $psr = new Parser; $opt = NULL; }
-		if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
-		echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
-		?>
-	</div>
-
-</td></tr>
-
-<tr><td id="sidebar" valign="top">
-	<?php
-	$a = new Article( Title::newFromText( 'Sidebar', NS_MEDIAWIKI ) );
-	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
-	?>
 </td>
 
 <td id="contentWrapper" valign="top">

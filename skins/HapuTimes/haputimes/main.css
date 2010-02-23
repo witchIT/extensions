@@ -1,5 +1,7 @@
 /*
  * HapuTimes skin
+ * Blues: 3E6998 (dark), 6385AB (mid), 769FCC (light)
+ * Reds:  AB6462
  */
 body {
 	font: 9pt verdana,sans-serif;
@@ -15,7 +17,18 @@ body {
 	height: 83px;
 	background: white url( /wiki/skins/haputimes/banner.jpg )
 }
-
+#menubar ul {
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+	overflow: visible;
+	list-style: none;
+}
+#menubar li {
+	display: inline;
+	overflow: visible;
+	padding-right: 25px;
+}
 p {
 	margin: 10px 0;
 	text-align: justify;
@@ -813,19 +826,6 @@ li#pt-userpage {
 	font-weight: bold;
 }
 
-#p-avatar {
-	position: absolute;
-	top: 24px;
-	left: 10px;
-	background: #f0f0f0;
-	width: 50px;
-	height: 50px;
-	text-align: center;
-	vertical-align: middle;
-	padding: 5px;
-	border: 2px solid #82879E;
-	}
-
 /*
 ** the page-related actions- page/talk, edit etc
 */
@@ -876,35 +876,6 @@ li#pt-userpage {
  */
 #t-ispermalink, #t-iscite {
 	color: #999;
-}
-/*
-** footer
-*/
-#footer {
-	background-color: none;
-	border-top: 1px solid #fabd23;
-	border-bottom: 1px solid #fabd23;
-	margin: .6em 0 1em 0;
-	padding: .4em 0 1.2em 0;
-	text-align: center;
-	font-size: 90%;
-}
-#footer li {
-	display: inline;
-	margin: 0 1.3em;
-}
-#f-poweredbyico, #f-copyrightico {
-	margin: 0 8px;
-	position: relative;
-	top: -2px; /* Bump it up just a tad */
-}
-#f-poweredbyico {
-	float: right;
-	height: 1%;
-}
-#f-copyrightico {
-	float: left;
-	height: 1%;
 }
 
 /* js pref toc */
