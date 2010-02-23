@@ -1112,7 +1112,7 @@ background: #F5F5F0;
 
 . prefsection .template_maintable label {padding-left:0}
 
-.recordadmin-create fieldset th, .activity-record fieldset th, .department-record fieldset th, .date-record fieldset th, .document-record fieldset th, .organisation-record fieldset th, .person-record fieldset th, .role-record fieldset th, .procedure-record fieldset th, .project-record fieldset th, .task-record fieldset th, .prefsection fieldset th, #userlogin fieldset th { font-weight:normal; }
+.recordadmin-cat th, .recordadmin-create fieldset th, .activity-record fieldset th, .department-record fieldset th, .date-record fieldset th, .document-record fieldset th, .organisation-record fieldset th, .person-record fieldset th, .role-record fieldset th, .procedure-record fieldset th, .project-record fieldset th, .task-record fieldset th, .prefsection fieldset th, #userlogin fieldset th { font-weight:normal; }
 
 .prefsection fieldset .template_maintable th { font-weight:bold; }
 
