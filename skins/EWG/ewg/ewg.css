@@ -1250,14 +1250,13 @@ right:1em;
 top:2.6em;
 margin-left:0.7em;
 margin-right:0.7em;
-height:4.5em;
 width:auto;
 }
 
 #p-racreate h5 {margin-bottom:0}
 
 #p-racreate select  {
-	height:91%;
+	height:95%;
 	font-size:95%
 }
 /*
