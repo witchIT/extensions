@@ -833,8 +833,8 @@ li#pt-login {
 	list-style: none;
 }
 #p-cactions li {
-	display: inline;
-	/*border-top: 1px solid #aaa;
+	/*display: inline;
+	border-top: 1px solid #aaa;
 	border-bottom: none;
 	padding: 0 0 .1em 0;
 	margin: 0 .3em 0 0;
@@ -842,9 +842,9 @@ li#pt-login {
 	background: white;*/
 }
 #p-cactions li.selected {
-	border-color: #fabd23;
+	/*border-color: #fabd23;
 	padding: 0 0 .2em 0;
-	font-weight: bold;
+	font-weight: bold;*/
 }
 #p-cactions li a {
 	background-color: #fbfbfb;
