@@ -5,7 +5,7 @@
 /*If you want to center a logo vertically in its space, change the #p-logo top px value. Change the left value to move it right.*/
 
 #content {
-
+    margin-top:99px;
 }
 
 
