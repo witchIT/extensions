@@ -834,13 +834,11 @@ li#pt-login {
 }
 #p-cactions li {
 	display: inline;
-	border-top: 1px solid #aaaaaa;
-	border-left: 1px solid #aaaaaa;
-	border-right: 1px solid #aaaaaa;
+	border-top: 1px solid #aaa;
 	border-bottom: none;
-	padding: 0 0 .1em 0;
+	/*padding: 0 0 .1em 0;
 	margin: 0 .3em 0 0;
-	overflow: visible;
+	overflow: visible;*/
 	background: white;
 }
 #p-cactions li.selected {
