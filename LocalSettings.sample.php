@@ -16,6 +16,14 @@ $wgExtraNamespaces[NS_FORM+1] = 'Form_talk';
 # Don't include extension code if running from shell for maintenance
 if ( !$wgCommandLineMode ) {
 
+	# Force skin to DCS
+	$wgDefaultSkin = 'foo';
+	$wgExtensionFunctions[] = 'wfForceSkin';
+	function wfForceSkin() {
+		global $wgUser;
+		$wgUser->setOption( 'skin', 'foo' );
+	}
+
 	# Force HTTPS
 	if ( !isset( $_SERVER['HTTPS'] ) ) {
 		header( "Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
