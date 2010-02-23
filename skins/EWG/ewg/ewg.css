@@ -1226,10 +1226,7 @@ th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:
 /*
 ** Ra-create portlet
 */
-#p-racreate {
-	margin-left:0.7em;
-	margin-right:0.7em;
-}
+
 input.raCreateButton {
 	margin-top: 1px;
 	font-size: 95%;
@@ -1246,20 +1243,22 @@ input.raCreateButton {
 	text-align: left;
 }
 
-.racreate-locate {
-	position: absolute;
-	top: 3em;
-	right: 1em;
-	margin: 0;
-	width:auto;
+#p-racreate {
+margin:0;
+position:absolute;
+right:1em;
+top:3em;
+margin-left:0.7em;
+margin-right:0.7em;
+width:auto;
 }
 
-.racreate-locate select  {
+#p-racreate select  {
 	height:91%;
 	font-size:95%
 }
 
-.racreate-locate label { 
+#p-racreate label { 
 	font-size:91%;
 	font-weight:normal;
 	white-space:nowrap;

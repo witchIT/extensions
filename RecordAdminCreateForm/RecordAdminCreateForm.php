@@ -56,17 +56,17 @@ function efRecordAdminCreateForm (&$out) {
 		</form>";
 */
 	$out->mBodytext .= "
-	<div class='racreate-locate portlet'>
-		<label>&nbsp;&nbsp;&nbsp;&nbsp;Create New Record</label>
-		<div id='p-racreate'>
-			<div class='pBody'>
-				<form id='RACreateForm' method='POST' action='$action'>
-					<select name='wpType'>$options</select>
-					<input type='submit' class='raCreateButton' value='Go' />
-				</form>
-			</div>
+<div id='p-racreate' class='portlet'>
+	<h5><label for='racreateBody'>Create New Record</label></h5>
+	<div id='racreateBody' class='pBody'>
+		<div>
+			<form id='RACreateForm' method='POST' action='$action'>
+				<select name='wpType'>$options</select>
+				<input type='submit' class='raCreateButton' value='Create' />
+			</form>
 		</div>
-	</div>";
+	</div>
+</div>";
 
 	return true;
 }
