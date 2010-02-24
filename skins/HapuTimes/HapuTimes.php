@@ -86,7 +86,7 @@ class HapuTimesTemplate extends QuickTemplate {
 <?php if($this->data['body_onload']) { ?> onload="<?php $this->text('body_onload') ?>"<?php } ?>
  class="mediawiki <?php $this->text('dir') ?> <?php $this->text('pageclass') ?> <?php $this->text('skinnameclass') ?>">
 
-<table id="globalWrapper" cellpadding="0" cellspacing="0" border><tr><td colspan="3" id="header">
+<table id="globalWrapper" cellpadding="0" cellspacing="0"><tr><td colspan="3" id="banner">
 	<script type="<?php $this->text('jsmimetype') ?>"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="portlet" id="p-personal">
 		<h5><?php $this->msg('personaltools') ?></h5>
@@ -105,13 +105,20 @@ class HapuTimesTemplate extends QuickTemplate {
 	</div>
 </td></tr>
 
-<tr><td id="menubar" colspan="3">
+<tr><td id="header" colspan="3">
 	<?php
 	global $wgUser, $wgTitle, $wgParser;
-	$a = new Article( Title::newFromText( 'Menubar', NS_MEDIAWIKI ) );
+	$a = new Article( Title::newFromText( 'Header', NS_MEDIAWIKI ) );
 	if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 	else { $psr = new Parser; $opt = NULL; }
 	if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	?>
+</td></tr>
+
+<tr><td id="menubar" colspan="3">
+	<?php
+	$a = new Article( Title::newFromText( 'Menubar', NS_MEDIAWIKI ) );
 	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
 	?>
 </td></tr>
