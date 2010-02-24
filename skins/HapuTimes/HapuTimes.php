@@ -43,7 +43,7 @@ class HapuTimesTemplate extends QuickTemplate {
 	 * @access private
 	 */
 	function execute() {
-		global $wgRequest, $wgVersion;
+		global $wgRequest, $wgVersion, $wgUser, $wgTitle, $wgParser;
 		$this->skin = $skin = $this->data['skin'];
 		$action = $wgRequest->getText( 'action' );
 
@@ -84,7 +84,8 @@ class HapuTimesTemplate extends QuickTemplate {
 	</head>
 <body<?php if($this->data['body_ondblclick']) { ?> ondblclick="<?php $this->text('body_ondblclick') ?>"<?php } ?>
 <?php if($this->data['body_onload']) { ?> onload="<?php $this->text('body_onload') ?>"<?php } ?>
- class="mediawiki <?php $this->text('dir') ?> <?php $this->text('pageclass') ?> <?php $this->text('skinnameclass') ?>">
+ class="mediawiki <?php $this->text('dir') ?> <?php $this->text('pageclass') ?> <?php $this->text('skinnameclass') ?>
+ <?php echo $wgUser->isAnon() ? 'anonymous' : 'loggedin' ?> ">
 
 <table id="globalWrapper" cellpadding="0" cellspacing="0"><tr><td colspan="3" id="banner">
 	<script type="<?php $this->text('jsmimetype') ?>"> if (window.isMSIE55) fixalpha(); </script>
@@ -107,7 +108,6 @@ class HapuTimesTemplate extends QuickTemplate {
 
 <tr><td id="header" colspan="3">
 	<?php
-	global $wgUser, $wgTitle, $wgParser;
 	$a = new Article( Title::newFromText( 'Header', NS_MEDIAWIKI ) );
 	if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 	else { $psr = new Parser; $opt = NULL; }
