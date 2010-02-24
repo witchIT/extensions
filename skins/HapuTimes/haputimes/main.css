@@ -12,7 +12,11 @@ body {
 	line-height: 1.7em;
 }
 
-body.anonymous #globalWrapper #p-cactions, body.anonymous #globalWrapper .editsection { display: none; }
+body.anonymous #globalWrapper #p-cactions,
+body.anonymous #globalWrapper .editsection,
+body.anonymous #globalWrapper #catlinks {
+	display: none;
+}
 	
 #banner {
 	width: 756px;
