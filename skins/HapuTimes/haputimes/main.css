@@ -10,7 +10,9 @@ body {
 	padding: 0;
 	text-align: center;
 	line-height: 1.7em;
-	}
+}
+
+body.anonymous #globalWrapper #p-cactions, body.anonymous #globalWrapper .editsection { display: none; }
 	
 #banner {
 	width: 756px;
