@@ -638,10 +638,8 @@ span.subpages {
 }
 
 #catlinks {
-	border: 1px solid #aaa;
-	background-color: #f9f9f9;
-	padding: 5px;
-	margin-top: 1em;
+	padding: 0;
+	margin: 1em 0 0 0;
 	clear: both;
 }
 /* currently unused, intended to be used by a metadata box
