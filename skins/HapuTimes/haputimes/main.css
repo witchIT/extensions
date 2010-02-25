@@ -14,8 +14,8 @@ body {
 body.anonymous #globalWrapper #p-cactions,
 body.anonymous #globalWrapper .editsection,
 body.anonymous #globalWrapper #catlinks,
-body.anonymous #p-personal pt-anonuserpage,
-body.anonymous #p-personal pt-anontalk,
+body.anonymous #p-personal #pt-anonuserpage,
+body.anonymous #p-personal #pt-anontalk,
 body.loggedin #slogan,
 #sidebar .editsection,
 #rightnav .editsection {
