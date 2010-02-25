@@ -89,6 +89,9 @@ class HapuTimesTemplate extends QuickTemplate {
 
 <table id="globalWrapper" cellpadding="0" cellspacing="0"><tr><td colspan="3" id="banner">
 	<script type="<?php $this->text('jsmimetype') ?>"> if (window.isMSIE55) fixalpha(); </script>
+</td></tr>
+
+<tr><td id="header" colspan="3">
 	<div class="portlet" id="p-personal">
 		<h5><?php $this->msg('personaltools') ?></h5>
 		<div class="pBody">
@@ -104,16 +107,13 @@ class HapuTimesTemplate extends QuickTemplate {
 			</ul>
 		</div>
 	</div>
-</td></tr>
-
-<tr><td id="header" colspan="3">
-	<?php
+	<div id="slogan"><?php
 	$a = new Article( Title::newFromText( 'Header', NS_MEDIAWIKI ) );
 	if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 	else { $psr = new Parser; $opt = NULL; }
 	if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
-	?>
+	?></div>
 </td></tr>
 
 <tr><td id="menubar" colspan="3">
