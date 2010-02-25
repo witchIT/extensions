@@ -4,7 +4,7 @@
  * Reds:  AB6462
  */
 body {
-	font: 9pt serif;
+	font: 8pt serif;
 	color: black;
 	margin: 0;
 	padding: 0;
@@ -23,6 +23,7 @@ body.loggedin #slogan,
 }
 #slogan {
 	margin: 0 0 0 21px;
+	font-size: 10pt;
 }
 
 #banner {
@@ -33,23 +34,21 @@ body.loggedin #slogan,
 #menubar {
 	margin: 0;
 	padding: 0;
-	height: 25px;
 	background: #3E6998;
 	color: white;
 }
 #menubar ul {
 	float: left;
 	height: 20px;
-	padding: 0;
+	padding: 5px 0 0 0;
 	margin: 0 0 0 10px;
-	background: white;
 	white-space: nowrap;
 	overflow: visible;
 	list-style: none;
 }
 #menubar li {
-	padding: 5px 25px 5px 25px;
-	margin: 0 1px 0 0;
+	padding: 5px 25px;
+	margin: 0;
 	display: inline;
 	overflow: visible;
 	background-color: #3E6998;
@@ -57,6 +56,10 @@ body.loggedin #slogan,
 	text-transform: uppercase;
 	font-size: 90%;
 	font-weight: bold;
+	border-right: 1px solid white;
+}
+#menubar li:hover {
+	background-color: #6385AB;
 }
 #menubar li a {
 	color: white;
@@ -65,14 +68,14 @@ body.loggedin #slogan,
 #menubar .leftarrow {
 	font-size: 20px;
 	position: absolute;
-	top: 116px;
-	left: 13px;
+	top: 115px;
+	left: 7px;
 }
 #menubar .rightarrow {
 	font-size: 20px;
 	position: absolute;
-	top: 116px;
-	left: 730px;
+	top: 115px;
+	left: 736px;
 }
 
 #globalWrapper {
@@ -100,15 +103,18 @@ body.loggedin #slogan,
 	padding: 0 10px;
 }
 #sidebar li {
-	padding: 0 10px;
+	padding: 1px 10px;
 	margin: 0 0 7px 0;
 	background-color: #3E6998;
 	color: white;
-	font-size: 90%;
 }
 #sidebar li a {
 	color: white;
 	text-decoration: none;
+}
+#sidebar li a:hover {
+	color: white;
+	text-decoration: underline;
 }
 #sidebar .categories {
 	border: 1px solid #3E6998;
@@ -127,11 +133,10 @@ body.loggedin #slogan,
 	padding: 0 0 10px 0;
 }
 #rightnav li {
-	padding: 0 10px;
+	padding: 2px 10px;
 	margin: 0 0 7px 0;
 	background-color: #3E6998;
 	color: white;
-	font-size: 90%;
 }
 
 .visualClear {
@@ -142,20 +147,15 @@ body.loggedin #slogan,
 
 a, #bodyContent a {
 	text-decoration: none;
-	color: #217A28;
+	color: #769FCC;
 	background: none;
 }
 a, #bodyContent a:hover, #p-personal a:hover, #p-cactions a:hover {
 	text-decoration: underline;
 }
-a.stub {
-	color: #772233;
-}
 a.new, #bodyContent a.new, #p-personal a.new, #p-cactions .pBody .new a {
 	color: #cc0000;
 }
-
-#p-cactions .pBody a { color: #6C6E9D }
 
 img {
 	border: none;
@@ -188,12 +188,13 @@ h1 {
 	font-weight: normal;
 	font-size: 12pt;
 	padding: 5pt 0 3pt 0;
+	margin: 0;
 	border-bottom: 2px solid black;
 }
 
 .editsection { font-weight: normal; float: right; }
 h1 .editsection { font-size: 53%; }
-h2 { font-size: 140%; }
+h2 { font-size: 140%; padding-top: 5px; }
 h2 .editsection { font-size: 67%; }
 h2, h3, h4, h5, h6 {
 	border-bottom: none;
@@ -209,13 +210,15 @@ h6 { font-size: 80%;  }
 h6 .editsection { font-size: 125%; font-weight: normal; }
 
 #sidebar h2 {
-	margin-left: 10px;
+	margin: 5px 10px;
+	padding: 0;
 	text-transform: uppercase;
 	font-size: 8pt;
 }
 
 #rightnav h2 {
 	margin-top: 10px;
+	padding: 0;
 	text-transform: uppercase;
 	font-size: 10pt;
 }
@@ -914,8 +917,8 @@ li#pt-userpage {
 */
 #p-cactions {
 	position: absolute;
-	top: 170px;
-	left: 131px;
+	top: 163px;
+	left: 134px;
 	margin: 0;
 	white-space: nowrap;
 	overflow: visible;
