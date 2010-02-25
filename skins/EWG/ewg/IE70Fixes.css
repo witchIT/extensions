@@ -31,20 +31,17 @@
 	background-color: transparent;
 	cursor: default;
 	float: none !important;
-	border-left:1px;
-	border-left-color:#ABD87C;
-	border-left-style:solid;
-	padding-left:14px;
 }
 
 #p-cactions li a {
 	display: inline-block !important;
 	vertical-align: top;
 	padding-bottom: 0;
-
+	border: solid #aaa;
+	border-width: 1px 1px 0;
 }
 #p-cactions li.selected a {
-
+	border-color: #fabd23;
 	padding-bottom: 0.17em;
 }
 #p-cactions li a:hover {
