@@ -16,6 +16,7 @@ body.anonymous #globalWrapper .editsection,
 body.anonymous #globalWrapper #catlinks,
 body.anonymous #p-personal #pt-anonuserpage,
 body.anonymous #p-personal #pt-anontalk,
+body.ns--1 #rightnav,
 body.loggedin #slogan,
 #sidebar .editsection,
 #rightnav .editsection {
@@ -29,7 +30,7 @@ body.loggedin #slogan,
 #banner {
 	width: 756px;
 	height: 83px;
-	background: white url( /wiki/skins/haputimes/banner.jpg )
+	background: white url( /wiki/skins/haputimes/banner.jpg ) no-repeat;
 }
 #menubar {
 	margin: 0;
@@ -142,7 +143,259 @@ body.loggedin #slogan,
 	clear: both;
 }
 
-/* general styles */
+/* Extension styles */
+
+/* Transform Changes */
+table.changes            { border:none; width:100% }
+table.changes th         { background: #dfdfdf; color: #4E507F; text-align: center; white-space: nowrap; }
+table.changes tr         { margin:0; padding:0 }
+table.changes td         { margin:0; padding: 1px 4px; vertical-align: top }
+table.changes td.heading { font-size: 110%; font-weight:bold; padding-top:10px }
+table.changes td.comment { width:100% }
+table.changes td.talk,
+table.changes td.diff    { font-size: 90% }
+table.changes td.user,
+table.changes td.talk,
+table.changes td.diff,
+table.changes td.info    { white-space: nowrap; }
+tr.mw-line-odd           { background: #fff; }
+tr.mw-line-even          { background: #eee; }
+
+/* Messages and code blocks */
+table.message {
+    width: 100%;
+    margin: 5px 0 0 0;
+    padding: 3px;
+    border: 1px solid #ccc;
+    background: #f4f4f4;
+    text-align: left;
+    vertical-align: top;
+}
+table.message pre { padding: 0; margin: 0; }
+table.message form { background: none; }
+
+/* Calendar */
+table.calendar          { margin: 0; padding: 10px; }
+table.calendar td       { margin: 0; padding: 2px; vertical-align: top; }
+table.month .heading td { padding:2px; background-color:#ddd; color:#aaa; text-align:center; font-size:120%; font-weight:bold; }
+table.month .dow td     { color:#aaa; text-align:center; font-size:110%; }
+table.month td.today    { background-color:#ddd; }
+table.month td {
+    border: none;
+    margin: 0;
+    padding: 1pt 1.5pt;
+    font-weight: bold;
+    font-size: 8pt;
+    text-align: right;
+    background-color: #eee;
+}
+.day-active { color:#217A28 }
+.day-empty  { color:#cc0000 }
+
+/* SimpleSecurity */
+#security-info-toggle {
+	margin: 0;
+	padding: 0 0 0 30px;
+	background: url(/files/thumb/5/59/Padlock.svg/30px-Padlock.svg.png) no-repeat;
+}
+#security-info {
+	border-collapse: collapse;
+	margin: 10px 0 0 0;
+	padding: 3px;
+	border: 1px solid #ccc;
+	background: #eee;
+	color: black;
+	text-align: left;
+	font-weight: normal;
+	font-size: 8pt;
+	vertical-align: top;
+}
+
+/* Tree */
+.dtree {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        color: #666;
+        white-space: nowrap;
+}
+.dtree .selflink {
+        background: #4E507F;
+        color: #eee;
+        padding-left: 4px;
+        padding-right: 4px;
+}
+.dtree img {
+        border: 0px;
+        vertical-align: middle;
+}
+.dTreeNode { height: 18px }
+.dtree a {
+        color: black;
+        text-decoration: none;
+}
+.dtree a.node, .dtree a.nodeSel {
+        white-space: nowrap;
+        padding: 1px 2px 1px 2px;
+}
+.dtree a:hover, .dtree a.node:hover, .dtree a.nodeSel:hover {
+        color: black;
+        text-decoration: underline;
+}
+.dtree a.nodeSel {
+        background-color: #c0d2ec;
+}
+.dtree .clip {
+        overflow: hidden;
+}
+
+/* Dynamic menus */
+.dmenu { width: 180px }
+.dmenu, .dmenu ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.dmenu .selflink { font-weight: normal; }
+.dmenu li { /* all list items */
+    position: relative;
+    float: left;
+    width: 172px;
+    padding: 4px;
+    z-index: 100;
+}
+.dmenu li,
+.dmenu li.even a,
+.dmenu li.odd a,
+.dmenu li li,
+.dmenu li li a,
+.dmenu li li li,
+.dmenu li li li a {
+    color : black;
+}
+.dmenu li li { margin: 0; }
+.dmenu li ul { /* second-level lists */
+    position: absolute;
+    left: -999em;
+    z-index: 101;
+    border: 1px solid #ccc;
+}
+.dmenu li ul ul { /* third-and-above-level lists */
+    position: absolute;
+    left: -999em;
+    margin: 0 0 0 0;
+    z-index: 102;
+}
+.dmenu li.odd .submenu {
+    width: 12px;
+    height: 15px;
+    float: right;
+    background: url(/wiki/skins/organicdesign/rarr-lt.png) 0 3px no-repeat;
+}
+.dmenu li.even .submenu {
+    width: 12px;
+    height: 15px;
+    float: right;
+    background: url(/wiki/skins/organicdesign/rarr-dk.png) 0 3px no-repeat;
+}
+.dmenu li.odd {
+	background: #E9EDF4;
+	border: 2px solid #E9EDF4;
+}
+.dmenu li.even {
+	background: #D0D8E8;
+	border: 2px solid #D0D8E8;
+}
+
+.dmenu li:hover, .dmenu li.sfhover {
+	border: 2px solid #385D8A;
+}
+.dmenu li:hover ul ul,
+.dmenu li:hover ul ul ul,
+.dmenu li.sfhover ul ul,
+.dmenu li.sfhover ul ul ul {
+    left: -999em;
+}
+.dmenu li:hover ul,
+.dmenu li li:hover ul,
+.dmenu li li li:hover ul,
+.dmenu li.sfhover ul,
+.dmenu li li.sfhover ul,
+.dmenu li li li.sfhover ul { /* lists nested under hovered list items */
+    left: 182px;
+    top: -3px;
+}
+
+/* Dynamic Navigation */
+div.Boxmerge,
+div.NavFrame {
+        margin: 0px;
+        padding: 2px;
+        border: 1px solid #aaaaaa;
+        text-align: center;
+        border-collapse: collapse;
+        font-size: 95%;
+}
+div.Boxmerge div.NavFrame {
+        border-style: none;
+        border-style: hidden;
+}
+div.NavFrame + div.NavFrame {
+        border-top-style: none;
+        border-top-style: hidden;
+}
+div.NavPic {
+        background-color: #ffffff;
+        margin: 0px;
+        padding: 2px;
+        float: left;
+}
+div.NavFrame div.NavHead {
+        height: 1.6em;
+        font-weight: bold;
+        font-size: 100%;
+        background-color: #efefef;
+        position:relative;
+}
+div.NavFrame p {
+        font-size: 100%;
+}
+div.NavFrame div.NavContent {
+        font-size: 100%;
+}
+div.NavFrame div.NavContent p {
+        font-size: 100%;
+}
+div.NavEnd {
+        margin: 0px;
+        padding: 0px;
+        line-height: 1px;
+        clear: both;
+}
+a.NavToggle {
+        position: absolute;
+        top: 0px;
+        right: 3px;
+        font-weight: normal;
+        font-size: smaller;
+}
+body div.NavShow {
+        display: normal;
+}
+
+/* Tooltips */
+.tooltip + .tooltip { display:none }
+.tooltip:hover + .tooltip, .tooltip + .tooltip:hover {
+    display: block;
+    position: absolute;
+    width: 200px;
+    padding: 10px;
+    border: 1px solid black;
+    background-color: #F9E4D3;
+}
+
+
+
+/* General MW styles - based on MonoBook */
 
 a, #bodyContent a {
 	text-decoration: none;
