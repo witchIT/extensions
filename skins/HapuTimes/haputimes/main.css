@@ -8,13 +8,14 @@ body {
 	color: black;
 	margin: 0;
 	padding: 0;
-	text-align: center;
 	line-height: 1.7em;
 }
 
 body.anonymous #globalWrapper #p-cactions,
 body.anonymous #globalWrapper .editsection,
-body.anonymous #globalWrapper #catlinks {
+body.anonymous #globalWrapper #catlinks,
+#sidebar .editsection,
+#rightnav .editsection {
 	display: none;
 }
 	
@@ -58,24 +59,27 @@ body.anonymous #globalWrapper #catlinks {
 #menubar .leftarrow {
 	font-size: 20px;
 	position: absolute;
-	top: 121px;
+	top: 116px;
 	left: 13px;
 }
 #menubar .rightarrow {
 	font-size: 20px;
 	position: absolute;
-	top: 121px;
+	top: 116px;
 	left: 730px;
-}
-p {
-	margin: 10px 0;
-	text-align: justify;
 }
 
 #globalWrapper {
 	text-align: left;
-	padding: 5px;
-	width: 756px;s
+	padding: 0;
+	margin: 0;
+	width: 756px;
+}
+
+#contentWrapper {
+	text-align: left;
+	margin: 0;
+	padding: 0 12px;
 }
 
 #sidebar {
@@ -84,19 +88,44 @@ p {
 	padding: 0;
 	margin: 0;
 }
+#sidebar ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0 10px;
+}
+#sidebar li {
+	padding: 0 10px;
+	margin: 0 0 7px 0;
+	background-color: #3E6998;
+	color: white;
+	font-size: 90%;
+}
+#sidebar li a {
+	color: white;
+	text-decoration: none;
+}
+#sidebar .categories {
+	border: 1px solid #3E6998;
+	margin: 8px 0 15px 0;
+}
+
 #rightnav {
 	width: 190px;
 	vertical-align: top;
 	padding: 0;
 	margin: 0;
 }
-
-/*
- * Content area
- */
-#content {
-	text-align: left;
-	background: white url(/wiki/skins/organicdesign/logo.jpg) top right no-repeat;
+#rightnav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0 0 10px 0;
+}
+#rightnav li {
+	padding: 0 10px;
+	margin: 0 0 7px 0;
+	background-color: #3E6998;
+	color: white;
+	font-size: 90%;
 }
 
 .visualClear {
@@ -151,8 +180,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 h1 {
 	font-weight: normal;
-	font-size: 14pt;
-	padding: 5pt 0 5pt 0;
+	font-size: 12pt;
+	padding: 5pt 0 3pt 0;
 	border-bottom: 2px solid black;
 }
 
@@ -172,6 +201,18 @@ h5 { font-size: 100%; }
 h5 .editsection { font-weight: normal; }
 h6 { font-size: 80%;  }
 h6 .editsection { font-size: 125%; font-weight: normal; }
+
+#sidebar h2 {
+	margin-left: 10px;
+	text-transform: uppercase;
+	font-size: 8pt;
+}
+
+#rightnav h2 {
+	margin-top: 10px;
+	text-transform: uppercase;
+	font-size: 10pt;
+}
 
 ul {
 	line-height: 1.5em;
@@ -869,8 +910,8 @@ li#pt-userpage {
 */
 #p-cactions {
 	position: absolute;
-	top: 175px;
-	left: 124px;
+	top: 170px;
+	left: 131px;
 	margin: 0;
 	white-space: nowrap;
 	overflow: visible;
