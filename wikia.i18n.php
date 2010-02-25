@@ -31,7 +31,19 @@ $messages['en'] = array(
 	'od-calendar-another' => 'Use Datepicker, then Go to another Date',
 	'od-textbox-alias' => 'Other addresses that point to this address. Write every entry on a new line.',
 	'od-textbox-forward' => 'Other addresses that emails are forwarded to. Write every entry on a new line.',
+	'sidebar' => '{{#tree:id=sidebartree|root=<big><b>{{ns:4}}</b></big>|
+*[{{fullurl:MediaWiki:Sidebar|action=edit}} Navigation]
+**[{{fullurl:Main Page}} Home]
+**[{{fullurl:Special:Recentchanges}} Recent changes]
+**[[Calendar]]
+**[[Sandbox]]
+**[{{fullurl:Special:Categories}} Categories]
+**[{{fullurl:Special:Allpages|from=*&namespace=10}} Templates]
+**[[RecordAdmin cheatsheet]]
+*Toolbox
+**[{{SERVER}}/wiki/index.php?title={{FULLPAGENAMEE}}&action=pdfbook&format=single Print to PDF]
+**[[Special:Specialpages|Special pages]]
+**[[Special:Upload|upload]]
+*[[MediaWiki:Sidebar|Edit this sidebar]]
+}}'
 );
-
-
-
