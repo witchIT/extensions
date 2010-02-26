@@ -63,27 +63,29 @@ function efRecordAdminCreateForm (&$out) {
 				<label for='racreateBody'>Create New Record</label>
 			</th>
 			<td id='p-racreate' class='portlet'>
-				<div id='racreateBody' class='pBody'>
-					<form id='RACreateForm' method='POST' action='$action'>
-						<select name='wpType'>$options</select>
-						<input type='submit' class='raCreateButton' style='display:inline' value='Create' />
-					</form>
-				<div>
+				<form id='RACreateForm' method='POST' action='$action'>
+					<table id='racreate-inside-table' cellpadding='0' cellspacing='0'>
+						<tr>
+							<td><select name='wpType'>$options</select></td>
+							<td><input type='submit' class='raCreateButton' style='display:inline' value='Create' /></td>
+						</tr>
+					</table>
+				</form>
 			</td>
-			<th>
-				<label for='searchInput'>Search</label>
-			</th>
-			<td id='p-search' class='portlet'
-				<div id='searchBody' class='pBody'>
-					<form name='searchform' action='/Special:Search' id='searchform'>
-						<div>
-							<input id='searchInput' name='search' type='text' title='Search EWG.OD [f]' accesskey='f' value='' />
-							<input type='submit' name='fulltext' class='searchButton' id='mw-searchButton' value='Go' title='Search the pages for this text' />
-							<input type='button' class='searchButton' value='Search' onClick='document.searchform.findthis.value=document.searchform.search.value;findinpage(document.searchform, frametosearch);' />
-							<input type='hidden' name='findthis' />
-						</div>
-					</form>
-				</div>
+			<th><label for='searchInput'>Search</label></th>
+			<td id='p-search' class='portlet'>
+				<form name='searchform' action='/Special:Search' id='searchform'>
+					<table id='search-inside-table' cellpadding='0' cellspacing='0'>
+						<tr>
+							<td><input id='searchInput' name='search' type='text' title='Search EWG.OD [f]' accesskey='f' value='' /></td>
+							<td><input type='submit' name='fulltext' class='searchButton' id='mw-searchButton' value='Go' title='Search the pages for this text' /></td>
+							<td>
+								<input type='button' class='searchButton' value='Search' onClick='document.searchform.findthis.value=document.searchform.search.value;findinpage(document.searchform, frametosearch);' />
+								<input type='hidden' name='findthis' />
+							</td>
+						</tr>
+					</table>
+				</form>
 			</td>
 		</tr>
 	</table>
