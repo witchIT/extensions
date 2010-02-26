@@ -1233,22 +1233,11 @@ input.raCreateButton {
 #p-racreate .pBody {
 	padding: .5em .4em .4em .4em;
 	text-align: left;
-	height:2em;
-}
-
-#p-racreate {
-	margin:0;
-	position:absolute;
-	right:1em;
-	top:1.8em;
-	margin-left:0.7em;
-	margin-right:0.7em;
-	width:auto;
 }
 
 #p-racreate h5 {margin-bottom:0}
 
-#p-search {
+#search-create {
 	position: absolute;
 	top: 2.1em;
 	right: 17em;

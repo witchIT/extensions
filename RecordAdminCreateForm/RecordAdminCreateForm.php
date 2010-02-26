@@ -56,17 +56,39 @@ function efRecordAdminCreateForm (&$out) {
 		</form>";
 */
 	$out->mBodytext .= "
-<div id='p-racreate' class='portlet'>
-	<h5><label for='racreateBody'>Create New Record</label></h5>
-	<div id='racreateBody' class='pBody'>
-		<div>
-			<form id='RACreateForm' method='POST' action='$action'>
-				<select name='wpType'>$options</select>
-				<input type='submit' class='raCreateButton' style='display:inline' value='Create' />
-			</form>
-		</div>
-	</div>
-</div>";
+<div id='search-create'>
+	<table id='search-create-table' cellpadding='0' cellspacing='0'>
+		<tr>
+			<th>
+				<label for='racreateBody'>Create New Record</label>
+			</th>
+			<td id='p-racreate' class='portlet'>
+				<div id='racreateBody' class='pBody'>
+					<form id='RACreateForm' method='POST' action='$action'>
+						<select name='wpType'>$options</select>
+						<input type='submit' class='raCreateButton' style='display:inline' value='Create' />
+					</form>
+				<div>
+			</td>
+			<th>
+				<label for='searchInput'><?php $this->msg('search') ?></label>
+			</th>
+			<td id='p-search' class='portlet'
+				<div id='searchBody' class='pBody'>
+					<form name='searchform' action='/Special:Search' id='searchform'>
+						<div>
+							<input id='searchInput' name='search' type='text' title='Search EWG.OD [f]' accesskey='f' value='' />
+							<input type='submit' name='fulltext' class='searchButton' id='mw-searchButton' value='Go' title='Search the pages for this text' />
+							<input type='button' class='searchButton' value='Search' onClick='document.searchform.findthis.value=document.searchform.search.value;findinpage(document.searchform, frametosearch);' />
+							<input type='hidden' name='findthis' />
+						</div>
+					</form>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+";
 
 	return true;
 }
