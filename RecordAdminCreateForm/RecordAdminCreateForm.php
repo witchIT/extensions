@@ -71,7 +71,7 @@ function efRecordAdminCreateForm (&$out) {
 				<div>
 			</td>
 			<th>
-				<label for='searchInput'><?php $this->msg('search') ?></label>
+				<label for='searchInput'>Search</label>
 			</th>
 			<td id='p-search' class='portlet'
 				<div id='searchBody' class='pBody'>
