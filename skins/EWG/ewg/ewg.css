@@ -1221,6 +1221,7 @@ th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:
 
 input.raCreateButton {
 	margin-top: 1px;
+	height:95%;
 	font-size: 95%;
 	padding-left: .5em;
 	padding-right: .5em;
