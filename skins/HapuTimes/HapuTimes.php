@@ -108,7 +108,10 @@ class HapuTimesTemplate extends QuickTemplate {
 		</div>
 	</div>
 	<div id="slogan"><?php
-	$a = new Article( Title::newFromText( 'Header', NS_MEDIAWIKI ) );
+	$title = 'header';
+	$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+	$text = $article->fetchContent();
+	if ( empty( $text ) ) $text = wfMsg( $title );
 	if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 	else { $psr = new Parser; $opt = NULL; }
 	if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
@@ -118,15 +121,21 @@ class HapuTimesTemplate extends QuickTemplate {
 
 <tr><td id="menubar" colspan="3">
 	<?php
-	$a = new Article( Title::newFromText( 'Menubar', NS_MEDIAWIKI ) );
-	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	$title = 'menubar';
+	$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+	$text = $article->fetchContent();
+	if ( empty( $text ) ) $text = wfMsg( $title );
+	echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	?>
 </td></tr>
 
 <tr><td id="sidebar" valign="top">
 	<?php
-	$a = new Article( Title::newFromText( 'Sidebar', NS_MEDIAWIKI ) );
-	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	$title = 'sidebar';
+	$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+	$text = $article->fetchContent();
+	if ( empty( $text ) ) $text = wfMsg( $title );
+	echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	?>
 	<div id="p-search" class="portlet">
 		<h5><label for="searchInput"><?php $this->msg('search') ?></label></h5>
@@ -175,15 +184,21 @@ class HapuTimesTemplate extends QuickTemplate {
 
 <td id="rightnav" valign="top">
 	<?php
-	$a = new Article( Title::newFromText( 'Rightnav', NS_MEDIAWIKI ) );
-	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	$title = 'rightnav';
+	$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+	$text = $article->fetchContent();
+	if ( empty( $text ) ) $text = wfMsg( $title );
+	echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	?>
 </td></tr>
 
 <tr><td colspan="3" id="footer">
 	<?php
-	$a = new Article( Title::newFromText( 'Footer', NS_MEDIAWIKI ) );
-	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	$title = 'footer';
+	$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+	$text = $article->fetchContent();
+	if ( empty( $text ) ) $text = wfMsg( $title );
+	echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	?>
 </td></tr>
 </table>
