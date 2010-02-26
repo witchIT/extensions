@@ -115,7 +115,7 @@ class HapuTimesTemplate extends QuickTemplate {
 	if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 	else { $psr = new Parser; $opt = NULL; }
 	if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
-	echo $psr->parse( $a->fetchContent(), $wgTitle, $opt, true, true )->getText();
+	echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	?></div>
 </td></tr>
 
