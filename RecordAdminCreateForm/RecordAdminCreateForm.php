@@ -59,7 +59,7 @@ function efRecordAdminCreateForm (&$out) {
 <div id='search-create'>
 	<table id='search-create-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
 		<tr>
-			<td><label for='racreateBody'>Create New Record</label></td>
+			<td><label for='racreateBody'>New Record</label></td>
 			<td id='p-racreate' class='portlet'>
 				<form id='RACreateForm' method='POST' action='$action'>
 					<table id='racreate-inside-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
@@ -70,7 +70,7 @@ function efRecordAdminCreateForm (&$out) {
 					</table>
 				</form>
 			</td>
-			<td><label for='searchInput'>&nbsp;&nbsp;&nbsp;&nbsp;Search</label></td>
+			<td><label for='searchInput'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search</label></td>
 			<td id='p-search' class='portlet'>
 				<form name='searchform' action='/Special:Search' id='searchform'>
 					<table id='search-inside-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
