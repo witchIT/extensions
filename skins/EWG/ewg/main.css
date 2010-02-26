@@ -21,6 +21,11 @@
 	padding-top:0;
 }
 
+#top-div {
+	height:100px;
+}
+
+
 #content {
 	background: white;
 	color: black;
@@ -29,6 +34,11 @@
 	line-height: 1.5em;
 	vertical-align:top;
 	padding: 0 1em 1em 1em;
+}
+
+#sidebartree {
+	padding-left:5px;
+	padding-right:5px;
 }
 
 #bodyContent {padding: 1.5em}
