@@ -57,12 +57,12 @@ function efRecordAdminCreateForm (&$out) {
 */
 	$out->mBodytext .= "
 <div id='search-create'>
-	<table id='search-create-table' cellpadding='5' cellspacing='0'>
+	<table id='search-create-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
 		<tr>
 			<td><label for='racreateBody'>Create New Record</label></td>
 			<td id='p-racreate' class='portlet'>
 				<form id='RACreateForm' method='POST' action='$action'>
-					<table id='racreate-inside-table' cellpadding='0' cellspacing='0'>
+					<table id='racreate-inside-table' cellpadding='5' cellspacing='0'>
 						<tr>
 							<td><select name='wpType'>$options</select></td>
 							<td><input type='submit' class='raCreateButton' style='display:inline' value='Create' /></td>
