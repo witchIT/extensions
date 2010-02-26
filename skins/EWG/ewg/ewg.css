@@ -1254,13 +1254,13 @@ max-width:190px;
 
 #contentSub {display:none}
 
-.page-Category_Documents .mw-pages h2, 
-.page-Category_Activities .mw-pages h2, 
-.page-Category_Dates .mw-pages h2,
-.page-Category_Departments .mw-pages h2,
-.page-Category_Organisations .mw-pages h2,
-.page-Category_People .mw-pages h2,
-.page-Category_Procedures .mw-pages h2,
-.page-Category_Projects .mw-pages h2,
-.page-Category_Roles .mw-pages h2,
-.page-Category_Tasks .mw-pages h2 {display:none}
+.page-Category_Documents #mw-pages h2, 
+.page-Category_Activities #mw-pages h2, 
+.page-Category_Dates #mw-pages h2,
+.page-Category_Departments #mw-pages h2,
+.page-Category_Organisations #mw-pages h2,
+.page-Category_People #mw-pages h2,
+.page-Category_Procedures #mw-pages h2,
+.page-Category_Projects #mw-pages h2,
+.page-Category_Roles #mw-pages h2,
+.page-Category_Tasks #mw-pages h2 {display:none}
