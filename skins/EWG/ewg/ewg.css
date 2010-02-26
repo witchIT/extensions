@@ -1152,8 +1152,7 @@ table.date_maintable table td p, table.date_maintable table th p {text-align:lef
 }
 
 /* Hide unwanted name fields */ 
-.activity-record .recordadmin-create-id {display:none} 
-.person-record .recordadmin-create-id, .date-record .recordadmin-create-id {display:none}
+.activity-record .recordadmin-create-id, .person-record .recordadmin-create-id, .date-record .recordadmin-create-id,  .task-record .recordadmin-create-id {display:none}
 
 /* Width of templates */
 table.recordadmin-general {width:100%; vertical-align:top}
