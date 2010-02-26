@@ -1239,8 +1239,8 @@ input.raCreateButton {
 
 #search-create {
 	position: absolute;
-	top: 2.1em;
-	right: 17em;
+	top: 50px;
+	right: 10px;
 	margin: 0;
 	width:auto;
 }
