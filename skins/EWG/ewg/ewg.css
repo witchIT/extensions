@@ -37,8 +37,8 @@
 
 #contentSub {display:none}
 
-h2, h3, #p-cactions li a, #p-personal li a {
-	color: #26402C;
+a, h2, h3, #p-cactions li a, #p-personal li a {
+	color: #204027;
 }
 
 h1 {color: #5F5447}
