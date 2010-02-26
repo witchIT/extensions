@@ -151,7 +151,6 @@ class EWGTemplate extends QuickTemplate {
 				?>href="<?php echo htmlspecialchars($this->data['nav_urls']['mainpage']['href'])?>"<?php
 				echo $skin->tooltipAndAccesskey('n-mainpage') ?>></a>
 		</div>
-<?php $this->searchBox(); ?>
 		<table id="column-content" width="!00%" cellpadding="0" cellspacing="0">
 			<tr>
 				<td colspan="2">
