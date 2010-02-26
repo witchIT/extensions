@@ -62,7 +62,7 @@ function efRecordAdminCreateForm (&$out) {
 			<td><label for='racreateBody'>Create New Record</label></td>
 			<td id='p-racreate' class='portlet'>
 				<form id='RACreateForm' method='POST' action='$action'>
-					<table id='racreate-inside-table' cellpadding='5' cellspacing='0'>
+					<table id='racreate-inside-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
 						<tr>
 							<td><select name='wpType'>$options</select></td>
 							<td><input type='submit' class='raCreateButton' style='display:inline' value='Create' /></td>
@@ -70,10 +70,10 @@ function efRecordAdminCreateForm (&$out) {
 					</table>
 				</form>
 			</td>
-			<td><label for='searchInput'>Search</label></td>
+			<td><label for='searchInput'>&nbsp;&nbsp;&nbsp;&nbsp;Search</label></td>
 			<td id='p-search' class='portlet'>
 				<form name='searchform' action='/Special:Search' id='searchform'>
-					<table id='search-inside-table' cellpadding='5' cellspacing='0'>
+					<table id='search-inside-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
 						<tr>
 							<td><input id='searchInput' name='search' type='text' title='Search EWG.OD [f]' accesskey='f' value='' /></td>
 							<td><input type='submit' name='fulltext' class='searchButton' id='mw-searchButton' value='Go' title='Search the pages for this text' /></td>
