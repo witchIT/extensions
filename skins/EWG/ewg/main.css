@@ -788,7 +788,7 @@ input.searchButton {
 #p-personal ul {
 	border: none;
 	line-height: 1.4em;
-	color: #2f6fab;
+	/*color: #2f6fab;*/
 	padding: 0 2em 0 3em;
 	margin: 0;
 	text-align: right;
@@ -802,14 +802,14 @@ input.searchButton {
 	border: none;
 	padding: 0;
 	display: inline;
-	color: #2f6fab;
+	/*color: #2f6fab;*/
 	margin-left: 1em;
 	line-height: 1.2em;
 	background: none;
 }
 #p-personal li a {
 	text-decoration: none;
-	color: #005896;
+	/*color: #005896;*/
 	padding-bottom: .2em;
 	background: none;
 }
@@ -873,7 +873,7 @@ li#pt-login {
 }
 #p-cactions li a {
 	background-color: #fbfbfb;
-	color: #002bb8;
+	/*color: #002bb8;*/
 	border: none;
 	padding: 0 .8em .3em;
 	position: relative;
