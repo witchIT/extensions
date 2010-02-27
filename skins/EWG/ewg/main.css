@@ -71,6 +71,27 @@ body {
 }
 
 /* general styles */
+#p-cactions {
+    top:80px;
+}
+
+#p-logo {
+    height:50px;
+    width:240px;
+    margin-bottom:10px;
+    top:10px;
+    left:5px;
+}
+
+#p-logo a, #p-logo a:hover {
+    height:50px;
+    width:100%;
+}
+
+
+a, h2, h3, #p-cactions li a, #p-personal li a {
+	color: #204027;
+}
 
 table {
 	font-size: 100%;
@@ -137,7 +158,7 @@ h1, h2, h3, h4, h5, h6 {
 	padding-bottom: .17em;
 	font-family: sans-serif;
 }
-h1 { font-size: 188%;  color: #6E993D; }
+h1 { font-size: 188%;  color: #5F5447; }
 h1 .editsection { font-size: 53%;}
 h2 { font-size: 150%;   color: #3E5A1F;}
 h2 .editsection { font-size: 67%; color: #3E5A1F;}
