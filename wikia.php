@@ -10,7 +10,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.5, 2009-12-02');
+define( 'WIKIA_VERSION', '1.0.6, 2010-02-27');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -51,6 +51,7 @@ $wgAllowPageInfo          = true;
 $wgDBmysql5               = false;
 $wgTruncatedCommentLength = 50;
 $wgVerifyMimeType         = false;
+$wgUseSiteCss             = true;
 $wgUseSiteJs              = true;
 $wgUseTeX                 = true;
 $wgSVGConverter           = 'rsvg';
@@ -147,7 +148,7 @@ function domainRedirect( $list ) {
 }
 
 # Automatically log the server user in
-$wgHooks['UserLoadFromSession'][] = 'odWikidAccess';
+#$wgHooks['UserLoadFromSession'][] = 'odWikidAccess';
 $wgWikidUserId = 1;
 function odWikidAccess( &$user, &$result ) {
 	global $wgWikidUserId, $wgWikidAddr;
