@@ -71,31 +71,7 @@ body {
 }
 
 /* general styles */
-#p-cactions {
-    top:80px;
-}
 
-#p-logo {
-    height:50px;
-    width:240px;
-    margin-bottom:10px;
-    top:10px;
-    left:5px;
-}
-
-#p-logo a, #p-logo a:hover {
-    height:50px;
-    width:100%;
-}
-
-
-h2, h3 {
-	color: #204027;
-}
-
-a, #p-cactions li a, #p-personal li a {
-	color: #00400E;
-}
 
 table {
 	font-size: 100%;
@@ -1586,4 +1562,28 @@ span.searchmatch {
 	font-size: 127%;
 }
 
+#p-cactions {
+    top:80px;
+}
 
+#p-logo {
+    height:50px;
+    width:240px;
+    margin-bottom:10px;
+    top:10px;
+    left:5px;
+}
+
+#p-logo a, #p-logo a:hover {
+    height:50px;
+    width:100%;
+}
+
+
+h2, h3 {
+	color: #204027;
+}
+
+a, #p-cactions li a, #p-personal li a {
+	color: #00400E;
+}
