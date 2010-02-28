@@ -12,7 +12,7 @@
  */
 if (!defined('MEDIAWIKI')) die('Not an entry point.');
  
-define('EXTRAMAGIC_VERSION', '2.0.5, 2010-02-28');
+define('EXTRAMAGIC_VERSION', '2.0.6, 2010-02-28');
  
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -38,6 +38,7 @@ function efSetupExtraMagic() {
 	global $wgParser;
 	$wgParser->setFunctionHook( 'REQUEST', 'efExtraMagicExpandRequest', SFH_NO_HASH );
 	$wgParser->setFunctionHook( 'USERID',  'efExtraMagicExpandUserID',  SFH_NO_HASH );
+	$wgParser->setFunctionHook( 'AVATAR',  'efExtraMagicExpandAvatar',  SFH_NO_HASH );
 }
  
 /**
@@ -67,6 +68,7 @@ function efAddCustomVariableLang( &$langMagic, $langCode = 0 ) {
 	# Parser functions
 	$langMagic['REQUEST'] = array( $langCode, 'REQUEST' );
 	$langMagic['USERID']  = array( $langCode, 'USERID' );
+	$langMagic['AVATAR']  = array( $langCode, 'AVATAR' );
  
 	return true;
 }
@@ -81,10 +83,24 @@ function efExtraMagicExpandRequest( &$parser, $param ) {
 }
  
 function efExtraMagicExpandUserID( &$parser, $param ) {
-	$col = strpos( $param, ' ' ) ? 'user_real_name' : 'user_name';
-	$dbr = wfGetDB( DB_SLAVE );
-	if ( $row = $dbr->selectRow( 'user', array( 'user_id' ), array( $col => $param ), __METHOD__ ) )
-		return $row->user_id;
+	if ( $param ) {
+		$col = strpos( $param, ' ' ) ? 'user_real_name' : 'user_name';
+		$dbr = wfGetDB( DB_SLAVE );
+		if ( $row = $dbr->selectRow( 'user', array( 'user_id' ), array( $col => $param ), __METHOD__ ) )
+			return $row->user_id;
+	} else {
+		global $wgUser;
+		return $wgUser->getID();
+	}
+	return '';
+}
+
+function efExtraMagicExpandAvatar( &$parser, $param ) {
+	if ( $id = efExtraMagicExpandUserID( $parser, $param ) ) {
+		global $wgSitename, $wgUploadDirectory, $wgUploadPath;
+		$files = glob( "$wgUploadDirectory/avatar-$wgSitename-$id.*" );
+		if ( count( $files ) > 0 ) return $wgUploadPath.$files[0];
+	}
 	return '';
 }
  
