@@ -25,6 +25,12 @@
 	height:100px;
 }
 
+#search-create {
+	position: absolute;
+	top: 40px;
+	right: 18px;
+}
+
 
 #content {
 	background: white;
