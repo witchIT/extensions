@@ -40,14 +40,16 @@ if ( !$wgCommandLineMode ) {
 	include( 'extensions/Nuke/SpecialNuke.php' );
 	include( 'extensions/NewUserLog/Newuserlog.php' );
 	include( 'extensions/Renameuser/SpecialRenameuser.php' );
-	include( 'extensions/UserMerge/UserMerge.php' );	
+	include( 'extensions/UserMerge/UserMerge.php' );
 	include( 'extensions/ParserFunctions/ParserFunctions.php' );
+	include( 'extensions/RegexParserFunctions/RegexParserFunctions.php' );
 	include( 'extensions/DynamicPageList/DynamicPageList2.php' );
 	include( 'extensions/Cite/Cite.php' );
 
 	# OD extensions
 	include( 'extensions/EventPipe/EventPipe.php' );
 	include( 'extensions/InterWiki/InterWiki.php' );
+	include( 'extensions/ExtraMagic/ExtraMagic.php' );
 	include( 'extensions/SpecialNukeDPL.php' );
 	include( 'extensions/WikidAdmin/SpecialWikidAdmin.php' );
 	include( 'extensions/WikiaAdmin/SpecialWikiaAdmin.php' );
