@@ -1563,14 +1563,14 @@ span.searchmatch {
 }
 
 #p-cactions {
-    top:80px;
+    top:100px;
 }
 
 #p-logo {
+	position:absolute;
     height:50px;
     width:240px;
-    margin-bottom:10px;
-    top:10px;
+    top:15px;
     left:5px;
 }
 
