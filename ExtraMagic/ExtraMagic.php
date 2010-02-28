@@ -12,7 +12,7 @@
  */
 if (!defined('MEDIAWIKI')) die('Not an entry point.');
  
-define('EXTRAMAGIC_VERSION', '2.0.4, 2009-12-07');
+define('EXTRAMAGIC_VERSION', '2.0.5, 2010-02-28');
  
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -37,6 +37,7 @@ $wgHooks['ParserGetVariableValueSwitch'][] = 'efGetCustomVariable';
 function efSetupExtraMagic() {
 	global $wgParser;
 	$wgParser->setFunctionHook( 'REQUEST', 'efExtraMagicExpandRequest', SFH_NO_HASH );
+	$wgParser->setFunctionHook( 'USERID',  'efExtraMagicExpandUserID',  SFH_NO_HASH );
 }
  
 /**
@@ -65,6 +66,7 @@ function efAddCustomVariableLang( &$langMagic, $langCode = 0 ) {
  
 	# Parser functions
 	$langMagic['REQUEST'] = array( $langCode, 'REQUEST' );
+	$langMagic['USERID']  = array( $langCode, 'USERID' );
  
 	return true;
 }
@@ -76,6 +78,14 @@ function efExtraMagicExpandRequest( &$parser, $param ) {
 	global $wgRequest;
 	$parser->disableCache();
 	return $wgRequest->getText( $param );
+}
+ 
+function efExtraMagicExpandUserID( &$parser, $param ) {
+	$col = strpos( $param, ' ' ) ? 'user_real_name' : 'user_name';
+	$dbr = wfGetDB( DB_SLAVE );
+	if ( $row = $dbr->selectRow( 'user', array( 'user_id' ), array( $col => $param ), __METHOD__ ) )
+		return $row->user_id;
+	return '';
 }
  
 /**
@@ -99,8 +109,8 @@ function efGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
 		case MAG_CURRENTLANG:
 			global $wgUser;
 			$parser->disableCache();
-			$ret = $wgUser->getOption( 'language' );
 		break;
+			$ret = $wgUser->getOption( 'language' );
  
 		case MAG_CURRENTSKIN:
 			global $wgUser;
