@@ -5,9 +5,6 @@ $wgSitename          = "Sample";
 $wgShortName         = "foo";
 $wgDBname            = "foo";
 $wgDBprefix          = "foo_";
-$wgRawHtml           = true;
-$wgUseSiteCss        = true;
-$wgSecurityUseDBHook = true;
 
 define( 'NS_FORM', 2000 );
 $wgExtraNamespaces[NS_FORM]   = 'Form';
