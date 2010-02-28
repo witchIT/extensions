@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'RecordAdminIntegratePerson depend
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.2.0, 2010-02-28' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.2.1, 2010-02-28' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -306,7 +306,7 @@ class RAIntegratePerson {
 		if ( $file['error'] > 0 )                               $error = 'Uploaded error number ' . $file['error'] . ' occurred';
 		if ( $error ) $wgSiteNotice = "<div class='errorbox'>$error</div>";
 		else {
-			$name = preg_replace( '%.+(\..+?)$%', "user-{$wgDBname}-{$wgUser->getId()}$1", $file['name'] );
+			$name = preg_replace( '%.+(\..+?)$%', "avatar-{$wgSitename}-{$wgUser->getId()}$1", $file['name'] );
 			move_uploaded_file( $file['tmp_name'], "$wgUploadDirectory/$name" );
 		}
 	}
