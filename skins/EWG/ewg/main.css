@@ -1560,17 +1560,17 @@ span.searchmatch {
 /*Skin specific additions*/
 
 #top-div {
-	height:110px;
+	height:112px;
 }
 
 #search-create {
 	position: absolute;
-	top: 58px;
+	top: 60px;
 	right: 18px;
 }
 
 #p-cactions {
-    top:90px;
+    top:92px;
 }
 
 #p-logo {
@@ -1578,7 +1578,7 @@ span.searchmatch {
     height:50px;
     width:240px;
     top:15px;
-    left:5px;
+    left:7px;
 }
 
 #p-logo a, #p-logo a:hover {
