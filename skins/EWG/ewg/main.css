@@ -21,17 +21,6 @@
 	padding-top:0;
 }
 
-#top-div {
-	height:120px;
-}
-
-#search-create {
-	position: absolute;
-	top: 60px;
-	right: 18px;
-}
-
-
 #content {
 	background: white;
 	color: black;
@@ -1568,8 +1557,20 @@ span.searchmatch {
 	font-size: 127%;
 }
 
+/*Skin specific additions*/
+
+#top-div {
+	height:110px;
+}
+
+#search-create {
+	position: absolute;
+	top: 58px;
+	right: 18px;
+}
+
 #p-cactions {
-    top:100px;
+    top:90px;
 }
 
 #p-logo {
