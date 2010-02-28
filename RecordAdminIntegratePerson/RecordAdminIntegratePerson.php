@@ -10,14 +10,14 @@
 
 # Check dependency extensions
 if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
-if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'This extension depends on the RecordAdmin extension' );
-if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'This extension depends on the JavaScript extension' );
+if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'RecordAdminIntegratePerson depends on the RecordAdmin extension' );
+if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'RecordAdminIntegratePerson depends on the JavaScript extension' );
 
 # Ensure running at least MediaWiki version 1.16
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.1.4, 2010-02-08' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.2.0, 2010-02-28' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -35,17 +35,10 @@ $wgExtensionCredits['other'][] = array(
 	'version'     => RAINTEGRATEPERSON_VERSION
 );
 
-# Process posted contact details
-if ( isset( $_POST['wpFirstName'] ) ) $_POST['wpRealName'] = $_POST['wpFirstName'] . ' ' . $_POST['wpLastName'];
-
 class RAIntegratePerson {
 
 	function __construct() {
 		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
-
-		# Modify login form messages to say email and name compulsory
-#		$wgMessageCache->addMessages(array('prefs-help-email' => '<div class="error">Required</div>'));
-#		$wgMessageCache->addMessages(array('prefs-help-realname' => '<div class="error">Required</div>'));
 
 		if ( $wgIPAddPersonalUrls ) $wgHooks['PersonalUrls'][] = array( $this, 'addPersonalUrls' );
 		if ( $wgIPFixUserLinks )    $wgHooks['BeforePageDisplay'][] = array( $this, 'fixUserLinks');
@@ -68,9 +61,8 @@ class RAIntegratePerson {
 		}
 
 		# Process an uploaded profile image if one was posted
-		if ( array_key_exists( 'wpIPImage', $_FILES ) && $_FILES['wpIPImage']['size'] > 0 )
-			$this->processUploadedImage( $_FILES['wpIPImage'] );
-
+		if ( array_key_exists( 'ra_Avatar', $_FILES ) && $_FILES['ra_Avatar']['size'] > 0 )
+			$this->processUploadedImage( $_FILES['ra_Avatar'] );
 	}
 
 	/**
