@@ -10,7 +10,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.6, 2010-02-27');
+define( 'WIKIA_VERSION', '1.0.7, 2010-03-01');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -45,19 +45,24 @@ $wgExtraNamespaces[NS_RECORD+1]    = 'Record_talk';
 # Default globals defined before specific LocalSettings inclusion
 $wgArticlePath            = '/$1';
 $wgScriptPath             = '/wiki';
+
 $wgUseDatabaseMessages    = true;
-$wgAllowDisplayTitle      = true;
-$wgAllowPageInfo          = true;
+$wgSecurityUseDBHook      = true;
 $wgDBmysql5               = false;
+
 $wgTruncatedCommentLength = 50;
 $wgVerifyMimeType         = false;
-$wgUseSiteCss             = true;
-$wgUseSiteJs              = true;
 $wgUseTeX                 = true;
 $wgSVGConverter           = 'rsvg';
 $wgRewriteRule            = 'Friendly'; # rewrite.pl URL transformation function name
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
+
+$wgAllowDisplayTitle      = true;
+$wgAllowPageInfo          = true;
+$wgRawHtml                = true;
+$wgUseSiteCss             = true;
+$wgUseSiteJs              = true;
 
 # File upload settings
 $wgEnableUploads          = true;
