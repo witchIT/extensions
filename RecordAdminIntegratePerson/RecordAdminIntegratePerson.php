@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'RecordAdminIntegratePerson depend
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.2.1, 2010-02-28' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.2.2, 2010-02-28' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
@@ -299,7 +299,7 @@ class RAIntegratePerson {
 	 * Process uploaded image file
 	 */
 	function processUploadedImage( $file ) {
-		global $wgUser, $wgDBname, $wgSiteNotice, $wgUploadDirectory, $wgIPMaxImageSize;
+		global $wgUser, $wgSitename, $wgSiteNotice, $wgUploadDirectory, $wgIPMaxImageSize;
 		$error = false;
 		if ( !ereg( '^image/(jpeg|png|gif)$', $file['type'] ) ) $error = 'Uploaded file was not of a valid type!';
 		if ( $file['size'] > $wgIPMaxImageSize )                $error = 'Profile images are restricted to a maximum of 100KBytes';
