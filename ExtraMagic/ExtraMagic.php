@@ -12,7 +12,7 @@
  */
 if (!defined('MEDIAWIKI')) die('Not an entry point.');
  
-define('EXTRAMAGIC_VERSION', '2.0.6, 2010-02-28');
+define('EXTRAMAGIC_VERSION', '2.0.7, 2010-02-28');
  
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -99,7 +99,9 @@ function efExtraMagicExpandAvatar( &$parser, $param ) {
 	if ( $id = efExtraMagicExpandUserID( $parser, $param ) ) {
 		global $wgSitename, $wgUploadDirectory, $wgUploadPath;
 		$files = glob( "$wgUploadDirectory/avatar-$wgSitename-$id.*" );
-		if ( count( $files ) > 0 ) return $wgUploadPath.$files[0];
+		if ( count( $files ) > 0 ) {
+			return "$wgUploadPath/" . basename( $files[0] );
+		}
 	}
 	return '';
 }
