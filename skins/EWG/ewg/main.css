@@ -595,7 +595,7 @@ table.rimage {
 	padding: 0;
 }
 #bodyContent a.external {
-	color: #36b;
+	/*color: #36b;*/
 }
 /* this can be used in the content area to switch off
 special external link styling */
@@ -701,10 +701,15 @@ special external link styling */
 ** Search portlet
 */
 #p-search {
-	width:14.5em;
-	margin-left:0.7em;
-	margin-right:0.7em;
+	width:24.5em;
+	margin:0
 }
+
+#p-racreate {
+	width:18em;
+	margin:0
+}
+
 input.searchButton {
 	margin-top: 1px;
 	font-size: 95%;
@@ -719,11 +724,19 @@ input.searchButton {
 	margin: 0;
 	font-size: 95%;
 }
-#p-search .pBody {
-	padding: .5em .4em .4em .4em;
+#p-search .pBody, #p-racreate .pBody {
+	padding: 0;
 	text-align: left;
+	border: none;
+	margin: 0;
+	background:none;	
 }
 
+#searchform {padding-top:2px}
+
+#RACreateForm select {
+	width:9.5em;
+}
 /*
 ** the personal toolbar
 */
@@ -1563,10 +1576,17 @@ span.searchmatch {
 	height:120px;
 }
 
-#search-create {
+#p-search {
 	position: absolute;
-	top: 60px;
-	right: 18px;
+	top: 40px;
+	right: 0.2em;
+	padding-top:2px
+}
+
+#p-racreate {
+	position: absolute;
+	top: 40px;
+	right: 24em;
 }
 
 #p-cactions {

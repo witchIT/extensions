@@ -47,48 +47,19 @@ function efRecordAdminCreateForm (&$out) {
 	# Post the form to Special:RecordAdmin
 	$action = Title::makeTitle( NS_SPECIAL, 'RecordAdmin' )->getLocalUrl();
 
-	/*# Add a form to the page
+# Add a form to the page
+
 	$out->mBodytext .= "
-		<form id='RACreateForm' method='POST' action='$action'>
-			Create a new <select name='wpType'>$options</select>
-			called <input name='wpTitle' class='raCreateInput' />
-			<input type='submit' class='raCreateButton' value='Create' />
-		</form>";
-*/
-	$out->mBodytext .= "
-<div id='search-create'>
-	<table id='search-create-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
-		<tr>
-			<td><label for='racreateBody'>New Record:</label></td>
-			<td id='p-racreate' class='portlet'>
+		<div id='p-racreate' class='portlet'>
+			<h5 ><label for='searchInput'>New record</label></h5>
+			<div id='createBody' class='pBody'>
 				<form id='RACreateForm' method='POST' action='$action'>
-					<table id='racreate-inside-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
-						<tr>
-							<td><select name='wpType'>$options</select></td>
-							<td><input type='submit' class='raCreateButton' style='display:inline' value='Create' /></td>
-						</tr>
-					</table>
+					<select name='wpType' id='selectwpType'>$options</select>
+					<input type='submit' id='raCreateButton' class='searchButton' value='Create' />
 				</form>
-			</td>
-			<td><label for='searchInput'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search:</label></td>
-			<td id='p-search' class='portlet'>
-				<form name='searchform' action='/Special:Search' id='searchform'>
-					<table id='search-inside-table' cellpadding='5' cellspacing='0' style='background:#FCFCF7;'>
-						<tr>
-							<td><input id='searchInput' name='search' type='text' title='Search EWG.OD [f]' accesskey='f' value='' /></td>
-							<td><input type='submit' name='fulltext' class='searchButton' id='mw-searchButton' value='Go' title='Search the pages for this text' /></td>
-							<td>
-								<input type='button' class='searchButton' value='Search' onClick='document.searchform.findthis.value=document.searchform.search.value;findinpage(document.searchform, frametosearch);' />
-								<input type='hidden' name='findthis' />
-							</td>
-						</tr>
-					</table>
-				</form>
-			</td>
-		</tr>
-	</table>
-</div>
-";
+			</div>
+		</div>
+		";
 
 	return true;
 }
@@ -101,3 +72,5 @@ function efSetupRecordAdminCreateForm() {
 	$wgHooks['BeforePageDisplay'][] = 'efRecordAdminCreateForm';
 }
 
+	
+	

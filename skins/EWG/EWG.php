@@ -88,6 +88,7 @@ class EWGTemplate extends QuickTemplate {
 				</ul>
 			</div>
 		</div>
+	<?php 			$this->searchBox(); ?>
 		<div class="portlet" id="p-personal">
 			<h5><?php $this->msg('personaltools') ?></h5>
 			<div class="pBody">
