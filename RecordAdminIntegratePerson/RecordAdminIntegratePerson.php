@@ -324,7 +324,7 @@ class RAIntegratePerson {
 		
 		# Build a reverse lookup of roles structure
 		$roles = array();
-		for( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
+		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
 			$record = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
 			$role = $t->getText();
 			if ( !isset( $roles[$role] ) ) $roles[$role] = array();
@@ -337,7 +337,7 @@ class RAIntegratePerson {
 
 		# todo: this should be written to the DB and updated on save of Person or Role records
 		$query = array( 'type' => $wgIPRoleType, 'record' => $wgUser->getRealname, 'field' => 'Roles' );
-		for( preg_split( '/\s+/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role ) {
+		foreach( preg_split( '/\s+/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role ) {
 			#for( $roles[$role] as $child
 		}
 	}
