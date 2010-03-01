@@ -15,14 +15,15 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'RecordAdminIntegratePerson depend
 
 # Ensure running at least MediaWiki version 1.16
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
-	die( "Sorry, this extension requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
+	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.2.2, 2010-02-28' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.4.0, 2010-03-01' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
 $wgIPMaxImageSize    = 100000;
 $wgIPPersonType      = 'Person';
+$wgIPRoleType        = 'Role';
 $wgIPFixUserLinks    = false;
 $wgIPAddPersonalUrls = true;
 
@@ -38,7 +39,8 @@ $wgExtensionCredits['other'][] = array(
 class RAIntegratePerson {
 
 	function __construct() {
-		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
+		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgUser;
+		global $wgIPPersonType, $wgIPRoleType, $wgSpecialRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
 
 		if ( $wgIPAddPersonalUrls ) $wgHooks['PersonalUrls'][] = array( $this, 'addPersonalUrls' );
 		if ( $wgIPFixUserLinks )    $wgHooks['BeforePageDisplay'][] = array( $this, 'fixUserLinks');
@@ -63,6 +65,26 @@ class RAIntegratePerson {
 		# Process an uploaded profile image if one was posted
 		if ( array_key_exists( 'ra_Avatar', $_FILES ) && $_FILES['ra_Avatar']['size'] > 0 )
 			$this->processUploadedImage( $_FILES['ra_Avatar'] );
+
+		# Build a reverse lookup of roles structure
+		$roles = array();
+		for( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
+			$record = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
+			$role = $t->getText();
+			if ( !isset( $roles[$role] ) ) $roles[$role] = array();
+			if ( isset( $record['Parent'] ) ) {
+				$parent = $record['Parent'];
+				if ( !isset( $roles[$parent] ) ) $roles[$parent] = array();
+				array_push( $roles[$parent], $role );
+			}
+		}
+
+		# Modify group membership for this user based on Role structure
+		# todo: this should be written to the DB and updated on save of Person or Role records
+		$query = array( 'type' => $wgIPRoleType, 'record' => $wgUser->getRealname, 'field' => 'Roles' );
+		for( preg_split( '/\s+/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role ) {
+			#for( $roles[$role] as $child
+		}
 	}
 
 	/**
