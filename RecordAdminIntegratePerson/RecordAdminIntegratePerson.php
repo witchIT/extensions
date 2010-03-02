@@ -17,13 +17,14 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'RecordAdminIntegratePerson depend
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.4.3, 2010-03-02' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.4.4, 2010-03-02' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
 $wgIPMaxImageSize    = 100000;
 $wgIPPersonType      = 'Person';
 $wgIPRoleType        = 'Role';
+$wgIPRolesField      = 'Roles';
 $wgIPParentField     = 'ReportsTo';
 $wgIPFixUserLinks    = false;
 $wgIPAddPersonalUrls = true;
@@ -67,7 +68,7 @@ class RAIntegratePerson {
 			$this->processUploadedImage( $_FILES['ra_Avatar'] );
 
 		# Modify group membership for this user based on Role structure
-		self::setPermissionsFromRoles();
+		$wgHooks['UserEffectiveGroups'][] = $this;
 
 	}
 
@@ -320,8 +321,8 @@ class RAIntegratePerson {
 	/**
 	 * Set the group permissions for the current user from the Role records
 	 */
-	static function setPermissionsFromRoles() {
-		global $wgUser, $wgIPPersonType, $wgIPRoleType, $wgIPParentField;
+	function onUserEffectiveGroups( &$user, &$groups ) {
+		global $wgIPPersonType, $wgIPRoleType, $wgIPRolesField, $wgIPParentField;
 		
 		# Build a reverse lookup of roles structure
 		$roles = array();
@@ -336,12 +337,31 @@ class RAIntegratePerson {
 			}
 		}
 
-		# todo: this should be written to the DB and updated on save of Person or Role records
-		$query = array( 'type' => $wgIPRoleType, 'record' => $wgUser->getRealname, 'field' => 'Roles' );
-		foreach( preg_split( '/\s+/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role ) {
-			#for( $roles[$role] as $child
+		# Scan the role structure and make child list contain all descendents
+		foreach( $roles as $i => $role ) $roles[$i] = array_unique( array_merge( $roles[$i], $this->recursiveRoleScan( $roles, $role ) ) );
+
+		# Loop through this user's roles and assign the user to role-groups
+		$query = array( 'type' => $wgIPPersonType, 'record' => $user->getRealname(), 'field' => $wgIPRolesField );
+		foreach( preg_split( '/\s*^\s*/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role1 ) {
+			if ( isset( $roles[$role1] ) ) {
+				foreach( $roles[$role1] as $role2 ) $groups[] = $role2;
+			}
 		}
+
+	return true;
 	}
+	
+	/**
+	 * Scan the role structure and make child list contain all descendents
+	 */
+	function recursiveRoleScan( &$roles, &$role ) {
+		static $bail = 100;
+		if ( $bail-- == 0) die;
+		$tmp = $role;
+		foreach( $role as $r ) $tmp = array_merge( $tmp, $this->recursiveRoleScan( $roles, $roles[$r] ) );
+		return $tmp;
+	}
+	
 }
 
 function wfSetupRAIntegratePerson() {
