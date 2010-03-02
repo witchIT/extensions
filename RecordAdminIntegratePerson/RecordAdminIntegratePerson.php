@@ -17,13 +17,14 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'RecordAdminIntegratePerson depend
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.4.1, 2010-03-02' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.4.3, 2010-03-02' );
 
 $wgAutoConfirmCount  = 10^10;
 $wgIPDefaultImage    = '';
 $wgIPMaxImageSize    = 100000;
 $wgIPPersonType      = 'Person';
 $wgIPRoleType        = 'Role';
+$wgIPParentField     = 'ReportsTo';
 $wgIPFixUserLinks    = false;
 $wgIPAddPersonalUrls = true;
 
@@ -320,16 +321,16 @@ class RAIntegratePerson {
 	 * Set the group permissions for the current user from the Role records
 	 */
 	static function setPermissionsFromRoles() {
-		global $wgUser, $wgIPPersonType, $wgIPRoleType;
+		global $wgUser, $wgIPPersonType, $wgIPRoleType, $wgIPParentField;
 		
 		# Build a reverse lookup of roles structure
 		$roles = array();
 		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
-			$record = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
+			$args = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
 			$role = $t->getText();
 			if ( !isset( $roles[$role] ) ) $roles[$role] = array();
-			if ( isset( $record['Parent'] ) ) {
-				$parent = $record['Parent'];
+			if ( isset( $args[$wgIPParentField] ) ) {
+				$parent = $args[$wgIPParentField];
 				if ( !isset( $roles[$parent] ) ) $roles[$parent] = array();
 				array_push( $roles[$parent], $role );
 			}
