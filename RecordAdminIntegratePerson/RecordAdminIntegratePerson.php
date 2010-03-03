@@ -9,25 +9,25 @@
  */
 
 # Check dependency extensions
-if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
-if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'RecordAdminIntegratePerson depends on the RecordAdmin extension' );
-if ( !defined( 'JAVASCRIPT_VERSION' ) )  die( 'RecordAdminIntegratePerson depends on the JavaScript extension' );
+if ( !defined( 'MEDIAWIKI' ) )              die( 'Not an entry point.' );
+if ( !defined( 'RECORDADMIN_VERSION' ) )    die( 'RecordAdminIntegratePerson depends on the RecordAdmin extension' );
+if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson depends on the JavaScript extension' );
 
 # Ensure running at least MediaWiki version 1.16
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.4.4, 2010-03-02' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.4.5, 2010-03-03' );
 
-$wgAutoConfirmCount  = 10^10;
-$wgIPDefaultImage    = '';
-$wgIPMaxImageSize    = 100000;
-$wgIPPersonType      = 'Person';
-$wgIPRoleType        = 'Role';
-$wgIPRolesField      = 'Roles';
-$wgIPParentField     = 'ReportsTo';
-$wgIPFixUserLinks    = false;
-$wgIPAddPersonalUrls = true;
+$wgAutoConfirmCount    = 10^10;
+$wgIPDefaultImage      = '';
+$wgIPMaxImageSize      = 100000;
+$wgIPPersonType        = 'Person';
+$wgIPRoleType          = 'Role';
+$wgIPRolesField        = 'Roles';
+$wgIPParentField       = 'ReportsTo';
+$wgIPFixUserLinks      = false;
+$wgIPAddPersonalUrls   = true;
 
 $wgExtensionFunctions[] = 'wfSetupRAIntegratePerson';
 $wgExtensionCredits['other'][] = array(
@@ -39,6 +39,9 @@ $wgExtensionCredits['other'][] = array(
 );
 
 class RAIntegratePerson {
+
+	var $roles  = array();
+	var $groups = array();
 
 	function __construct() {
 		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
@@ -68,6 +71,7 @@ class RAIntegratePerson {
 			$this->processUploadedImage( $_FILES['ra_Avatar'] );
 
 		# Modify group membership for this user based on Role structure
+		$this->initialiseRoles();
 		$wgHooks['UserEffectiveGroups'][] = $this;
 
 	}
@@ -319,10 +323,10 @@ class RAIntegratePerson {
 	}
 
 	/**
-	 * Set the group permissions for the current user from the Role records
+	 * Build a hash of groups this user belongs to from Role records
 	 */
-	function onUserEffectiveGroups( &$user, &$groups ) {
-		global $wgIPPersonType, $wgIPRoleType, $wgIPRolesField, $wgIPParentField;
+	function initialiseRoles() {
+		global $wgUser, $wgIPPersonType, $wgIPRoleType, $wgIPRolesField, $wgIPParentField;
 		
 		# Build a reverse lookup of roles structure
 		$roles = array();
@@ -338,28 +342,51 @@ class RAIntegratePerson {
 		}
 
 		# Scan the role structure and make child list contain all descendents
-		foreach( $roles as $i => $role ) $roles[$i] = array_unique( array_merge( $roles[$i], $this->recursiveRoleScan( $roles, $role ) ) );
+		foreach( $roles as $i => $role ) $roles[$i] = array_unique( array_merge( $roles[$i], self::recursiveRoleScan( $roles, $role ) ) );
 
 		# Loop through this user's roles and assign the user to role-groups
-		$query = array( 'type' => $wgIPPersonType, 'record' => $user->getRealname(), 'field' => $wgIPRolesField );
+		$query = array( 'type' => $wgIPPersonType, 'record' => $wgUser->getRealname(), 'field' => $wgIPRolesField );
 		foreach( preg_split( '/\s*^\s*/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role1 ) {
 			if ( isset( $roles[$role1] ) ) {
-				foreach( $roles[$role1] as $role2 ) $groups[] = $role2;
+				self::addGroup( $this->groups, $role1 );
+				foreach( $roles[$role1] as $role2 ) self::addGroup( $this->groups, $role2 );
 			}
 		}
-
-	return true;
+		
+		$this->roles = $roles;
 	}
-	
+
+	/**
+	 * Make user a memeber of a group apssociated with a role
+	 */
+	static function addGroup( &$groups, $role ) {
+		global 	$wgGroupPermissions, $wgRestrictionLevels, $wgMessageCache;
+		$group = str_replace( ' ', '-', strtolower( $role ) );
+		$groups[] = $group;
+		$wgRestrictionLevels[] = $group;
+		$wgMessageCache->addMessages( array( "protect-level-$group" => $role ) );
+		$wgMessageCache->addMessages( array( "right-$group" => wfMsg( 'security-restricttogroup', $role ) ) );
+		$wgGroupPermissions[$group][$group]  = true;  # members of group must be allowed to perform group-action
+		$wgGroupPermissions['sysop'][$group] = true;  # sysops must be allowed to perform group-action as well
+	}
+
 	/**
 	 * Scan the role structure and make child list contain all descendents
 	 */
-	function recursiveRoleScan( &$roles, &$role ) {
+	static function recursiveRoleScan( &$roles, &$role ) {
 		static $bail = 100;
 		if ( $bail-- == 0) die;
 		$tmp = $role;
-		foreach( $role as $r ) $tmp = array_merge( $tmp, $this->recursiveRoleScan( $roles, $roles[$r] ) );
+		foreach( $role as $r ) $tmp = array_merge( $tmp, self::recursiveRoleScan( $roles, $roles[$r] ) );
 		return $tmp;
+	}
+	
+	/**
+	 * Set the group permissions for the current user from the Role records
+	 */
+	function onUserEffectiveGroups( &$user, &$groups ) {
+		$groups = array_unique( array_merge( $groups, $this->groups ) );
+		return true;		
 	}
 	
 }
