@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.4.5, 2010-03-03' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.4.6, 2010-03-03' );
 
 $wgAutoConfirmCount    = 10^10;
 $wgIPDefaultImage      = '';
@@ -374,8 +374,8 @@ class RAIntegratePerson {
 	 * Scan the role structure and make child list contain all descendents
 	 */
 	static function recursiveRoleScan( &$roles, &$role ) {
-		static $bail = 100;
-		if ( $bail-- == 0) die;
+		static $bail = 200;
+		if ( $bail-- == 0) die( "recursiveRoleScan bailout point (500) reached" );
 		$tmp = $role;
 		foreach( $role as $r ) $tmp = array_merge( $tmp, self::recursiveRoleScan( $roles, $roles[$r] ) );
 		return $tmp;
