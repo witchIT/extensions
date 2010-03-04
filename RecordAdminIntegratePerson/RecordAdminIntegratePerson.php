@@ -199,9 +199,9 @@ class RAIntegratePerson {
 			function ipOnload() {
 				
 				// Hide items in the current form
-				$('fieldset#login table tr:nth-child(5)').hide(); // email
-				$('fieldset#login table tr:nth-child(6)').hide(); // real name
-				$('fieldset#login table tr:nth-child(8)').hide(); // submit buttons
+				$('fieldset#login table tr:nth-child(4)').hide(); // email
+				$('fieldset#login table tr:nth-child(5)').hide(); // real name
+				$('fieldset#login table tr:nth-child(7)').hide(); // submit buttons
 			}
 			addOnloadHook(ipOnload);
 		</script>" );
