@@ -41,6 +41,7 @@ $wgExtensionCredits['other'][] = array(
 
 class RAIntegratePerson {
 
+	var $people         = array();
 	var $roles          = array();
 	var $directRoles    = array();
 	var $inheritedRoles = array();
@@ -334,12 +335,26 @@ class RAIntegratePerson {
 	function initialiseRoles() {
 		global $wgUser, $wgIPPersonType, $wgIPRoleType, $wgIPRolesField, $wgIPParentField;
 		
+		# Store all the Person records and args
+		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPPersonType ) as $t ) {
+			$person = SpecialRecordAdmin::getRecordArgs( $t, $wgIPPersonType );
+			$name = $t->getText();
+			$roles = isset( $person[$wgIPRolesField] ) ? SpecialRecordAdmin::split( $person[$wgIPRolesField] ) : array();
+			$person[$wgIPRolesField] = $roles;
+			$this->people[] = $person;
+			foreach ( $roles as $role ) {
+				if ( isset( $this->people[$role] ) ) $this->people[$role][] = $name;
+				else $this->people[$role] = array( $name );
+			}
+		}
+
 		# Build a reverse lookup of roles structure
 		$this->roles = array();
 		$tree = array();
 		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
 			$args = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
 			$role = $t->getText();
+			if ( !isset( $this->people[$role] ) ) $this->people[$role] = array();
 			if ( !isset( $roles[$role] ) ) $roles[$role] = array();
 			if ( isset( $args[$wgIPParentField] ) ) {
 				$parent = $args[$wgIPParentField];
@@ -354,7 +369,7 @@ class RAIntegratePerson {
 
 		# Loop through this user's roles and assign the user to role-groups
 		$query = array( 'type' => $wgIPPersonType, 'record' => $wgUser->getRealname(), 'field' => $wgIPRolesField );
-		foreach( preg_split( '/\s*^\s*/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role1 ) {
+		foreach( SpecialRecordAdmin::getFieldValue( $query, true ) as $role1 ) {
 			if ( isset( $roles[$role1] ) ) {
 				self::addGroup( $this->groups, $role1 );
 				$this->directRoles[] = $role1;
@@ -402,7 +417,7 @@ class RAIntegratePerson {
 	/**
 	 * Expand #roles parser function
 	 */
-	function expandRoles( &$parser ) {
+	function expandRoles( &$parser, $format ) {
 		$text = '';
 
 		# First pass of tree array, put all items after their parent
@@ -410,12 +425,10 @@ class RAIntegratePerson {
 		foreach( $this->roles as $role => $parent ) {
 			$i = array_search( $role, $tree );
 			$j = array_search( $parent, $tree );
-			print "$i,$j\n";
 			if ( $j !== false ) {
 				$tree[$i] = -1;
 				array_splice( $tree, $j + 1, 0, $role );
 				array_splice( $tree, array_search( -1, $tree, true ), 1 );
-			print_r($tree);
 			}
 		}
 
@@ -429,6 +442,10 @@ class RAIntegratePerson {
 			$i = in_array( $role, $this->directRoles ) ? "'''" : "";
 			if ( in_array( $role, $this->inheritedRoles ) ) $i .= "''";
 			$text .= "{$indent}{$i}[[$role]]$i\n";
+			# format=ShowPeople
+			if ( $format == 'ShowPeople' ) {
+				foreach( $this->people[$role] as $person ) $text .= "*{$indent}<small>[[$person]]</small>\n";
+			}			
 		}
 
 	return $text;
