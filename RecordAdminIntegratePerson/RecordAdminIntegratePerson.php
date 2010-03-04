@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.5.4, 2010-03-04' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.5.5, 2010-03-04' );
 
 $wgAutoConfirmCount    = 10^10;
 $wgIPDefaultImage      = '';
@@ -430,14 +430,14 @@ class RAIntegratePerson {
 	 */
 	function expandRoles( &$parser, $format ) {
 		$text = '';
-		$this->recursiveRoleTree( $text, 1, $this->root );
+		$this->recursiveRoleTree( $text, 1, $this->root, $format );
 		return $text;
 	}
 
 	/**
 	 * Recursive function for expandRoles
 	 */
-	function recursiveRoleTree( &$text, $depth, $role ) {
+	function recursiveRoleTree( &$text, $depth, $role, $format ) {
 		static $bail = 200;
 		if ( $bail-- == 0) die( "recursiveRoleTree bailout point (200) reached" );
 		$indent = str_repeat( '*', $depth );
@@ -452,7 +452,7 @@ class RAIntegratePerson {
 				$text .= "*{$indent}<small>{$b}[[$person]]{$b}</small>\n";
 			}
 		}	
-		foreach( $this->tree[$role] as $child ) $this->recursiveRoleTree( $text, $depth + 1, $child );
+		foreach( $this->tree[$role] as $child ) $this->recursiveRoleTree( $text, $depth + 1, $child, $format );
 	}
 
 }
