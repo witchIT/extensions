@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.5.3, 2010-03-04' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.5.4, 2010-03-04' );
 
 $wgAutoConfirmCount    = 10^10;
 $wgIPDefaultImage      = '';
@@ -41,6 +41,7 @@ $wgExtensionCredits['other'][] = array(
 
 class RAIntegratePerson {
 
+	var $root           = '';
 	var $people         = array();
 	var $roles          = array();
 	var $directRoles    = array();
@@ -367,8 +368,12 @@ class RAIntegratePerson {
 				$this->roles[$role] = $parent;
 				if ( !isset( $roles[$parent] ) ) $roles[$parent] = array();
 				array_push( $roles[$parent], $role );
-			} else $this->roles[$role] = false;
+			} else {
+				$this->roles[$role] = false;
+				$this->root = $role;
+			}
 		}
+		$this->tree = $roles;
 
 		# Scan the role structure and make child list contain all descendents
 		foreach( $roles as $i => $role ) $roles[$i] = array_unique( array_merge( $roles[$i], self::recursiveRoleScan( $roles, $role ) ) );
@@ -406,7 +411,7 @@ class RAIntegratePerson {
 	 */
 	static function recursiveRoleScan( &$roles, &$role ) {
 		static $bail = 200;
-		if ( $bail-- == 0) die( "recursiveRoleScan bailout point (500) reached" );
+		if ( $bail-- == 0) die( "recursiveRoleScan bailout point (200) reached" );
 		$tmp = $role;
 		foreach( $role as $r ) $tmp = array_merge( $tmp, self::recursiveRoleScan( $roles, $roles[$r] ) );
 		return $tmp;
@@ -425,41 +430,31 @@ class RAIntegratePerson {
 	 */
 	function expandRoles( &$parser, $format ) {
 		$text = '';
-
-		# First pass of tree array, put all items after their parent
-		$tree = array_keys( $this->roles );
-		foreach( $this->roles as $role => $parent ) {
-			$i = array_search( $role, $tree );
-			$j = array_search( $parent, $tree );
-			if ( $j !== false ) {
-				$tree[$i] = -1;
-				array_splice( $tree, $j, 1, array( $parent, $role ) );
-				array_splice( $tree, array_search( -1, $tree, true ), 1 );
-			}
-		}
-
-		# Second pass, establish depths
-		$depths = array();
-		foreach( $tree as $role ) {
-			$parent = $this->roles[$role];
-			$depth = isset( $depths[$parent] ) ? $depths[$parent] + 1 : 1;
-			$depths[$role] = $depth;
-			$indent = str_repeat( '*', $depth );
-			$i = in_array( $role, $this->inheritedRoles ) ? "''" : "";
-			if ( in_array( $role, $this->directRoles ) ) $i = "'''";
-			$text .= "{$indent}{$i}[[$role]]$i\n";
-			if ( $format == 'ShowPeople' ) {
-				global $wgUser;
-				$name = $wgUser->getRealName();
-				foreach( $this->people[$role] as $person ) {
-					$b = $person == $name ? "'''" : "";
-					$text .= "*{$indent}<small>{$b}[[$person]]{$b}</small>\n";
-				}
-			}			
-		}
-
-	return $text;
+		$this->recursiveRoleTree( $text, 1, $this->root );
+		return $text;
 	}
+
+	/**
+	 * Recursive function for expandRoles
+	 */
+	function recursiveRoleTree( &$text, $depth, $role ) {
+		static $bail = 200;
+		if ( $bail-- == 0) die( "recursiveRoleTree bailout point (200) reached" );
+		$indent = str_repeat( '*', $depth );
+		$i = in_array( $role, $this->inheritedRoles ) ? "''" : "";
+		if ( in_array( $role, $this->directRoles ) ) $i = "'''";
+		$text .= "{$indent}{$i}[[$role]]$i\n";
+		if ( $format == 'ShowPeople' ) {
+			global $wgUser;
+			$name = $wgUser->getRealName();
+			foreach( $this->people[$role] as $person ) {
+				$b = $person == $name ? "'''" : "";
+				$text .= "*{$indent}<small>{$b}[[$person]]{$b}</small>\n";
+			}
+		}	
+		foreach( $this->tree[$role] as $child ) $this->recursiveRoleTree( $text, $depth + 1, $child );
+	}
+
 }
 
 /**
