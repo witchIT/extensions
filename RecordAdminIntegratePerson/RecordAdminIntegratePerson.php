@@ -145,9 +145,9 @@ class RAIntegratePerson {
 			function ipOnload() {
 
 				// Hide fieldsets
-				$('fieldset#prefsection-0 fieldset:nth-child(6)').hide(); // internationalisation
-				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // signature
-				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // email options
+				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // internationalisation
+				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // signature
+				$('fieldset#prefsection-0 fieldset:nth-child(9)').hide(); // email options
 
 				// Defaults for the hidden email options
 				$('#mw-input-enotifwatchlistpages').attr('checked','yes');
