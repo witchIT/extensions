@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.4.6, 2010-03-03' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.5.0, 2010-03-04' );
 
 $wgAutoConfirmCount    = 10^10;
 $wgIPDefaultImage      = '';
@@ -30,6 +30,7 @@ $wgIPFixUserLinks      = false;
 $wgIPAddPersonalUrls   = true;
 
 $wgExtensionFunctions[] = 'wfSetupRAIntegratePerson';
+$wgHooks['LanguageGetMagic'][] = 'wfRAIntegratePersonLanguageGetMagic';
 $wgExtensionCredits['other'][] = array(
 	'name'        => 'RecordAdminIntegratePerson',
 	'author'      => '[http://www.organicdesign.co.nz/User:Nad User:Nad]',
@@ -40,14 +41,19 @@ $wgExtensionCredits['other'][] = array(
 
 class RAIntegratePerson {
 
-	var $roles  = array();
-	var $groups = array();
+	var $roles          = array();
+	var $directRoles    = array();
+	var $inheritedRoles = array();
+	var $groups         = array();
 
 	function __construct() {
 		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
 
 		if ( $wgIPAddPersonalUrls ) $wgHooks['PersonalUrls'][] = array( $this, 'addPersonalUrls' );
 		if ( $wgIPFixUserLinks )    $wgHooks['BeforePageDisplay'][] = array( $this, 'fixUserLinks');
+
+		# Add the #roles parser function
+		$wgParser->setFunctionHook( 'roles', array( $this, 'expandRoles' ) );
 
 		$title = $wgSpecialRecordAdmin->title = Title::newFromText( $wgRequest->getText( 'title' ) );
 		if ( !is_object( $wgTitle ) ) $wgTitle = $title;
@@ -329,16 +335,18 @@ class RAIntegratePerson {
 		global $wgUser, $wgIPPersonType, $wgIPRoleType, $wgIPRolesField, $wgIPParentField;
 		
 		# Build a reverse lookup of roles structure
-		$roles = array();
+		$this->roles = array();
+		$tree = array();
 		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
 			$args = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
 			$role = $t->getText();
 			if ( !isset( $roles[$role] ) ) $roles[$role] = array();
 			if ( isset( $args[$wgIPParentField] ) ) {
 				$parent = $args[$wgIPParentField];
+				$this->roles[$role] = $parent;
 				if ( !isset( $roles[$parent] ) ) $roles[$parent] = array();
 				array_push( $roles[$parent], $role );
-			}
+			} else $this->roles[$role] = false;
 		}
 
 		# Scan the role structure and make child list contain all descendents
@@ -349,11 +357,13 @@ class RAIntegratePerson {
 		foreach( preg_split( '/\s*^\s*/', SpecialRecordAdmin::getFieldValue( $query ) ) as $role1 ) {
 			if ( isset( $roles[$role1] ) ) {
 				self::addGroup( $this->groups, $role1 );
-				foreach( $roles[$role1] as $role2 ) self::addGroup( $this->groups, $role2 );
+				$this->directRoles[] = $role1;
+				foreach( $roles[$role1] as $role2 ) {
+					self::addGroup( $this->groups, $role2 );
+					$this->inheritedRoles[] = $role2;
+				}
 			}
 		}
-		
-		$this->roles = $roles;
 	}
 
 	/**
@@ -389,7 +399,50 @@ class RAIntegratePerson {
 		return true;		
 	}
 	
+	/**
+	 * Expand #roles parser function
+	 */
+	function expandRoles( &$parser ) {
+		$text = '';
+
+		# First pass of tree array, put all items after their parent
+		$tree = array_keys( $this->roles );
+		foreach( $this->roles as $role => $parent ) {
+			$i = array_search( $role, $tree );
+			$j = array_search( $parent, $tree );
+			print "$i,$j\n";
+			if ( $j !== false ) {
+				$tree[$i] = -1;
+				array_splice( $tree, $j + 1, 0, $role );
+				array_splice( $tree, array_search( -1, $tree, true ), 1 );
+			print_r($tree);
+			}
+		}
+
+		# Second pass, establish depths
+		$depths = array();
+		foreach( $tree as $role ) {
+			$parent = $this->roles[$role];
+			$depth = isset( $depths[$parent] ) ? $depths[$parent] + 1 : 1;
+			$depths[$role] = $depth;
+			$indent = str_repeat( '*', $depth );
+			$i = in_array( $role, $this->directRoles ) ? "'''" : "";
+			if ( in_array( $role, $this->inheritedRoles ) ) $i .= "''";
+			$text .= "{$indent}{$i}[[$role]]$i\n";
+		}
+
+	return $text;
+	}
 }
+
+/**
+ * Magic words for parser function
+ */
+function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
+	$langMagic['roles'] = array( $langCode, 'roles' );
+	return true;
+}
+
 
 function wfSetupRAIntegratePerson() {
 	global $wgRAIntegratePerson, $wgLanguageCode, $wgMessageCache;
