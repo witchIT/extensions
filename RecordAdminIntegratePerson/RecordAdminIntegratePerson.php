@@ -145,9 +145,9 @@ class RAIntegratePerson {
 			function ipOnload() {
 
 				// Hide fieldsets
-				$('fieldset#prefsection-0 fieldset:nth-child(6)').hide(); // internationalisation
-				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // signature
-				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // email options
+				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // internationalisation
+				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // signature
+				$('fieldset#prefsection-0 fieldset:nth-child(9)').hide(); // email options
 
 				// Defaults for the hidden email options
 				$('#mw-input-enotifwatchlistpages').attr('checked','yes');
@@ -199,9 +199,9 @@ class RAIntegratePerson {
 			function ipOnload() {
 				
 				// Hide items in the current form
-				$('fieldset#login table tr:nth-child(4)').hide(); // email
-				$('fieldset#login table tr:nth-child(5)').hide(); // real name
-				$('fieldset#login table tr:nth-child(7)').hide(); // submit buttons
+				$('fieldset#login table tr:nth-child(5)').hide(); // email
+				$('fieldset#login table tr:nth-child(6)').hide(); // real name
+				$('fieldset#login table tr:nth-child(8)').hide(); // submit buttons
 			}
 			addOnloadHook(ipOnload);
 		</script>" );
@@ -245,8 +245,13 @@ class RAIntegratePerson {
 		}
 
 		# Return the form minus the Adminstration section
-		$end = $wgUser->isSysop() ? "<fieldset.+?Administration" : "<script";
-		return preg_replace( "|(^.+)$end.+$|ms", "$1", $wgSpecialRecordAdmin->form );
+		if ( in_array( 'sysop', $wgUser->getGroups() ) ) {
+			$form = preg_replace( "|(^.+)<script.+$|ms", "$1", $wgSpecialRecordAdmin->form );
+		} else {
+			$form = preg_replace( "|(^.+)<fieldset.+?Administration.+$|ms", "$1", $wgSpecialRecordAdmin->form );
+			$form .= "<fieldset style='display:none'><legend>Administration</legend></fieldset>";
+		}
+		return $form;
 	}
 
 	/**
