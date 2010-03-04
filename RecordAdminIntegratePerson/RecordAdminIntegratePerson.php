@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.5.2, 2010-03-04' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.5.3, 2010-03-04' );
 
 $wgAutoConfirmCount    = 10^10;
 $wgIPDefaultImage      = '';
@@ -445,12 +445,16 @@ class RAIntegratePerson {
 			$depth = isset( $depths[$parent] ) ? $depths[$parent] + 1 : 1;
 			$depths[$role] = $depth;
 			$indent = str_repeat( '*', $depth );
-			$i = in_array( $role, $this->directRoles ) ? "'''" : "";
-			if ( in_array( $role, $this->inheritedRoles ) ) $i .= "''";
+			$i = in_array( $role, $this->inheritedRoles ) ? "''" : "";
+			if ( in_array( $role, $this->directRoles ) ) $i = "'''";
 			$text .= "{$indent}{$i}[[$role]]$i\n";
-			# format=ShowPeople
 			if ( $format == 'ShowPeople' ) {
-				foreach( $this->people[$role] as $person ) $text .= "*{$indent}<small>[[$person]]</small>\n";
+				global $wgUser;
+				$name = $wgUser->getRealName();
+				foreach( $this->people[$role] as $person ) {
+					$b = $person == $name ? "'''" : "";
+					$text .= "*{$indent}<small>{$b}[[$person]]{$b}</small>\n";
+				}
 			}			
 		}
 
