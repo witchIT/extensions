@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.5.0, 2010-03-04' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.5.1, 2010-03-04' );
 
 $wgAutoConfirmCount    = 10^10;
 $wgIPDefaultImage      = '';
@@ -350,7 +350,7 @@ class RAIntegratePerson {
 
 		# Build a reverse lookup of roles structure
 		$this->roles = array();
-		$tree = array();
+		$roles = array();
 		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
 			$args = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
 			$role = $t->getText();
@@ -427,7 +427,7 @@ class RAIntegratePerson {
 			$j = array_search( $parent, $tree );
 			if ( $j !== false ) {
 				$tree[$i] = -1;
-				array_splice( $tree, $j + 1, 0, $role );
+				array_splice( $tree, $j, 1, array( $parent, $role ) );
 				array_splice( $tree, array_search( -1, $tree, true ), 1 );
 			}
 		}
