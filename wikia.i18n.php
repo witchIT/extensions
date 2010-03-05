@@ -53,9 +53,9 @@ $messages['en'] = array(
 	'od-task-status-list' => '<option>Planned</option><option>Assigned</option><option>In Progress</option><option>Resolved</option> <option>Invoiced</option> <option>Paid</option><option>Postponed</option><option>Cancelled</option>',
 	'od-task-status-list-info' => 'This is the list of different states that a task in the organisation can be in at any particular time. To change the options available in this list click [[MediaWiki:od-task-status-list|here]]',
 	'od-document-status-list' => '<option>Work in Progress</option><option>Completed</option><option>Signed Off</option>',
-	'od-document-status-list-info' => 'This is the list of different states that a document in the organisation can be in at any particular time. To change the options available in this list click [[MediaWiki:od-task-status-list|here]]',
+	'od-document-status-list-info' => 'This is the list of different states that a document in the organisation can be in at any particular time. To change the options available in this list click [[MediaWiki:od-document-status-list|here]]',
 	'od-document-category-list' => '<option>Directors</option><option>Management</option><option>Sales</option><option>Factory</option><option>R&D</option><option>Customer Services</option>',
-	'od-document-category-list-info' => 'This is the list of categories that a document in the organisation can be a assigned to. To change the options available in this list click [[MediaWiki:od-task-category-list|here]]',
+	'od-document-category-list-info' => 'This is the list of categories that a document in the organisation can be a assigned to. To change the options available in this list click [[MediaWiki:od-document-category-list|here]]',
 	'sidebar' => "{{#tree:id=side-bar-tree|openlevels=1|root=<big>'''&nbsp;{{ns:4}}&nbsp;&nbsp;&nbsp;&nbsp;'''</big>|
 *[[{{CURRENTPERSON}}|My Home Page]]
 *[[Main Page]]
