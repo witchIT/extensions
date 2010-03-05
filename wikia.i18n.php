@@ -37,7 +37,7 @@ $messages['en'] = array(
 	'od-person-title-list-info' => 'This is the list of different titles that a person in the organisation can have. To change the options available in this list click [{{fullurl:MediaWiki:od-person-title-list|action=edit}} here]',
 	'od-person-location-list' => '<option>Head Office</option><option>Orini Factory</option><option>Auckland Sales Office</option>',
 	'od-person-location-list-info' => 'This is the list of locations that people in the organisation can work from. To change the options available in this list click [{{fullurl:MediaWiki:od-person-location-list|action=edit}} here]',
-	'od-person-administration-info' => '{{info|This section is only viewable by system administrators because it defines peoples roles and access rights.}}',
+	'od-person-administration-info' => '{{warning|This section is only viewable by system administrators because it defines peoples roles and access rights.}}',
 	'od-person-external-info' => 'External contributors can access nothing by default, they must be granted specific access to articles to be able to view them.',
 	'od-procedure-status-list' => '<option>Planned</option><option>Work in Progress</option><option>Final Draft</option><option>Completed</option> <option>Signed Off</option><option>Invoiced</option><option>Paid</option><option>Cancelled</option>',
 	'od-procedure-priority-list' => '<option>1 - Urgent</option> <option>2 - High</option><option>3 - Standard</option><option>4 - Low</option>',
