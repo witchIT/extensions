@@ -32,19 +32,53 @@ $messages['en'] = array(
 	'od-textbox-alias' => 'Other addresses that point to this address. Write every entry on a new line.',
 	'od-textbox-forward' => 'Other addresses that emails are forwarded to. Write every entry on a new line.',
 	'od-person-title-list' => '<option>Mr</option><option>Mrs</option><option>Miss</option><option>Ms</option><option>Dr</option>',
-	'sidebar' => '{{#tree:id=sidebartree|root=<big><b>{{ns:4}}</b></big>|
-*[{{fullurl:MediaWiki:Sidebar|action=edit}} Navigation]
-**[{{fullurl:Main Page}} Home]
-**[{{fullurl:Special:Recentchanges}} Recent changes]
-**[[Calendar]]
-**[[Sandbox]]
-**[{{fullurl:Special:Categories}} Categories]
-**[{{fullurl:Special:Allpages|from=*&namespace=10}} Templates]
-**[[RecordAdmin cheatsheet]]
-*Toolbox
-**[{{SERVER}}/wiki/index.php?title={{FULLPAGENAMEE}}&action=pdfbook&format=single Print to PDF]
+	'od-activity-status-list' => '<option>Planned</option><option>Work in Progress</option><option>Final Draft</option><option>Completed</option><option>Signed Off</option><option>Invoiced</option><option>Paid</option><option>Cancelled</option>',
+	'od-document-status-list' => '<option>Work in Progress</option><option>Completed</option><option>Signed Off Download Ready</option>',
+	'od-person-location-list' => '<option>Head Office</option><option>Orini Factory</option><option>Auckland Sales Office</option>',
+	'od-procedure-status-list' => '<option>Planned</option><option>Work in Progress</option><option>Final Draft</option><option>Completed</option> <option>Signed Off</option><option>Invoiced</option><option>Paid</option><option>Cancelled</option>',
+	'od-project-type-list' => '<option>Specification</option><option>Development</option><option>Consultancy</option><option>Documentation</option><option>Content</option><option>Systems Administration</option>',
+	'od-task-budgettype-list' => '<option>Hours</option><option>NZD</option><option>USD</option><option>EUR</option>';
+	'od-task-type-list' => '<option>Request</option><option>Inquiry</option><option>Problem</option><option>Task</option><option>Regular Task</option><option>Ongoing Task</option><option>Procedure</option><option>Milestone</option>',
+	'od-activity-type-list' => '<option>Work</option><option>Procedure</option><option>Meeting</option><option>Weekly Meeting</option><option>Discussion</option><option>Travel</option>',
+	'od-document-type-list' => '<option>Specification</option><option>Development</option><option>Consultancy</option><option>Memo</option><option>Letter</option><option>Prospectus</option>',
+	'od-person-title-list' => '<option>Mr</option><option>Mrs</option><option>Miss</option><option>Ms</option><option>Dr</option>',
+	'od-procedure-version-list' => '<option>New</option><option>1.0</option><option>2.0</option><option>3.0</option>',
+	'od-role-group-list' => '<option>Adminstrator</option><option>Moderator</option><option>Editor</option><option>Developer</option><option>User</option>',
+	'od-task-priority-list' => '<option>1 - Urgent</option><option>2 - High</option><option>3 - Medium</option><option>4 - Low</option>',
+	'od-activity-currency-list' => '<option>NZD</option><option>EUR</option><option>USD</option><option>CHF</option>',
+	'od-minform-record-list' => '<option>Activity</option><option>Task</option><option>Document</option><option>Procedure</option><option>Date</option>',
+	'od-procedure-priority-list' => '<option>1 - Urgent</option> <option>2 - High</option><option>3 - Standard</option><option>4 - Low</option>',
+	'od-project-status-list' => '<option>Planned</option><option>Work in Progress</option><option>Final Draft</option><option>Completed</option><option>Signed Off</option><option>Invoiced</option><option>Paid</option><option>Cancelled</option>',
+	'od-role-smb-list' => '<option>earthwise-management</option><option>earthwise-staff</option><option>kiwigreen-management</option><option>kiwigreen-staff</option><option>shared-management</option>',
+	'od-task-status-list' => '<option>Planned</option><option>Assigned</option><option>In Progress</option><option>Resolved</option> <option>Invoiced</option> <option>Paid</option><option>Postponed</option><option>Cancelled</option>',
+	'sidebar' => "{{#tree:id=side-bar-tree|openlevels=1|root=<big>'''&nbsp;{{ns:4}}&nbsp;&nbsp;&nbsp;&nbsp;'''</big>|
+*[[{{CURRENTPERSON}}|My Home Page]]
+*[[Main Page]]
+*[[Special:Recentchanges|Recent changes]]
+*[[Best Practices]]
+*[[Workgroup Training]]
+*[[Help]]
+*[[Cheatsheet]]
+*[[Sandbox]]
+*'''Categories'''
+**[[:Category:People|People]] &nbsp; [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;create&#93;</small>]
+**[[:Category:Roles|Roles]] {{NewRecordLinkSmall|Role}}
+**[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
+**[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
+**[[:Category:Projects|Projects]] {{NewRecordLinkSmall|Project}}
+**[[:Category:Tasks|Tasks]] {{NewRecordLinkSmall|Task}}
+**[[:Category:Activities|Activities]] {{NewRecordLinkSmall|Activity}}
+**[[Special:RecordAdmin|Advanced search...]]
+**[[Special:Categories|All categories...]]
+*'''Recent Activity'''
+**{{RecentActivity:type=edits|count=10|format=**}}
+*'''Toolbox'''
+**[{{fullurl:Special:Whatlinkshere|target={{FULLPAGENAMEE}}}} What links here]
+**[[Special:Upload|Upload file]]
+***[[Special:NewFiles|View uploaded files]]
+***[[Special:ListFiles|Detailed file list]]
+**[{{fullurl:{{FULLPAGENAMEE}}|action=pdfbook&format=single}} Print to PDF]
 **[[Special:Specialpages|Special pages]]
-**[[Special:Upload|upload]]
-*[[MediaWiki:Sidebar|Edit this sidebar]]
-}}'
+**[{{fullurl:MediaWiki:Sidebar|action=edit}} Edit Sidebar]
+}}"
 );
