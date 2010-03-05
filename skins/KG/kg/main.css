@@ -1900,3 +1900,9 @@ tr.mw-line-odd {
 tr.mw-line-even {
 	background: #eee;
 }
+
+#p-racreate {
+	position:absolute;
+	right:250px;
+	top:70px;
+}
