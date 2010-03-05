@@ -120,7 +120,6 @@ class EWGTemplate extends QuickTemplate {
 		
 <?php
 # MediaWiki:Sidebar
-<?php
 global $wgUser,$wgTitle,$wgParser;
 $title = 'Sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
