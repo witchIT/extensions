@@ -1903,6 +1903,31 @@ tr.mw-line-even {
 
 #p-racreate {
 	position:absolute;
-	right:250px;
-	top:70px;
+	right:24em;
+	top:240px;
+}
+
+#p-racreate {
+	margin:0;
+	width:18em;
+}
+
+#p-racreate .pBody {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:transparent none repeat scroll 0 0;
+	border:medium none;
+	margin:0;
+	padding:0;
+	text-align:left;
+}
+
+#RACreateForm select {
+width:9.5em;
+vertical-align:top;
+}
+
+#p-racreate .pBody {
+text-align:left;
 }
