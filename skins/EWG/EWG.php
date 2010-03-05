@@ -120,12 +120,16 @@ class EWGTemplate extends QuickTemplate {
 		
 <?php
 # MediaWiki:Sidebar
+<?php
 global $wgUser,$wgTitle,$wgParser;
-$side = new Article(Title::newFromText('Sidebar',NS_MEDIAWIKI));
-if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+$title = 'Sidebar';
+$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+$text = $article->fetchContent();
+if ( empty( $text ) ) $text = wfMsg( $title );
+if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
-if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
-echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
+if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
 				</td><!-- end of the left (by default at least) column -->
 				<td id="content" width="100%">
@@ -152,12 +156,15 @@ echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
 		<div class="visualClear"></div>
 		<div id="footer">
 <?php
-global $wgUser, $wgTitle, $wgParser;
-if ( is_object( $wgParser ) ) $psr =& $wgParser; else $psr = new Parser;
-$opt = ParserOptions::newFromUser( $wgUser );
-$nav = new Article( Title::newFromText( 'Footer', NS_MEDIAWIKI ) );
-$out = $psr->parse( $nav->fetchContent( 0, false, false ), $wgTitle, $opt, true, true );
-echo $out->getText();
+global $wgUser,$wgTitle,$wgParser;
+$title = 'Footer';
+$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+$text = $article->fetchContent();
+if ( empty( $text ) ) $text = wfMsg( $title );
+if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+else { $psr = new Parser; $opt = NULL; }
+if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
 			</div>
 	</div>
