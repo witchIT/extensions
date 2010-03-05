@@ -121,7 +121,7 @@ class EWGTemplate extends QuickTemplate {
 <?php
 # MediaWiki:Sidebar
 global $wgUser,$wgTitle,$wgParser;
-$title = 'Sidebar';
+$title = 'sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
 if ( empty( $text ) ) $text = wfMsg( $title );
@@ -156,7 +156,7 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 		<div id="footer">
 <?php
 global $wgUser,$wgTitle,$wgParser;
-$title = 'Footer';
+$title = 'footer';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
 if ( empty( $text ) ) $text = wfMsg( $title );

@@ -182,7 +182,7 @@ class KGTemplate extends QuickTemplate {
 										<div id="column-one">						
 <?php
 global $wgUser,$wgTitle,$wgParser;
-$title = 'Sidebar';
+$title = 'sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
 if ( empty( $text ) ) $text = wfMsg( $title );
