@@ -56,6 +56,8 @@ $messages['en'] = array(
 	'od-document-status-list-info' => 'This is the list of different states that a document in the organisation can be in at any particular time. To change the options available in this list click [{{fullurl:MediaWiki:od-document-status-list|action=edit}} here]',
 	'od-document-category-list' => '<option>Directors</option><option>Management</option><option>Sales</option><option>Factory</option><option>R&D</option><option>Customer Services</option>',
 	'od-document-category-list-info' => 'This is the list of categories that a document in the organisation can be a assigned to. To change the options available in this list click [{{fullurl:MediaWiki:od-document-category-list|action=edit}} here]',
+	'od-person-administration-info' => '{{info|This section is only viewable by system administrators because it defines peoples roles and access rights.}}',
+	'od-person-external-info' => 'External contributors can access nothing by default, they must be granted specific access to articles to be able to view them.',
 	'sidebar' => "{{#tree:id=side-bar-tree|openlevels=1|root=<big>''' {{ns:4}}    '''</big>|
 *[[{{CURRENTPERSON}}|My Home Page]]
 *[[Main Page]]
