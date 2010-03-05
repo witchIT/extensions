@@ -1837,11 +1837,7 @@ span.searchmatch {
 	height:61px;
 }
 
-#RACreateForm {
-	position: absolute;
-	top: 197px;
-	right: 64px;
-}
+
 
 
 /**
@@ -1903,7 +1899,7 @@ tr.mw-line-even {
 
 #p-racreate {
 	position:absolute;
-	right:24em;
+	right:1.5em;
 	top:240px;
 }
 
