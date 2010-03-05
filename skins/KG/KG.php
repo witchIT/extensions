@@ -181,14 +181,15 @@ class KGTemplate extends QuickTemplate {
 									<td id="lsub" valign="top">
 										<div id="column-one">						
 <?php
-# MediaWiki:Sidebar
-$this->searchBox();
 global $wgUser,$wgTitle,$wgParser;
-$side = new Article(Title::newFromText('Sidebar',NS_MEDIAWIKI));
-if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+$title = 'Sidebar';
+$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+$text = $article->fetchContent();
+if ( empty( $text ) ) $text = wfMsg( $title );
+if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
-if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
-echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
+if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
 										</div>
 									</td>
