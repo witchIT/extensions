@@ -56,7 +56,7 @@ $messages['en'] = array(
 	'od-document-status-list-info' => 'This is the list of different states that a document in the organisation can be in at any particular time. To change the options available in this list click [{{fullurl:MediaWiki:od-document-status-list|action=edit}} here]',
 	'od-document-category-list' => '<option>Directors</option><option>Management</option><option>Sales</option><option>Factory</option><option>R&D</option><option>Customer Services</option>',
 	'od-document-category-list-info' => 'This is the list of categories that a document in the organisation can be a assigned to. To change the options available in this list click [{{fullurl:MediaWiki:od-document-category-list|action=edit}} here]',
-	'sidebar' => "{{#tree:id=side-bar-tree|openlevels=1|root=<big>'''&nbsp;{{ns:4}}&nbsp;&nbsp;&nbsp;&nbsp;'''</big>|
+	'sidebar' => "{{#tree:id=side-bar-tree|openlevels=1|root=<big>''' {{ns:4}}    '''</big>|
 *[[{{CURRENTPERSON}}|My Home Page]]
 *[[Main Page]]
 *[[Special:Recentchanges|Recent changes]]
@@ -66,7 +66,7 @@ $messages['en'] = array(
 *[[Cheatsheet]]
 *[[Sandbox]]
 *'''Categories'''
-**[[:Category:People|People]] &nbsp; [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;create&#93;</small>]
+**[[:Category:People|People]]   [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;create&#93;</small>]
 **[[:Category:Roles|Roles]] {{NewRecordLinkSmall|Role}}
 **[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
 **[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
@@ -84,6 +84,7 @@ $messages['en'] = array(
 ***[[Special:ListFiles|Detailed file list]]
 **[{{fullurl:{{FULLPAGENAMEE}}|action=pdfbook&format=single}} Print to PDF]
 **[[Special:Specialpages|Special pages]]
+**[{{fullurl:Special:Allpages|namespace=8}} Custom messages]
 **[{{fullurl:MediaWiki:Sidebar|action=edit}} Edit Sidebar]
 }}"
 );
