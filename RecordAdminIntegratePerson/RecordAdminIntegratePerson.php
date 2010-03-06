@@ -86,9 +86,6 @@ class RAIntegratePerson {
 		$this->initialiseRoles();
 		$wgHooks['UserEffectiveGroups'][] = $this;
 
-		# Handle External Contributor permissions
-		$this->externalContributor();
-
 	}
 
 	/**
