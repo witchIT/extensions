@@ -17,17 +17,18 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.5.5, 2010-03-04' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.5.7, 2010-03-06' );
 
-$wgAutoConfirmCount    = 10^10;
-$wgIPDefaultImage      = '';
-$wgIPMaxImageSize      = 100000;
-$wgIPPersonType        = 'Person';
-$wgIPRoleType          = 'Role';
-$wgIPRolesField        = 'Roles';
-$wgIPParentField       = 'ReportsTo';
-$wgIPFixUserLinks      = false;
-$wgIPAddPersonalUrls   = true;
+$wgAutoConfirmCount           = 10^10;
+$wgIPDefaultImage             = '';
+$wgIPMaxImageSize             = 100000;
+$wgIPPersonType               = 'Person';
+$wgIPRoleType                 = 'Role';
+$wgIPRolesField               = 'Roles';
+$wgIPParentField              = 'ReportsTo';
+$wgIPExternalContributorField = 'External';
+$wgIPFixUserLinks             = false;
+$wgIPAddPersonalUrls          = true;
 
 $wgExtensionFunctions[] = 'wfSetupRAIntegratePerson';
 $wgHooks['LanguageGetMagic'][] = 'wfRAIntegratePersonLanguageGetMagic';
@@ -38,6 +39,9 @@ $wgExtensionCredits['other'][] = array(
 	'url'         => 'http://www.organicdesign.co.nz/Extension:IntegratePerson',
 	'version'     => RAINTEGRATEPERSON_VERSION
 );
+
+# Allow articles in Category:External contributor to be accessible if this user is an external contributor
+$wgHooks['UserGetRights'][] = 'wfExternalContributors';
 
 class RAIntegratePerson {
 
@@ -81,6 +85,9 @@ class RAIntegratePerson {
 		# Modify group membership for this user based on Role structure
 		$this->initialiseRoles();
 		$wgHooks['UserEffectiveGroups'][] = $this;
+
+		# Handle External Contributor permissions
+		$this->externalContributor();
 
 	}
 
@@ -454,7 +461,6 @@ class RAIntegratePerson {
 		}	
 		foreach( $this->tree[$role] as $child ) $this->recursiveRoleTree( $text, $depth + 1, $child, $format );
 	}
-
 }
 
 /**
@@ -465,6 +471,24 @@ function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
 	return true;
 }
 
+/**
+ * Handle permissions for external contributors
+ */
+function wfExternalContributors( &$user ) {		
+	if ( $user->isAnon() ) return true;
+	global $wgIPPersonType, $wgIPExternalContributorField, $wgIPExternalContributorCat;
+	$query = array( 'type' => $wgIPPersonType, 'record' => $user->getRealname(), 'field' => $wgIPExternalContributorField );
+	if ( SpecialRecordAdmin::getFieldValue( $query ) ) {
+		global $wgTitle, $wgWhitelistRead, $wgIPExternalContributorCat;
+		$id   = $wgTitle->getArticleID();
+		$dbr  = wfGetDB( DB_SLAVE );
+		$cat  = $dbr->addQuotes( wfMsg( 'ip-extcontribcat', $user->getRealname() ) );
+		$cl   = $dbr->tableName( 'categorylinks' );
+		if ( $dbr->selectRow( $cl, '0', "cl_from = $id AND cl_to = $cat" ) )
+			$wgWhitelistRead[] = $wgTitle->getText();
+	}
+	return true;
+}
 
 function wfSetupRAIntegratePerson() {
 	global $wgRAIntegratePerson, $wgLanguageCode, $wgMessageCache;
@@ -472,8 +496,9 @@ function wfSetupRAIntegratePerson() {
 	# Add the messages used by the specialpage
 	if ( $wgLanguageCode == 'en' ) {
 		$wgMessageCache->addMessages( array(
-			'ip-preftab'   => "Person Record",
-			'ip-prefmsg'   => "<br><b>Fill in your Personal details here...</b><br>"
+			'ip-preftab'       => "Person Record",
+			'ip-extcontribcat' => "Articles viewable by $1",
+			'ip-prefmsg'       => "<br /><b>Fill in your Personal details here...</b><br />"
 		) );
 	}
 
