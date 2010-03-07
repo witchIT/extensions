@@ -158,7 +158,7 @@ $messages['en'] = array(
 *R&D
 *Customer Services',
 	'od-document-category-list-info' => 'The list of categories that a document in the organisation can be assigned to. To change the options available in this list click [{{fullurl:MediaWiki:od-document-category-list|action=edit}} here]',
-	'sidebar' => "{{#tree:id=side-bar-tree|openlevels=1|root=<big>''' {{ns:4}}    '''</big>|
+	'sidebar' => "{{#ifgroup:user|{{#tree:id=side-bar-tree|openlevels=1|root=<big>''' {{ns:4}}    '''</big>|
 *[[{{CURRENTPERSON}}|My Home Page]]
 *[[Main Page]]
 *[[Special:Recentchanges|Recent changes]]
@@ -189,6 +189,6 @@ $messages['en'] = array(
 **[[Special:Specialpages|Special pages]]
 **[{{fullurl:Special:Allpages|namespace=8}} Custom messages]
 **[{{fullurl:MediaWiki:Sidebar|action=edit}} Edit Sidebar]
-}}",
+}}}}",
 	'footer' => '[[OD:Wiki organisation|About Wiki Organisation]]'
 );
