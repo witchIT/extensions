@@ -473,7 +473,6 @@ function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
  * - if an article is a member of such a category, then it should be readable by only the designated people
  */
 function wfContributorPermissions( &$user, &$rights ) {
-	print_r($rights);
 	global $wgTitle, $wgWhitelistRead, $wgGroupPermissions;
 	if ( $user->isAnon() ) return true;
 	$dbr   = &wfGetDB( DB_SLAVE );
