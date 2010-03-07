@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.5.7, 2010-03-06' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.6.0, 2010-03-07' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -41,7 +41,7 @@ $wgExtensionCredits['other'][] = array(
 );
 
 # Allow articles in Category:External contributor to be accessible if this user is an external contributor
-$wgHooks['UserGetRights'][] = 'wfExternalContributors';
+$wgHooks['UserGetRights'][] = 'wfContributorPermissions';
 
 class RAIntegratePerson {
 
@@ -469,21 +469,29 @@ function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
 }
 
 /**
- * Handle permissions for external contributors
+ * Handle Category:Articles readbale by *
+ * - if an article is a member of such a category, then it should be readable by only the designated people
  */
-function wfExternalContributors( &$user ) {		
+function wfContributorPermissions( &$user ) {
+	global $wgTitle, $wgWhitelistRead, $wgGroupPermissions;
 	if ( $user->isAnon() ) return true;
-	global $wgIPPersonType, $wgIPExternalContributorField, $wgIPExternalContributorCat;
-	$query = array( 'type' => $wgIPPersonType, 'record' => $user->getRealname(), 'field' => $wgIPExternalContributorField );
-	if ( SpecialRecordAdmin::getFieldValue( $query ) ) {
-		global $wgTitle, $wgWhitelistRead, $wgIPExternalContributorCat;
-		$id   = $wgTitle->getArticleID();
-		$dbr  = wfGetDB( DB_SLAVE );
-		$cat  = $dbr->addQuotes( wfMsg( 'ip-extcontribcat', $user->getRealname() ) );
-		$cl   = $dbr->tableName( 'categorylinks' );
-		if ( $dbr->selectRow( $cl, '0', "cl_from = $id AND cl_to = $cat" ) )
-			$wgWhitelistRead[] = $wgTitle->getText();
+	$dbr   = &wfGetDB( DB_SLAVE );
+	$cl    = $dbr->tableName( 'categorylinks' );
+	$id    = $wgTitle->getArticleID();
+	$res   = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
+	$match = wfMsg( 'ip-extcontribcat', '' );
+	$name  = $user->getRealName();
+	while ( $row = $dbr->fetchRow( $res ) ) {
+		if ( preg_match( "/^$match", $row[0] ) ) {
+			$list[] = $row[0];
+			if ( preg_match( "/$name$/", $row[0] ) ) $wgWhitelistRead[] = $wgTitle->getText();
+			else {
+				$wgGroupPermissions['*']['read'] = false;
+				$wgGroupPermissions['user']['read'] = false;
+			}
+		}
 	}
+	$dbr->freeResult( $res );
 	return true;
 }
 
