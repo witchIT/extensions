@@ -486,10 +486,7 @@ function wfContributorPermissions( &$user, &$rights ) {
 		$cat = str_replace( '_', ' ', $row[0] );
 		if ( preg_match( "/^$match/", $cat ) ) {
 			if ( preg_match( "/$name$/", $cat ) ) $wgWhitelistRead[] = $wgTitle->getText();
-			else {
-				$wgGroupPermissions['*']['read'] = 'sysop';
-				$wgGroupPermissions['user']['read'] = 'sysop';
-			}
+			else $right = array();
 		}
 	}
 	$dbr->freeResult( $res );
