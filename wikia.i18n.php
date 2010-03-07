@@ -168,7 +168,7 @@ $messages['en'] = array(
 *[[Cheatsheet]]
 *[[Sandbox]]
 *'''Categories'''
-**[[:Category:People|People]]   [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;create&#93;</small>]https://ewg.organicdesign.co.nz/Special:RecordAdmin/Procedure
+**[[:Category:People|People]]   [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;create&#93;</small>]
 **[[:Category:Roles|Roles]] {{NewRecordLinkSmall|Role}}
 **[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
 **[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
