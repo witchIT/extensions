@@ -475,7 +475,7 @@ function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
 function wfContributorPermissions( &$user, &$rights ) {
 	print_r($rights);
 	global $wgTitle, $wgWhitelistRead, $wgGroupPermissions;
-	if ( $user->isAnon() of !is_object( $wgTitle ) ) return true;
+	if ( $user->isAnon() ) return true;
 	$dbr   = &wfGetDB( DB_SLAVE );
 	$cl    = $dbr->tableName( 'categorylinks' );
 	$id    = $wgTitle->getArticleID();
