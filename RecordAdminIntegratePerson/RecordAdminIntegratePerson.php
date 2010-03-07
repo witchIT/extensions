@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.6.1, 2010-03-07' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.6.2, 2010-03-07' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -474,7 +474,7 @@ function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
  */
 function wfContributorPermissions( &$user, &$rights ) {
 	global $wgTitle, $wgWhitelistRead, $wgGroupPermissions;
-	if ( $user->isAnon() ) return true;
+	if ( $user->isAnon() || in_array( 'sysop', $user->getGroups() ) ) return true;
 	$dbr   = &wfGetDB( DB_SLAVE );
 	$cl    = $dbr->tableName( 'categorylinks' );
 	$id    = $wgTitle->getArticleID();
