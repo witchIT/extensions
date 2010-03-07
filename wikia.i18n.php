@@ -173,6 +173,7 @@ $messages['en'] = array(
 **[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
 **[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
 **[[:Category:Projects|Projects]] {{NewRecordLinkSmall|Project}}
+**[[:Category:Organisations|Organisations]] {{NewRecordLinkSmall|Organisation}}
 **[[:Category:Tasks|Tasks]] {{NewRecordLinkSmall|Task}}
 **[[:Category:Activities|Activities]] {{NewRecordLinkSmall|Activity}}
 **[[Special:RecordAdmin|Advanced search...]]
