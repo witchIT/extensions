@@ -483,7 +483,6 @@ function wfContributorPermissions( &$user ) {
 	$name  = $user->getRealName();
 	while ( $row = $dbr->fetchRow( $res ) ) {
 		if ( preg_match( "/^$match/", $row[0] ) ) {
-			print
 			$list[] = $row[0];
 			if ( preg_match( "/$name$/", $row[0] ) ) $wgWhitelistRead[] = $wgTitle->getText();
 			else {
