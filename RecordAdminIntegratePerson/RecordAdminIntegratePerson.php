@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.6.0, 2010-03-07' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.6.1, 2010-03-07' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -479,11 +479,12 @@ function wfContributorPermissions( &$user ) {
 	$cl    = $dbr->tableName( 'categorylinks' );
 	$id    = $wgTitle->getArticleID();
 	$res   = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-	$match = str_replace( ' ', '_', wfMsg( 'ip-extcontribcat', '' ) );
+	$match = wfMsg( 'ip-extcontribcat', '' );
 	$name  = $user->getRealName();
 	while ( $row = $dbr->fetchRow( $res ) ) {
-		if ( preg_match( "/^$match/", $row[0] ) ) {
-			if ( preg_match( "/$name$/", $row[0] ) ) $wgWhitelistRead[] = $wgTitle->getText();
+		$cat = str_replace( ' ', '_', $row[0] );
+		if ( preg_match( "/^$match/", $cat ) ) {
+			if ( preg_match( "/$name$/", $cat ) ) $wgWhitelistRead[] = $wgTitle->getText();
 			else {
 				$wgGroupPermissions['*']['read'] = false;
 				$wgGroupPermissions['user']['read'] = false;
