@@ -501,7 +501,7 @@ function wfSetupRAIntegratePerson() {
 	if ( $wgLanguageCode == 'en' ) {
 		$wgMessageCache->addMessages( array(
 			'ip-preftab'       => "Person Record",
-			'ip-extcontribcat' => "Articles viewable by $1",
+			'ip-extcontribcat' => "Articles readable by $1",
 			'ip-prefmsg'       => "<br /><b>Fill in your Personal details here...</b><br />"
 		) );
 	}
