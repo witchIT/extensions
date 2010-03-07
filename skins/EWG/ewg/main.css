@@ -1572,7 +1572,7 @@ span.searchmatch {
 
 /*Skin specific additions*/
 
-.dtree { width:190px; }
+#column-one .dtree { width:190px; }
 
 #top-div {
 	height:120px;
