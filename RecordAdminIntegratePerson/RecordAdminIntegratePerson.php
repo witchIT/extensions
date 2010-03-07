@@ -479,7 +479,7 @@ function wfContributorPermissions( &$user, &$rights ) {
 	$cl    = $dbr->tableName( 'categorylinks' );
 	$id    = $wgTitle->getArticleID();
 	$res   = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-	$match = wfMsg( 'ip-extcontribcat', '' );
+	$match = wfMsg( 'ip-lockedarticle', '' );
 	$name  = $user->getRealName();
 	while ( $row = $dbr->fetchRow( $res ) ) {
 		$cat = str_replace( '_', ' ', $row[0] );
@@ -489,6 +489,12 @@ function wfContributorPermissions( &$user, &$rights ) {
 		}
 	}
 	$dbr->freeResult( $res );
+
+	# If this user is an external contributor then remove all rights
+	global $wgIPPersonType, $wgIPExternalContributorField, $wgIPExternalContributorCat;
+	$query = array( 'type' => $wgIPPersonType, 'record' => $user->getRealname(), 'field' => $wgIPExternalContributorField );
+	if ( SpecialRecordAdmin::getFieldValue( $query ) ) $rights = array();
+
 	return true;
 }
 
@@ -499,7 +505,7 @@ function wfSetupRAIntegratePerson() {
 	if ( $wgLanguageCode == 'en' ) {
 		$wgMessageCache->addMessages( array(
 			'ip-preftab'       => "Person Record",
-			'ip-extcontribcat' => "Articles readable by $1",
+			'ip-lockedarticle' => "Articles readable by $1",
 			'ip-prefmsg'       => "<br /><b>Fill in your Personal details here...</b><br />"
 		) );
 	}
