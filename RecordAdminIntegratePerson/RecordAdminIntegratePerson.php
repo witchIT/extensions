@@ -479,7 +479,7 @@ function wfContributorPermissions( &$user ) {
 	$cl    = $dbr->tableName( 'categorylinks' );
 	$id    = $wgTitle->getArticleID();
 	$res   = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-	$match = wfMsg( 'ip-extcontribcat', '' );
+	$match = str_replace( ' ', '_', wfMsg( 'ip-extcontribcat', '' ) );
 	$name  = $user->getRealName();
 	while ( $row = $dbr->fetchRow( $res ) ) {
 		if ( preg_match( "/^$match/", $row[0] ) ) {
