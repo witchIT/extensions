@@ -10,7 +10,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.7, 2010-03-01');
+define( 'WIKIA_VERSION', '1.0.8, 2010-03-07');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -139,7 +139,7 @@ if ( $wgEmergencyContact === false ) $wgEmergencyContact = $wgPasswordSender = '
 $wgNoReplyAddress = "";
 
 # Include a special page for listing current wikia and their domains
-if ( ereg( 'organicdesign.co.nz', $domain ) ) include( 'extensions/SpecialWikiaInfo.php' );
+if ( ereg( 'organicdesign.co.nz', $domain ) ) include( 'extensions/WikiaInfo/WikiaInfo.php' );
 
 # Map naked URL to different articles depending on domain
 function domainRedirect( $list ) {
