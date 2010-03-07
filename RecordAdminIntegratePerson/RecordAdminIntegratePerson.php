@@ -41,8 +41,7 @@ $wgExtensionCredits['other'][] = array(
 );
 
 # Allow articles in Category:External contributor to be accessible if this user is an external contributor
-wfContributorPermissions( $wgUser );
-#$wgHooks['UserGetRights'][] = 'wfContributorPermissions';
+$wgHooks['UserGetRights'][] = 'wfContributorPermissions';
 
 class RAIntegratePerson {
 
@@ -473,9 +472,10 @@ function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
  * Handle Category:Articles readbale by *
  * - if an article is a member of such a category, then it should be readable by only the designated people
  */
-function wfContributorPermissions( &$user ) {
+function wfContributorPermissions( &$user, &$rights ) {
+	print_r($rights);
 	global $wgTitle, $wgWhitelistRead, $wgGroupPermissions;
-	if ( $user->isAnon() || !is_object( $wgTitle ) ) return true;
+	if ( $user->isAnon() of !is_object( $wgTitle ) ) return true;
 	$dbr   = &wfGetDB( DB_SLAVE );
 	$cl    = $dbr->tableName( 'categorylinks' );
 	$id    = $wgTitle->getArticleID();
