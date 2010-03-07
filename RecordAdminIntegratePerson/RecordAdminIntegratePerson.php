@@ -482,7 +482,7 @@ function wfContributorPermissions( &$user ) {
 	$match = wfMsg( 'ip-extcontribcat', '' );
 	$name  = $user->getRealName();
 	while ( $row = $dbr->fetchRow( $res ) ) {
-		$cat = str_replace( ' ', '_', $row[0] );
+		$cat = str_replace( '_', ' ', $row[0] );
 		if ( preg_match( "/^$match/", $cat ) ) {
 			if ( preg_match( "/$name$/", $cat ) ) $wgWhitelistRead[] = $wgTitle->getText();
 			else {
