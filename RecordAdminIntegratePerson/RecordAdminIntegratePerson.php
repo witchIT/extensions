@@ -486,7 +486,7 @@ function wfContributorPermissions( &$user, &$rights ) {
 		$cat = str_replace( '_', ' ', $row[0] );
 		if ( preg_match( "/^$match/", $cat ) ) {
 			if ( preg_match( "/$name$/", $cat ) ) $wgWhitelistRead[] = $wgTitle->getText();
-			else $right = array();
+			else $rights = array();
 		}
 	}
 	$dbr->freeResult( $res );
