@@ -134,7 +134,7 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 				<td id="content" width="100%">
 					<a name="top" id="top"></a>
 					<?php if($this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
-					<h1 class="firstHeading"><?php $this->data['displaytitle']!=""?$this->html('title'):$this->text('title') ?></h1>
+					<h1 class="firstHeading"><?php $this->html('title') ?></h1>
 					<div id="bodyContent">
 						<h3 id="siteSub"><?php $this->msg('tagline') ?></h3>
 						<div id="contentSub"><?php $this->html('subtitle') ?></div>
