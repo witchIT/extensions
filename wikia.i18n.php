@@ -26,12 +26,11 @@ $messages['en'] = array(
 	'od-contingency' => 'Includes: Contingencies (how to deal with events when they do not go according to plan).', 
 	'od-description-clear' => 'Make the description clear, assuming no prior context, even if raising it to yourself',
 	'od-datepicker-use' => 'Use Datepicker to select Date',
-	'od-minform-record-list' => '*Person
-*Role
-*Document
+	'od-minform-record-list' => '*Document
 *Procedure
 *Project
 *Organisation
+*Role
 *Task
 *Activity',
 	'od-calendar-use' => 'Use Datepicker, then Go to your Calendar',
