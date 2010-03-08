@@ -31,6 +31,7 @@ $messages['en'] = array(
 *Document
 *Procedure
 *Project
+*Organisation
 *Task
 *Activity',
 	'od-calendar-use' => 'Use Datepicker, then Go to your Calendar',
