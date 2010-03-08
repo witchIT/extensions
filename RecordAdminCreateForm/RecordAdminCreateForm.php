@@ -12,7 +12,7 @@
 if ( !defined( 'MEDIAWIKI' ) )           die( 'Not an entry point.' );
 if ( !defined( 'RECORDADMIN_VERSION' ) ) die( 'The RecordAdminCreateForm extension depends on the RecordAdmin extension' );
 
-define( 'RECORDADMINCREATEFORM_VERSION', '1.0.4, 2009-12-30' );
+define( 'RECORDADMINCREATEFORM_VERSION', '1.0.5, 2010-03-08' );
 
 $wgExtensionFunctions[] = 'efSetupRecordAdminCreateForm';
 
@@ -28,10 +28,10 @@ $wgExtensionCredits['parserhook'][] = array(
  * Function called from the hook BeforePageDisplay, creates a form which links to a new RA form page with title and type arguments in the url.
  */
 function efRecordAdminCreateForm (&$out) {
-	global $wgRecordAdminCategory;
 
 	# Make options list from items in records cat
 	/*$options = '';
+	global $wgRecordAdminCategory;
 	$dbr = &wfGetDB(DB_SLAVE);
 	$cl  = $dbr->tableName( 'categorylinks' );
 	$cat = $dbr->addQuotes( $wgRecordAdminCategory );
@@ -40,15 +40,14 @@ function efRecordAdminCreateForm (&$out) {
 	*/
 	
 	# Get an options list from the article 
-	$title    = Title::newFromText('MediaWiki:Od-minform-record-list');
-	$article  = new Article($title);
-	$options = $article->getContent();
+	$title    = Title::newFromText( 'MediaWiki:Od-minform-record-list' );
+	$article  = new Article( $title );
+	$options = preg_replace( "|\*\s*(.+)$|m", "<option>$1</option>", $article->getContent() );
 
 	# Post the form to Special:RecordAdmin
 	$action = Title::makeTitle( NS_SPECIAL, 'RecordAdmin' )->getLocalUrl();
 
-# Add a form to the page
-
+	# Add a form to the page
 	$out->mBodytext .= "
 		<div id='p-racreate' class='portlet'>
 			<h5 ><label for='searchInput'>New record</label></h5>
@@ -58,8 +57,7 @@ function efRecordAdminCreateForm (&$out) {
 					<input type='submit' id='raCreateButton' class='searchButton' value='Create' />
 				</form>
 			</div>
-		</div>
-		";
+		</div>";
 
 	return true;
 }
