@@ -21,6 +21,11 @@ if ( !$wgCommandLineMode ) {
 		$wgUser->setOption( 'skin', 'foo' );
 	}
 
+	# Force timezone default to NZ
+	$wgLocaltimezone = "Pacific/Auckland";
+	putenv( "TZ=$wgLocaltimezone" );
+	$wgLocalTZoffset = date( "Z" ) / 60;
+
 	# Force HTTPS
 	if ( !isset( $_SERVER['HTTPS'] ) ) {
 		header( "Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
@@ -43,8 +48,10 @@ if ( !$wgCommandLineMode ) {
 	include( 'extensions/UserMerge/UserMerge.php' );
 	include( 'extensions/ParserFunctions/ParserFunctions.php' );
 	include( 'extensions/RegexParserFunctions/RegexParserFunctions.php' );
+	include( 'extensions/StringFunctions/StringFunctions.php' );
 	include( 'extensions/DynamicPageList/DynamicPageList2.php' );
 	include( 'extensions/Cite/Cite.php' );
+	include( 'extensions/Variables/Variables.php' );
 
 	# OD extensions
 	include( 'extensions/EventPipe/EventPipe.php' );
