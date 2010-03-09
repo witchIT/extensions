@@ -39,14 +39,23 @@ class Accordian {
 	/**
 	 * Expand the accordian-magic
 	 */
-	function magicAccordian( &$parser ) {
+	function magicAccordian( &$parser, $tree ) {
 
-		# Populate $argv with both named and numeric parameters
-		$argv = array();
-		foreach ( func_get_args() as $arg ) if ( !is_object( $arg ) ) {
-			if ( preg_match( '/^(.+?)\\s*=\\s*(.+)$/', $arg, $match ) ) $argv[$match[1]] = $match[2]; else $argv[] = $arg;
-		}
- 
+		# <script src="jquery-1.2.1.min.js" type="text/javascript"></script>
+		# <script src="menu.js" type="text/javascript"></script>
+
+		#	<ul id="menu">
+		#		<li>
+		#			<a href="#">Weblog Tools</a>
+		#			<ul>
+		#				<li><a href="http://www.pivotx.net/">PivotX</a></li>
+		#				<li><a href="http://www.wordpress.org/">WordPress</a></li>
+		#				<li><a href="http://www.textpattern.com/">Textpattern</a></li>
+		#				<li><a href="http://typosphere.org/">Typo</a></li>
+		#			</ul>
+		#		</li>
+		#	</ul>
+
 		return $text;
  
 	}
