@@ -12,7 +12,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'ACCORDIAN_VERSION', '1.0.0, 2010-03-09' );
+define( 'ACCORDIAN_VERSION', '1.0.1, 2010-03-11' );
 
 $egAccordianMagic              = "accordian";
 $wgExtensionFunctions[]        = 'efSetupAccordian';
@@ -30,34 +30,30 @@ class Accordian {
 
 	function __construct() {
 		global $wgHooks, $wgParser, $egAccordianMagic;
- 
-		# Add the parser-function
-		$wgParser->setFunctionHook( $egAccordianMagic, array( $this, 'magicAccordian' ) );
-  
+ 		$wgParser->setFunctionHook( $egAccordianMagic, array( $this, 'magicAccordian' ) ); 
+		$wgHooks['BeforePageDisplay'][] = $this;
+	}
+
+	/**
+	 * Add the accordian js
+	 */
+	function onBeforePageDisplay( &$out, $skin = false ) {
+		global $wgScriptPath, $wgJsMimeType;
+		$url = preg_replace( '|^.+(?=/ext)|', $wgScriptPath, dirname( __FILE__ ) );
+		$out->addScript( "<script type=\"$wgJsMimeType\" src=\"$url/menu.js\"><!-- Accordian --></script>\n" );
+		return true;
 	}
 
 	/**
 	 * Expand the accordian-magic
 	 */
 	function magicAccordian( &$parser, $tree ) {
-
-		# <script src="jquery-1.2.1.min.js" type="text/javascript"></script>
-		# <script src="menu.js" type="text/javascript"></script>
-
-		#	<ul id="menu">
-		#		<li>
-		#			<a href="#">Weblog Tools</a>
-		#			<ul>
-		#				<li><a href="http://www.pivotx.net/">PivotX</a></li>
-		#				<li><a href="http://www.wordpress.org/">WordPress</a></li>
-		#				<li><a href="http://www.textpattern.com/">Textpattern</a></li>
-		#				<li><a href="http://typosphere.org/">Typo</a></li>
-		#			</ul>
-		#		</li>
-		#	</ul>
-
-		return $text;
- 
+		$p = clone $parser;
+		$o = clone $parser->mOptions;
+		$o->mTidy = $o->mEnableLimitReport = false;
+		$html = $p->parse( $tree, $parser->mTitle, $o, true, true )->getText();
+		$html = preg_replace( '|<ul>|', '<ul id="menu">', $html, 1 );
+		return array( $html, 'isHTML' => true );
 	}
 
 }
