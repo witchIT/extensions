@@ -14,8 +14,23 @@ Sort.date.formats[0] = {
 	}
 }
 
-// Make vanadium validation not work for RecordAdmin searches
+// OD functions to run after page load
 function odOnLoadHook() {
+
+	// Make vanadium validation not work for RecordAdmin searches
 	$('#ra-find').attr('onClick','Vanadium={}');
+
+	// Improve RA record name inputs
+	// - normal record-id is always hidden (css)
+	// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
+	if ( $('#record-name') ) {
+		if ( $('#ra-record').val() ) {
+			$('#record-name').removeClass(':required');
+			$('#record-name').hide();
+		} else {
+			$('#record-name').addClass(':required');
+		}
+	}
 }
+
 addOnloadHook(odOnLoadHook);
