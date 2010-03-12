@@ -28,8 +28,7 @@ function odOnLoadHook() {
 			$('#record-name input').removeClass(':required');
 			$('#record-name').hide();
 		} else {
-			$('#record-name input').addClass(':required');
-			$('#record-name input').val($('ra-title').val());
+			$('#record-name input').addClass(':required').val($('#ra-title').val());
 			$('form.recordadmin').attr('onSubmit','$("#ra-title").val($("#record-name input").val())');
 		}
 	}
