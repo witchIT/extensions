@@ -6,10 +6,10 @@
 // A fix for table.js to allow it to handle dates which include HH:MM time
 Sort.date.formats[0] = {
 	re : /(\d{2,4})-(\d{1,2})-(\d{1,2})\D*((\d\d):(\d\d))?/,
-	f  : function( x ) {
-		var d = new Date( Sort.date.fixYear( x[1] ), +x[2], +x[3] );
-		if ( x[5] > 0 ) d.setHours( x[5] );
-		if ( x[6] > 0 ) d.setMinutes( x[6] );
+	f  : function(x) {
+		var d = new Date(Sort.date.fixYear(x[1]), +x[2], +x[3]);
+		if (x[5] > 0) d.setHours(x[5]);
+		if (x[6] > 0) d.setMinutes(x[6]);
 		return d.getTime();
 	}
 }
@@ -23,12 +23,12 @@ function odOnLoadHook() {
 	// Improve RA record name inputs
 	// - normal record-id is always hidden (css)
 	// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
-	if ( $('#record-name') ) {
-		if ( $('#ra-record').val() ) {
-			$('#record-name').removeClass(':required');
+	if ($('#record-name')) {
+		if ($('#ra-record').val()) {
+			$('#record-name input').removeClass(':required');
 			$('#record-name').hide();
 		} else {
-			$('#record-name').addClass(':required');
+			$('#record-name input').addClass(':required');
 		}
 	}
 }
