@@ -29,6 +29,7 @@ function odOnLoadHook() {
 			$('#record-name').hide();
 		} else {
 			$('#record-name input').addClass(':required');
+			$('#record-name input').val($('ra-title').val());
 			$('form.recordadmin').attr('onSubmit','$("#ra-title").val($("#record-name input").val())');
 		}
 	}
