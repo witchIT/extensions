@@ -146,11 +146,14 @@ if ($wgUser->isLoggedIn()) {
 <?php
 # MediaWiki:Sidebar
 global $wgUser,$wgTitle,$wgParser;
-$side = new Article(Title::newFromText('Sidebar',NS_MEDIAWIKI));
-if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+$title = 'sidebar';
+$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+$text = $article->fetchContent();
+if ( empty( $text ) ) $text = wfMsg( $title );
+if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
-if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
-echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
+if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
 	</div></td><!-- end of the left (by default at least) column -->
 	<td id="contentWrapper">
@@ -207,11 +210,14 @@ echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
 <?php
 # MediaWiki:Footer
 global $wgUser,$wgTitle,$wgParser;
-$side = new Article(Title::newFromText('Footer',NS_MEDIAWIKI));
-if (is_object($wgParser)) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+$title = 'footer';
+$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
+$text = $article->fetchContent();
+if ( empty( $text ) ) $text = wfMsg( $title );
+if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
-if (!is_object($opt)) $opt = ParserOptions::newFromUser($wgUser);
-echo $psr->parse($side->fetchContent(),$wgTitle,$opt,true,true)->getText();
+if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
 	
 	</td></tr>
