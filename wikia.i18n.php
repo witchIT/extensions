@@ -44,9 +44,9 @@ $messages['en'] = array(
 *Ms
 *Dr',
 	'od-person-title-list-info' => 'This is the list of different titles that a person in the organisation can have. To change the options available in this list click [{{fullurl:MediaWiki:od-person-title-list|action=edit}} here]',
-	'od-person-location-list' => '*Head Office
-*Orini Factory
-*Auckland Sales Office',
+	'od-person-location-list' => '*Home
+*Office
+*Factory',
 	'od-person-location-list-info' => 'This is the list of locations that people in the organisation can work from. To change the options available in this list click [{{fullurl:MediaWiki:od-person-location-list|action=edit}} here]',
 	'od-person-administration-info' => '{{warning|This section is only viewable by system administrators because it defines peoples roles and access rights.}}',
 	'od-person-external-info' => 'External contributors can access nothing by default, they must be granted specific access to articles to be able to view them.',
@@ -134,11 +134,9 @@ $messages['en'] = array(
 *Paid
 *Cancelled',
 	'od-activity-status-list-info' => 'The list of current states that an activity in the organisation can be in. To change the options available in this list click [{{fullurl:MediaWiki:od-activity-status-list|action=edit}} here]',
-	'od-role-smb-list' => '*earthwise-management
-*earthwise-staff
-*kiwigreen-management
-*kiwigreen-staff
-*shared-management',
+	'od-role-smb-list' => '*management
+*staff
+*users',
 	'od-role-smb-list-info' => 'The list of shares that a role in the organisation can have. To change the options available in this list click [{{fullurl:MediaWiki:od-role-smb-list|action=edit}} here]',
 	'od-document-type-list' => '*Specification
 *Development
