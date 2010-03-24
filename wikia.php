@@ -10,7 +10,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.8, 2010-03-07');
+define( 'WIKIA_VERSION', '1.0.9, 2010-03-25');
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -21,6 +21,7 @@ define( 'NS_SYSOP',          1016 );
 define( 'NS_MEMBER',         1018 );
 define( 'NS_RECORD',         1020 );
 define( 'NS_REPORT',         1022 );
+define( 'NS_FORM',           2000 );
 
 # Namespaces
 $wgExtraNamespaces[NS_EXTENSION]   = 'Extension';
@@ -41,6 +42,8 @@ $wgExtraNamespaces[NS_MEMBER]      = 'Member';
 $wgExtraNamespaces[NS_MEMBER+1]    = 'Member_talk';
 $wgExtraNamespaces[NS_RECORD]      = 'Record';
 $wgExtraNamespaces[NS_RECORD+1]    = 'Record_talk';
+$wgExtraNamespaces[NS_FORM]        = 'Form';
+$wgExtraNamespaces[NS_FORM+1]      = 'Form_talk';
 
 # Default globals defined before specific LocalSettings inclusion
 $wgArticlePath            = '/$1';
