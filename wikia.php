@@ -10,7 +10,8 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.9, 2010-03-25');
+define( 'WIKIA_VERSION', '1.0.10, 2010-03-25');
+define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_QUERY',          1006 );
@@ -21,7 +22,6 @@ define( 'NS_SYSOP',          1016 );
 define( 'NS_MEMBER',         1018 );
 define( 'NS_RECORD',         1020 );
 define( 'NS_REPORT',         1022 );
-define( 'NS_FORM',           2000 );
 
 # Namespaces
 $wgExtraNamespaces[NS_EXTENSION]   = 'Extension';
