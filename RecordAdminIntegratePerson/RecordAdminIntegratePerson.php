@@ -337,7 +337,7 @@ class RAIntegratePerson {
 		else {
 			$id = $wgUser->getId();
 			$name = preg_replace( '%.+(\..+?)$%', "avatar-$wgSitename-$id$1", $file['name'] );
-			foreach( glob( "$wgUploadDirectory/avatar-$wgSitename-$id.*" ) as $file ) unlink( $file );
+			foreach( glob( "$wgUploadDirectory/avatar-$wgSitename-$id.*" ) as $img ) unlink( $img );
 			move_uploaded_file( $file['tmp_name'], "$wgUploadDirectory/$name" );
 		}
 	}
