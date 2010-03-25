@@ -10,7 +10,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.10, 2010-03-25');
+define( 'WIKIA_VERSION', '1.0.11, 2010-03-25');
 define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
@@ -66,6 +66,7 @@ $wgAllowPageInfo          = true;
 $wgRawHtml                = true;
 $wgUseSiteCss             = true;
 $wgUseSiteJs              = true;
+$wgUseWikiaCss            = true;
 
 # File upload settings
 $wgEnableUploads          = true;
@@ -140,6 +141,14 @@ $wgUploadDirectory  = $_SERVER['DOCUMENT_ROOT'] . "$wgUploadPath"; # allows wiki
 $wgLocalInterwiki   = $wgSitename;
 if ( $wgEmergencyContact === false ) $wgEmergencyContact = $wgPasswordSender = 'admin@' . str_replace( 'www.', '', $domain );
 $wgNoReplyAddress = "";
+
+# Add wikia.css
+if ( $wgUseWikiaCss ) $wgHooks['BeforePageDisplay'][] = 'odAddWikiaCss';
+function odAddWikiaCss( &$out, $skin = false ) {
+	global $wgScriptPath;
+	$out->addScript("<link rel=\"stylesheet\" type=\"text/css\" href=\"$wgScriptPath/extensions/wikia.css\" />");
+	return true;
+}
 
 # Include a special page for listing current wikia and their domains
 if ( ereg( 'organicdesign.co.nz', $domain ) ) include( 'extensions/WikiaInfo/WikiaInfo.php' );
