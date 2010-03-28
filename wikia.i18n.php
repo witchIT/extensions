@@ -44,6 +44,14 @@ $messages['en'] = array(
 *Ms
 *Dr',
 	'od-person-title-list-info' => 'This is the list of different titles that a person in the organisation can have. To change the options available in this list click [{{fullurl:MediaWiki:od-person-title-list|action=edit}} here]',
+	'od-person-interests' => 'Philosophy & Spirituality
+*Organic Design
+*Financial system
+*Sovereignty
+*Free energy
+*Software development
+*Science & Technology',
+	'od-person-interests-info' => 'These options are used to determine the recipients in mailouts, to change the options available in this list click [{{fullurl:MediaWiki:od-person-interests|action=edit}} here]',
 	'od-person-location-list' => '*Home
 *Office
 *Factory',
