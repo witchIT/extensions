@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.6.3, 2010-03-25' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.7.0, 2010-03-31' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -149,11 +149,10 @@ class RAIntegratePerson {
 			}
 			function ipOnload() {
 
-				// Hide fieldsets
-				$('fieldset#prefsection-0 fieldset:nth-child(7)').hide(); // internationalisation
-				$('fieldset#prefsection-0 fieldset:nth-child(8)').hide(); // signature
-				$('fieldset#prefsection-0 fieldset:nth-child(9)').hide(); // email options
-
+				// Hide some fieldsets
+				$('legend:contains(\"Signature\")').parent().hide();
+				$('legend:contains(\"E-mail options\")').parent().hide();
+				
 				// Defaults for the hidden email options
 				$('#mw-input-enotifwatchlistpages').attr('checked','yes');
 				$('#mw-input-enotifusertalkpages').attr('checked','yes');
@@ -161,11 +160,9 @@ class RAIntegratePerson {
 				$('#wpEmailFlag').attr('checked','');
 				$('#mw-input-ccmeonemails').attr('checked','');
 
-				// Hide items in the Basic Information fieldset
-				$('table#mw-htmlform-info tr:nth-child(6)').hide(); // real name
-				$('table#mw-htmlform-info tr:nth-child(7)').hide(); // real name comment
-				$('table#mw-htmlform-info tr:nth-child(8)').hide(); // gender
-				$('table#mw-htmlform-info tr:nth-child(9)').hide(); // gender comment
+				// Hide realname and gender rows (and their following comment row)
+				$('#mw-input-realname').parent().parent().hide().next().hide();
+				$('#mw-input-gender').parent().parent().hide().next().hide();
 				
 			}
 			addOnloadHook(ipOnload);
@@ -181,8 +178,8 @@ class RAIntegratePerson {
 		# Integrate the Person record
 		$form = $this->getForm();
 		$out->mBodytext = preg_replace(
-			"|(<fieldset>\s*<legend>Internationalisation)|s",
-			"$form$1",
+			"|(<fieldset>\s*<legend>Internationalisation.+?</fieldset>)|s",
+			"$1$form",
 			$out->mBodytext
 		);
 
@@ -203,10 +200,10 @@ class RAIntegratePerson {
 			}
 			function ipOnload() {
 				
-				// Hide items in the current form
-				$('fieldset#login table tr:nth-child(4)').hide(); // email
-				$('fieldset#login table tr:nth-child(5)').hide(); // real name
-				$('fieldset#login table tr:nth-child(7)').hide(); // submit buttons
+				// Hide email, realname and standard create-account button
+				$('#wpEmail').parent().parent().hide();
+				$('#wpRealName').parent().parent().hide();
+				$('td.mw-submit').parent().hide();
 			}
 			addOnloadHook(ipOnload);
 		</script>" );
@@ -249,13 +246,12 @@ class RAIntegratePerson {
 			$wgSpecialRecordAdmin->populateForm( $record );
 		}
 
-		# Return the form minus the Adminstration section
-		if ( in_array( 'sysop', $wgUser->getGroups() ) ) {
-			$form = preg_replace( "|(^.+)<script.+$|ms", "$1", $wgSpecialRecordAdmin->form );
-		} else {
-			$form = preg_replace( "|(^.+)<fieldset.+?Administration.+$|ms", "$1", $wgSpecialRecordAdmin->form );
-			$form .= "<fieldset style='display:none'><legend>Administration</legend></fieldset>";
-		}
+		# Get the form
+		$form = $wgSpecialRecordAdmin->form;
+
+		# If not a sysop, remove the administration section
+		if ( !in_array( 'sysop', $wgUser->getGroups() ) ) $form = preg_replace( "<fieldset.+?Administration.+</fieldset>", "", $form );
+
 		return $form;
 	}
 
