@@ -176,11 +176,13 @@ $messages['en'] = array(
 *[[Sandbox]]
 *'''Categories'''
 **[[:Category:People|People]]   [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;create&#93;</small>]
+**[[:Category:Departments|Departments]] {{NewRecordLinkSmall|Department}}
 **[[:Category:Roles|Roles]] {{NewRecordLinkSmall|Role}}
-**[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
-**[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
 **[[:Category:Projects|Projects]] {{NewRecordLinkSmall|Project}}
 **[[:Category:Organisations|Organisations]] {{NewRecordLinkSmall|Organisation}}
+**[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
+**[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
+**[[:Category:Computers|Computers]] {{NewRecordLinkSmall|Computer}}
 **[[:Category:Tasks|Tasks]] {{NewRecordLinkSmall|Task}}
 **[[:Category:Activities|Activities]] {{NewRecordLinkSmall|Activity}}
 **[[Special:RecordAdmin|Advanced search...]]
