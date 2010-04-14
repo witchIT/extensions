@@ -110,6 +110,7 @@ $messages['en'] = array(
 	'od-task-status-list' => '*Planned
 *Assigned
 *In Progress
+*Completed
 *Resolved
 *Invoiced
 *Paid
