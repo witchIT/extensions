@@ -763,8 +763,11 @@ table.recordadmin td.long-record-description pre { overflow: hidden; }
 
 .prefsection fieldset .template_maintable th { font-weight: bold; }
 
-/*max width of form selects*/
-.recordadmin-create select {max-width: 435px};
+/*max width of form selects and i's*/
+.recordadmin-create select {
+	max-width: 435px;
+	float:left;
+}
 
 /*Date Record Type*/
 
@@ -987,5 +990,3 @@ form.person-record td.EmailList p {
 }
 
 
-/* i's*/
-.recordadmin-create select { float:left }
