@@ -855,7 +855,7 @@ input.vanadium-valid ~ .vanadium-valid-advice {
 
 /* The i symbol*/
 .tooltip-nowidth-image {
-	background:url(/files/thumb/e/e1/Info.svg/16px-Info.svg.png) no-repeat; 
+	background:url(/files/e/e0/Info-16.svg.png) no-repeat; 
 	width:16px; 
 	height:16px;
 	vertical-align: text-bottom
@@ -988,4 +988,4 @@ form.person-record td.EmailList p {
 
 
 /* i's*/
-select { float:left }
+.recordadmin-create select { float:left }
