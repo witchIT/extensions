@@ -143,6 +143,14 @@ $messages['en'] = array(
 *Paid
 *Cancelled',
 	'od-activity-status-list-info' => 'The list of current states that an activity in the organisation can be in. To change the options available in this list click [{{fullurl:MediaWiki:od-activity-status-list|action=edit}} here]',
+	'od-transaction-currency-list' => '*NZD
+*EUR
+*USD
+*CHF',
+	'od-transaction-currency-list-info' => 'The list of currencies for the transaction. To change the options available in this list click [{{fullurl:MediaWiki:od-transaction-currency-list|action=edit}} here]',
+	'od-transaction-type-list' => '*Standard
+*Other',
+	'od-transaction-type-list-info' => 'The list of different types that a transaction in the organisation can be. To change the options available in this list click [{{fullurl:MediaWiki:od-transaction-type-list|action=edit}} here]',
 	'od-role-smb-list' => '*management
 *staff
 *users',
