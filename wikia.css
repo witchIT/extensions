@@ -913,6 +913,7 @@ th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:
 .page-Category_Projects #mw-pages h2,
 .page-Category_Roles #mw-pages h2,
 .page-Category_Posts #mw-pages h2,
+.page-Category_Transactions #mw-pages h2,
 .page-Category_Invoices #mw-pages h2,
 .page-Category_Tasks #mw-pages h2 {display:none}
 
@@ -928,6 +929,7 @@ th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:
 .page-Category_Projects #mw-pages,
 .page-Category_Roles #mw-pages,
 .page-Category_Posts #mw-pages,
+.page-Category_Transactions #mw-pages,
 .page-Category_Invoices #mw-pages,
 .page-Category_Tasks #mw-pages {display:none}
 
