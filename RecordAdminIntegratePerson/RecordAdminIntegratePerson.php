@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.7.0, 2010-03-31' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.7.1, 2010-05-18' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -250,7 +250,7 @@ class RAIntegratePerson {
 		$form = $wgSpecialRecordAdmin->form;
 
 		# If not a sysop, remove the administration section
-		if ( !in_array( 'sysop', $wgUser->getGroups() ) ) $form = preg_replace( "<fieldset.+?Administration.+</fieldset>", "", $form );
+		if ( !in_array( 'sysop', $wgUser->getGroups() ) ) $form = preg_replace( "|<fieldset.+?Administration.+</fieldset>|", "", $form );
 
 		return $form;
 	}
