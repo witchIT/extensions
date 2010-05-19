@@ -96,8 +96,10 @@ class RAIntegratePerson {
 		if ( $person = $wgUser->getRealName() ) {
 			$userpage = array_shift( $urls );
 			$talkpage = array_shift( $urls );
-			$mycat    = str_replace( '$1', $person, '/Category:$1' );
-			$mywork   = str_replace( '$1', $person, '/wiki/index.php?title=Category:Activities&Person=$1' );
+			$mycat    = str_replace( '$1', $person, "/Category:$1" );
+			$month    = date( '/n/' );
+			$year     = date( 'Y' );
+			$mywork   = str_replace( '$1', $person, "/wiki/index.php?title=Category:Activities&Person=$1&DateMonth=$month&DateYear=$year" );
 			$urls     = array(
 				'userpage' => $userpage,
 				'talkpage' => $talkpage,
