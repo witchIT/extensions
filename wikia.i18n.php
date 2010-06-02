@@ -79,18 +79,18 @@ $messages['en'] = array(
 	'od-procedure-version-list-info' => 'The list of different versions that a procedure in the organisation can be. To change the options available in this list click [{{fullurl:MediaWiki:od-procedure-version-list|action=edit}} here]',
 	'od-project-type-list' => '*Specification
 *Development
+*Implementation
+*Research
 *Consultancy
 *Documentation
-*Content
 *Systems Administration',
 	'od-project-type-list-info' => 'The list of different types that a project in the organisation can be. To change the options available in this list click [{{fullurl:MediaWiki:od-project-type-list|action=edit}} here]',
 	'od-project-status-list' => '*Planned
+*Proposal
+*Specification
 *Work in Progress
-*Final Draft
 *Completed
-*Signed Off
-*Invoiced
-*Paid
+*On hold
 *Cancelled',
 	'od-project-status-list-info' => 'The list of current states that a project in the organisation can be in. To change the options available in this list click [{{fullurl:MediaWiki:od-project-status-list|action=edit}} here]',
 	'od-task-budgettype-list' => '*Hours
