@@ -11,7 +11,7 @@
 if ( !defined('MEDIAWIKI' ) )          die( 'Not an entry point.' );
 if ( !defined( 'EVENTPIPE_VERSION' ) ) die( 'The WikidAdmin special page extension depends on the EventPipe extension' );
 
-define( 'WIKIDADMIN_VERSION', '1.1.6, 2010-02-13' );
+define( 'WIKIDADMIN_VERSION', '1.1.7, 2010-06-05' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -245,6 +245,7 @@ function wfWikidAdminRenderWorkHistory() {
 
 	/**
 	 * Load the work array from the work file
+	 * - removes "RpcSendAction" from the list
 	 */
 	function wfWikidAdminLoadWork() {
 		global $wgWikidWork, $wgWikidTypes;
@@ -253,6 +254,7 @@ function wfWikidAdminRenderWorkHistory() {
 			$work = unserialize( file_get_contents( $wkfile ) );
 			$wgWikidWork = $work[0];
 			$wgWikidTypes = $work[2];
+			if ( false !== $offset = array_search( 'RpcSendAction', $wgWikidTypes ) ) array_splice( $wgWikidTypes, $offset, 1 );
 		} else {
 			$wgWikidWork = array();
 			$wgWikidTypes = array();
