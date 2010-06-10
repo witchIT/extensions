@@ -187,7 +187,7 @@ function wfWikidAdminRenderWork() {
  */
 function wfWikidAdminRenderWorkHistory() {
 	$log = '/var/www/tools/wikid.work.log';
-	$max = 16384;
+	$max = 4096;
 	if ( file_exists( $log ) ) {
 
 		if ( preg_match_all( "|^\[(.+?)\]\n(.+?)\n\n|sm", file_get_contents( $log, false, NULL, filesize( $log ) - $max, $max ), $m ) ) {
