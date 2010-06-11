@@ -38,6 +38,10 @@ $messages['en'] = array(
 	'od-calendar-another' => 'Use Datepicker, then Go to another Date',
 	'od-textbox-alias' => 'Other addresses that point to this address. Write every entry on a new line.',
 	'od-textbox-forward' => 'Other addresses that emails are forwarded to. Write every entry on a new line.',
+	'od-invoice-status-list' => '*Drafted
+*Sent
+*Paid',
+	'od-invoice-status-list-info' => 'The list of current states that an invoice in the organisation can be in. To change the options available in this list click [{{fullurl:MediaWiki:od-invoice-status-list|action=edit}} here]',
 	'od-person-title-list' => '*Mr
 *Mrs
 *Miss
