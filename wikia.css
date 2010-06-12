@@ -686,6 +686,7 @@ a.date-picker-control span.fd-screen-reader {display:none}
 	color: #000000;
 	line-height: 1px;
 	padding: 10px 0 30px 0;
+	clear: both;
 }
 .recordadmin-menubar {
 	margin: 0 0 10px 0;    
