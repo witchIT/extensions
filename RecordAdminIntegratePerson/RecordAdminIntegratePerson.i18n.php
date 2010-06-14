@@ -25,7 +25,7 @@ $messages['en'] = array(
 	'raip-record-updated' => 'Record updated via $1',
 	'raip-record-created' => 'Record created via $1',
 	'raip-invalid-type' => 'Uploaded file was not of a valid type!',
-	'raip-maxsize' => 'Profile images are restricted to a maximum of $1 Bytes',
+	'raip-maxsize' => 'Profile images are restricted to a maximum of $1 bytes',
 	'raip-uploaderror' => 'Uploaded error number $1 occurred',
 	'raip-recursionerror' => 'recursiveRoleScan bailout point ($1) reached',
 );
