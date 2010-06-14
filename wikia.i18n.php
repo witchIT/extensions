@@ -38,6 +38,7 @@ $messages['en'] = array(
 	'od-calendar-another' => 'Use Datepicker, then Go to another Date',
 	'od-textbox-alias' => 'Other addresses that point to this address. Write every entry on a new line.',
 	'od-textbox-forward' => 'Other addresses that emails are forwarded to. Write every entry on a new line.',
+	'od-sender-explain' => 'Use "Sender" and "Recipient" for transactions, and where activities are not person-to-organisation.',
 	'od-invoice-status-list' => '*Drafted
 *Sent
 *Paid',
