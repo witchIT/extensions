@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.7.1, 2010-05-18' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.8.0, 2010-06-14' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -53,7 +53,9 @@ class RAIntegratePerson {
 	var $groups         = array();
 
 	function __construct() {
-		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgSpecialRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
+		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
+
+		wfLoadExtensionMessages ( 'RecordAdminIntegratePerson' );
 
 		if ( $wgIPAddPersonalUrls ) $wgHooks['PersonalUrls'][] = array( $this, 'addPersonalUrls' );
 		if ( $wgIPFixUserLinks )    $wgHooks['BeforePageDisplay'][] = array( $this, 'fixUserLinks');
@@ -61,7 +63,7 @@ class RAIntegratePerson {
 		# Add the #roles parser function
 		$wgParser->setFunctionHook( 'roles', array( $this, 'expandRoles' ) );
 
-		$title = $wgSpecialRecordAdmin->title = Title::newFromText( $wgRequest->getText( 'title' ) );
+		$title = $wgRecordAdmin->title = Title::newFromText( $wgRequest->getText( 'title' ) );
 		if ( !is_object( $wgTitle ) ) $wgTitle = $title;
 		if ( is_object( $title ) ) {
 
@@ -103,8 +105,8 @@ class RAIntegratePerson {
 			$urls     = array(
 				'userpage' => $userpage,
 				'talkpage' => $talkpage,
-				'mycat'    => array( 'text' => 'My category', 'href' => $mycat  ),
-				'mywork'   => array( 'text' => 'My worklog',  'href' => $mywork )
+				'mycat'    => array( 'text' => wfMsg( 'raip-mycat' ), 'href' => $mycat  ),
+				'mywork'   => array( 'text' => wfMsg( 'raip-mywork' ),  'href' => $mywork )
 			) + $urls;
 		}
 		return true;
@@ -252,7 +254,8 @@ class RAIntegratePerson {
 		$form = $wgSpecialRecordAdmin->form;
 
 		# If not a sysop, remove the administration section
-		if ( !in_array( 'sysop', $wgUser->getGroups() ) ) $form = preg_replace( "|<fieldset.+?Administration.+</fieldset>|", "", $form );
+		$admin = wfMsg( 'raip-admin' );
+		if ( !in_array( 'sysop', $wgUser->getGroups() ) ) $form = preg_replace( "|<fieldset.+?$admin.+</fieldset>|", "", $form );
 
 		return $form;
 	}
@@ -296,9 +299,9 @@ class RAIntegratePerson {
 			$usertext = '';
 			if ( $userpage->exists() ) {
 				$text = $article->getContent();
-				if ( !preg_match( '/^#redirect/', $text ) ) $usertext = "\n\n== Content original user page ==\n$text";
-				$success = $article->doEdit( $redirect, "Changed userpage to redirect to [[$name]]", EDIT_UPDATE );
-			} else $success = $article->doEdit( $redirect, "Created redirect to [[$name]]", EDIT_NEW );
+				if ( !preg_match( '/^#redirect/', $text ) ) $usertext = "\n\n== " . wfMsg( 'raip-orig-content' ) . " ==\n$text";
+				$success = $article->doEdit( $redirect, wfMsg( 'raip-userpage-change', $name ), EDIT_UPDATE );
+			} else $success = $article->doEdit( $redirect, wfMsg( 'raip-userpage-redirect', $name ), EDIT_NEW );
 
 			# Construct the record brace text
 			$record = '';
@@ -316,8 +319,8 @@ class RAIntegratePerson {
 				elseif ( $text ) $text = "$record\n\n$text";
 				else $text = $record;
 				$text .= $usertext;
-				$success = $article->doEdit( $text, "Record updated via $page", EDIT_UPDATE );
-			} else $success = $article->doEdit( "$record$usertext", "Record created via $page", EDIT_NEW );
+				$success = $article->doEdit( $text, wfMsg( 'raip-record-updated', $page ), EDIT_UPDATE );
+			} else $success = $article->doEdit( "$record$usertext", wfMsg( 'raip-record-created', $page ), EDIT_NEW );
 
 		}
 	}
@@ -328,9 +331,9 @@ class RAIntegratePerson {
 	function processUploadedImage( $file ) {
 		global $wgUser, $wgSitename, $wgSiteNotice, $wgUploadDirectory, $wgIPMaxImageSize;
 		$error = false;
-		if ( !ereg( '^image/(jpeg|png|gif)$', $file['type'] ) ) $error = 'Uploaded file was not of a valid type!';
-		if ( $file['size'] > $wgIPMaxImageSize )                $error = 'Profile images are restricted to a maximum of 100KBytes';
-		if ( $file['error'] > 0 )                               $error = 'Uploaded error number ' . $file['error'] . ' occurred';
+		if ( !ereg( '^image/(jpeg|png|gif)$', $file['type'] ) ) $error = wfMsg( 'raip-invalid-type' );
+		if ( $file['size'] > $wgIPMaxImageSize )                $error = wfMsg( 'raip-maxsize', $wgIPMaxImageSize );
+		if ( $file['error'] > 0 )                               $error = wfMsg( 'raip-uploaderror', $file['error'] );
 		if ( $error ) $wgSiteNotice = "<div class='errorbox'>$error</div>";
 		else {
 			$id = $wgUser->getId();
@@ -415,7 +418,7 @@ class RAIntegratePerson {
 	 */
 	static function recursiveRoleScan( &$roles, &$role ) {
 		static $bail = 200;
-		if ( $bail-- == 0) die( "recursiveRoleScan bailout point (200) reached" );
+		if ( $bail-- == 0) die( wfMsg( 'raip-recursionerror', 200 );
 		$tmp = $role;
 		foreach( $role as $r ) $tmp = array_merge( $tmp, self::recursiveRoleScan( $roles, $roles[$r] ) );
 		return $tmp;
@@ -443,7 +446,7 @@ class RAIntegratePerson {
 	 */
 	function recursiveRoleTree( &$text, $depth, $role, $format ) {
 		static $bail = 200;
-		if ( $bail-- == 0) die( "recursiveRoleTree bailout point (200) reached" );
+		if ( $bail-- == 0) die( wfMsg( 'raip-recursionerror', 200 );
 		$indent = str_repeat( '*', $depth );
 		$i = in_array( $role, $this->inheritedRoles ) ? "''" : "";
 		if ( in_array( $role, $this->directRoles ) ) $i = "'''";
@@ -499,18 +502,6 @@ function wfContributorPermissions( &$user, &$rights ) {
 }
 
 function wfSetupRAIntegratePerson() {
-	global $wgRAIntegratePerson, $wgLanguageCode, $wgMessageCache;
-
-	# Add the messages used by the specialpage
-	if ( $wgLanguageCode == 'en' ) {
-		$wgMessageCache->addMessages( array(
-			'ip-preftab'       => "Person Record",
-			'ip-lockedarticle' => "Articles readable by $1",
-			'ip-prefmsg'       => "<br /><b>Fill in your Personal details here...</b><br />"
-		) );
-	}
-
-	# Instantiate the IntegratePerson singleton now that the environment is prepared
+	global $wgRAIntegratePerson;
 	$wgRAIntegratePerson = new RAIntegratePerson();
-
 }
