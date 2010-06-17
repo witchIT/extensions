@@ -16,6 +16,7 @@ $messages['en'] = array(
 	'raip-preftab' => 'Person Record',
 	'raip-lockedarticle' => 'Articles readable by $1',
 	'raip-prefmsg' => 'Fill in your Personal details here...',
+	'raip-login-details' => 'Login details',
 	'raip-mycat' => 'My category',
 	'raip-mywork' => 'My worklog',
 	'raip-admin' => 'Administration',

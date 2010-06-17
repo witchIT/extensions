@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.8.1, 2010-06-17' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.8.2, 2010-06-17' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -146,6 +146,8 @@ class RAIntegratePerson {
 		global $wgJsMimeType;
 
 		# Add JS
+		$sig = wfMsg( 'prefs-signature' );
+		$eopt = wfMsg( 'prefs-email' );
 		$out->addScript( "<script type='$wgJsMimeType'>
 			function ipSubmit() {
 				document.getElementById('mw-input-realname').value = document.getElementById('FirstName').value + ' ' + document.getElementById('Surname').value
@@ -154,8 +156,8 @@ class RAIntegratePerson {
 			function ipOnload() {
 
 				// Hide some fieldsets
-				$('legend:contains(\"Signature\")').parent().hide();
-				$('legend:contains(\"E-mail options\")').parent().hide();
+				$('legend:contains(\"$sig\")').parent().hide();
+				$('legend:contains(\"$eopt\")').parent().hide();
 				
 				// Defaults for the hidden email options
 				$('#mw-input-enotifwatchlistpages').attr('checked','yes');
@@ -180,9 +182,10 @@ class RAIntegratePerson {
 		);
 
 		# Integrate the Person record
+		$i18n = wfMsg( 'prefs-i18n' );
 		$form = $this->getForm();
 		$out->mBodytext = preg_replace(
-			"|(<fieldset>\s*<legend>Internationalisation.+?</fieldset>)|s",
+			"|(<fieldset>\s*<legend>$i18n.+?</fieldset>)|s",
 			"$1$form",
 			$out->mBodytext
 		);
@@ -223,9 +226,10 @@ class RAIntegratePerson {
 		$form = $this->getForm();
 		$submit = '<input type="submit" name="wpCreateaccount" id="wpCreateaccount" value="Create account" />';
 		$submit .= '<input type="submit" name="wpCreateaccountMail" id="wpCreateaccountMail" value="by e-mail" />';
+		$details = wfMsg( 'raip-login-details' );
 		$out->mBodytext = preg_replace(
 			"|(<table.+?</table>)|s",
-			"<fieldset id='login'><legend>Login details</legend>$1</fieldset>$form$submit",
+			"<fieldset id='login'><legend>$details</legend>$1</fieldset>$form$submit",
 			$out->mBodytext
 		);
 
