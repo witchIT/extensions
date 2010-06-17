@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.8.0, 2010-06-14' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.8.1, 2010-06-17' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -30,6 +30,8 @@ $wgIPExternalContributorField = 'External';
 $wgIPFixUserLinks             = false;
 $wgIPAddPersonalUrls          = true;
 
+$dir = dirname( __FILE__ );
+$wgExtensionMessagesFiles['RecordAdminIntegratePerson'] = "$dir/RecordAdminIntegratePerson.i18n.php";
 $wgExtensionFunctions[] = 'wfSetupRAIntegratePerson';
 $wgHooks['LanguageGetMagic'][] = 'wfRAIntegratePersonLanguageGetMagic';
 $wgExtensionCredits['other'][] = array(
@@ -54,8 +56,6 @@ class RAIntegratePerson {
 
 	function __construct() {
 		global $wgRequest, $wgTitle, $wgHooks, $wgMessageCache, $wgParser, $wgRecordAdmin, $wgIPAddPersonalUrls, $wgIPFixUserLinks;
-
-		wfLoadExtensionMessages ( 'RecordAdminIntegratePerson' );
 
 		if ( $wgIPAddPersonalUrls ) $wgHooks['PersonalUrls'][] = array( $this, 'addPersonalUrls' );
 		if ( $wgIPFixUserLinks )    $wgHooks['BeforePageDisplay'][] = array( $this, 'fixUserLinks');
