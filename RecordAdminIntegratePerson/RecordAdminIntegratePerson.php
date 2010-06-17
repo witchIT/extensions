@@ -418,7 +418,7 @@ class RAIntegratePerson {
 	 */
 	static function recursiveRoleScan( &$roles, &$role ) {
 		static $bail = 200;
-		if ( $bail-- == 0) die( wfMsg( 'raip-recursionerror', 200 );
+		if ( $bail-- == 0) die( wfMsg( 'raip-recursionerror', 200 ) );
 		$tmp = $role;
 		foreach( $role as $r ) $tmp = array_merge( $tmp, self::recursiveRoleScan( $roles, $roles[$r] ) );
 		return $tmp;
@@ -446,7 +446,7 @@ class RAIntegratePerson {
 	 */
 	function recursiveRoleTree( &$text, $depth, $role, $format ) {
 		static $bail = 200;
-		if ( $bail-- == 0) die( wfMsg( 'raip-recursionerror', 200 );
+		if ( $bail-- == 0) die( wfMsg( 'raip-recursionerror', 200 ) );
 		$indent = str_repeat( '*', $depth );
 		$i = in_array( $role, $this->inheritedRoles ) ? "''" : "";
 		if ( in_array( $role, $this->directRoles ) ) $i = "'''";
