@@ -88,7 +88,7 @@ form .editsection { display:none }
 	height: 80px;
 	border-bottom: 2px solid #ccc;
 	text-align: center;
-	vertical-align: center;
+	vertical-align: middle;
 	overflow: hidden;
 	}
 .workflow-state #left,.workflow-state #right {
@@ -313,7 +313,7 @@ a.NavToggle {
         font-size: smaller;
 }
 body div.NavShow {
-        display: normal;
+        display: block;
 }
 /* end of Dynamic Navigation */
 
@@ -756,11 +756,11 @@ table.recordadmin td.long-record-description pre { overflow: hidden; }
 
 .template_maintable td + th, .recordadmin fieldset td + th, fieldset.prefsection fieldset table td + th, table .recordadmin-create table td + th, .date_maintable td + th, #userlogin fieldset td + th { padding-left: 20px; }
 
-.recordadmin-create label, .transaction-record label, .activity-record label, .department-record label, .date-record label, .document-record label, .organisation-record label, .person-record label, .role-record label, .procedure-record label, .project-record label, .task-record label, .prefsection label, #userlogin fieldset label { padding-left:10px }
+.recordadmin-create label, .transaction-record label, .invoice-record label, .activity-record label, .department-record label, .date-record label, .document-record label, .organisation-record label, .person-record label, .role-record label, .procedure-record label, .project-record label, .task-record label, .prefsection label, #userlogin fieldset label { padding-left:10px }
 
 .prefsection .template_maintable label { padding-left: 0 }
 
-.recordadmin-cat th, .recordadmin-create fieldset th, .transaction-record fieldset th, .activity-record fieldset th, .department-record fieldset th, .date-record fieldset th, .document-record fieldset th, .organisation-record fieldset th, .person-record fieldset th, .role-record fieldset th, .procedure-record fieldset th, .project-record fieldset th, .task-record fieldset th, .prefsection fieldset th, #userlogin fieldset th { font-weight:normal; }
+.recordadmin-cat th, .recordadmin-create fieldset th, .transaction-record fieldset th, .invoice-record fieldset th, .activity-record fieldset th, .department-record fieldset th, .date-record fieldset th, .document-record fieldset th, .organisation-record fieldset th, .person-record fieldset th, .role-record fieldset th, .procedure-record fieldset th, .project-record fieldset th, .task-record fieldset th, .prefsection fieldset th, #userlogin fieldset th { font-weight:normal; }
 
 .prefsection fieldset .template_maintable th { font-weight: bold; }
 
@@ -866,7 +866,7 @@ input.vanadium-valid ~ .vanadium-valid-advice {
 }
 
 /*Date Record Styles*/
-th.cal_timeslot {vertical-align:top; font-weight:120; width:100px; padding-left:5px; border: 1px solid #bbbbbb}
+th.cal_timeslot {vertical-align:top; font-weight:bold; width:100px; padding-left:5px; border: 1px solid #bbbbbb}
 .cal_cell_person_week .NavContent {width:200px;}
 .cal_cell_person_hour {width:100%; vertical-align:top; display:inline; float:left; border-bottom: 1px solid #bbbbbb}
 .cal_cell_person_hour p {margin-top:0; padding-left:5px;}
