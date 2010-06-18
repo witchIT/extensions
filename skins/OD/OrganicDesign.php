@@ -146,7 +146,7 @@ if ($wgUser->isLoggedIn()) {
 <?php
 # MediaWiki:Sidebar
 global $wgUser,$wgTitle,$wgParser;
-$title = 'sidebar';
+$title = 'od-sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
 if ( empty( $text ) ) $text = wfMsg( $title );
