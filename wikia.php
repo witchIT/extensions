@@ -30,7 +30,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.0.11, 2010-03-25');
+define( 'WIKIA_VERSION', '1.1.0, 2010-06-19');
 define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
@@ -116,8 +116,10 @@ $extensions               = dirname( __FILE__ );
 
 # Check if the request is from command line for running maintenance scripts
 if ( $wgCommandLineMode ) {
-	$admin = file_get_contents( "$IP/AdminSettings.php" );
-	if ( preg_match( '/^\\s*\\$domain\\s*=\\s*[\'"](.+?)["\'];/m', $admin, $m ) ) $domain = $m[1];
+	if ( file_exists( "$IP/AdminSettings.php" ) ) {
+		$admin = file_get_contents( "$IP/AdminSettings.php" );
+		if ( preg_match( '/^\\s*\\$domain\\s*=\\s*[\'"](.+?)["\'];/m', $admin, $m ) ) $domain = $m[1];
+	}
 	$root = "$domains/$domain";
 }
 else {
