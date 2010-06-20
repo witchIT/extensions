@@ -479,7 +479,7 @@ function wfRAIntegratePersonLanguageGetMagic( &$langMagic, $langCode = 0 ) {
  * Handle Category:Articles readbale by *
  * - if an article is a member of such a category, then it should be readable by only the designated people
  */
-function wfContributorPermissions( &$user, &$rights ) {
+function wfContributorPermissions( $user, &$rights ) {
 	global $wgTitle, $wgWhitelistRead, $wgGroupPermissions;
 	if ( $user->isAnon() || in_array( 'sysop', $user->getGroups() ) ) return true;
 	$dbr   = &wfGetDB( DB_SLAVE );
