@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '1.0.2, 2010-06-20' );
+define( 'JAVASCRIPT_VERSION', '2.0.2, 2010-06-20' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "JavaScript",
