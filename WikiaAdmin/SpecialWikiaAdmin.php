@@ -1,4 +1,5 @@
 <?php
+if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
 /**
  * Extension:WikiaInfo
  * 
@@ -7,16 +8,20 @@
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
  * @copyright © 2007 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
+ * 
+ * Version 2.0 started on 2010-06-24
  */
+define( 'WIKIAADMIN_VERSION', '2.0.0, 2010-06-24' );
 
-if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
-
-define( 'WIKIAADMIN_VERSION', '1.1.0, 2009-02-22' );
-
+# The domain names available for wikia use
 $wgWikiaAdminDomains = array();
 
-$wgExtensionFunctions[] = 'wfSetupWikiaAdmin';
+# The domain of the master wiki
+$wgWikiaAdminMaster  = '';
 
+$dir = dirname( __FILE__ ) . '/';
+$wgExtensionMessagesFiles['WikiaAdmin'] = $dir . 'WikiaAdmin.i18n.php';
+$wgExtensionFunctions[] = 'wfSetupWikiaAdmin';
 $wgExtensionCredits['specialpage'][] = array(
 	'name'        => 'Special:WikiaAdmin',
 	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
@@ -139,21 +144,20 @@ class SpecialWikiaAdmin extends SpecialPage {
 		$mw = "/var/www/mediawiki-{$this->codebase}";
 
 		# Validation (should use friendly JS instead)
-		if ( empty( $this->pass ) )                           return $this->error = 'Please fill in the password fields!';
-		if ( $this->pass !== $this->pass2 )                   return $this->error = 'The password fields do not match!';
-		if ( empty( $this->newid ) && empty( $this->curid ) ) return $this->error = 'No ID specified!';
-		if ( ereg( '[^a-zA-Z0-9_]', $this->newid ) )          return $this->error = 'Invalid wiki ID!';
-		if ( is_dir( $dir ) )                                 return $this->error = 'A wiki with that ID already exists!';
-		if ( empty( $this->domains ) )                        return $this->error = 'No domain specified!';
-		if ( empty( $this->sitename ) )                       return $this->error = 'No site name specified!';
-		if ( empty( $this->pass ) )                           return $this->error = 'Please fill in the password fields!';
-		if ( empty( $this->user ) || ereg( '[^a-zA-Z0-9_]', $this->user ) ) return $this->error = 'Invalid user name!';
+		if ( empty( $this->pass ) )                           return $this->error = wfMsg( 'wa_pwd_missing' );
+		if ( $this->pass !== $this->pass2 )                   return $this->error = wfMsg( 'wa_pwd_mismatch' );
+		if ( empty( $this->newid ) && empty( $this->curid ) ) return $this->error = wfMsg( 'wa_id_missing' );
+		if ( ereg( '[^a-zA-Z0-9_]', $this->newid ) )          return $this->error = wfMsg( 'wa_id_invalid' );
+		if ( is_dir( $dir ) )                                 return $this->error = wfMsg( 'wa_id_exists' );
+		if ( empty( $this->domains ) )                        return $this->error = wfMsg( 'wa_domain_missing' );
+		if ( empty( $this->sitename ) )                       return $this->error = wfMsg( 'wa_name_missing' );
+		if ( empty( $this->user ) || preg_match( "|[^a-z0-9_]|i", $this->user ) ) return $this->error = wfMsg( 'wa_user_invalid' );
 
 		if ( !empty( $this->newid ) ) {
 			$id = $this->newid;
 
 			# Create the wiki dir, codebase symlink and domain symlinks
-			if ( !is_dir( $mw ) ) return $this->error = "MediaWiki codebase '$mw' not found!";
+			if ( !is_dir( $mw ) ) return $this->error = wfMsg( 'wa_codebase-notfound', $mw );
 			shell_exec( "mkdir $dir" );
 			shell_exec( "mkdir -m 777 $dir/files" );
 			shell_exec( "ln -s $mw $dir/wiki" );
@@ -183,11 +187,10 @@ class SpecialWikiaAdmin extends SpecialPage {
 }
 
 /*
- * Called from $wgExtensionFunctions array when initialising extensions
+ * Initialise the new special page if this is the master domain
  */
 function wfSetupWikiaAdmin() {
-	global $wgLanguageCode, $wgMessageCache;
-	$wgMessageCache->addMessages( array( 'wikiaadmin' => 'Wikia Administration' ) );
-	SpecialPage::addPage( new SpecialWikiaAdmin() );
+	global $wgLanguageCode, $wgMessageCache, $wgWikiaAdminMaster;
+	if ( $wgWikiaAdminMaster === $_SERVER['HTTP_HOST'] ) SpecialPage::addPage( new SpecialWikiaAdmin() );
 }
 
