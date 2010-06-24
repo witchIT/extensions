@@ -84,11 +84,11 @@ class SpecialWikiaAdmin extends SpecialPage {
 		$wgOut->AddHtml( "<table cellpadding=\"4\" cellspacing=\"0\">" );
 
 		# ID for a new wiki
-		$wgOut->AddHtml( "<tr><td>Enter ID for new wiki:</td> " );
-		$wgOut->AddHtml( "<td><input name=\"wpNewid\" value=\"{$this->newid}\" /></td><td><i>(lowercase a-z, used for FS location and for DB prefix)</i></td></tr>" );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_id_new' ) . ":</td> " );
+		$wgOut->AddHtml( "<td><input name=\"wpNewid\" value=\"{$this->newid}\" /></td><td><i>(" . wfMsg( 'wa_id_desc' ) . ")</i></td></tr>" );
 
 		# or an ID of an existing one to modify
-		$wgOut->AddHtml( "<tr><td>Or modify an existing wiki:</td> " );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_modexisting' ) . ":</td> " );
 		$options = "<option />";
 		foreach ( glob( '/var/www/wikis/*' ) as $wiki ) {
 			if ( ereg( '([^/]+)$', $wiki, $m ) ) {
@@ -101,16 +101,16 @@ class SpecialWikiaAdmin extends SpecialPage {
 		$wgOut->AddHtml( "<tr><td colspan=\"3\"><hr /></td></tr>" );
 
 		# Site name
-		$wgOut->AddHtml( "<tr><td>Full site name:</td> " );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_sitename' ) . ":</td> " );
 		$wgOut->AddHtml( "<td><input name=\"wpSitename\" value=\"{$this->sitename}\" /></td></tr>" );
 
 		# Domain selection
-		$wgOut->AddHtml( "<tr><td valign=\"top\">Domains:</td>" );
+		$wgOut->AddHtml( "<tr><td valign=\"top\">" . wfMsg( 'wa_domains' ) . ":</td>" );
 		$wgOut->AddHtml( "<td><textarea name=\"wpDomains\">{$this->domains}</textarea></td>" );
-		$wgOut->AddHtml( "<td valign=\"top\"><i>(naked domains automatically<br />work for www and wiki as well)</i></td></tr>" );
+		$wgOut->AddHtml( "<td valign=\"top\"><i>(" . wfMsg( 'wa_domain_naked' ) . ")</i></td></tr>" );
 
 		# Codebase selection
-		$wgOut->AddHtml( "<tr><td>MediaWiki version:</td> " );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_codebase' ) . ":</td> " );
 		$options = "";
 		foreach ( glob( '/var/www/empty*.sql' ) as $cb ) {
 			if ( ereg( '([0-9.]+).*\.sql', $cb, $m ) ) {
@@ -123,15 +123,15 @@ class SpecialWikiaAdmin extends SpecialPage {
 		$wgOut->AddHtml( "<tr><td colspan=\"3\"><hr /></td></tr>" );
 
 		# Sysop details
-		$wgOut->AddHtml( "<tr><td>Sysop user:</td> " );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_user' ) . ":</td> " );
 		$wgOut->AddHtml( "<td><input name=\"wpUser\" value=\"{$this->user}\" /></td></tr>" );
-		$wgOut->AddHtml( "<tr><td>Sysop password:</td> " );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_pwd' ) . ":</td> " );
 		$wgOut->AddHtml( "<td><input type=\"password\" name=\"wpPass\" /></td></tr>" );
-		$wgOut->AddHtml( "<tr><td>Confirm password:</td> " );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_pwd_confirm' ) . ":</td> " );
 		$wgOut->AddHtml( "<td><input type=\"password\" name=\"wpPass2\" /></td></tr>" );
 
 		$wgOut->AddHtml( "<tr><td colspan=\"3\"><hr /></td></tr>" );
-		$wgOut->AddHtml( "<tr><td /><td align=\"right\"><input type=\"submit\" name=\"wpSubmit\" value=\"Submit\" /></td></tr>" );
+		$wgOut->AddHtml( "<tr><td /><td align=\"right\"><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa_submit' ) . "\" /></td></tr>" );
 
 		$wgOut->AddHtml( "</table></form>" );
 	}
@@ -150,7 +150,7 @@ class SpecialWikiaAdmin extends SpecialPage {
 		if ( ereg( '[^a-zA-Z0-9_]', $this->newid ) )          return $this->error = wfMsg( 'wa_id_invalid' );
 		if ( is_dir( $dir ) )                                 return $this->error = wfMsg( 'wa_id_exists' );
 		if ( empty( $this->domains ) )                        return $this->error = wfMsg( 'wa_domain_missing' );
-		if ( empty( $this->sitename ) )                       return $this->error = wfMsg( 'wa_name_missing' );
+		if ( empty( $this->sitename ) )                       return $this->error = wfMsg( 'wa_sitename_missing' );
 		if ( empty( $this->user ) || preg_match( "|[^a-z0-9_]|i", $this->user ) ) return $this->error = wfMsg( 'wa_user_invalid' );
 
 		if ( !empty( $this->newid ) ) {
@@ -173,7 +173,7 @@ class SpecialWikiaAdmin extends SpecialPage {
 			# Add the database template to the "wikia" DB
 			$cmd = "/var/www/tools/add-db --sysop={$this->user}:{$this->pass} /var/www/empty-{$this->codebase}.sql wikia.{$id}_";
 			$result = shell_exec( "$cmd 2>&1" );
-			if ( ereg( 'successfully', $result ) ) $this->result = "Wiki \"{$this->sitename}\" ($id) created successfully!";
+			if ( ereg( 'successfully', $result ) ) $this->result = wfMsg( 'wa_success', $this->sitename, $id );
 			else return $this->error = $result;
 
 			# Add a wiki organisation
