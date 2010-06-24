@@ -12,7 +12,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'ACCORDIAN_VERSION', '1.0.1, 2010-03-11' );
+define( 'ACCORDIAN_VERSION', '1.0.2, 2010-06-24' );
 
 $egAccordianMagic              = "accordian";
 $wgExtensionFunctions[]        = 'efSetupAccordian';
@@ -48,11 +48,13 @@ class Accordian {
 	 * Expand the accordian-magic
 	 */
 	function magicAccordian( &$parser, $tree ) {
+		static $id = 0;
+		$id++;
 		$p = clone $parser;
 		$o = clone $parser->mOptions;
 		$o->mTidy = $o->mEnableLimitReport = false;
 		$html = $p->parse( $tree, $parser->mTitle, $o, true, true )->getText();
-		$html = preg_replace( '|<ul>|', '<ul id="menu">', $html, 1 );
+		$html = preg_replace( '|<ul>|', "<ul id=\"menu$id\" class=\"menu\">", $html, 1 );
 		return array( $html, 'isHTML' => true );
 	}
 
