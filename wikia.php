@@ -25,12 +25,12 @@ ini_set( 'memory_limit', '64M' );
 # Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
 foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
-	if ( preg_match( '|^\s*\$addr\s*=\s*[\'"](.+?)["\']|m', $line, $m ) ) $wgWikidAddr = $m[1];
-	if ( preg_match( '|^\s*\$(wgDB.+?)\s*=\s*[\'"](.+?)["\']|m', $line, $m ) ) $$m[1] = $m[2];
+	if ( preg_match( "|^\s*\$addr\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $wgWikidAddr = $m[1];
+	if ( preg_match( "|^\s*\$(wgDB.+?)\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $$m[1] = $m[2];
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.1.0, 2010-06-19');
+define( 'WIKIA_VERSION', '1.1.1, 2010-06-25');
 define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
@@ -118,12 +118,12 @@ $extensions               = dirname( __FILE__ );
 if ( $wgCommandLineMode ) {
 	if ( file_exists( "$IP/AdminSettings.php" ) ) {
 		$admin = file_get_contents( "$IP/AdminSettings.php" );
-		if ( preg_match( '/^\\s*\\$domain\\s*=\\s*[\'"](.+?)["\'];/m', $admin, $m ) ) $domain = $m[1];
+		if ( preg_match( "/^\s*\$domain\s*=\s*['\"](.+?)[\"'];/m", $admin, $m ) ) $domain = $m[1];
 	}
 	$root = "$domains/$domain";
 }
 else {
-	$domain = ereg_replace( '^(www\\.|wiki\\.)', '', $_SERVER['SERVER_NAME'] );
+	$domain = preg_replace( "/^(www\.|wiki\.)/", "", $_SERVER['SERVER_NAME'] );
 	$root   = $_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'] . "/$domain";
 	$domain = $_SERVER['SERVER_NAME'];
 }
@@ -174,17 +174,17 @@ function odAddWikiaCss( &$out, $skin = false ) {
 }
 
 # Include a special page for listing current wikia and their domains
-if ( ereg( 'organicdesign.co.nz', $domain ) ) include( 'extensions/WikiaInfo/WikiaInfo.php' );
+if ( preg_match( "|organicdesign.co.nz|", $domain ) ) include( 'extensions/WikiaInfo/WikiaInfo.php' );
 
 # Map naked URL to different articles depending on domain
 function domainRedirect( $list ) {
 	if ( basename( $_SERVER['SCRIPT_FILENAME'] ) !== 'index.php' ) return;
 	$d = $_SERVER['SERVER_NAME'];
 	$t = $_REQUEST['title'];
-	if ( empty( $t ) ) $t = ereg_replace( '^/', '', isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '' );
+	if ( empty( $t ) ) $t = preg_replace( "|^/|", "", isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '' );
 	if ( empty( $t ) || $t == 'Main_Page' )
 		foreach ( $list as $regexp => $title )
-			if ( ereg( $regexp, $d ) ) header( "Location: $wgServer/$title" ) && die;
+			if ( preg_match( "|$regexp|", $d ) ) header( "Location: $wgServer/$title" ) && die;
 }
 
 # Automatically log the server user in
@@ -204,7 +204,7 @@ $wgExtensionFunctions[] = 'odLogActivity';
 function odLogActivity() {
 	global $wgUser, $wgShortName, $wgRequest;
 	$user = $wgUser->getUserPage()->getText();
-	$sesh = ereg( '_session=([0-9a-z]+)', isset( $_SERVER['HTTP_COOKIE'] ) ? $_SERVER['HTTP_COOKIE'] : '', $m ) ? $m[1] : '';
+	$sesh = preg_match( "|_session=([0-9a-z]+)|", isset( $_SERVER['HTTP_COOKIE'] ) ? $_SERVER['HTTP_COOKIE'] : '', $m ) ? $m[1] : '';
 	if ( $sesh ) $user .= ":$sesh";
 	if ( !$wgUser->isAnon() ) $user .= ':' . $_SERVER['REMOTE_ADDR'];
 	$url = $_SERVER['REQUEST_URI'];
@@ -225,7 +225,7 @@ function odLogActivity() {
 		'148.243.232.98', # Bot attempting shell hacks
 	);
 	
-	foreach( $list as $i ) if ( $block == '' and ereg( $i, $user ) ) $block .= '(ip-block)';
+	foreach( $list as $i ) if ( $block == '' and preg_match( "|$i|", $user ) ) $block .= '(ip-block)';
 
 	# Session-based blocks
 	if (
@@ -234,7 +234,7 @@ function odLogActivity() {
 	) $block .= '(sesh-block)';
 
 	# Silently block requests
-	if ( eregi( '(favicon|robots.txt|action=rawxxx)', $url ) ) return;
+	if ( preg_match( "/(favicon|robots.txt|action=rawxxx)/i", $url ) ) return;
 
 	# Write log entry
 	$handle = fopen( "/var/www/activity.log", "a" );
