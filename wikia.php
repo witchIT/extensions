@@ -25,8 +25,8 @@ ini_set( 'memory_limit', '64M' );
 # Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
 foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
-	if ( preg_match( "|^\s*\$addr\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $wgWikidAddr = $m[1];
-	if ( preg_match( "|^\s*\$(wgDB.+?)\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $$m[1] = $m[2];
+	if ( preg_match( "|^\s*\\$addr\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $wgWikidAddr = $m[1];
+	if ( preg_match( "|^\s*\\$(wgDB.+?)\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $$m[1] = $m[2];
 }
 
 # Constants
