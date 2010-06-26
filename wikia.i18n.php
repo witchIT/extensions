@@ -13,7 +13,7 @@ $messages = array();
  * @author Nad
  */
 $messages['en'] = array(
-	'specialpages-group-od' => "Organic Design special pages",
+	'specialpages-group-od' => "OrganicDesign admin pages",
 	'od-nospec' => "There is no specification yet, you can create one after submitting this form",
 	'od-nospec-form' => "There is no specification yet, you can create one after submitting this form. <br />This should lead to a complete set of Milestone Tasks.",
 	'od-nospec-template' => "By clicking on the Specifications link below you can create a complete set of Milestone Tasks and their Due Dates",
