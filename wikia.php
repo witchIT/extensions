@@ -1,4 +1,5 @@
 <?php
+if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 /*
  * Copyright (C) 2007-2010 Aran Dunkley and others
  *
@@ -18,8 +19,6 @@
  * http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Read the DB access and bot name info from wikid.conf
@@ -30,7 +29,7 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.2.0, 2010-06-26');
+define( 'WIKIA_VERSION', '1.2.1, 2010-06-26');
 define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
@@ -125,6 +124,11 @@ function wfGoogleAnalytics() {
 # Include the LocalSettings file for the domain
 $wgUploadDirectory = "$root$wgUploadPath";
 include( "$root/LocalSettings.php" );
+
+# Add our specials to the OD group
+$wgSpecialPageGroups['RecordAdmin'] = 'od';
+$wgSpecialPageGroups['EmailPage'] = 'od';
+$wgSpecialPageGroups['NukeDPL'] = 'od';
 
 # Display a maintenance page if $wgSiteDown set (unless request is from command line)
 if ( $wgSiteDown && !$wgCommandLineMode ) {
