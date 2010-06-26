@@ -11,11 +11,13 @@
 if ( !defined('MEDIAWIKI' ) )          die( 'Not an entry point.' );
 if ( !defined( 'EVENTPIPE_VERSION' ) ) die( 'The WikidAdmin special page extension depends on the EventPipe extension' );
 
-define( 'WIKIDADMIN_VERSION', '1.2.0, 2010-06-09' );
+define( 'WIKIDADMIN_VERSION', '1.2.1, 2010-06-26' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWorkHistory';
+$wgSpecialPages['WikidAdmin'] = 'SpecialWikidAdmin';
+$wgSpecialPageGroups['WikidAdmin'] = 'od';
 $wgExtensionCredits['specialpage'][] = array(
 	'name'        => 'Special:WikidAdmin',
 	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
