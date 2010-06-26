@@ -214,5 +214,5 @@ $messages['en'] = array(
 **[{{fullurl:Special:Allpages|namespace=8}} Custom messages]
 **[{{fullurl:MediaWiki:Sidebar|action=edit}} Edit Sidebar]
 }}}}",
-	'footer' => "[[OD:Wiki organisation|About Wiki Organisation]]'
+	'footer' => "[[OD:Wiki organisation|About Wiki Organisation]]",
 );
