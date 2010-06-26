@@ -30,40 +30,21 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 }
 
 # Constants
-define( 'WIKIA_VERSION', '1.1.1, 2010-06-25');
+define( 'WIKIA_VERSION', '1.2.0, 2010-06-26');
 define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
-define( 'NS_QUERY',          1006 );
-define( 'NS_WORKFLOW',       1008 );
-define( 'NS_PORTAL',         1010 );
 define( 'NS_CREATE',         1014 );
-define( 'NS_SYSOP',          1016 );
-define( 'NS_MEMBER',         1018 );
-define( 'NS_RECORD',         1020 );
-define( 'NS_REPORT',         1022 );
 
 # Namespaces
+$wgExtraNamespaces[NS_FORM]        = 'Form';
+$wgExtraNamespaces[NS_FORM+1]      = 'Form_talk';
 $wgExtraNamespaces[NS_EXTENSION]   = 'Extension';
 $wgExtraNamespaces[NS_EXTENSION+1] = 'Extension_talk';
 $wgExtraNamespaces[NS_CONFIG]      = 'Config';
 $wgExtraNamespaces[NS_CONFIG+1]    = 'Config_talk';
-$wgExtraNamespaces[NS_QUERY]       = 'Query';
-$wgExtraNamespaces[NS_QUERY+1]     = 'Query_talk';
-$wgExtraNamespaces[NS_WORKFLOW]    = 'Workflow';
-$wgExtraNamespaces[NS_WORKFLOW+1]  = 'Workflow_talk';
-$wgExtraNamespaces[NS_PORTAL]      = 'Portal';
-$wgExtraNamespaces[NS_PORTAL+1]    = 'Portal_talk';
 $wgExtraNamespaces[NS_CREATE]      = 'Create';
 $wgExtraNamespaces[NS_CREATE+1]    = 'Create_talk';
-$wgExtraNamespaces[NS_SYSOP]       = 'Admin';
-$wgExtraNamespaces[NS_SYSOP+1]     = 'Admin_talk';
-$wgExtraNamespaces[NS_MEMBER]      = 'Member';
-$wgExtraNamespaces[NS_MEMBER+1]    = 'Member_talk';
-$wgExtraNamespaces[NS_RECORD]      = 'Record';
-$wgExtraNamespaces[NS_RECORD+1]    = 'Record_talk';
-$wgExtraNamespaces[NS_FORM]        = 'Form';
-$wgExtraNamespaces[NS_FORM+1]      = 'Form_talk';
 
 # Default globals defined before specific LocalSettings inclusion
 $wgArticlePath            = '/$1';
