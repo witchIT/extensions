@@ -16,13 +16,13 @@ define( 'WIKIDADMIN_VERSION', '1.2.1, 2010-06-26' );
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWorkHistory';
-$wgSpecialPages['WikidAdmin'] = 'SpecialWikidAdmin';
+$wgSpecialPages['WikidAdmin'] = 'WikidAdmin';
 $wgSpecialPageGroups['WikidAdmin'] = 'od';
 $wgExtensionCredits['specialpage'][] = array(
-	'name'        => 'Special:WikidAdmin',
-	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
-	'description' => 'Administer the local wiki daemon and its work',
-	'url'         => 'http://www.organicdesign.co.nz/Extension:WikidAdmin',
+	'name'        => "Special:WikidAdmin",
+	'author'      => "[http://www.organicdesign.co.nz/nad User:Nad]",
+	'description' => "Administer the local wiki daemon and its work",
+	'url'         => "http://www.organicdesign.co.nz/Extension:WikidAdmin",
 	'version'     => WIKIDADMIN_VERSION
 );
 

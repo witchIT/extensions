@@ -6,12 +6,12 @@ if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @package MediaWiki
  * @subpackage Extensions
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
- * @copyright © 2007 Aran Dunkley
+ * @copyright © 2007-2010 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', '2.0.0, 2010-06-24' );
+define( 'WIKIAADMIN_VERSION', '2.0.1, 2010-06-26' );
 
 # The domain names available for wikia use
 $wgWikiaAdminDomains = array();
@@ -22,11 +22,13 @@ $wgWikiaAdminMaster  = '';
 $dir = dirname( __FILE__ ) . '/';
 $wgExtensionMessagesFiles['WikiaAdmin'] = $dir . 'WikiaAdmin.i18n.php';
 $wgExtensionFunctions[] = 'wfSetupWikiaAdmin';
+$wgSpecialPages['WikiaAdmin'] = 'WikiaAdmin';
+$wgSpecialPageGroups['WikiaAdmin'] = 'od';
 $wgExtensionCredits['specialpage'][] = array(
-	'name'        => 'Special:WikiaAdmin',
-	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
-	'description' => 'Manage the wikis in this wikia',
-	'url'         => 'http://www.organicdesign.co.nz/Extension:WikiaAdmin.php',
+	'name'        => "WikiaAdmin",
+	'author'      => "[http://www.organicdesign.co.nz/nad User:Nad]",
+	'description' => "Manage the wikis in this wikia",
+	'url'         => "http://www.organicdesign.co.nz/Extension:WikiaAdmin.php",
 	'version'     => WIKIAADMIN_VERSION
 );
 

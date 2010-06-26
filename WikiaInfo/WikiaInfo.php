@@ -1,28 +1,26 @@
 <?php
+if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 /**
- * Extension:WikiaInfo
- * {{Category:Extensions}}{{php}}{{Category:Extensions created with Template:SpecialPage}}
+ * WikiaInfo extension - List the currently running wikia and the domains pointing to them
  * 
  * @package MediaWiki
  * @subpackage Extensions
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
- * @copyright © 2007 Aran Dunkley
+ * @copyright © 2007-2010 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
-
-if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
-
-define( 'WIKIAINFO_VERSION', '1.0.8, 2009-03-23' );
+define( 'WIKIAINFO_VERSION', '1.0.9, 2010-06-26' );
 
 $egWikiaInfoDataDir = '/var/lib/mysql';
 
 $wgExtensionFunctions[] = 'wfSetupWikiaInfo';
-
+$wgSpecialPages['WikiaInfo'] = 'WikiaInfo';
+$wgSpecialPageGroups['WikiaInfo'] = 'od';
 $wgExtensionCredits['specialpage'][] = array(
-	'name'        => 'Special:WikiaInfo',
-	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
-	'description' => 'List the currently running wikia and the domains pointing to them',
-	'url'         => 'http://www.organicdesign.co.nz/Extension:WikiaInfo.php',
+	'name'        => "WikiaInfo",
+	'author'      => "[http://www.organicdesign.co.nz/nad User:Nad]",
+	'description' => "List the currently running wikia and the domains pointing to them",
+	'url'         => "http://www.organicdesign.co.nz/Extension:WikiaInfo.php",
 	'version'     => WIKIAINFO_VERSION
 );
 
