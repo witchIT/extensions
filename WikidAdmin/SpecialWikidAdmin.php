@@ -269,7 +269,7 @@ function wfWikidAdminRenderWorkHistory() {
  */
 function wfSetupWikidAdmin() {
 	global $wgLanguageCode, $wgMessageCache;
-	$wgMessageCache->addMessages( array( 'wikidadmin' => 'Wiki Daemon Administration' ) );
+	$wgMessageCache->addMessages( array( 'wikidadmin' => 'Robot administration' ) );
 	SpecialPage::addPage( new SpecialWikidAdmin() );
 }
 
