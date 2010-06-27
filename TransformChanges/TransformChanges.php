@@ -1,4 +1,5 @@
 <?php
+if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 /**
  * TransformChanges extension - Makes recent-changes and watchlists render in nice columns for easier reading
  *
@@ -7,13 +8,11 @@
  * @package MediaWiki
  * @subpackage Extensions
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
- * @copyright © 2007 Aran Dunkley
+ * @copyright © 2007-2010 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
 
-if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-
-define( 'TRANSFORMCHANGES_VERSION', '1.1.7, 2009-09-05' );
+define( 'TRANSFORMCHANGES_VERSION', '2.0.1, 2010-06-27' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "TransformChanges",
@@ -30,36 +29,14 @@ function wfSetupTransformChanges() {
 	$wgUser->setOption( 'usenewrc', false );
 }
 
-# A hack for 1.12+ to ensure the SpecialPageExecuteAfterPage hook gets called
-$wgHooks['ChangesListInsertArticleLink'][] = 'wfRunSpecialPageExecuteAfterPageHook';
-function wfRunSpecialPageExecuteAfterPageHook() {
-
-	# Bail if already done
-	static $done = 0;
-	if ( $done++ ) return true;
-
-	# Create a replica of the OutputPage class which calls the SpecialPageExecuteAfterPage after recentchanges rendered
-	class OutputPage2 extends OutputPage {
-		function addHTML( $text ) {
-			parent::addHTML( $text );
-			if ( ereg( '^<h4>', $text ) ) wfRunHooks( 'SpecialPageExecuteAfterPage', array() );
-		}
-	}
- 
-	# Replace the global $wgOut object with an identical instance of the new OutputPage2 class
-	global $wgOut;
-	$oldOut = $wgOut;
-	$wgOut = new OutputPage2();
-	foreach ( array_keys( get_class_vars( 'OutputPage' ) ) as $k ) $wgOut->$k = $oldOut->$k;
-
-	return true;
-}
-
-$wgHooks['SpecialPageExecuteAfterPage'][] = 'wfTransformChanges';
+$wgHooks['SkinAfterContent'][] = 'wfTransformChanges';
 function wfTransformChanges() {
 	global $wgOut;
-	$title = $wgOut->getPageTitle();
-	if ( $title != wfMsgForContent( 'recentchanges' ) && $title != wfMsgForContent( 'watchlist' ) ) return true;
+
+	# Bail if not recentchanges or watchlist
+	if ( strpos( $wgOut->getHTMLTitle(), wfMsg('recentchanges') ) !== 0
+		&& strpos( $wgOut->getHTMLTitle(), wfMsg('watchlist') ) !== 0 ) return true;
+
 	$text =& $wgOut->mBodytext;
 	$text = preg_replace( '|<li[^>]+>|s', '<li>', $text );
 	$text = preg_replace( '|(</ul>\\s*)?<h4>(.+?)</h4>\\s*(<ul class="special">)<li>|s', '$3<li $2>', $text );
