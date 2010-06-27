@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.8.2, 2010-06-17' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.8.3, 2010-06-27' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -149,10 +149,14 @@ class RAIntegratePerson {
 		$sig = wfMsg( 'prefs-signature' );
 		$eopt = wfMsg( 'prefs-email' );
 		$out->addScript( "<script type='$wgJsMimeType'>
+
+			// Create the RealName pref input from the firstname and surname inputs
 			function ipSubmit() {
-				document.getElementById('mw-input-realname').value = document.getElementById('FirstName').value + ' ' + document.getElementById('Surname').value
-				document.getElementById('mw-input-emailaddress').value = document.getElementById('Email').value
+				document.getElementById('mw-input-realname').value = document.getElementById('first-name').value + ' ' + document.getElementById('surname').value
+				document.getElementById('mw-input-emailaddress').value = document.getElementById('email').value
 			}
+
+			// Hide some options and set defaults
 			function ipOnload() {
 
 				// Hide some fieldsets
@@ -201,13 +205,15 @@ class RAIntegratePerson {
 		
 		# Add JS
 		$out->addScript( "<script type='$wgJsMimeType'>
+
+			// Create the RealName pref input from the firstname and surname inputs
 			function ipSubmit() {
-				document.getElementById('wpRealName').value = document.getElementById('FirstName').value + ' ' + document.getElementById('Surname').value
-				document.getElementById('wpEmail').value = document.getElementById('Email').value
+				document.getElementById('wpRealName').value = document.getElementById('first-name').value + ' ' + document.getElementById('surname').value
+				document.getElementById('wpEmail').value = document.getElementById('email').value
 			}
-			function ipOnload() {
-				
-				// Hide email, realname and standard create-account button
+
+			// Hide email, realname and standard create-account button
+			function ipOnload() {				
 				$('#wpEmail').parent().parent().hide();
 				$('#wpRealName').parent().parent().hide();
 				$('td.mw-submit').parent().hide();
