@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '2.1.0, 2010-06-26' );
+define( 'JAVASCRIPT_VERSION', '2.1.1, 2010-06-27' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "JavaScript",
@@ -26,6 +26,7 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
 	foreach ( glob( dirname( __FILE__ ) . "/*.js" ) as $file ) {
 		if ( is_callable( array( $out, 'includeJQuery' ) ) && strpos( $file, '/jquery-' ) > 0 ) {
 			$out->includeJQuery();
+			$out->addScript( "<script type='$wgJsMimeType'>$=jQuery</script>" );
 		} else {
 			$file = preg_replace( "|^.*/extensions/|", "$wgScriptPath/extensions/", $file );
 			$out->addScript( "<script src='$file' type='$wgJsMimeType'></script>" );
