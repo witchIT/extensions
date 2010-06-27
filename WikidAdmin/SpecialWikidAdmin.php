@@ -11,7 +11,7 @@
 if ( !defined('MEDIAWIKI' ) )          die( 'Not an entry point.' );
 if ( !defined( 'EVENTPIPE_VERSION' ) ) die( 'The WikidAdmin special page extension depends on the EventPipe extension' );
 
-define( 'WIKIDADMIN_VERSION', '1.2.1, 2010-06-26' );
+define( 'WIKIDADMIN_VERSION', '1.2.2, 2010-06-27' );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -31,9 +31,9 @@ require_once( "$IP/includes/SpecialPage.php" );
 /**
  * Define a new class based on the SpecialPage class
  */
-class SpecialWikidAdmin extends SpecialPage {
+class WikidAdmin extends SpecialPage {
 
-	function SpecialWikidAdmin() {
+	function WikidAdmin() {
 		SpecialPage::SpecialPage( 'WikidAdmin', 'sysop', true, false, false, false );
 	}
 
@@ -270,6 +270,6 @@ function wfWikidAdminRenderWorkHistory() {
 function wfSetupWikidAdmin() {
 	global $wgLanguageCode, $wgMessageCache;
 	$wgMessageCache->addMessages( array( 'wikidadmin' => 'Robot administration' ) );
-	SpecialPage::addPage( new SpecialWikidAdmin() );
+	SpecialPage::addPage( new WikidAdmin() );
 }
 

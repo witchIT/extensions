@@ -11,7 +11,7 @@ if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', '2.0.1, 2010-06-26' );
+define( 'WIKIAADMIN_VERSION', '2.0.3, 2010-06-27' );
 
 # The domain names available for wikia use
 $wgWikiaAdminDomains = array();
@@ -19,8 +19,7 @@ $wgWikiaAdminDomains = array();
 # The domain of the master wiki
 $wgWikiaAdminMaster  = '';
 
-$dir = dirname( __FILE__ ) . '/';
-$wgExtensionMessagesFiles['WikiaAdmin'] = $dir . 'WikiaAdmin.i18n.php';
+$wgExtensionMessagesFiles['WikiaAdmin'] = dirname( __FILE__ ) . '/WikiaAdmin.i18n.php';
 $wgExtensionFunctions[] = 'wfSetupWikiaAdmin';
 $wgSpecialPages['WikiaAdmin'] = 'WikiaAdmin';
 $wgSpecialPageGroups['WikiaAdmin'] = 'od';
@@ -37,12 +36,12 @@ require_once( "$IP/includes/SpecialPage.php" );
 /**
  * Define a new class based on the SpecialPage class
  */
-class SpecialWikiaAdmin extends SpecialPage {
+class WikiaAdmin extends SpecialPage {
 
 	var $error = '';
 	var $result = '';
 
-	function SpecialWikiaAdmin() {
+	function WikiaAdmin() {
 		SpecialPage::SpecialPage( 'WikiaAdmin', 'sysop', true, false, false, false );
 	}
 
@@ -192,7 +191,7 @@ class SpecialWikiaAdmin extends SpecialPage {
  * Initialise the new special page if this is the master domain
  */
 function wfSetupWikiaAdmin() {
-	global $wgLanguageCode, $wgMessageCache, $wgWikiaAdminMaster;
-	if ( $wgWikiaAdminMaster === $_SERVER['HTTP_HOST'] ) SpecialPage::addPage( new SpecialWikiaAdmin() );
+	global $wgWikiaAdminMaster;
+	if ( $wgWikiaAdminMaster === $_SERVER['HTTP_HOST'] ) SpecialPage::addPage( new WikiaAdmin() );
 }
 
