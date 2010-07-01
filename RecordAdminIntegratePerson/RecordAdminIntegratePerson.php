@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.8.3, 2010-06-27' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.8.4, 2010-07-01' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -461,7 +461,7 @@ class RAIntegratePerson {
 		$i = in_array( $role, $this->inheritedRoles ) ? "''" : "";
 		if ( in_array( $role, $this->directRoles ) ) $i = "'''";
 		$text .= "{$indent}{$i}[[$role]]$i\n";
-		if ( $format == 'ShowPeople' ) {
+		if ( $format == 'ShowPeople' && is_array( $this->people[$role] ) ) {
 			global $wgUser;
 			$name = $wgUser->getRealName();
 			foreach( $this->people[$role] as $person ) {
@@ -469,7 +469,9 @@ class RAIntegratePerson {
 				$text .= "*{$indent}<small>{$b}[[$person]]{$b}</small>\n";
 			}
 		}	
-		foreach( $this->tree[$role] as $child ) $this->recursiveRoleTree( $text, $depth + 1, $child, $format );
+		if ( is_array( $this->tree[$role] ) ) {
+			foreach( $this->tree[$role] as $child ) $this->recursiveRoleTree( $text, $depth + 1, $child, $format );
+		}
 	}
 }
 
