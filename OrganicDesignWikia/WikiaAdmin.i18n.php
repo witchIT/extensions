@@ -14,10 +14,8 @@ $messages = array();
  */
 $messages['en'] = array(
 	'wikiaadmin' => "Wikia Administration",
-	'wa_title' => "Add, remove and modify wikis in the \"$1\" database",
 	'wa_sitename' => "Full site name",
 	'wa_sitename_missing' => "No site name specified!",
-	'wa_id' => "Select wiki",
 	'wa_id_new' => "Enter ID for new wiki",
 	'wa_id_desc' => "lowercase a-z, used for FS location and for DB prefix",
 	'wa_id_missing' => "No ID specified!",

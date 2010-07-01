@@ -12,7 +12,7 @@ if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', '2.0.5, 2010-07-01' );
+define( 'WIKIAADMIN_VERSION', '2.0.4, 2010-07-01' );
 
 # WikiaAdmin uses $wgWikiaSettingsDir/wgDBname to store the LocalSettings for
 # the wikis in this DB. It reads in the settings files and determines
@@ -89,64 +89,62 @@ class WikiaAdmin extends SpecialPage {
 	 * Render the special page form and populate with posted data or defaults
 	 */
 	function renderForm() {
-		global $wgOut, $wgJsMimeType, $wgWikiaAdminDomains, $wgDBname;
+		global $wgOut, $wgWikiaAdminDomains;
 		$url = Title::newFromText( 'WikiaAdmin', NS_SPECIAL )->getLocalUrl();
-		$wgOut->AddHtml( "<h2>" . wfMsg( 'wikia_title', $wgDBname ) . "</h2>\n" );
-		$wgOut->AddHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">\n" );
+		$wgOut->AddHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">" );
+		$wgOut->AddHtml( "<table cellpadding=\"4\" cellspacing=\"0\">" );
 
-		$wgOut->AddHtml( "<script type='$wgJsMimeType'>
-			function wikia_id_select() {
-				
-				// Make the new-id textbox visible if 'new' wiki selected
-				
-				// Make load/save visible depending on 'new' or not
-				
-			}
-		</script>" );
+		# ID for a new wiki
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_id_new' ) . ":</td> " );
+		$wgOut->AddHtml( "<td><input name=\"wpNewid\" value=\"{$this->newid}\" /></td><td><i>(" . wfMsg( 'wa_id_desc' ) . ")</i></td></tr>" );
 
-		# Wiki ID
-		$wgOut->AddHtml( wfMsg( 'wikia-id' ) );
-		$options = "<option>New...</option>\n";
+		# or an ID of an existing one to modify
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_modexisting' ) . ":</td> " );
+		$options = "<option />";
 		foreach ( glob( '/var/www/wikis/*' ) as $wiki ) {
-			if ( preg_match( "|([^/]+)|$", $wiki, $m ) ) {
-				$selected = $this->wiki_id == $m[1] ? ' selected' : '';
-				$options .= "<option$selected>$m[1]</option>\n";
+			if ( ereg( '([^/]+)$', $wiki, $m ) ) {
+				$selected = $this->curid == $m[1] ? ' selected' : '';
+				$options .= "<option$selected>$m[1]</option>";
 			}
 		}
-		$wgOut->AddHtml( "<select onclick=\"wikia_id_select()\" name=\"wpWikiaID\">$options</select><br />\n" );
+		$wgOut->AddHtml( "<td><select name=\"wpCurid\">$options</select></td></tr>" );
 
-		# New wiki ID - revealed if Wiki ID set to "new"
-		$wgOut->AddHtml( "<div id=\"wa-new-id\">" );
-		$wgOut->AddHtml( wfMsg( 'wikia-id-new' ) . "<br />" );
-		$wgOut->AddHtml( "<input name=\"wa-new-id\" value=\"\" /><br />\n" );
-		$wgOut->AddHtml( "</div>" );
+		$wgOut->AddHtml( "<tr><td colspan=\"3\"><hr /></td></tr>" );
 
 		# Site name
-		$wgOut->AddHtml( "<br />" . wfMsg( 'wa_sitename' ) . "<br />" );
-		$wgOut->AddHtml( "<input name=\"wpSitename\" value=\"{$this->sitename}\" /><br />\n" );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_sitename' ) . ":</td> " );
+		$wgOut->AddHtml( "<td><input name=\"wpSitename\" value=\"{$this->sitename}\" /></td></tr>" );
 
 		# Domain selection
-		$wgOut->AddHtml( "<br />" . wfMsg( 'wa_domains' ) . "<br />" );
-		$wgOut->AddHtml( "<textarea name=\"wpDomains\">{$this->domains}</textarea><br />" );
-		$wgOut->AddHtml( "<i>(" . wfMsg( 'wa_domain_naked' ) . ")</i><br />" );
+		$wgOut->AddHtml( "<tr><td valign=\"top\">" . wfMsg( 'wa_domains' ) . ":</td>" );
+		$wgOut->AddHtml( "<td><textarea name=\"wpDomains\">{$this->domains}</textarea></td>" );
+		$wgOut->AddHtml( "<td valign=\"top\"><i>(" . wfMsg( 'wa_domain_naked' ) . ")</i></td></tr>" );
+
+		# Codebase selection
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_codebase' ) . ":</td> " );
+		$options = "";
+		foreach ( glob( '/var/www/empty*.sql' ) as $cb ) {
+			if ( ereg( '([0-9.]+).*\.sql', $cb, $m ) ) {
+				$selected = $this->codebase == $m[1] ? ' selected' : '';
+				$options .= "<option>$m[1]</option>";
+			}
+		}
+		$wgOut->AddHtml( "<td><select name=\"wpCodebase\">$options</select></td></tr>" );
+
+		$wgOut->AddHtml( "<tr><td colspan=\"3\"><hr /></td></tr>" );
 
 		# Sysop details
-		$wgOut->AddHtml( "<div id=\"wa-sysop\">" );
-		$wgOut->AddHtml( wfMsg( 'wa_user' ) . "<br />" );
-		$wgOut->AddHtml( "<table cellpadding=\"0\" cellspacing=\"0\">\n" );
-		$wgOut->AddHtml( "<tr><td><input name=\"wpUser\" value=\"{$this->user}\" /></td></tr>" );
+		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_user' ) . ":</td> " );
+		$wgOut->AddHtml( "<td><input name=\"wpUser\" value=\"{$this->user}\" /></td></tr>" );
 		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_pwd' ) . ":</td> " );
 		$wgOut->AddHtml( "<td><input type=\"password\" name=\"wpPass\" /></td></tr>" );
 		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_pwd_confirm' ) . ":</td> " );
 		$wgOut->AddHtml( "<td><input type=\"password\" name=\"wpPass2\" /></td></tr>" );
-		$wgOut->AddHtml( "</table></div>" );
 
-		# Load content from file
+		$wgOut->AddHtml( "<tr><td colspan=\"3\"><hr /></td></tr>" );
+		$wgOut->AddHtml( "<tr><td /><td align=\"right\"><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa_submit' ) . "\" /></td></tr>" );
 
-		# Save content from file
-
-		$wgOut->AddHtml( "<br /><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa_submit' ) . "\" />" );
-		$wgOut->AddHtml( "</form>" );
+		$wgOut->AddHtml( "</table></form>" );
 	}
 
 	/**
@@ -219,8 +217,6 @@ function wfSetupWikiaAdmin() {
 		# If no directory exists for this DB in the settings dir, create it now
 		$dir = "$wgWikiaSettingsDir/$wgDBname";
 		if ( !is_dir( $dir ) ) mkdir( $dir );
-		
-		# Read in the settings files
 		
 	}
 }
