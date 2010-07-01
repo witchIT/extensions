@@ -96,7 +96,7 @@ $settings                 = '/var/www/wikis';
 $domains                  = '/var/www/domains';
 $extensions               = dirname( __FILE__ );
 
-# Check if the request is from command line for running maintenance scripts
+# If running from command-line set root without referring to SERVER_NAME
 if ( $wgCommandLineMode ) {
 	if ( file_exists( "$IP/AdminSettings.php" ) ) {
 		$admin = file_get_contents( "$IP/AdminSettings.php" );
@@ -104,6 +104,8 @@ if ( $wgCommandLineMode ) {
 	}
 	$root = "$domains/$domain";
 }
+
+# If it's a normal web request, set the root from SERVER_NAME
 else {
 	$domain = preg_replace( "/^(www\.|wiki\.)/", "", $_SERVER['SERVER_NAME'] );
 	$root   = $_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'] . "/$domain";
