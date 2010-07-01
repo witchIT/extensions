@@ -11,9 +11,15 @@ if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', '2.0.3, 2010-06-27' );
+define( 'WIKIAADMIN_VERSION', '2.0.4, 2010-07-01' );
 
-# The domain names available for wikia use
+# WikiaAdmin uses $wgWikiaSettingsDir/wgDBname to store the LocalSettings for
+# the wikis in this DB. It reads in the settings files and determines
+# which settings file to apply based on the domain of the request.
+$wgWikiaSettingsDir = '';
+
+# The domain names available for wikia use. It is assumed that all domains
+# are already configured in the web-server environment to arrive at this wiki
 $wgWikiaAdminDomains = array();
 
 # The domain of the master wiki
@@ -188,10 +194,26 @@ class WikiaAdmin extends SpecialPage {
 }
 
 /*
- * Initialise the new special page if this is the master domain
+ * Initialise the new special page
  */
 function wfSetupWikiaAdmin() {
-	global $wgWikiaAdminMaster;
-	if ( $wgWikiaAdminMaster === $_SERVER['HTTP_HOST'] ) SpecialPage::addPage( new WikiaAdmin() );
+	global $wgWikiaAdminMaster, $wgWikiaSettingsDir;
+	
+	# Only activate this extension if this is the master domain
+	if ( $wgWikiaAdminMaster === $_SERVER['HTTP_HOST'] ) {
+
+		# Install the special page
+		SpecialPage::addPage( new WikiaAdmin() );
+		
+		# Check sanity of the storage dir
+		if ( empty( $wgWikiaSettingsDir ) ) die( "\$wgWikiaSettingsDir is not set!" );
+		if ( !is_dir( $wgWikiaSettingsDir ) ) die( "The \$wgWikiaSettingsDir (\"$wgWikiaSettingsDir\") doesn't exist!" );
+		if ( !is_writable( $wgWikiaSettingsDir ) ) die( "Unable to write to the \$wgWikiaSettingsDir directory!" );
+
+		# If no directory exists for this DB in the settings dir, create it now
+		$dir = "$wgWikiaSettingsDir/$wgDBname";
+		if ( !is_dir( $dir ) ) mkdir( $dir );
+		
+	}
 }
 
