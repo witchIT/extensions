@@ -21,6 +21,9 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  */
 ini_set( 'memory_limit', '64M' );
 
+# Constants
+define( 'WIKIA_VERSION', '1.2.2, 2010-07-01');
+
 # Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
 foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
@@ -28,14 +31,13 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 	if ( preg_match( "|^\s*\\$(wgDB.+?)\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $$m[1] = $m[2];
 }
 
-# Constants
-define( 'WIKIA_VERSION', '1.2.1, 2010-06-26');
+
+# Namespaces
 define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_CREATE',         1014 );
 
-# Namespaces
 $wgExtraNamespaces[NS_FORM]        = 'Form';
 $wgExtraNamespaces[NS_FORM+1]      = 'Form_talk';
 $wgExtraNamespaces[NS_EXTENSION]   = 'Extension';
@@ -136,9 +138,9 @@ if ( $wgSiteDown && !$wgCommandLineMode ) {
 	$msg = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>Down for maintenance</title></head>
 	<body bgcolor="white"><table width="100%"><tr><td align="center">
 	<img border="0" src="http://www.organicdesign.co.nz/files/9/9c/Cone.png" style="padding-top:100px"/><br>
-	<div style="font-family:sans;font-weight:bold;color:#89a;font-size:16pt;padding-top:25px">
-	' . $wgSitename . ' is temporarily down for maintenance,<br><br><small>please try again soon.</small>
-	</div></td></tr></table></body></html>';
+	<div style="font-family:sans;font-weight:bold;color:#89a;font-size:16pt;padding-top:25px">'
+	. wfMsg( 'od-sitedown', $wgSitename ) . ',<br><br><small>' . wfMsg( 'od-trysoon' )
+	. '</small></div></td></tr></table></body></html>';
 	if ( in_array('Content-Encoding: gzip', headers_list() ) ) $msg = gzencode( $msg );
 	echo $msg;
 	die;
@@ -157,9 +159,6 @@ function odAddWikiaCss( &$out, $skin = false ) {
 	$out->addScript("<link rel=\"stylesheet\" type=\"text/css\" href=\"$wgScriptPath/extensions/wikia.css\" />");
 	return true;
 }
-
-# Include a special page for listing current wikia and their domains
-if ( preg_match( "|organicdesign.co.nz|", $domain ) ) include( 'extensions/WikiaInfo/WikiaInfo.php' );
 
 # Map naked URL to different articles depending on domain
 function domainRedirect( $list ) {
