@@ -740,7 +740,7 @@ table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colD
 
 table.recordadmin td.long-record-description pre { overflow: hidden; }
 
-.coldescription {
+.colDescription {
 	width:100%;
 }
 
