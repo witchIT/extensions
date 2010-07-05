@@ -734,7 +734,12 @@ table.sortable th {
 
 table.recordadmin p { padding: 0; margin: 0; }
 
-table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colDescription, td.col-title, th.colTask, th.colDescription, th.col-title, th.colPurpose, table.recordadmin td.colTask, table.recordadmin td.colDescription, table.recordadmin td.col-title, table.recordadmin td.colPurpose, table.recordadmin th.colTask, table.recordadmin th.colDescription, table.recordadmin th.colPurpose, table.recordadmin th.col-title { white-space: normal }
+/*table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colDescription, td.col-title, th.colTask, th.colDescription, th.col-title, th.colPurpose, table.recordadmin td.colTask, table.recordadmin td.colDescription, table.recordadmin td.col-title, table.recordadmin td.colPurpose, table.recordadmin th.colTask, table.recordadmin th.colDescription, table.recordadmin th.colPurpose, table.recordadmin th.col-title { white-space: normal }
+*/
+
+td.col-created, th.col-created, td.col-modified, th.col-modified, td.colType, th.colType, td.colStatus, th.colStatus, td.colLeader, th.colLeader {
+	white-space: nowrap;
+}
 
 table.recordadmin td.long-record-description pre { overflow: hidden; }
 
@@ -870,34 +875,6 @@ th.cal_timeslot {vertical-align:top; font-weight:bold; width:100px; padding-left
 .cal_cell_person_hour p {margin-top:0; padding-left:5px;}
 .cal_cell_person_hour .Activity-record th {display:none}
 .prefsection table.date_maintable {border: 1px solid #bbbbbb; border-collapse:collapse;}
-
-/*
-** Ra-create portlet
-*/
-
-/*input.raCreateButton {
-	margin-top: 1px;
-	height:95%;
-	font-size: 95%;
-	padding-left: .5em;
-	padding-right: .5em;
-}
-.recordbuttoncreate {
-	padding-left: .5em;
-	padding-right: .5em;
-	font-weight: bold;
-}
-#p-racreate .pBody {
-	padding: .5em .4em .4em .4em;
-	text-align: left;
-}
-
-#p-racreate h5 {margin-bottom:0}
-
-#search-create {
-	margin: 0;
-	width:auto;
-}*/
 
 #contentSub {display:none}
 
