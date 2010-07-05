@@ -722,8 +722,6 @@ table.recordadmin th,
 table.sortable td {
 	padding: 0 4px;
 	margin: 0;
-	overflow: hidden;
-	white-space: nowrap;
 	font-size: 8pt;
 	vertical-align: top;
 	width:auto;
@@ -739,8 +737,6 @@ table.recordadmin p { padding: 0; margin: 0; }
 table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colDescription, td.col-title, th.colTask, th.colDescription, th.col-title, th.colPurpose, table.recordadmin td.colTask, table.recordadmin td.colDescription, table.recordadmin td.col-title, table.recordadmin td.colPurpose, table.recordadmin th.colTask, table.recordadmin th.colDescription, table.recordadmin th.colPurpose, table.recordadmin th.col-title { white-space: normal }
 
 table.recordadmin td.long-record-description pre { overflow: hidden; }
-
-table.recordadmin th.long-record-description { width:100% }
 
 .recordadmin fieldset th, .recordadmin fieldset td, #userlogin fieldset td, #userlogin fieldset th { 
     padding: 8px 15px 0 0;
