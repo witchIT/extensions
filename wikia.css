@@ -732,7 +732,11 @@ table.sortable th {
 
 /*Default widths for recordtables*/
 
-table.recordadmin p { padding: 0; margin: 0; }
+table.recordadmin p { 
+	padding: 0; 
+	margin: 0;
+	text-align:left 
+}
 
 /*table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colDescription, td.col-title, th.colTask, th.colDescription, th.col-title, th.colPurpose, table.recordadmin td.colTask, table.recordadmin td.colDescription, table.recordadmin td.col-title, table.recordadmin td.colPurpose, table.recordadmin th.colTask, table.recordadmin th.colDescription, table.recordadmin th.colPurpose, table.recordadmin th.col-title { white-space: normal }
 */
