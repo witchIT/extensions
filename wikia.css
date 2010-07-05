@@ -737,7 +737,7 @@ table.recordadmin p { padding: 0; margin: 0; }
 /*table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colDescription, td.col-title, th.colTask, th.colDescription, th.col-title, th.colPurpose, table.recordadmin td.colTask, table.recordadmin td.colDescription, table.recordadmin td.col-title, table.recordadmin td.colPurpose, table.recordadmin th.colTask, table.recordadmin th.colDescription, table.recordadmin th.colPurpose, table.recordadmin th.col-title { white-space: normal }
 */
 
-td.col-created, th.col-created, td.col-modified, th.col-modified, td.colType, th.colType, td.colStatus, th.colStatus, td.colLeader, th.colLeader {
+td.col-created, th.col-created, td.col-modified, th.col-modified, td.colType, th.colType, td.colStatus, th.colStatus, td.colLeader, th.colLeader, td.colAssignedTo, th.colAssignedTo, td.colAttention, th.colAttention, td.colPriority, th.colPriority, td.colRole, th.colRole {
 	white-space: nowrap;
 }
 
