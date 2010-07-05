@@ -740,6 +740,8 @@ table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colD
 
 table.recordadmin td.long-record-description pre { overflow: hidden; }
 
+table.recordadmin th.long-record-description { width:100% }
+
 .recordadmin fieldset th, .recordadmin fieldset td, #userlogin fieldset td, #userlogin fieldset th { 
     padding: 8px 15px 0 0;
     vertical-align: top;
@@ -992,6 +994,3 @@ form.person-record td.EmailList p {
 	margin-top:10px 
 }
 
-.colDescription {
-	width:100%;
-}
