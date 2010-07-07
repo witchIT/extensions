@@ -204,7 +204,7 @@ $messages['en'] = array(
 **[[:Category:Activities|Activities]] {{NewRecordLinkSmall|Activity}}
 **[[Special:RecordAdmin|Advanced search...]]
 **[[Special:Categories|All categories...]]
-*[[RecentActivity|Recent Activity]]
+*'''RecentActivity'''
 **[[RecentActivity|Recently Edited Articles]]
 ***{{RecentActivity:type=edits|count=10|format=***}}
 **[[RecentActivity|Recently Created Articles]]
