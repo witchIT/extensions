@@ -204,8 +204,15 @@ $messages['en'] = array(
 **[[:Category:Activities|Activities]] {{NewRecordLinkSmall|Activity}}
 **[[Special:RecordAdmin|Advanced search...]]
 **[[Special:Categories|All categories...]]
-*'''Recent Activity'''
-**{{RecentActivity:type=edits|count=10|format=**}}
+*'''RecentActivity'''
+**[[RecentActivity|Recently Edited Articles]]
+***{{RecentActivity:type=edits|count=10|format=***}}
+**[[RecentActivity|Recently Created Articles]]
+***{{RecentActivity:type=new|count=10|format=***}}
+{{#ifgroup:user|
+**[[RecentActivity|My Recently Edited Articles]]
+***{{RecentActivity:type=edits|count=10|user={{CURRENTUSER}}|format=***}}
+}}
 *'''Toolbox'''
 **[{{fullurl:Special:Whatlinkshere|target={{FULLPAGENAMEE}}}} What links here]
 **[[Special:Upload|Upload file]]
