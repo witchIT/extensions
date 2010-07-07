@@ -1,5 +1,5 @@
 <?php
-if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
+if ( !defined('MEDIAWIKI' ) ) die( "Not an entry point." );
 /**
  * WikiaAdmin extension - allows management of multiple wikis from the
  *                        same master DB and LocalSettings file
@@ -12,12 +12,14 @@ if ( !defined('MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', '2.0.5, 2010-07-01' );
+define( 'WIKIAADMIN_VERSION', "2.0.7, 2010-07-03" );
 
 # WikiaAdmin uses $wgWikiaSettingsDir/wgDBname to store the LocalSettings for
 # the wikis in this DB. It reads in the settings files and determines
 # which settings file to apply based on the domain of the request.
-$wgWikiaSettingsDir = '';
+if ( !isset( $wgWikiaSettingsDir ) ) die( "\$wgWikiaSettingsDir is not set!" );
+if ( !is_dir( $wgWikiaSettingsDir ) ) die( "The \$wgWikiaSettingsDir (\"$wgWikiaSettingsDir\") doesn't exist!" );
+if ( !is_writable( $wgWikiaSettingsDir ) ) die( "Unable to write to the \$wgWikiaSettingsDir directory!" );
 
 # The domain names available for wikia use. It is assumed that all domains
 # are already configured in the web-server environment to arrive at this wiki
@@ -26,13 +28,16 @@ $wgWikiaSettingsDir = '';
 #   arrive at this master LocalSettings
 $wgWikiaAdminDomains = array();
 
+# Array of the wiki settings
+$wgWikia
+
 # The domain of the master wiki
 $wgWikiaAdminMaster  = '';
 
-$wgExtensionMessagesFiles['WikiaAdmin'] = dirname( __FILE__ ) . '/WikiaAdmin.i18n.php';
-$wgExtensionFunctions[] = 'wfSetupWikiaAdmin';
-$wgSpecialPages['WikiaAdmin'] = 'WikiaAdmin';
-$wgSpecialPageGroups['WikiaAdmin'] = 'od';
+$wgExtensionMessagesFiles['WikiaAdmin'] = dirname( __FILE__ ) . "/WikiaAdmin.i18n.php";
+$wgExtensionFunctions[] = "wfSetupWikiaAdmin";
+$wgSpecialPages['WikiaAdmin'] = "WikiaAdmin";
+$wgSpecialPageGroups['WikiaAdmin'] = "od";
 $wgExtensionCredits['specialpage'][] = array(
 	'name'        => "WikiaAdmin",
 	'author'      => "[http://www.organicdesign.co.nz/nad User:Nad]",
@@ -40,6 +45,17 @@ $wgExtensionCredits['specialpage'][] = array(
 	'url'         => "http://www.organicdesign.co.nz/Extension:WikiaAdmin.php",
 	'version'     => WIKIAADMIN_VERSION
 );
+
+# If no directory exists for this DB in the settings dir, create it now
+$dir = "$wgWikiaSettingsDir/$wgDBname";
+if ( !is_dir( $dir ) ) {
+	mkdir( $dir );
+}
+
+# Otherwise, read in the settings files
+else {
+	
+}
 
 require_once( "$IP/includes/SpecialPage.php" );
 
@@ -50,8 +66,9 @@ class WikiaAdmin extends SpecialPage {
 
 	var $error = '';
 	var $result = '';
+	var $settings = array();
 
-	function WikiaAdmin() {
+	function __construct() {
 		SpecialPage::SpecialPage( 'WikiaAdmin', 'sysop', true, false, false, false );
 	}
 
@@ -68,7 +85,7 @@ class WikiaAdmin extends SpecialPage {
 		$this->sitename = $wgRequest->getText( 'wpSitename' );
 		$this->domains  = $wgRequest->getText( 'wpDomains' );
 		$this->codebase = $wgRequest->getText( 'wpCodebase' );
-		$this->user     = ucfirst( $wgRequest->getText( 'wpUser', 'WikiSysop' ) );
+		$this->user     = ucfirst( $wgRequest->getText( 'wpUser', "WikiSysop" ) );
 		$this->pass     = $wgRequest->getText( 'wpPass' );
 		$this->pass2    = $wgRequest->getText( 'wpPass2' );
 
@@ -101,15 +118,17 @@ class WikiaAdmin extends SpecialPage {
 				
 				// Make load/save visible depending on 'new' or not
 				
+				// Update the option groups and their fields and values
+				
 			}
 		</script>" );
 
 		# Wiki ID
 		$wgOut->AddHtml( wfMsg( 'wikia-id' ) );
 		$options = "<option>New...</option>\n";
-		foreach ( glob( '/var/www/wikis/*' ) as $wiki ) {
+		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
 			if ( preg_match( "|([^/]+)|$", $wiki, $m ) ) {
-				$selected = $this->wiki_id == $m[1] ? ' selected' : '';
+				$selected = $this->wiki_id == $m[1] ? " selected" : "";
 				$options .= "<option$selected>$m[1]</option>\n";
 			}
 		}
@@ -142,8 +161,22 @@ class WikiaAdmin extends SpecialPage {
 		$wgOut->AddHtml( "</table></div>" );
 
 		# Load content from file
+		$wgOut->AddHtml( "<div id=\"wa-load\">" );
+		$options = "<option />\n";
+		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
+			if ( preg_match( "|([^/]+)|$", $wiki, $m ) ) {
+				$selected = $this->wiki_id == $m[1] ? " selected" : "";
+				$options .= "<option$selected>$m[1]</option>\n";
+			}
+		}
+		$wgOut->AddHtml( "<select onclick=\"wikia_id_select()\" name=\"wpWikiaID\">$options</select><br />\n" );
+		$wgOut->AddHtml( "</div>" );
 
 		# Save content from file
+		$wgOut->AddHtml( "<div id=\"wa-save\">" );
+		$wgOut->AddHtml( "</div>" );
+
+		# Render all the option groups
 
 		$wgOut->AddHtml( "<br /><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa_submit' ) . "\" />" );
 		$wgOut->AddHtml( "</form>" );
@@ -168,13 +201,6 @@ class WikiaAdmin extends SpecialPage {
 
 		if ( !empty( $this->newid ) ) {
 			$id = $this->newid;
-
-			# Create the wiki dir, codebase symlink and domain symlinks
-			if ( !is_dir( $mw ) ) return $this->error = wfMsg( 'wa_codebase-notfound', $mw );
-			shell_exec( "mkdir $dir" );
-			shell_exec( "mkdir -m 777 $dir/files" );
-			shell_exec( "ln -s $mw $dir/wiki" );
-			foreach( split( "\n", $this->domains ) as $domain ) shell_exec( "ln -s $dir /var/www/domains/$domain" );
 
 			# Create initial LocalSettings.php file content
 			$ls = "<?php\n";
@@ -210,17 +236,6 @@ function wfSetupWikiaAdmin() {
 
 		# Install the special page
 		SpecialPage::addPage( new WikiaAdmin() );
-		
-		# Check sanity of the storage dir
-		if ( empty( $wgWikiaSettingsDir ) ) die( "\$wgWikiaSettingsDir is not set!" );
-		if ( !is_dir( $wgWikiaSettingsDir ) ) die( "The \$wgWikiaSettingsDir (\"$wgWikiaSettingsDir\") doesn't exist!" );
-		if ( !is_writable( $wgWikiaSettingsDir ) ) die( "Unable to write to the \$wgWikiaSettingsDir directory!" );
-
-		# If no directory exists for this DB in the settings dir, create it now
-		$dir = "$wgWikiaSettingsDir/$wgDBname";
-		if ( !is_dir( $dir ) ) mkdir( $dir );
-		
-		# Read in the settings files
 		
 	}
 }
