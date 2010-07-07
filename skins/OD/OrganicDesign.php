@@ -1,4 +1,5 @@
 <?php
+if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 /**
  * OrganicDesign skin (for MW1.14+)
  *
@@ -9,7 +10,6 @@
  * @addtogroup Skins
  */
 
-if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 
 /**
  * Inherit main code from SkinTemplate, set the CSS and template filter.
@@ -189,7 +189,7 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 				<?php if($this->data['showjumplinks']) { ?><div id="jump-to-nav"><?php $this->msg('jumpto') ?> <a href="#column-one"><?php $this->msg('jumptonavigation') ?></a>, <a href="#searchInput"><?php $this->msg('jumptosearch') ?></a></div><?php } ?>
 				<!-- start content -->
 				<?php $this->html('bodytext') ?>
-				<?php if($this->data['catlinks']) { ?><div id="catlinks"><?php       $this->html('catlinks') ?></div><?php } ?>
+				<?php if($this->data['catlinks']) { ?><?php       $this->html('catlinks') ?><?php } ?>
 				<!-- end content -->
 				<div class="visualClear"></div>
 			</div>
