@@ -182,7 +182,7 @@ $messages['en'] = array(
 *Customer Services",
 	'od-document-category-list-info' => "The list of categories that a document in the organisation can be assigned to. To change the options available in this list click [{{fullurl:MediaWiki:od-document-category-list|action=edit}} here]",
 	'od-document-edit-info' => "To edit this document, click the \"edit\" link above as usual and then add the content below the existing properties infomration.",
-	'od-sidebar' => "{{#ifgroup:user|{{#tree:id=sidebartree|root=<big>'''{{ns:4}}'''</big>|
+	'od-sidebar' => "{{#ifgroup:user|{{#tree:id=od-sidebar|root=<big>'''{{ns:4}}'''</big>|
 *[[{{CURRENTPERSON}}|My Home Page]]
 *[[Main Page]]
 *[[Special:Recentchanges|Recent changes]]
