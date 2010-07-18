@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.8.5, 2010-07-07' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.8.6, 2010-07-19' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -68,13 +68,13 @@ class RAIntegratePerson {
 		if ( is_object( $title ) ) {
 
 			# Hook rendering mods into prefs
-			if ( $title->getPrefixedText() == 'Special:Preferences' ) {
+			if ( $title->getNamespace() == NS_SPECIAL && $title->getText() == wfMsg( 'Preferences' ) ) {
 				$wgHooks['BeforePageDisplay'][] = array( $this, 'modPreferences' );
 				$this->processForm();
 			}
 
 			# Hook rendering mods into account-creation
-			if ( $title->getPrefixedText() == 'Special:UserLogin' && $wgRequest->getText( 'type' ) == 'signup' ) {
+			if ( $title->getNamespace() == NS_SPECIAL && $title->getText() == wfMsg( 'Userlogin' ) && $wgRequest->getText( 'type' ) == 'signup' ) {
 				$wgHooks['BeforePageDisplay'][] = array( $this, 'modAccountCreate' );
 				$this->processForm();
 			}
@@ -213,7 +213,7 @@ class RAIntegratePerson {
 			}
 
 			// Hide email, realname and standard create-account button
-			function ipOnload() {				
+			function ipOnload() {
 				$('#wpEmail').parent().parent().hide();
 				$('#wpRealName').parent().parent().hide();
 				$('td.mw-submit').parent().hide();
