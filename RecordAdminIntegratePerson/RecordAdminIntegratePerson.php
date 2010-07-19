@@ -67,14 +67,20 @@ class RAIntegratePerson {
 		if ( !is_object( $wgTitle ) ) $wgTitle = $title;
 		if ( is_object( $title ) ) {
 
+			global  $wgContLang;
+			$aliases = $wgContLang->getSpecialPageAliases();
+
 			# Hook rendering mods into prefs
-			if ( $title->getNamespace() == NS_SPECIAL && $title->getText() == wfMsg( 'Preferences' ) ) {
+			if ( $title->getNamespace() == NS_SPECIAL
+			   &&  in_array( $title->getText(), $aliases['Preferences'] ) ) {
 				$wgHooks['BeforePageDisplay'][] = array( $this, 'modPreferences' );
 				$this->processForm();
 			}
 
 			# Hook rendering mods into account-creation
-			if ( $title->getNamespace() == NS_SPECIAL && $title->getText() == wfMsg( 'Userlogin' ) && $wgRequest->getText( 'type' ) == 'signup' ) {
+			if ( $title->getNamespace() == NS_SPECIAL
+			   && in_array( $title->getText(), $aliases['Userlogin'] )
+			   && $wgRequest->getText( 'type' ) == 'signup' ) {
 				$wgHooks['BeforePageDisplay'][] = array( $this, 'modAccountCreate' );
 				$this->processForm();
 			}
