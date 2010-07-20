@@ -197,6 +197,7 @@ $messages['en'] = array(
 **[[:Category:Roles|Roles]] {{NewRecordLinkSmall|Role}}
 **[[:Category:Projects|Projects]] {{NewRecordLinkSmall|Project}}
 **[[:Category:Organisations|Organisations]] {{NewRecordLinkSmall|Organisation}}
+**[[:Category:Subscriptions|Subscriptions]] {{NewRecordLinkSmall|Subscription}}
 **[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
 **[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
 **[[:Category:Computers|Computers]] {{NewRecordLinkSmall|Computer}}
