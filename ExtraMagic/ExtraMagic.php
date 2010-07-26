@@ -10,9 +10,9 @@
  * @copyright © 2007 [http://www.organicdesign.co.nz/User:Nad User:Nad]
  * @licence GNU General Public Licence 2.0 or later
  */
-if (!defined('MEDIAWIKI')) die('Not an entry point.');
+if ( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
  
-define('EXTRAMAGIC_VERSION', '2.0.7, 2010-02-28');
+define( 'EXTRAMAGIC_VERSION', '2.1.0, 2010-07-27' );
  
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -21,9 +21,18 @@ $wgExtensionCredits['parserhook'][] = array(
 	'url'         => 'http://www.organicdesign.co.nz/Extension:ExtraMagic.php',
 	'version'     => EXTRAMAGIC_VERSION
 );
- 
- 
-$wgCustomVariables = array( 'CURRENTUSER', 'CURRENTPERSON', 'CURRENTLANG', 'CURRENTSKIN', 'IPADDRESS', 'DOMAIN', 'NUMBERINGOFF', 'GUID' );
+  
+$wgCustomVariables = array(
+	'CURRENTUSER',
+	'CURRENTPERSON',
+	'CURRENTLANG',
+	'CURRENTSKIN',
+	'ARTICLEID',
+	'IPADDRESS',
+	'DOMAIN',
+	'NUMBERINGOFF',
+	'GUID'
+);
  
 $wgExtensionFunctions[]                    = 'efSetupExtraMagic';
 $wgHooks['MagicWordMagicWords'][]          = 'efAddCustomVariable';
@@ -134,6 +143,13 @@ function efGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
 			global $wgUser;
 			$parser->disableCache();
 			$ret = $wgUser->getOption( 'skin' );
+		break;
+ 
+		case MAG_ARTICLEID:
+			global $wgTitle;
+			if ( is_object( $wgTitle ) ) {
+				$ret = $wgTitle->getArticleID();
+			} else $ret = 'No revision ID!';
 		break;
  
 		case MAG_IPADDRESS:
