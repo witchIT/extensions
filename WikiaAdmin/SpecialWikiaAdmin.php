@@ -21,18 +21,22 @@ if ( !isset( $wgWikiaSettingsDir ) ) die( "\$wgWikiaSettingsDir is not set!" );
 if ( !is_dir( $wgWikiaSettingsDir ) ) die( "The \$wgWikiaSettingsDir (\"$wgWikiaSettingsDir\") doesn't exist!" );
 if ( !is_writable( $wgWikiaSettingsDir ) ) die( "Unable to write to the \$wgWikiaSettingsDir directory!" );
 
-# The domain names available for wikia use. It is assumed that all domains
-# are already configured in the web-server environment to arrive at this wiki
-# - in an OD environment that means the domains in this list should have
-#   their own entries in vhost to ensure that all its sub-domains also
-#   arrive at this master LocalSettings
+# The domain names available for wikia use to appear in the domain dropdown
+# - it is assumed that all domains are already configured in the web-server
+#   environment to arrive at this wiki
 $wgWikiaAdminDomains = array();
 
-# Array of the wiki settings
-$wgWikia
+# Populate the domains array from /var/www/domains if it exists
+# - in an OD environment that means the domains in this list should all have
+#   a wildcard A record pointing to the server, and their own symlinks in
+#   /var/www/domains to direct any requests under them to this master wiki
+if ( is_dir( '/var/www/domains' ) && isset( $shortname ) ) {
+	
+}
 
-# The domain of the master wiki
-$wgWikiaAdminMaster  = '';
+# The settings for all wikis under this master wiki are stored in
+# a persistent array which is stored in of name $wgWikiaSettingsFile
+$wgWikiaSettingsFile = "$wgWikiaSettingsDir/$wgDBname.$wgDBprefix";
 
 $wgExtensionMessagesFiles['WikiaAdmin'] = dirname( __FILE__ ) . "/WikiaAdmin.i18n.php";
 $wgExtensionFunctions[] = "wfSetupWikiaAdmin";
@@ -46,17 +50,6 @@ $wgExtensionCredits['specialpage'][] = array(
 	'version'     => WIKIAADMIN_VERSION
 );
 
-# If no directory exists for this DB in the settings dir, create it now
-$dir = "$wgWikiaSettingsDir/$wgDBname";
-if ( !is_dir( $dir ) ) {
-	mkdir( $dir );
-}
-
-# Otherwise, read in the settings files
-else {
-	
-}
-
 require_once( "$IP/includes/SpecialPage.php" );
 
 /**
@@ -69,7 +62,14 @@ class WikiaAdmin extends SpecialPage {
 	var $settings = array();
 
 	function __construct() {
+		global $wgWikiaSettingsFile, $wgDBname, $wgDBprefix;
+
 		SpecialPage::SpecialPage( 'WikiaAdmin', 'sysop', true, false, false, false );
+
+		
+		
+		
+		
 	}
 
 	/**
@@ -78,24 +78,34 @@ class WikiaAdmin extends SpecialPage {
 	function execute() {
 		global $wgOut, $wgRequest;
 		$this->setHeaders();
+aa
+		# Load the localsettings array for this master wiki (DB.prefix)
+		$this->loadSettingsArray();
 
-		# Retrieve any posted data or set defaults
-		$this->newid    = $wgRequest->getText( 'wpNewid' );
-		$this->curid    = $wgRequest->getText( 'wpCurid' );
-		$this->sitename = $wgRequest->getText( 'wpSitename' );
-		$this->domains  = $wgRequest->getText( 'wpDomains' );
-		$this->codebase = $wgRequest->getText( 'wpCodebase' );
-		$this->user     = ucfirst( $wgRequest->getText( 'wpUser', "WikiSysop" ) );
-		$this->pass     = $wgRequest->getText( 'wpPass' );
-		$this->pass2    = $wgRequest->getText( 'wpPass2' );
+		# A form was submitted
+		if ( $wgRequest->getText( 'wpSubmit' ) ) {
 
-		# Process request if form submitted
-		if ( $wgRequest->getText( 'wpSubmit' ) ) $this->processForm();
+			# Read in posted values
+			$this->namespace = $wgRequest->getText( 'wpNamespace' );
+			$this->action    = $wgRequest->getText( 'wpAction' );
+			$this->sitename  = $wgRequest->getText( 'wpSitename' );
+			$this->domains   = $wgRequest->getText( 'wpDomains' );
+			$this->codebase  = $wgRequest->getText( 'wpCodebase' );
+			$this->user      = ucfirst( $wgRequest->getText( 'wpUser', "WikiSysop" ) );
+			$this->pass      = $wgRequest->getText( 'wpPass' );
+			$this->pass2     = $wgRequest->getText( 'wpPass2' );
+			$this->file      = $wgRequest->getText( 'wpLoad' ) ? $wgRequest->getText( 'wpLoad' ) : $wgRequest->getText( 'wpSave' );
+			if ( $this->file ) $this->file = "$wgNamespacePackagesDir/{$this->file}.xml";
 
-		# Render any errors or results set during processing
-		if ( !empty( $this->error ) ) $wgOut->addHtml( "<div class='errorbox'>{$this->error}</div>" );
-		if ( !empty( $this->result ) ) $wgOut->addHtml( "<div class='successbox'>{$this->result}</div>" );
-		$wgOut->addHtml( "<div style=\"clear: both\"></div>" );
+			# Process the form
+			$this->processForm();
+
+			# Render any errors or results set during processing
+			if ( !empty( $this->error ) ) $wgOut->addHtml( "<div class='errorbox'>{$this->error}</div>" );
+			if ( !empty( $this->result ) ) $wgOut->addHtml( "<div class='successbox'>{$this->result}</div>" );
+			$wgOut->addHtml( "<div style=\"clear: both\"></div>" );
+		}
+
 
 		# Render the form
 		$this->renderForm();
@@ -108,7 +118,7 @@ class WikiaAdmin extends SpecialPage {
 	function renderForm() {
 		global $wgOut, $wgJsMimeType, $wgWikiaAdminDomains, $wgDBname;
 		$url = Title::newFromText( 'WikiaAdmin', NS_SPECIAL )->getLocalUrl();
-		$wgOut->AddHtml( "<h2>" . wfMsg( 'wikia_title', $wgDBname ) . "</h2>\n" );
+		$wgOut->AddHtml( "<h2>" . wfMsg( 'wa_title', $wgDBname ) . "</h2>\n" );
 		$wgOut->AddHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">\n" );
 
 		$wgOut->AddHtml( "<script type='$wgJsMimeType'>
@@ -127,8 +137,8 @@ class WikiaAdmin extends SpecialPage {
 		$wgOut->AddHtml( wfMsg( 'wikia-id' ) );
 		$options = "<option>New...</option>\n";
 		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
-			if ( preg_match( "|([^/]+)|$", $wiki, $m ) ) {
-				$selected = $this->wiki_id == $m[1] ? " selected" : "";
+			if ( preg_match( "|([^/]+)$|", $wiki, $m ) ) {
+				$selected = $this->newid == $m[1] ? " selected" : "";
 				$options .= "<option$selected>$m[1]</option>\n";
 			}
 		}
@@ -164,8 +174,8 @@ class WikiaAdmin extends SpecialPage {
 		$wgOut->AddHtml( "<div id=\"wa-load\">" );
 		$options = "<option />\n";
 		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
-			if ( preg_match( "|([^/]+)|$", $wiki, $m ) ) {
-				$selected = $this->wiki_id == $m[1] ? " selected" : "";
+			if ( preg_match( "|([^/]+)$|", $wiki, $m ) ) {
+				$selected = $this->newid == $m[1] ? " selected" : "";
 				$options .= "<option$selected>$m[1]</option>\n";
 			}
 		}
@@ -219,9 +229,45 @@ class WikiaAdmin extends SpecialPage {
 			# - options: source site
 			# - content: extensions, articles, portals, images, RA css rules
 			
-			# Write the LocalSettings.php file
-			file_put_contents( "$dir/LocalSettings.php", $ls );
+			# Write new settings to this master wiki's settins file (DB.prefix)
+			$this->saveSettingsArray();
 		}
+	}
+
+
+	/**
+	 * Load the settings array from persistent storage
+	 */
+	function loadSettings() {
+		global $wgWikiaSettingsFile;
+		if ( file_exists( $wgWikiaSettingsFile ) ) {
+			$this->settings = unserialize( file_get_contents( $wgWikiaSettingsFile ) ); 
+		}
+	}
+
+
+	/**
+	 * Save the settings array to persistent storage
+	 */
+	function saveSettings() {
+		global $wgWikiaSettingsFile;
+		file_put_contents( $wgWikiaSettingsFile, serialize( $this->settings ) );
+	}
+
+
+	/**
+	 * Return the settings array (for use by other extensions)
+	 */
+	function getSettings() {
+		return $this->settings;
+	}
+
+
+	/**
+	 * Update the settings array (for use by other extensions)
+	 */
+	function setSettings( &$settings ) {
+		$this->settings = $settings;
 	}
 }
 
@@ -229,14 +275,8 @@ class WikiaAdmin extends SpecialPage {
  * Initialise the new special page
  */
 function wfSetupWikiaAdmin() {
-	global $wgWikiaAdminMaster, $wgWikiaSettingsDir;
-	
-	# Only activate this extension if this is the master domain
-	if ( $wgWikiaAdminMaster === $_SERVER['HTTP_HOST'] ) {
-
-		# Install the special page
-		SpecialPage::addPage( new WikiaAdmin() );
-		
-	}
+	global $wgWikiaAdmin;
+	$wgWikiaAdmin = new WikiaAdmin();
+	SpecialPage::addPage( $wgWikiaAdmin );
 }
 
