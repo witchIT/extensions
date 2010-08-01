@@ -57,9 +57,13 @@ require_once( "$IP/includes/SpecialPage.php" );
  */
 class WikiaAdmin extends SpecialPage {
 
-	var $error = '';
-	var $result = '';
+	var $error    = '';
+	var $result   = '';
 	var $settings = array();
+	var $newid    = '';
+	var $sitename = '';
+	var $domains  = '';
+	var $user     = '';
 
 	function __construct() {
 		global $wgWikiaSettingsFile, $wgDBname, $wgDBprefix;
@@ -78,9 +82,9 @@ class WikiaAdmin extends SpecialPage {
 	function execute() {
 		global $wgOut, $wgRequest;
 		$this->setHeaders();
-aa
+
 		# Load the localsettings array for this master wiki (DB.prefix)
-		$this->loadSettingsArray();
+		$this->loadSettings();
 
 		# A form was submitted
 		if ( $wgRequest->getText( 'wpSubmit' ) ) {
@@ -118,10 +122,11 @@ aa
 	function renderForm() {
 		global $wgOut, $wgJsMimeType, $wgWikiaAdminDomains, $wgDBname;
 		$url = Title::newFromText( 'WikiaAdmin', NS_SPECIAL )->getLocalUrl();
-		$wgOut->AddHtml( "<h2>" . wfMsg( 'wa_title', $wgDBname ) . "</h2>\n" );
-		$wgOut->AddHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">\n" );
+		$this->addJavaScript( $wgOut );
+		$wgOut->addHtml( "<h2>" . wfMsg( 'wa-title', $wgDBname ) . "</h2>\n" );
+		$wgOut->addHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">\n" );
 
-		$wgOut->AddHtml( "<script type='$wgJsMimeType'>
+		$wgOut->addHtml( "<script type='$wgJsMimeType'>
 			function wikia_id_select() {
 				
 				// Make the new-id textbox visible if 'new' wiki selected
@@ -134,44 +139,44 @@ aa
 		</script>" );
 
 		# Wiki ID
-		$wgOut->AddHtml( wfMsg( 'wikia-id' ) );
-		$options = "<option>New...</option>\n";
+		$wgOut->addHtml( wfMsg( 'wa-id' ) . ': ' );
+		$options = "<option value=\"new\">" . wfMsg( 'wa-new' ) . "...</option>\n";
 		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
 			if ( preg_match( "|([^/]+)$|", $wiki, $m ) ) {
 				$selected = $this->newid == $m[1] ? " selected" : "";
 				$options .= "<option$selected>$m[1]</option>\n";
 			}
 		}
-		$wgOut->AddHtml( "<select onclick=\"wikia_id_select()\" name=\"wpWikiaID\">$options</select><br />\n" );
+		$wgOut->addHtml( "<select id=\"wa-id-select\" onchange=\"wikia_id_select()\" name=\"wpWikiaID\">$options</select><br />\n" );
 
 		# New wiki ID - revealed if Wiki ID set to "new"
-		$wgOut->AddHtml( "<div id=\"wa-new-id\">" );
-		$wgOut->AddHtml( wfMsg( 'wikia-id-new' ) . "<br />" );
-		$wgOut->AddHtml( "<input name=\"wa-new-id\" value=\"\" /><br />\n" );
-		$wgOut->AddHtml( "</div>" );
+		$wgOut->addHtml( "<div id=\"wa-new-id\">" );
+		$wgOut->addHtml( wfMsg( 'wa-id-new' ) . "<br />" );
+		$wgOut->addHtml( "<input name=\"wa-new-id\" value=\"\" /><br />\n" );
+		$wgOut->addHtml( "</div>" );
 
 		# Site name
-		$wgOut->AddHtml( "<br />" . wfMsg( 'wa_sitename' ) . "<br />" );
-		$wgOut->AddHtml( "<input name=\"wpSitename\" value=\"{$this->sitename}\" /><br />\n" );
+		$wgOut->addHtml( "<br />" . wfMsg( 'wa-sitename' ) . "<br />" );
+		$wgOut->addHtml( "<input name=\"wpSitename\" value=\"{$this->sitename}\" /><br />\n" );
 
 		# Domain selection
-		$wgOut->AddHtml( "<br />" . wfMsg( 'wa_domains' ) . "<br />" );
-		$wgOut->AddHtml( "<textarea name=\"wpDomains\">{$this->domains}</textarea><br />" );
-		$wgOut->AddHtml( "<i>(" . wfMsg( 'wa_domain_naked' ) . ")</i><br />" );
+		$wgOut->addHtml( "<br />" . wfMsg( 'wa-domains' ) . "<br />" );
+		$wgOut->addHtml( "<textarea name=\"wpDomains\">{$this->domains}</textarea><br />" );
+		$wgOut->addHtml( "<i>(" . wfMsg( 'wa-domain-naked' ) . ")</i><br />" );
 
 		# Sysop details
-		$wgOut->AddHtml( "<div id=\"wa-sysop\">" );
-		$wgOut->AddHtml( wfMsg( 'wa_user' ) . "<br />" );
-		$wgOut->AddHtml( "<table cellpadding=\"0\" cellspacing=\"0\">\n" );
-		$wgOut->AddHtml( "<tr><td><input name=\"wpUser\" value=\"{$this->user}\" /></td></tr>" );
-		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_pwd' ) . ":</td> " );
-		$wgOut->AddHtml( "<td><input type=\"password\" name=\"wpPass\" /></td></tr>" );
-		$wgOut->AddHtml( "<tr><td>" . wfMsg( 'wa_pwd_confirm' ) . ":</td> " );
-		$wgOut->AddHtml( "<td><input type=\"password\" name=\"wpPass2\" /></td></tr>" );
-		$wgOut->AddHtml( "</table></div>" );
+		$wgOut->addHtml( "<div id=\"wa-sysop\">" );
+		$wgOut->addHtml( "<br /><table cellpadding=\"0\" cellspacing=\"0\">\n" );
+		$wgOut->addHtml( "<tr><td>" . wfMsg( 'wa-user' ) . ":</td>" );
+		$wgOut->addHtml( "<td><input name=\"wpUser\" value=\"{$this->user}\" /></td></tr>" );
+		$wgOut->addHtml( "<tr><td>" . wfMsg( 'wa-pwd' ) . ":</td> " );
+		$wgOut->addHtml( "<td><input type=\"password\" name=\"wpPass\" /></td></tr>" );
+		$wgOut->addHtml( "<tr><td>" . wfMsg( 'wa-pwd-confirm' ) . ":</td> " );
+		$wgOut->addHtml( "<td><input type=\"password\" name=\"wpPass2\" /></td></tr>" );
+		$wgOut->addHtml( "</table></div>" );
 
 		# Load content from file
-		$wgOut->AddHtml( "<div id=\"wa-load\">" );
+		$wgOut->addHtml( "<div id=\"wa-load\">" );
 		$options = "<option />\n";
 		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
 			if ( preg_match( "|([^/]+)$|", $wiki, $m ) ) {
@@ -179,17 +184,15 @@ aa
 				$options .= "<option$selected>$m[1]</option>\n";
 			}
 		}
-		$wgOut->AddHtml( "<select onclick=\"wikia_id_select()\" name=\"wpWikiaID\">$options</select><br />\n" );
-		$wgOut->AddHtml( "</div>" );
 
 		# Save content from file
-		$wgOut->AddHtml( "<div id=\"wa-save\">" );
-		$wgOut->AddHtml( "</div>" );
+		$wgOut->addHtml( "<div id=\"wa-save\">" );
+		$wgOut->addHtml( "</div>" );
 
 		# Render all the option groups
 
-		$wgOut->AddHtml( "<br /><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa_submit' ) . "\" />" );
-		$wgOut->AddHtml( "</form>" );
+		$wgOut->addHtml( "<br /><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa-submit' ) . "\" />" );
+		$wgOut->addHtml( "</form>" );
 	}
 
 	/**
@@ -232,6 +235,19 @@ aa
 			# Write new settings to this master wiki's settins file (DB.prefix)
 			$this->saveSettingsArray();
 		}
+	}
+
+
+	/**
+	 * The form requires some JavaScript for chained selects
+	 */
+	function addJavaScript( $out ) {
+		global $wgJsMimeType;
+		$out->addScript( "<script type='$wgJsMimeType'>
+			function wikia_id_select() {
+				if ($('#wa-id-select').val() == 'new') $('#wa-new-id').show(); else $('#wa-new-id').hide();
+			}
+		</script>" );
 	}
 
 
