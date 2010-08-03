@@ -142,7 +142,7 @@ if ( $wgOrganicDesignDonations ) {?>
 				<input type="hidden" name="business" value="SYUYL7GAGKFRY" />
 				<input type="hidden" name="item_name" value="Donation">
 				<input type="hidden" name="currency_code" value="USD">
-				$&nbsp;<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
+				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
 			</form>
 		</div>
 	</div>
