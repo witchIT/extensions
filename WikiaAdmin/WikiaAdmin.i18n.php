@@ -38,4 +38,6 @@ $messages['en'] = array(
 	'wa-modexisting' => "or modify an existing wiki",
 	'wa-submit' => "Submit",
 	'wa-success' => "Wiki \"$1\" ($2) created successfully!",
+	'wa-dumps'=> "Select a wiki template database",
+	'wa-no-dumps'=> "There are no database dumps to use for new wikis!",
 );

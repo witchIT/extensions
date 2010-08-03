@@ -12,7 +12,7 @@ if ( !defined('MEDIAWIKI' ) ) die( "Not an entry point." );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', "2.0.7, 2010-07-03" );
+define( 'WIKIAADMIN_VERSION', "2.0.9, 2010-08-03" );
 
 # WikiaAdmin uses $wgWikiaSettingsDir/wgDBname to store the LocalSettings for
 # the wikis in this DB. It reads in the settings files and determines
@@ -21,18 +21,14 @@ if ( !isset( $wgWikiaSettingsDir ) ) die( "\$wgWikiaSettingsDir is not set!" );
 if ( !is_dir( $wgWikiaSettingsDir ) ) die( "The \$wgWikiaSettingsDir (\"$wgWikiaSettingsDir\") doesn't exist!" );
 if ( !is_writable( $wgWikiaSettingsDir ) ) die( "Unable to write to the \$wgWikiaSettingsDir directory!" );
 
-# The domain names available for wikia use to appear in the domain dropdown
-# - it is assumed that all domains are already configured in the web-server
-#   environment to arrive at this wiki
-$wgWikiaAdminDomains = array();
+# Set this if only specific domains are allowed
+$wgWikiaAdminDomains = false;
 
-# Populate the domains array from /var/www/domains if it exists
-# - in an OD environment that means the domains in this list should all have
-#   a wildcard A record pointing to the server, and their own symlinks in
-#   /var/www/domains to direct any requests under them to this master wiki
-if ( is_dir( '/var/www/domains' ) && isset( $shortname ) ) {
-	
-}
+# Array of subdomains which are implied by naked domain usage
+$wgWikiaImpliedSubdomains = array( 'www', 'wiki' );
+
+# This must contain at least one database dump in the form of description => file
+$wgWikiaDatabaseDumps = array();
 
 # The settings for all wikis under this master wiki are stored in
 # a persistent array which is stored in of name $wgWikiaSettingsFile
@@ -57,59 +53,70 @@ require_once( "$IP/includes/SpecialPage.php" );
  */
 class WikiaAdmin extends SpecialPage {
 
-	var $error    = '';
-	var $result   = '';
-	var $settings = array();
-	var $newid    = '';
-	var $sitename = '';
-	var $domains  = '';
-	var $user     = '';
+	# LocalSettings hash for all sub-wikis
+	var $settings  = array();
+
+	# Posted form data
+	var $curid     = '';
+	var $newid     = '';
+	var $sitename  = '';
+	var $dump      = '';
+	var $domains   = '';
+	var $domain    = '';
+	var $subdomain = '';
+	var $user      = '';
+	var $pass      = '';
+	var $pass2     = '';
+
+	# Form processing results
+	var $error     = '';
+	var $result    = '';
 
 	function __construct() {
-		global $wgWikiaSettingsFile, $wgDBname, $wgDBprefix;
 
+		# Add the special page to the environment
 		SpecialPage::SpecialPage( 'WikiaAdmin', 'sysop', true, false, false, false );
 
-		
-		
-		
-		
+		# Load the localsettings array for this master wiki (by DB.prefix)
+		$this->loadSettings();
+
+		# Apply any localsettings relating to this sub-wiki (by domain)
+		$this->applySettings();
 	}
 
 	/**
 	 * Override SpecialPage::execute()
 	 */
 	function execute() {
-		global $wgOut, $wgRequest;
+		global $wgOut, $wgRequest, $wgWikiaDatabaseDumps;
 		$this->setHeaders();
 
-		# Load the localsettings array for this master wiki (DB.prefix)
-		$this->loadSettings();
+		# Die if there are no database dumps to use for new wikis
+		if ( count( $wgWikiaDatabaseDumps ) < 1 ) die( wfMsg( 'wa-no-dumps' ) );
 
 		# A form was submitted
 		if ( $wgRequest->getText( 'wpSubmit' ) ) {
 
 			# Read in posted values
-			$this->namespace = $wgRequest->getText( 'wpNamespace' );
-			$this->action    = $wgRequest->getText( 'wpAction' );
+			$this->curid     = $wgRequest->getText( 'wpCurId' );
+			$this->newid     = strtolower( $wgRequest->getText( 'wpNewId' ) );
 			$this->sitename  = $wgRequest->getText( 'wpSitename' );
 			$this->domains   = $wgRequest->getText( 'wpDomains' );
-			$this->codebase  = $wgRequest->getText( 'wpCodebase' );
+			$this->domain    = $wgRequest->getText( 'wpDomain' );
+			$this->subdomain = $wgRequest->getText( 'wpSubdomain' );
 			$this->user      = ucfirst( $wgRequest->getText( 'wpUser', "WikiSysop" ) );
 			$this->pass      = $wgRequest->getText( 'wpPass' );
 			$this->pass2     = $wgRequest->getText( 'wpPass2' );
-			$this->file      = $wgRequest->getText( 'wpLoad' ) ? $wgRequest->getText( 'wpLoad' ) : $wgRequest->getText( 'wpSave' );
-			if ( $this->file ) $this->file = "$wgNamespacePackagesDir/{$this->file}.xml";
+			$this->dump      = $wgRequest->getText( 'wpDump' );
 
 			# Process the form
 			$this->processForm();
 
 			# Render any errors or results set during processing
-			if ( !empty( $this->error ) ) $wgOut->addHtml( "<div class='errorbox'>{$this->error}</div>" );
+			if ( !empty( $this->error ) )  $wgOut->addHtml( "<div class='errorbox'>{$this->error}</div>" );
 			if ( !empty( $this->result ) ) $wgOut->addHtml( "<div class='successbox'>{$this->result}</div>" );
 			$wgOut->addHtml( "<div style=\"clear: both\"></div>" );
 		}
-
 
 		# Render the form
 		$this->renderForm();
@@ -120,48 +127,53 @@ class WikiaAdmin extends SpecialPage {
 	 * Render the special page form and populate with posted data or defaults
 	 */
 	function renderForm() {
-		global $wgOut, $wgJsMimeType, $wgWikiaAdminDomains, $wgDBname;
+		global $wgOut, $wgDBname, $wgJsMimeType, $wgWikiaAdminDomains, $wgWikiaDatabaseDumps;
 		$url = Title::newFromText( 'WikiaAdmin', NS_SPECIAL )->getLocalUrl();
 		$this->addJavaScript( $wgOut );
 		$wgOut->addHtml( "<h2>" . wfMsg( 'wa-title', $wgDBname ) . "</h2>\n" );
 		$wgOut->addHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">\n" );
 
-		$wgOut->addHtml( "<script type='$wgJsMimeType'>
-			function wikia_id_select() {
-				
-				// Make the new-id textbox visible if 'new' wiki selected
-				
-				// Make load/save visible depending on 'new' or not
-				
-				// Update the option groups and their fields and values
-				
-			}
-		</script>" );
-
 		# Wiki ID
 		$wgOut->addHtml( wfMsg( 'wa-id' ) . ': ' );
 		$options = "<option value=\"new\">" . wfMsg( 'wa-new' ) . "...</option>\n";
-		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
-			if ( preg_match( "|([^/]+)$|", $wiki, $m ) ) {
-				$selected = $this->newid == $m[1] ? " selected" : "";
-				$options .= "<option$selected>$m[1]</option>\n";
-			}
+		foreach( $this->settings as $id => $settings ) {
+			$selected = $this->newid == $id ? " selected" : "";
+			$wiki = $settings['sitename'];
+			$options .= "<option$selected value=\"$id\">$wiki</option>\n";
 		}
-		$wgOut->addHtml( "<select id=\"wa-id-select\" onchange=\"wikia_id_select()\" name=\"wpWikiaID\">$options</select><br />\n" );
+		$wgOut->addHtml( "<select id=\"wa-id-select\" onchange=\"wikia_id_select()\" name=\"wpCurId\">$options</select><br />\n" );
 
 		# New wiki ID - revealed if Wiki ID set to "new"
 		$wgOut->addHtml( "<div id=\"wa-new-id\">" );
 		$wgOut->addHtml( wfMsg( 'wa-id-new' ) . "<br />" );
-		$wgOut->addHtml( "<input name=\"wa-new-id\" value=\"\" /><br />\n" );
+		$wgOut->addHtml( "<input name=\"wpNewId\" value=\"\" /><br />\n" );
 		$wgOut->addHtml( "</div>" );
 
 		# Site name
 		$wgOut->addHtml( "<br />" . wfMsg( 'wa-sitename' ) . "<br />" );
 		$wgOut->addHtml( "<input name=\"wpSitename\" value=\"{$this->sitename}\" /><br />\n" );
 
+		# Database dump list
+		$wgOut->addHtml( "<br />" . wfMsg( 'wa-dumps' ) . "<br />" );
+		$options = '';
+		foreach ( $wgWikiaDatabaseDumps as $name => $file ) {
+			$selected = $this->dump == $name ? " selected" : "";
+			$options .= "<option$selected>$name</option>\n";
+		}
+		$wgOut->addHtml( "<select name=\"wpDump\">$options</select><br />\n" );
+
 		# Domain selection
 		$wgOut->addHtml( "<br />" . wfMsg( 'wa-domains' ) . "<br />" );
-		$wgOut->addHtml( "<textarea name=\"wpDomains\">{$this->domains}</textarea><br />" );
+		if ( $wgWikiaAdminDomains === false ) {
+			$wgOut->addHtml( "<textarea name=\"wpDomains\">{$this->domains}</textarea><br />" );
+		} else {
+			foreach ( $wgWikiaAdminDomains as $domain ) {
+					$selected = $this->domain == $domain ? " selected" : "";
+					$options .= "<option$selected>$domain</option>\n";
+			}
+			$wgOut->addHtml( "<select name=\"wpDomain\">$options</select><br />\n" );
+			$wgOut->addHtml( "<input name=\"wpSubdomain\" value=\"{$this->subdomain}\" /><br />\n" );
+		}
 		$wgOut->addHtml( "<i>(" . wfMsg( 'wa-domain-naked' ) . ")</i><br />" );
 
 		# Sysop details
@@ -175,22 +187,7 @@ class WikiaAdmin extends SpecialPage {
 		$wgOut->addHtml( "<td><input type=\"password\" name=\"wpPass2\" /></td></tr>" );
 		$wgOut->addHtml( "</table></div>" );
 
-		# Load content from file
-		$wgOut->addHtml( "<div id=\"wa-load\">" );
-		$options = "<option />\n";
-		foreach ( glob( "/var/www/wikis/*" ) as $wiki ) {
-			if ( preg_match( "|([^/]+)$|", $wiki, $m ) ) {
-				$selected = $this->newid == $m[1] ? " selected" : "";
-				$options .= "<option$selected>$m[1]</option>\n";
-			}
-		}
-
-		# Save content from file
-		$wgOut->addHtml( "<div id=\"wa-save\">" );
-		$wgOut->addHtml( "</div>" );
-
-		# Render all the option groups
-
+		# Form submit
 		$wgOut->addHtml( "<br /><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa-submit' ) . "\" />" );
 		$wgOut->addHtml( "</form>" );
 	}
@@ -199,41 +196,36 @@ class WikiaAdmin extends SpecialPage {
 	 * Create or update a wiki in accord with submitted data
 	 */
 	function processForm() {
-		$dir = "/var/www/wikis/{$this->newid}";
-		$mw = "/var/www/mediawiki-{$this->codebase}";
 
 		# Validation (should use friendly JS instead)
 		if ( empty( $this->pass ) )                           return $this->error = wfMsg( 'wa_pwd_missing' );
 		if ( $this->pass !== $this->pass2 )                   return $this->error = wfMsg( 'wa_pwd_mismatch' );
 		if ( empty( $this->newid ) && empty( $this->curid ) ) return $this->error = wfMsg( 'wa_id_missing' );
-		if ( ereg( '[^a-zA-Z0-9_]', $this->newid ) )          return $this->error = wfMsg( 'wa_id_invalid' );
-		if ( is_dir( $dir ) )                                 return $this->error = wfMsg( 'wa_id_exists' );
+		if ( preg_match( "|[^a-z0-9_]|i", $this->newid ) )    return $this->error = wfMsg( 'wa_id_invalid' );
+		if ( in_array( $this->newid, $this->settings ) )      return $this->error = wfMsg( 'wa_id_exists' );
 		if ( empty( $this->domains ) )                        return $this->error = wfMsg( 'wa_domain_missing' );
 		if ( empty( $this->sitename ) )                       return $this->error = wfMsg( 'wa_sitename_missing' );
 		if ( empty( $this->user ) || preg_match( "|[^a-z0-9_]|i", $this->user ) ) return $this->error = wfMsg( 'wa_user_invalid' );
 
-		if ( !empty( $this->newid ) ) {
-			$id = $this->newid;
+		if ( $id = $this->newid ) {
+			global $wgWikiaDatabaseDumps;
 
-			# Create initial LocalSettings.php file content
-			$ls = "<?php\n";
-			$ls .= "\$wgSitename          = '{$this->sitename}';\n";
-			$ls .= "\$wgShortName         = '$id';\n";
-			$ls .= "\$wgDBname            = 'wikia';\n";
-			$ls .= "\$wgDBprefix          = '{$id}_';\n";
-			
+			# Create/Update settings for the selected wiki
+			$settings = $this->getSettings();
+			$settings[$id]['wgShortName'] = $id;
+			$settings[$id]['wgDBprefix']  = $id . '_';
+			$settings[$id]['wgSitename']  = $this->sitename;
+
 			# Add the database template to the "wikia" DB
-			$cmd = "/var/www/tools/add-db --sysop={$this->user}:{$this->pass} /var/www/empty-{$this->codebase}.sql wikia.{$id}_";
+			$sysop = $this->user ? $this->user . ':' . $this->pass : '';
+			$file = $wgWikiaDatabaseDumps[$this->dump];
+			$cmd = "/var/www/tools/add-db $sysop $file wikia.{$id}_";
 			$result = shell_exec( "$cmd 2>&1" );
-			if ( ereg( 'successfully', $result ) ) $this->result = wfMsg( 'wa_success', $this->sitename, $id );
+			if ( strpos( $result, 'successfully' ) ) $this->result = wfMsg( 'wa_success', $this->sitename, $id );
 			else return $this->error = $result;
 
-			# Add a wiki organisation
-			# - options: source site
-			# - content: extensions, articles, portals, images, RA css rules
-			
 			# Write new settings to this master wiki's settins file (DB.prefix)
-			$this->saveSettingsArray();
+			$this->saveSettings();
 		}
 	}
 
@@ -284,6 +276,53 @@ class WikiaAdmin extends SpecialPage {
 	 */
 	function setSettings( &$settings ) {
 		$this->settings = $settings;
+	}
+
+
+	/**
+	 * Apply any of the settings relating to the current wiki
+	 */
+	function applySettings() {
+
+		# Get domain of this request
+		global $wgWikiaImpliedSubdomains;
+		$pattern = "/^(" . join( '|', $wgWikiaImpliedSubdomains ) . ")\\./";
+		$domain  = preg_replace( $pattern, "", $_SERVER['HTTP_HOST'] );
+
+		# Get sub-wiki ID from domain
+		$id = false;
+		foreach( $this->settings as $wiki => $settings ) {
+			if ( in_array( 'domains', $settings ) ) {
+				foreach( split( "\n", $settings['domains'] ) as $d ) {
+					$d = preg_replace( $pattern, "", $d );
+					if ( $d === $domain ) $id = $wiki;
+				}
+			}
+			if ( in_array( 'domain', $settings ) ) {
+				$d = $settings['subdomain'] . '.' . $settings['domain'];
+				$d = preg_replace( $pattern, "", $domain );
+				if ( $d === $domain ) $id = $wiki;
+			}
+		}
+
+		# If this is a sub-wiki...
+		if ( $id ) {
+
+			# Apply its local settings
+			foreach( $this->settings[$id] as $setting => $value ) {
+				global $$setting;
+				$$setting = $value;
+			}
+
+			# Make the uploadpath a sub-directory and fallback on master's images
+			global $wgUploadPath, $wgUseSharedUploads, $wgSharedUploadDirectory, $wgSharedUploadPath;
+			$wgSharedUploadDirectory = $wgUploadPath;
+			$wgUploadPath .= '/' . $id;
+			if ( !is_dir( $wgUploadPath ) ) mkdir( $wgUploadPath );
+			$wgUseSharedUploads = true;
+			$wgSharedUploadPath = "http://" . $_SERVER['HTTP_HOST'] . "/files";
+
+		}
 	}
 }
 
