@@ -118,7 +118,7 @@ function efExtraMagicExpandAvatar( &$parser, $param ) {
 }
 
 function efExtraMagicExpandDonate( &$parser, $param ) {
-	return '<div class="portlet">
+	return array( '<div class="portlet">
 		<h5>Make a donation</h5>
 		<div class="pBody">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -129,7 +129,7 @@ function efExtraMagicExpandDonate( &$parser, $param ) {
 				$&nbsp;<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
 			</form>
 		</div>
-	</div>';
+	</div>', 'isHTML' => true);
 }
 
 /**
