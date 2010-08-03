@@ -12,7 +12,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '2.1.1, 2010-08-04' );
+define( 'EXTRAMAGIC_VERSION', '2.1.2, 2010-08-04' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -31,8 +31,7 @@ $wgCustomVariables = array(
 	'IPADDRESS',
 	'DOMAIN',
 	'NUMBERINGOFF',
-	'GUID',
-	'DONATION'
+	'GUID'
 );
 
 $wgExtensionFunctions[]                    = 'efSetupExtraMagic';
@@ -49,6 +48,7 @@ function efSetupExtraMagic() {
 	$wgParser->setFunctionHook( 'REQUEST', 'efExtraMagicExpandRequest', SFH_NO_HASH );
 	$wgParser->setFunctionHook( 'USERID',  'efExtraMagicExpandUserID',  SFH_NO_HASH );
 	$wgParser->setFunctionHook( 'AVATAR',  'efExtraMagicExpandAvatar',  SFH_NO_HASH );
+	$wgParser->setFunctionHook( 'DONATE',  'efExtraMagicExpandDonate',  SFH_NO_HASH );
 }
 
 /**
@@ -79,6 +79,7 @@ function efAddCustomVariableLang( &$langMagic, $langCode = 0 ) {
 	$langMagic['REQUEST'] = array( $langCode, 'REQUEST' );
 	$langMagic['USERID']  = array( $langCode, 'USERID' );
 	$langMagic['AVATAR']  = array( $langCode, 'AVATAR' );
+	$langMagic['DONATE']  = array( $langCode, 'DONATE' );
  
 	return true;
 }
@@ -114,6 +115,21 @@ function efExtraMagicExpandAvatar( &$parser, $param ) {
 		}
 	}
 	return '';
+}
+
+function efExtraMagicExpandDonate( &$parser, $param ) {
+	return '<div class="portlet">
+		<h5>Make a donation</h5>
+		<div class="pBody">
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+				<input type="hidden" name="cmd" value="_xclick">
+				<input type="hidden" name="business" value="SYUYL7GAGKFRY" />
+				<input type="hidden" name="item_name" value="Donation">
+				<input type="hidden" name="currency_code" value="USD">
+				$&nbsp;<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
+			</form>
+		</div>
+	</div>';
 }
 
 /**
@@ -172,21 +188,6 @@ function efGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
 		case MAG_GUID:
 			$parser->disableCache();
 			$ret = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
-		break;
-
-		case MAG_DONATION:
-			$ret = '<div class="portlet">
-				<h5>Make a donation</h5>
-				<div class="pBody">
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-						<input type="hidden" name="cmd" value="_xclick">
-						<input type="hidden" name="business" value="SYUYL7GAGKFRY" />
-						<input type="hidden" name="item_name" value="Donation">
-						<input type="hidden" name="currency_code" value="USD">
-						$&nbsp;<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
-					</form>
-				</div>
-			</div>';
 		break;
 
 	}
