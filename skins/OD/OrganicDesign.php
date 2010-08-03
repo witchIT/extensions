@@ -144,6 +144,23 @@ if ($wgUser->isLoggedIn()) {
 </div>
 
 <?php
+# Donations
+if ( $wgOrganicDesignDonations ) {?>
+	<div class="portlet">
+		<h5>Make a donation</h5>
+		<div class="pBody">
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+				<input type="hidden" name="cmd" value="_xclick">
+				<input type="hidden" name="business" value="SYUYL7GAGKFRY" />
+				<input type="hidden" name="item_name" value="Donation">
+				<input type="hidden" name="currency_code" value="USD">
+				$&nbsp;<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
+			</form>
+		</div>
+	</div>
+<?php }?>
+
+<?php
 # MediaWiki:Sidebar
 global $wgUser,$wgTitle,$wgParser;
 $title = 'od-sidebar';
