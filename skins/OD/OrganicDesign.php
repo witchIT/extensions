@@ -145,6 +145,7 @@ if ($wgUser->isLoggedIn()) {
 
 <?php
 # Donations
+global $wgOrganicDesignDonations;
 if ( $wgOrganicDesignDonations ) {?>
 	<div class="portlet">
 		<h5>Make a donation</h5>

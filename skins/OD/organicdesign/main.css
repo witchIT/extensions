@@ -630,12 +630,13 @@ special external link styling */
 	white-space: nowrap;
 }
 .portlet h5 {
+        font-size: 8pt;
+        color: black;
+        text-transform: none;
 	background: transparent;
 	padding: 0 1em 0 .5em;
 	display: inline;
 	height: 1em;
-	text-transform: lowercase;
-	font-size: 91%;
 	font-weight: normal;
 	white-space: nowrap;
 }
@@ -731,11 +732,6 @@ special external link styling */
 	z-index: 3;
 	padding: 5px 0;
 	margin: 0;
-}
-#p-search h5 {
-	font-size: 8pt;
-	color: black;
-	text-transform: none;
 }
 #p-search form {
 	padding: 0;
