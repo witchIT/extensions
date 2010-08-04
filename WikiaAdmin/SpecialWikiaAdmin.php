@@ -132,7 +132,7 @@ class WikiaAdmin extends SpecialPage {
 		$this->addJavaScript( $wgOut );
 		$wgOut->addHtml( "<h2>" . wfMsg( 'wa-title', $wgDBname ) . "</h2>\n" );
 		$wgOut->addHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">\n" );
-print_r($this->settings);
+
 		# Wiki ID
 		$wgOut->addHtml( wfMsg( 'wa-id' ) . ': ' );
 		$options = "<option value=\"new\">" . wfMsg( 'wa-new' ) . "...</option>\n";
