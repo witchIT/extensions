@@ -132,13 +132,13 @@ class WikiaAdmin extends SpecialPage {
 		$this->addJavaScript( $wgOut );
 		$wgOut->addHtml( "<h2>" . wfMsg( 'wa-title', $wgDBname ) . "</h2>\n" );
 		$wgOut->addHtml( "<form action=\"$url\" method=\"POST\" enctype=\"multipart/form-data\">\n" );
-
+print_r($this->settings);
 		# Wiki ID
 		$wgOut->addHtml( wfMsg( 'wa-id' ) . ': ' );
 		$options = "<option value=\"new\">" . wfMsg( 'wa-new' ) . "...</option>\n";
 		foreach( $this->settings as $id => $settings ) {
 			$selected = $this->newid == $id ? " selected" : "";
-			$wiki = $settings['sitename'];
+			$wiki = $settings['wgSitename'];
 			$options .= "<option$selected value=\"$id\">$wiki</option>\n";
 		}
 		$wgOut->addHtml( "<select id=\"wa-id-select\" onchange=\"wikia_id_select()\" name=\"wpCurId\">$options</select><br />\n" );
@@ -190,6 +190,7 @@ class WikiaAdmin extends SpecialPage {
 		# Form submit
 		$wgOut->addHtml( "<br /><input type=\"submit\" name=\"wpSubmit\" value=\"" . wfMsg( 'wa-submit' ) . "\" />" );
 		$wgOut->addHtml( "</form>" );
+		$wgOut->addHtml( "<script type='$wgJsMimeType'>wikia_id_select()</script>" );
 	}
 
 	/**
@@ -198,30 +199,29 @@ class WikiaAdmin extends SpecialPage {
 	function processForm() {
 
 		# Validation (should use friendly JS instead)
-		if ( empty( $this->pass ) )                           return $this->error = wfMsg( 'wa_pwd_missing' );
-		if ( $this->pass !== $this->pass2 )                   return $this->error = wfMsg( 'wa_pwd_mismatch' );
-		if ( empty( $this->newid ) && empty( $this->curid ) ) return $this->error = wfMsg( 'wa_id_missing' );
-		if ( preg_match( "|[^a-z0-9_]|i", $this->newid ) )    return $this->error = wfMsg( 'wa_id_invalid' );
-		if ( in_array( $this->newid, $this->settings ) )      return $this->error = wfMsg( 'wa_id_exists' );
-		if ( empty( $this->domains ) )                        return $this->error = wfMsg( 'wa_domain_missing' );
-		if ( empty( $this->sitename ) )                       return $this->error = wfMsg( 'wa_sitename_missing' );
-		if ( empty( $this->user ) || preg_match( "|[^a-z0-9_]|i", $this->user ) ) return $this->error = wfMsg( 'wa_user_invalid' );
+		if ( !empty( $this->user ) && empty( $this->pass ) )  return $this->error = wfMsg( 'wa-pwd-missing' );
+		if ( $this->pass !== $this->pass2 )                   return $this->error = wfMsg( 'wa-pwd-mismatch' );
+		if ( empty( $this->newid ) && empty( $this->curid ) ) return $this->error = wfMsg( 'wa-id-missing' );
+		if ( preg_match( "|[^a-z0-9_]|i", $this->newid ) )    return $this->error = wfMsg( 'wa-id-invalid' );
+		if ( in_array( $this->newid, $this->settings ) )      return $this->error = wfMsg( 'wa-id-exists' );
+		if ( empty( $this->domains ) )                        return $this->error = wfMsg( 'wa-domain-missing' );
+		if ( empty( $this->sitename ) )                       return $this->error = wfMsg( 'wa-sitename-missing' );
+		if ( !empty( $this->user ) && preg_match( "|[^a-z0-9_]|i", $this->user ) ) return $this->error = wfMsg( 'wa-user-invalid' );
 
 		if ( $id = $this->newid ) {
-			global $wgWikiaDatabaseDumps;
+			global $wgDBname, $wgWikiaDatabaseDumps;
 
 			# Create/Update settings for the selected wiki
-			$settings = $this->getSettings();
-			$settings[$id]['wgShortName'] = $id;
-			$settings[$id]['wgDBprefix']  = $id . '_';
-			$settings[$id]['wgSitename']  = $this->sitename;
+			$this->settings[$id]['wgShortName'] = $id;
+			$this->settings[$id]['wgDBprefix']  = $id . '_';
+			$this->settings[$id]['wgSitename']  = $this->sitename;
 
 			# Add the database template to the "wikia" DB
-			$sysop = $this->user ? $this->user . ':' . $this->pass : '';
+			$sysop = $this->user ? '--sysop=' . $this->user . ':' . $this->pass : '';
 			$file = $wgWikiaDatabaseDumps[$this->dump];
-			$cmd = "/var/www/tools/add-db $sysop $file wikia.{$id}_";
+			$cmd = "/var/www/tools/add-db $sysop $file $wgDBname.{$id}_";
 			$result = shell_exec( "$cmd 2>&1" );
-			if ( strpos( $result, 'successfully' ) ) $this->result = wfMsg( 'wa_success', $this->sitename, $id );
+			if ( strpos( $result, 'successfully' ) ) $this->result = wfMsg( 'wa-success', $this->sitename, $id );
 			else return $this->error = $result;
 
 			# Write new settings to this master wiki's settins file (DB.prefix)
