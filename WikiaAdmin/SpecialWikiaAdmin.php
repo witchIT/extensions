@@ -12,7 +12,7 @@ if ( !defined('MEDIAWIKI' ) ) die( "Not an entry point." );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', "2.0.9, 2010-08-03" );
+define( 'WIKIAADMIN_VERSION', "2.0.10, 2010-08-05" );
 
 # WikiaAdmin uses $wgWikiaSettingsDir/wgDBname to store the LocalSettings for
 # the wikis in this DB. It reads in the settings files and determines
@@ -149,6 +149,16 @@ class WikiaAdmin extends SpecialPage {
 		$wgOut->addHtml( "<input name=\"wpNewId\" value=\"\" /><br />\n" );
 		$wgOut->addHtml( "</div>" );
 
+		# Action - revealed only if ID set to an existing wiki
+		$wgOut->addHtml( "<div id=\"wa-action\">" );
+		$wgOut->addHtml( wfMsg( 'wa-action', $id ) . "<br />" );
+		$wgOut->addHtml( "<select id=\"wa-action-select\" onchange=\"wikia_action_select()\" name=\"wpAction\">
+				<option value=\"1\">" . wfMsg( 'wa-backup-wiki' ) . "</option>
+				<option value=\"2\">" . wfMsg( 'wa-update-wiki' ) . "</option>
+				<option value=\"3\">" . wfMsg( 'wa-delete-wiki' ) . "</option>
+			</select><br />\n");
+		$wgOut->addHtml( "</div>" );
+
 		# Site name
 		$wgOut->addHtml( "<br />" . wfMsg( 'wa-sitename' ) . "<br />" );
 		$wgOut->addHtml( "<input name=\"wpSitename\" value=\"{$this->sitename}\" /><br />\n" );
@@ -215,6 +225,7 @@ class WikiaAdmin extends SpecialPage {
 			$this->settings[$id]['wgShortName'] = $id;
 			$this->settings[$id]['wgDBprefix']  = $id . '_';
 			$this->settings[$id]['wgSitename']  = $this->sitename;
+			$this->saveSettings();
 
 			# Add the database template to the "wikia" DB
 			$sysop = $this->user ? '--sysop=' . $this->user . ':' . $this->pass : '';
@@ -223,9 +234,6 @@ class WikiaAdmin extends SpecialPage {
 			$result = shell_exec( "$cmd 2>&1" );
 			if ( strpos( $result, 'successfully' ) ) $this->result = wfMsg( 'wa-success', $this->sitename, $id );
 			else return $this->error = $result;
-
-			# Write new settings to this master wiki's settins file (DB.prefix)
-			$this->saveSettings();
 		}
 	}
 
@@ -237,16 +245,34 @@ class WikiaAdmin extends SpecialPage {
 		global $wgJsMimeType;
 		$out->addScript( "<script type='$wgJsMimeType'>
 			function wikia_id_select() {
-				if ($('#wa-id-select').val() == 'new') $('#wa-new-id').show(); else $('#wa-new-id').hide();
+				if ($('#wa-id-select').val() == 'new') {
+					$('#wa-new-id').show();
+					$('#wa-new-action').hide();
+				} else {
+					$('#wa-new-id').hide();
+					$('#wa-new-action').show();
+				}
+			}
+			function wikia_action_select() {
+				if ($('#wa-id-select').val() == 'new') {
+
+				} else {
+
+				}
 			}
 		</script>" );
+		
+		# TODO: the JS should add the settings array so that form inputs can be
+		#       pre-filled when existing wiki's selected
+		
 	}
 
 
 	/**
 	 * Load the settings array from persistent storage
+	 * TODO: change to human readable format
 	 */
-	function loadSettings() {
+	function loadSettings( $wiki ) {
 		global $wgWikiaSettingsFile;
 		if ( file_exists( $wgWikiaSettingsFile ) ) {
 			$this->settings = unserialize( file_get_contents( $wgWikiaSettingsFile ) ); 
@@ -256,8 +282,9 @@ class WikiaAdmin extends SpecialPage {
 
 	/**
 	 * Save the settings array to persistent storage
+	 * TODO: change to human readable format
 	 */
-	function saveSettings() {
+	function saveSettings( $wiki ) {
 		global $wgWikiaSettingsFile;
 		file_put_contents( $wgWikiaSettingsFile, serialize( $this->settings ) );
 	}
@@ -266,16 +293,41 @@ class WikiaAdmin extends SpecialPage {
 	/**
 	 * Return the settings array (for use by other extensions)
 	 */
-	function getSettings() {
-		return $this->settings;
+	function getSettings( $wiki, $format = false ) {
+		$settings = '';
+		switch( $format ) {
+
+			# Returns the settings as LocalSettings.php includable PHP text
+			case 'PHP':
+				if ( is_array( $this->settings[$wiki] ) ) {
+					foreach( $this->settings[$wiki] as $k => $v ) $settings .= "\$$k = \"$v\";\n";
+				}
+				$settings = "wikiaSettings = \{$settings\};\n";
+			break;
+
+			# Returns the settings as a JavaScript array statement
+			case 'JS':
+				if ( is_array( $this->settings[$wiki] ) ) {
+					$c = "\n";
+					foreach( $this->settings[$wiki] as $k => $v ) {
+						$settings .= "$c\t\"$k\": \"$v\"";
+						$c = ",\n";
+					}
+				}
+				$settings = "wikiaSettings = \{$settings\n\};\n";
+			break;
+
+			default: $settings = $this->settings;
+		}
+		return $settings;
 	}
 
 
 	/**
 	 * Update the settings array (for use by other extensions)
 	 */
-	function setSettings( &$settings ) {
-		$this->settings = $settings;
+	function setSettings( &$settings, $wiki ) {
+		$this->settings[$wiki] = $settings;
 	}
 
 
@@ -324,6 +376,17 @@ class WikiaAdmin extends SpecialPage {
 
 		}
 	}
+
+	/**
+	 * Get filename to use for a backup, append ".2" etc if exists
+	 */
+	function getBackupFilename( $wiki ) {
+		global $wgDBname;
+		# TODO
+		return $filename;
+	}
+
+
 }
 
 /*
