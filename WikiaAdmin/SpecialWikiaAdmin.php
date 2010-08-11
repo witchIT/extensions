@@ -167,7 +167,7 @@ class WikiaAdmin extends SpecialPage {
 
 		# Action - revealed only if ID set to an existing wiki
 		$wgOut->addHtml( "<div id=\"wa-action\">" );
-		$wgOut->addHtml( "<br />" . wfMsg( 'wa-action', $id ) . "<br />" );
+		$wgOut->addHtml( "<br />" . wfMsg( 'wa-action' ) . "<br />" );
 		$wgOut->addHtml( "<select id=\"wa-action-select\" onchange=\"wikia_action_select()\" name=\"wpAction\">
 				<option value=\"1\">" . wfMsg( 'wa-update-wiki' ) . "</option>
 				<option value=\"2\">" . wfMsg( 'wa-backup-wiki' ) . "</option>
@@ -458,6 +458,7 @@ class WikiaAdmin extends SpecialPage {
 		# Dump the tables and compress
 		shell_exec( "mysqldump -u $wgDBuser --password='$wgDBpassword' --add-drop-database $wgDBname $tables > $file.tmp" );
 		shell_exec( "7za a $file $file.tmp" );
+		$this->result = wfMsg( 'wa-backup-success', $wiki, $file, filesize( $file ), filesize( "$file.tmp" ) );
 		unlink( "$file.tmp" );
 
 	}
