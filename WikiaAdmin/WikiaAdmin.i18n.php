@@ -33,7 +33,7 @@ $messages['en'] = array(
 	'wa-domains' => "Domains",
 	'wa-domain-naked' => "naked domains automatically work for www and wiki as well",
 	'wa-domain-missing' => "No domain specified!",
-	'wa-action' => "Select the action you wish to perform on the \"$1\"wiki",
+	'wa-action' => "Select the action you wish to perform on the \"$1\" wiki",
 	'wa-backup-wiki' => "Backup wiki to file",
 	'wa-update-wiki' => "Update wiki properties",
 	'wa-delete-wiki' => "Delete wiki",
@@ -41,4 +41,6 @@ $messages['en'] = array(
 	'wa-success' => "Wiki \"$1\" ($2) created successfully!",
 	'wa-dumps'=> "Select a wiki template database",
 	'wa-no-dumps'=> "There are no database dumps to use for new wikis!",
+	'wa-delete-confirm' => "Are you certain you want to delete this wiki?",
+	'wa-delete-cancelled' => "Delete action not confirmed, nothing done.",
 );
