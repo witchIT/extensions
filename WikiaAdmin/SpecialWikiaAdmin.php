@@ -12,7 +12,7 @@ if ( !defined('MEDIAWIKI' ) ) die( "Not an entry point." );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', "2.1.0, 2010-09-09" );
+define( 'WIKIAADMIN_VERSION', "2.2.4, 2010-09-13" );
 
 # The settings for all wikis under this master wiki are stored in a files called DBNAME.settings.php
 # - note each file must be for all wikis so that the wiki that
@@ -58,11 +58,8 @@ class WikiaAdmin {
 
 	function __construct() {
 
-		# Load the localsettings array for this master wiki (by DB.prefix)
+		# Load the localsettings array for this DB and apply the settings for this domain
 		$this->loadSettings();
-
-		# Apply any localsettings relating to this sub-wiki (by domain)
-		# - also sets $this->wiki
 		$this->applySettings();
 
 		# If this is the master wiki, ininitialise the special page
@@ -70,7 +67,7 @@ class WikiaAdmin {
 			global $wgExtensionFunctions, $wgSpecialPages, $wgSpecialPageGroups;
 			$wgExtensionFunctions[] = array( $this, "setupSpecialPage" );
 			$wgSpecialPages['WikiaAdmin'] = "WikiaAdmin";
-			$wgSpecialPageGroups['WikiaAdmin'] = "od";
+			#$wgSpecialPageGroups['WikiaAdmin'] = "wiki";
 		}
 
 	}
@@ -251,7 +248,7 @@ class SpecialWikiaAdmin extends SpecialPage {
 	 * Override SpecialPage::execute()
 	 */
 	function execute() {
-		global $wgOut, $wgRequest, $wgWikiaDatabaseDumps;
+		global $wgOut, $wgRequest, $wgWikiaDatabaseDumps, $wgWikiaImpliedSubdomains;
 		$this->setHeaders();
 
 		# Die if there are no database dumps to use for new wikis
@@ -272,8 +269,14 @@ class SpecialWikiaAdmin extends SpecialPage {
 			$this->dump      = $wgRequest->getText( 'wpDump' );
 			$this->delete    = $wgRequest->getText( 'wpDelete' );
 
-			if ( $wgRequest->getText( 'wpDomain' ) ) $this->domains = array( strtolower( $wgRequest->getText( 'wpDomain' ) ) );
-			if ( $wgRequest->getText( 'wpDomains' ) ) $this->domains = preg_split( "|[\r\n]+|", strtolower( $wgRequest->getText( 'wpDomains' ) ) );
+			# Ensure domains are an array with no implied domain parts
+			if ( $wgRequest->getText( 'wpDomain' ) ) $domains = array( strtolower( $wgRequest->getText( 'wpDomain' ) ) );
+			if ( $wgRequest->getText( 'wpDomains' ) ) $domains = preg_split( "|[\r\n]+|", strtolower( $wgRequest->getText( 'wpDomains' ) ) );
+			$pattern = "/^(" . join( "|", $wgWikiaImpliedSubdomains ) . ")\\./";
+			foreach( $domains as $i => $d ) {
+				$d = preg_replace( "|\s+|", "", $d );
+				if( $d = preg_replace( $pattern, "", $d ) ) $this->domains[$i] = $d;
+			}
 
 			# Process the form
 			$this->processForm();
@@ -293,7 +296,7 @@ class SpecialWikiaAdmin extends SpecialPage {
 	 * Render the special page form and populate with posted data or defaults
 	 */
 	function renderForm() {
-		global $wgOut, $wgDBname, $wgJsMimeType, $wgWikiaAdminDomains, $wgWikiaDatabaseDumps;
+		global $wgOut, $wgDBname, $wgJsMimeType, $wgWikiaAdmin, $wgWikiaAdminDomains, $wgWikiaDatabaseDumps;
 		$url = Title::newFromText( 'WikiaAdmin', NS_SPECIAL )->getLocalUrl();
 		$this->addJavaScript( $wgOut );
 		$wgOut->addHtml( "<h2>" . wfMsg( 'wa-title', $wgDBname ) . "</h2>\n" );
@@ -302,7 +305,7 @@ class SpecialWikiaAdmin extends SpecialPage {
 		# Wiki ID
 		$wgOut->addHtml( wfMsg( 'wa-id' ) . ": " );
 		$options = "<option value=\"new\">" . wfMsg( 'wa-new' ) . "...</option>\n";
-		foreach( $this->settings as $id => $settings ) {
+		foreach( $wgWikiaAdmin->settings as $id => $settings ) {
 			$selected = $this->newid == $id ? " selected" : "";
 			$wiki = $settings['wgSitename'];
 			$options .= "<option$selected value=\"$id\">$wiki</option>\n";
@@ -387,37 +390,14 @@ class SpecialWikiaAdmin extends SpecialPage {
 
 		# Create a new wiki
 		if( $id = $this->newid ) {
-			global $wgWikiaAdmin, $wgDBname, $wgWikiaDatabaseDumps;
-
-			# Validation (should use friendly JS instead)
-			if( !empty( $this->user ) && empty( $this->pass ) )     return $this->error = wfMsg( 'wa-pwd-missing' );
-			if( $this->pass !== $this->pass2 )                      return $this->error = wfMsg( 'wa-pwd-mismatch' );
-			if( preg_match( "|[^a-z0-9_]|i", $this->newid ) )       return $this->error = wfMsg( 'wa-id-invalid' );
-			if( array_key_exists( $this->newid, $this->settings ) ) return $this->error = wfMsg( 'wa-id-exists' );
-			if( count( $this->domains ) == 0 )                      return $this->error = wfMsg( 'wa-domain-missing' );
-			if( empty( $this->sitename ) )                          return $this->error = wfMsg( 'wa-sitename-missing' );
-			if( !empty( $this->user ) && preg_match( "|[^a-z0-9_]|i", $this->user ) ) return $this->error = wfMsg( 'wa-user-invalid' );
-
-			# Create/Update settings for the selected wiki
-			$wgWikiaAdmin->settings[$id]['wgShortName'] = $id;
-			$wgWikiaAdmin->settings[$id]['wgDBprefix']  = $id . '_';
-			$wgWikiaAdmin->settings[$id]['wgSitename']  = $this->sitename;
-			$wgWikiaAdmin->settings[$id]['domains']     = $this->domains;
-			$wgWikiaAdmin->saveSettings();
-
-			# Add the database template to the "wikia" DB
-			$sysop = $this->user ? '--sysop=' . $this->user . ':' . $this->pass : '';
-			$file = $wgWikiaDatabaseDumps[$this->dump];
-			$cmd = "/var/www/tools/add-db $sysop $file $wgDBname.{$id}_";
-			$result = shell_exec( "$cmd 2>&1" );
+			$result = $this->createWiki( $id );
 			if ( strpos( $result, 'successfully' ) ) $this->result = wfMsg( 'wa-success', $this->sitename, $id );
 			else return $this->error = $result;
 		}
 
 		# Update wiki properties
 		elseif( $this->action == 1 ) {
-			# TODO
-			$wgWikiaAdmin->saveSettings();
+			$this->updateWiki();
 		}
 
 		# Backup wiki
@@ -431,6 +411,87 @@ class SpecialWikiaAdmin extends SpecialPage {
 			else $this->error = wfMsg( 'wa-delete-cancelled' );
 		}
 
+	}
+
+
+	function createWiki( $wiki ) {
+			global $wgWikiaAdmin, $wgDBname, $wgDBprefix, $wgWikiaDatabaseDumps;
+
+			# Validation (should use friendly JS instead)
+			if( !empty( $this->user ) && empty( $this->pass ) )             return $this->error = wfMsg( 'wa-pwd-missing' );
+			if( $this->pass !== $this->pass2 )                              return $this->error = wfMsg( 'wa-pwd-mismatch' );
+			if( preg_match( "|[^a-z0-9_]|i", $this->newid ) )               return $this->error = wfMsg( 'wa-id-invalid' );
+			if( array_key_exists( $this->newid, $wgWikiaAdmin->settings ) ) return $this->error = wfMsg( 'wa-id-exists' );
+			if( count( $this->domains ) == 0 )                              return $this->error = wfMsg( 'wa-domain-missing' );
+			if( empty( $this->sitename ) )                                  return $this->error = wfMsg( 'wa-sitename-missing' );
+			if( !empty( $this->user ) && preg_match( "|[^a-z0-9_]|i", $this->user ) ) return $this->error = wfMsg( 'wa-user-invalid' );
+
+			# Create/Update settings for the selected wiki
+			$id = $this->newid ? $this->newid : $this->curid;
+			$wgWikiaAdmin->settings[$id]['wgShortName'] = $id;
+			$wgWikiaAdmin->settings[$id]['wgDBprefix']  = $id . '_';
+			$wgWikiaAdmin->settings[$id]['wgSitename']  = $this->sitename;
+			$wgWikiaAdmin->settings[$id]['domains']     = $this->domains;
+			$wgWikiaAdmin->saveSettings();
+
+			# Create a domain symlink if this is an OD-Wikia setup
+			$target = str_replace( "_", "", "/var/www/wikis/$wgDBprefix" );
+			if( is_dir( "/var/www/domains" ) && is_dir( $target ) ) {
+				if( is_writable( "/var/www/domains" ) ) {
+					foreach( $this->domains as $domain ) {
+						if( file_exists( "/var/www/domains/$domain" ) ) return $this->error = "$domain symlink exists!";
+						symlink( $target, "/var/www/domains/$domain" );
+					}
+				} else return $this->error = wfMsg( 'wa-domain-unwritable' );
+			}
+
+			# Add the database template to the "wikia" DB
+			$sysop = $this->user ? '--sysop=' . $this->user . ':' . $this->pass : '';
+			$file = $wgWikiaDatabaseDumps[$this->dump];
+			$cmd = "/var/www/tools/add-db $sysop $file $wgDBname.{$id}_";
+
+			# Execute the add-db command returning the result
+			return shell_exec( "$cmd 2>&1" );
+	}
+
+
+	function updateWiki( $wiki ) {
+		# TODO
+		return $this->error = "Ooops updating wikis hasn't been done yet!";
+		$wgWikiaAdmin->saveSettings();
+	}
+
+	function deleteWiki( $wiki ) {
+		# TODO
+		return $this->error = "Ooops deleting wikis hasn't been done yet!";
+		$this->backupWiki( $wiki );
+	}
+
+
+	function backupWiki( $wiki ) {
+		global $wgDBuser, $wgDBpassword, $wgWikiaBackupDir, $wgDBname;
+
+		# Create a unique filename for the backup
+		$date = strftime( "%Y%m%d" );
+		$n = 0;
+		do {
+			$m = $n ? ".$n" : "";
+			$file = "$wgWikiaBackupDir/$wgDBname-$wiki-$date$m.sql.7z";
+			$n++;
+		} while( file_exists( $file ) );
+
+		# List the tables with this prefix
+		$tables = '';
+		$dbr = wfGetDB( DB_SLAVE );
+		$res = $dbr->query( "SHOW TABLES LIKE '{$wiki}_%';"  );
+		while ( $row = $dbr->fetchRow( $res ) ) $tables .= ' ' . $row[0];
+		$dbr->freeResult( $res );
+
+		# Dump the tables and compress
+		shell_exec( "mysqldump -u $wgDBuser --password='$wgDBpassword' --add-drop-database $wgDBname $tables > $file.tmp" );
+		shell_exec( "7za a $file $file.tmp" );
+		$this->result = wfMsg( 'wa-backup-success', $wiki, $file, filesize( $file ), filesize( "$file.tmp" ) );
+		unlink( "$file.tmp" );
 	}
 
 
@@ -472,46 +533,6 @@ class SpecialWikiaAdmin extends SpecialPage {
 		# TODO: the JS should add the settings array so that form inputs can be
 		#       pre-filled when existing wiki's selected
 		
-	}
-
-
-	/**
-	 * Backup the specified wiki to a sql.7z file
-	 */
-	function backupWiki( $wiki ) {
-		global $wgDBuser, $wgDBpassword, $wgWikiaBackupDir, $wgDBname;
-
-		# Create a unique filename for the backup
-		$date = strftime( "%Y%m%d" );
-		$n = 0;
-		do {
-			$m = $n ? ".$n" : "";
-			$file = "$wgWikiaBackupDir/$wgDBname-$wiki-$date$m.sql.7z";
-			$n++;
-		} while( file_exists( $file ) );
-
-		# List the tables with this prefix
-		$tables = '';
-		$dbr = wfGetDB( DB_SLAVE );
-		$res = $dbr->query( "SHOW TABLES LIKE '{$wiki}_%';"  );
-		while ( $row = $dbr->fetchRow( $res ) ) $tables .= ' ' . $row[0];
-		$dbr->freeResult( $res );
-
-		# Dump the tables and compress
-		shell_exec( "mysqldump -u $wgDBuser --password='$wgDBpassword' --add-drop-database $wgDBname $tables > $file.tmp" );
-		shell_exec( "7za a $file $file.tmp" );
-		$this->result = wfMsg( 'wa-backup-success', $wiki, $file, filesize( $file ), filesize( "$file.tmp" ) );
-		unlink( "$file.tmp" );
-
-	}
-
-	/**
-	 * Delete a wiki
-	 */
-	function deleteWiki( $wiki ) {
-		# TODO
-		return $this->error = "Ooops deleting wikis hasn't been done yet!";
-		$this->backupWiki( $wiki );
 	}
 }
 

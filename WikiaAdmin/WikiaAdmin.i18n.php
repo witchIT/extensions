@@ -33,6 +33,7 @@ $messages['en'] = array(
 	'wa-domains' => "Domains",
 	'wa-domain-naked' => "naked domains automatically work for www and wiki as well",
 	'wa-domain-missing' => "No domain specified!",
+	'wa-domain-unwritable' => "Cannot write to /var/www/domains!",
 	'wa-action' => "Select the action you wish to perform on the selected wiki",
 	'wa-backup-wiki' => "Backup wiki to file",
 	'wa-backup-success' => "Wiki \"$1\" backed up to $2, compressed to $3 bytes from $4 bytes",
