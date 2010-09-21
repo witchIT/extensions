@@ -12,7 +12,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @licence GNU General Public Licence 2.0 or later
  */
 
-define( 'TRANSFORMCHANGES_VERSION', '2.0.1, 2010-06-27' );
+define( 'TRANSFORMCHANGES_VERSION', "2.0.2, 2010-09-21" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "TransformChanges",
@@ -34,12 +34,12 @@ function wfTransformChanges() {
 	global $wgOut;
 
 	# Bail if not recentchanges or watchlist
-	if ( strpos( $wgOut->getHTMLTitle(), wfMsg('recentchanges') ) !== 0
-		&& strpos( $wgOut->getHTMLTitle(), wfMsg('watchlist') ) !== 0 ) return true;
+	if ( strpos( $wgOut->getHTMLTitle(), wfMsg( 'recentchanges' ) ) !== 0
+		&& strpos( $wgOut->getHTMLTitle(), wfMsg( 'watchlist' ) ) !== 0 ) return true;
 
 	$text =& $wgOut->mBodytext;
-	$text = preg_replace( '|<li[^>]+>|s', '<li>', $text );
-	$text = preg_replace( '|(</ul>\\s*)?<h4>(.+?)</h4>\\s*(<ul class="special">)<li>|s', '$3<li $2>', $text );
+	$text = preg_replace( "|<li[^>]+>|s", "<li>", $text );
+	$text = preg_replace( "|(</ul>\\s*)?<h4>(.+?)</h4>\\s*(<ul class=\"special\">)<li>|s", "$3<li $2>", $text );
 
 	# Edits by Fish1203
 	# (http://www.mediawiki.org/wiki/User:Fish1203)
@@ -94,7 +94,7 @@ function wfTransformChanges() {
 function wfTransformChangesUL( $match ) {
 	global $wgTransformChangesRow;
 	$wgTransformChangesRow = 'odd';
-	$rows = preg_replace_callback( '|<li\\s*(.*?)>(.+?)</li>|s', 'wfTransformChangesLI', $match[1] );
+	$rows = preg_replace_callback( "|<li\\s*(.*?)>(.+?)</li>|s", 'wfTransformChangesLI', $match[1] );
 	return $rows;
 }
 
@@ -109,8 +109,8 @@ function wfTransformChangesLI( $match ) {
 	$cols = array( 'time', 'diff', 'title', 'comment', 'user', 'info' );
 
 	$ncols = count( $cols );
-	$row = '';
-	$error = '<td colspan="$ncols"><font color="red"><b>Error: match failed!</b></font></td>';
+	$row = "";
+	$error = "<td colspan=\"$ncols\"><font color=\"red\"><b>Error: match failed!</b></font></td>";
 	if ( $date ) {
 		$row = "<tr><td class=\"heading\" colspan=\"$ncols\">$date</td></tr>\n"; 
 		$wgTransformChangesRow = 'even';
@@ -122,42 +122,42 @@ function wfTransformChangesLI( $match ) {
 	}
 	$row .= "<tr class=\"mw-line-$wgTransformChangesRow\">";
 
-	if (preg_match( '%^(.*?);(&#32;|\\s+)(\\d+:\\d+)(.+?)(<a.+?</a>\\))(</span>)?\\s*(.*?)$%', $text, $m ) ) {
+	if ( preg_match( "%^(.*?);(&#32;|\\s+)(\\d+:\\d+)(.+?)(<a.+?</a>\\))(</span>)?\\s*(.*?)$%", $text, $m ) ) {
 		list( , $diff,, $time, $bytes, $user,, $comment ) = $m;
 
-		if ( preg_match( '|^(.+\\)).*?\\. \\.\\s*(.*?)\\s*(<a.+)$|', $diff, $m ) ) list( , $diff, $info, $title ) = $m; else $info = $title = '';
-		if ( preg_match( '|(\\(.+?\\))|', $bytes, $m ) ) $info .= "<small>$m[1]</small>";
+		if ( preg_match( "|^(.+\\)).*?\\. \\.\\s*(.*?)\\s*(<a.+)$|", $diff, $m ) ) list( , $diff, $info, $title ) = $m; else $info = $title = '';
+		if ( preg_match( "|(\\(.+?\\))|", $bytes, $m ) ) $info .= "<small>$m[1]</small>";
 
 		# Remove talk for email or IP users and make user lowercase
-		if ( preg_match('|(<a.+?</a>).+?(\\(.+?</a>\\))|', $user, $m ) ) {
+		if ( preg_match( "|(<a.+?</a>).+?(\\(.+?</a>\\))|", $user, $m ) ) {
 			list( , $user, $talk ) = $m;
-			if ( ereg( '@', $user ) || !eregi( '[a-z]',$user ) ) {
+			if ( preg_match( "|@|", $user ) || !preg_match( "|[a-z]|i", $user ) ) {
 				$talk = '';
 				$user = strtolower( $user );
 			}
 		}
 
 		# Remove brackets from comment
-		if (preg_match('|^<.+?>\\((.+)\\)<|', $comment, $m)) $comment = $m[1];
+		if ( preg_match( "|^<.+?>\\((.+)\\)<|", $comment, $m ) ) $comment = $m[1];
 
 		# Only show row if ok by SimpleSecurity extension
 		$allowed = true;
-		if ( preg_match('|title="(.+?)"|', $title, $m ) && is_object( $wgSimpleSecurity ) ) {
+		if ( preg_match( "|title=\"(.+?)\"|", $title, $m ) && is_object( $wgSimpleSecurity ) ) {
 			global $wgUser;
 			$t = Title::newFromText( $m[1] );
-			$allowed = version_compare( SIMPLESECURITY_VERSION, '4.0.0' ) < 0
+			$allowed = version_compare( SIMPLESECURITY_VERSION, "4.0.0" ) < 0
 				? $wgSimpleSecurity->validateTitle( 'view', $t )
 				: $wgSimpleSecurity->userCanReadTitle( $wgUser, $t, $error );
 		}
 
 		# OrganicDesign has an edit link instead of talk and hist
-		$talk = preg_replace( '| \\|.+</a>|', '', $talk );
-		$diff = preg_replace( '|curid=[0-9]+&(amp;)?action=history|', 'action=edit', $diff );
-		$diff = preg_replace( '|>hist<|', '>edit<', $diff );
+		$talk = preg_replace( "| \\|.+</a>|", "", $talk );
+		$diff = preg_replace( "|curid=[0-9]+&(amp;)?action=history|", "action=edit", $diff );
+		$diff = preg_replace( "|>hist<|", ">edit<", $diff );
 		$user .= "&nbsp;<small>$talk</small>";
 
 		if ( $allowed ) foreach ( $cols as $col ) {
-			$val = isset($$col) ? $$col : '';
+			$val = isset($$col) ? $$col : "";
 			$row .= "<td class=\"$col\">$val</td>";
 		}
 	} else $row = $error;
