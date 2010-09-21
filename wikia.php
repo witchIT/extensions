@@ -152,6 +152,7 @@ if ( $wgSiteDown && !$wgCommandLineMode ) {
 $wgUploadDirectory  = $_SERVER['DOCUMENT_ROOT'] . "$wgUploadPath"; # allows wiki's settings to change images location
 $wgLocalInterwiki   = $wgSitename;
 if ( $wgEmergencyContact === false ) $wgEmergencyContact = $wgPasswordSender = 'admin@' . str_replace( 'www.', '', $domain );
+
 $wgNoReplyAddress = "";
 
 # Add wikia.css
