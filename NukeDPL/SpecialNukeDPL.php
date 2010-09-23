@@ -13,7 +13,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not a valid entry point.' );
 
-define( 'NUKEDPL_VERSION', '1.2.1, 2009-03-20' );
+define( 'NUKEDPL_VERSION', '1.2.2, 2010-09-23' );
 
 $wgGroupPermissions['sysop']['nuke'] = true;
 $wgAvailableRights[]                 = 'nuke';
@@ -166,10 +166,12 @@ class SpecialNukeDPL extends SpecialPage {
 
 	function doDelete( $pages, $reason ) {
 		foreach ( $pages as $page ) {
-			$title = Title::newFromUrl( $page );
-			$article = new Article( $title );
-			$article->doDelete( $reason );
+			if( $title = Title::newFromText( $page ) ) {
+				$article = new Article( $title );
+				$article->doDelete( $reason );
+			} else die( "Bad title: \"$page\"" );
 		}
 	}
+
 }
 
