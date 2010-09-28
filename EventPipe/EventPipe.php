@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'EVENTPIPE_VERSION', '1.2.0, 2010-02-08' );
+define( 'EVENTPIPE_VERSION', '1.2.1, 2010-09-28' );
 
 $wgEventPipePort = '1729';
 $wgEventPipeList = array( 'RevisionInsertComplete', 'UserLoginComplete', 'PrefsPasswordAudit', 'AddNewAccount' );
@@ -39,7 +39,7 @@ function wfEventPipeSend( $hook, $args ) {
 	global $wgEventPipePort, $wgSitename, $wgServer, $wgScript;
 
 	# A hack to ensure that the mTitle arg of Revisions is set properly even if article changed from Special page
-	if ( is_a( $args[0], 'Revision' ) ) {
+	if ( isset( $args[0] ) && is_a( $args[0], 'Revision' ) ) {
 		$rev =& $args[0];
 		if ( empty( $rev->mTitle ) && $rev->mPage > 0 ) {
 			if ( $title = Title::newFromID( $rev->mPage ) ) $rev->mTitle = $title->getPrefixedText();
