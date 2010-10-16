@@ -4,9 +4,9 @@
 # - Author: [http://www.organicdesign.co.nz/nad User:Nad]{{Category:Extensions created with Template:Extension}}
 # - Started: 2007-07-25
  
-if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
+if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  
-define( 'CURRENTUSERS_VERSION', '1.0.4, 2008-06-07' );
+define( 'CURRENTUSERS_VERSION', '1.0.5, 2010-10-16' );
 
 $egCurrentUsersMagic           = 'currentusers';
 $egCurrentUsersTemplate        = 'CurrentUsers';
@@ -29,7 +29,7 @@ $wgExtensionCredits['parserhook'][] = array(
 function efSetupCurrentUsers() {
 	global $wgUser, $wgParser, $egCurrentUsers, $egCurrentUsersTimeout, $egCurrentUsersMagic;
 	$wgParser->setFunctionHook( $egCurrentUsersMagic, 'efCurrentUsersMagic' );
-	if ( strtolower( $_REQUEST['title'] ) == 'robots.txt' ) $bot = 'bot';
+	if( strtolower( $_REQUEST['title'] ) == 'robots.txt' ) $bot = 'bot';
 	else $bot = '';
 	$file = dirname( __FILE__ ) . '/CurrentUsers.txt';
 	$data = file( $file );
@@ -39,12 +39,12 @@ function efSetupCurrentUsers() {
 	$user = $wgUser->getUserPage()->getText();
 	$egCurrentUsers = array( "$h:$m:$user" );
         $bot = '';
-	foreach ( $data as $item ) {
+	foreach( $data as $item ) {
 		list( $h, $m, $u, $b ) = split( ':', trim( $item ) );
 		$age = $now-$h*60-$m;
-		if ( $age < 0 ) $age += 1440;
-		if ( $u == $user && $b == 'bot' ) $bot = $b;
-		if ( $u != '' && $u != $user && $age < $egCurrentUsersTimeout ) $egCurrentUsers[] = "$h:$m:$u:$b";
+		if( $age < 0 ) $age += 1440;
+		if( $u == $user && $b == 'bot' ) $bot = $b;
+		if( $u != '' && $u != $user && $age < $egCurrentUsersTimeout ) $egCurrentUsers[] = "$h:$m:$u:$b";
 	}
 	$egCurrentUsers[0] .= ":$bot";
 	file_put_contents( $file, join( "\n", $egCurrentUsers ) );
@@ -65,13 +65,13 @@ function efCurrentUsersMagic( &$parser ) {
 	$users = '';
 	$guests = 0;
 	$bots = 0;
-	foreach ( $egCurrentUsers as $item ) {
-		list( $h, $m, $u, $b ) = split( ':', $item );
-		if ( User::isIP( $u ) ) $b ? $bots++ : $guests++;
+	foreach( $egCurrentUsers as $item ) {
+		list( $h, $m, $u, $b ) = preg_split( "|:|", $item );
+		if( User::isIP( $u ) ) $b ? $bots++ : $guests++;
 		else $users .= "{" . "{" . "$egCurrentUsersTemplate|$h:$m|$u|}" . "}\n";
 	}
-	if ( $guests ) $users .= "{" . "{" . "$egCurrentUsersTemplate|Guests||$guests}" . "}\n";
-	if ( $bots )   $users .= "{" . "{" . "$egCurrentUsersTemplate|Robots||$bots}" . "}\n";
+	if( $guests ) $users .= "{" . "{" . "$egCurrentUsersTemplate|Guests||$guests}" . "}\n";
+	if( $bots )   $users .= "{" . "{" . "$egCurrentUsersTemplate|Robots||$bots}" . "}\n";
 	$users =  $parser->preprocess( $users, $wgTitle, $parser->mOptions );
         return array(
 		$users,
