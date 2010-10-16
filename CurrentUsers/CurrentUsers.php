@@ -40,7 +40,7 @@ function efSetupCurrentUsers() {
 	$egCurrentUsers = array( "$h:$m:$user" );
         $bot = '';
 	foreach( $data as $item ) {
-		list( $h, $m, $u, $b ) = preg_split( "|:|", trim( $item ) );
+		list( $h, $m, $u, $b ) = explode( ':', trim( $item ) );
 		$age = $now-$h*60-$m;
 		if( $age < 0 ) $age += 1440;
 		if( $u == $user && $b == 'bot' ) $bot = $b;
@@ -66,7 +66,7 @@ function efCurrentUsersMagic( &$parser ) {
 	$guests = 0;
 	$bots = 0;
 	foreach( $egCurrentUsers as $item ) {
-		list( $h, $m, $u, $b ) = preg_split( "|:|", $item );
+		list( $h, $m, $u, $b ) = explode( ':', $item );
 		if( User::isIP( $u ) ) $b ? $bots++ : $guests++;
 		else $users .= "{" . "{" . "$egCurrentUsersTemplate|$h:$m|$u|}" . "}\n";
 	}
