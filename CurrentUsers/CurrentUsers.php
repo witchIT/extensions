@@ -6,7 +6,7 @@
  
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  
-define( 'CURRENTUSERS_VERSION', '1.0.5, 2010-10-16' );
+define( 'CURRENTUSERS_VERSION', '1.0.6, 2010-10-16' );
 
 $egCurrentUsersMagic           = 'currentusers';
 $egCurrentUsersTemplate        = 'CurrentUsers';
@@ -40,7 +40,7 @@ function efSetupCurrentUsers() {
 	$egCurrentUsers = array( "$h:$m:$user" );
         $bot = '';
 	foreach( $data as $item ) {
-		list( $h, $m, $u, $b ) = split( ':', trim( $item ) );
+		list( $h, $m, $u, $b ) = preg_split( "|:|", trim( $item ) );
 		$age = $now-$h*60-$m;
 		if( $age < 0 ) $age += 1440;
 		if( $u == $user && $b == 'bot' ) $bot = $b;
