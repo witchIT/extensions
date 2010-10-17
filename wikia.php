@@ -22,7 +22,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Constants
-define( 'WIKIA_VERSION', '1.2.2, 2010-07-01');
+define( 'WIKIA_VERSION', '1.2.3, 2010-10-17');
 
 # Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -30,7 +30,6 @@ foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
 	if ( preg_match( "|^\s*\\\$addr\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $wgWikidAddr = $m[1];
 	if ( preg_match( "|^\s*\\\$(wgDB.+?)\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $$m[1] = $m[2];
 }
-
 
 # Namespaces
 define( 'NS_FORM',           106  );
@@ -96,12 +95,10 @@ $settings                 = '/var/www/wikis';
 $domains                  = '/var/www/domains';
 $extensions               = dirname( __FILE__ );
 
-# If running from command-line set root without referring to SERVER_NAME
+# If running from command-line set the DBadmin user and pass from the ones in wikid.conf
 if ( $wgCommandLineMode ) {
-	if ( file_exists( "$IP/AdminSettings.php" ) ) {
-		$admin = file_get_contents( "$IP/AdminSettings.php" );
-		if ( preg_match( "/^\s*\$domain\s*=\s*['\"](.+?)[\"'];/m", $admin, $m ) ) $domain = $m[1];
-	}
+	$wgDBadminuser = $wgDBuser;
+	$wgDBadminpassword = $wgDBpassword;
 	$root = "$domains/$domain";
 }
 
