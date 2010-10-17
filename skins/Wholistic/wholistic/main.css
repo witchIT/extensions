@@ -116,6 +116,8 @@ h5 .editsection { font-weight: normal; }
 h6 { font-size: 80%;  }
 h6 .editsection { font-size: 125%; font-weight: normal; }
 
+.editsection { display: none }
+
 body.page-Main_Page h1 { display: none }
 
 ul {
