@@ -104,6 +104,9 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	</div>
 </div>
 </td></tr></table></div>
+
+<?php if( preg_match( "|^wiki|", $_SERVER['SERVER_NAME'] ) ) {?>
+
 <div id="column-one"<?php $this->html('userlangattributes')  ?>>
 	<div id="p-cactions" class="portlet">
 		<h5><?php $this->msg('views') ?></h5>
@@ -161,6 +164,8 @@ else { $psr = new Parser; $opt = NULL; }
 if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
+
+<?php }?>
 
 	<script type="<?php $this->text('jsmimetype') ?>"> if (window.isMSIE55) fixalpha(); </script>
 
