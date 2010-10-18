@@ -12,7 +12,7 @@ if ( !defined('MEDIAWIKI' ) ) die( "Not an entry point." );
  * 
  * Version 2.0 started on 2010-06-24
  */
-define( 'WIKIAADMIN_VERSION', "2.2.4, 2010-09-13" );
+define( 'WIKIAADMIN_VERSION', "2.2.5, 2010-10-18" );
 
 # The settings for all wikis under this master wiki are stored in a files called DBNAME.settings.php
 # - note each file must be for all wikis so that the wiki that
@@ -20,6 +20,10 @@ define( 'WIKIAADMIN_VERSION', "2.2.4, 2010-09-13" );
 if( !isset( $wgWikiaSettingsDir ) ) die( "\$wgWikiaSettingsDir is not set!" );
 if( !is_dir( $wgWikiaSettingsDir ) ) die( "The \$wgWikiaSettingsDir (\"$wgWikiaSettingsDir\") doesn't exist!" );
 if( !is_writable( $wgWikiaSettingsDir ) ) die( "Unable to write to the \$wgWikiaSettingsDir directory!" );
+
+# Create a dir for this DB if one doesn't exist already
+$wgWikiaSettingsDirCurrent = "$wgWikiaSettingsDir/$wgDBname";
+if ( !is_dir( $wgWikiaSettingsDirCurrent ) ) mkdir( $wgWikiaSettingsDirCurrent );
 
 # Set this to the master domain if image fallback to master is required
 $wgWikiaMasterDomain = false;
@@ -84,28 +88,29 @@ class WikiaAdmin {
 
 
 	/**
-	 * Load the settings array from the file for this DB
+	 * Load the settings array for specified wiki from its file
+	 * - loads all wiki settings in this DB if none specified
 	 */
-	function loadSettings() {
-		global $wgDBname, $wgWikiaSettingsDir;
-		$file = "$wgWikiaSettingsDir/$wgDBname.settings.php";
-		$wiki = '';
-		if( file_exists( $file ) ) {
-			$lines = file( $file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+	function loadSettings( $wiki = '*' ) {
+		global $wgWikiaSettingsDirCurrrent;
+		foreach( glob( "$wgWikiaSettingsDirCurrrent/$wiki-settings.php" ) as $file ) {
+			if( preg_match( "|\/(.+)-settings\.php$", $file, $m ) ) {
+				$wiki = $m[1];
 
-			foreach( $lines as $line ) {
+				# Scan the settings file for this wiki and read in its settings
+				$lines = file( $file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+				foreach( $lines as $line ) {
 
-				# Comment setting the wiki context fo rthe next settings
-				if( preg_match( "|^\s*#\s*Wiki:(.+?)\s*$|", $line, $m ) ) $wiki = $m[1];
+					# Array setting
+					if( preg_match( "|^\s*\\$(\w+)\s*=\s*array\(\s*\"(.+?)\"\s*\);\s*$|", $line, $m ) ) {
+						$this->settings[$wiki][$m[1]] = preg_split( "|\"\s*,\s*\"|", $m[2] );
+					}
 
-				# Array setting
-				elseif( preg_match( "|^\s*\\$(\w+)\s*=\s*array\(\s*\"(.+?)\"\s*\);\s*$|", $line, $m ) ) {
-					$this->settings[$wiki][$m[1]] = preg_split( "|\"\s*,\s*\"|", $m[2] );
-				}
+					# Normal setting
+					elseif( preg_match( "|^\s*\\$(\w+)\s*=\s*['\"]?(.*?)[\"']?;\s*$|", $line, $m ) ) {
+						$this->settings[$wiki][$m[1]] = $m[2];
+					}
 
-				# Normal setting
-				elseif( preg_match( "|^\s*\\$(\w+)\s*=\s*['\"]?(.*?)[\"']?;\s*$|", $line, $m ) ) {
-					$this->settings[$wiki][$m[1]] = $m[2];
 				}
 			}
 		}
@@ -113,42 +118,41 @@ class WikiaAdmin {
 
 
 	/**
-	 * Save the settings array to persistent storage
+	 * Save the settings for a wiki to its settings file
 	 */
-	function saveSettings() {
-		global $wgDBname, $wgWikiaSettingsDir;
-		$file = "$wgWikiaSettingsDir/$wgDBname.settings.php";
-		$content = '';
-		foreach( $this->settings as $wiki => $settings ) {
-			$content .= "# Wiki:$wiki\n";
-			foreach( $settings as $k => $v ) {
+	function saveSettings( $wiki = false ) {
+		global $wgWikiaSettingsDirCurrent;
+		if( $wiki === false ) $wiki = $this->wiki;
+		if( array_key_exists( $wiki, $this->settings ) ) {
+			$file = "$wgWikiaSettingsDirCurrent/$wiki-settings.php";
+			$content = '';
+			foreach( $this->settings[$wiki] as $k => $v ) {
 				if( is_array( $v ) ) {
 					$list = array();
 					foreach( $v as $z ) $list[] = "\"$z\"";
 					$content .= "\$$k = array( " . join( ", ", $list ) . " );\n";
 				} else $content .= "\$$k = \"$v\";\n";
 			}
-			$content .= "\n";
+			file_put_contents( $file, $content );
 		}
-		file_put_contents( $file, $content );
 	}
 
 
 	/**
 	 * Return the settings for a given wiki in specified format
+	 * - returns false if no settings exist
 	 */
-	function getSettings( $wiki, $format = false ) {
-		$settings = '';
+	function getSettings( $wiki = false, $format = false ) {
+		if( $wiki === false ) $wiki = $this->wiki;
+		if( !array_key_exists( $wiki, $this->settings ) ) return false;
 		switch( $format ) {
 
 			# Returns the settings as a JavaScript array statement
 			case 'JS':
-				if( is_array( $this->settings[$wiki] ) ) {
-					$c = "\n";
-					foreach( $this->settings[$wiki] as $k => $v ) {
-						$settings .= "$c\t\"$k\": \"$v\"";
-						$c = ",\n";
-					}
+				$c = "\n";
+				foreach( $this->settings[$wiki] as $k => $v ) {
+					$settings .= "$c\t\"$k\": \"$v\"";
+					$c = ",\n";
 				}
 				$settings = "wikiaSettings = \{$settings\n\};\n";
 			break;
@@ -163,14 +167,15 @@ class WikiaAdmin {
 	/**
 	 * Update the settings array (for use by other extensions)
 	 */
-	function setSettings( &$settings ) {
-		$this->settings = $settings;
+	function setSettings( $settings, $wiki = false ) {
+		if( $wiki === false ) $wiki = $this->wiki;
+		$this->settings[$wiki] = $settings;
 	}
 
 
 	/**
 	 * Apply any of the settings relating to the current request
-	 * - also sets $this->wiki
+	 * - set $this->wiki based on current request domain
 	 */
 	function applySettings() {
 
@@ -192,11 +197,6 @@ class WikiaAdmin {
 		# If this is a sub-wiki...
 		if ( $this->wiki ) {
 
-			# Apply its local settings
-			foreach( $this->settings[$this->wiki] as $setting => $value ) {
-				if( substr( $setting, 0, 2 ) == "wg" ) $GLOBALS[$setting] = $value;
-			}
-
 			# Make the uploadpath a sub-directory
 			global $wgUploadDirectory;
 			$baseUploadDir = $wgUploadDirectory;
@@ -212,6 +212,20 @@ class WikiaAdmin {
 				$wgSharedUploadPath = "http://$wgWikiaMasterDomain/files";
 			}
 		}
+
+		# If none of the settings file's domains match the current domain, use DBprefix (this is the master)
+		else {
+			global $wgDBprefix;
+			$this->wiki = preg_replace( "|_$|", "", $wgDBprefix );
+		}
+
+		# Apply any settings for this domain
+		if( array_key_exists( $this->wiki, $this->settings ) ) {
+			foreach( $this->settings[$this->wiki] as $setting => $value ) {
+				if( substr( $setting, 0, 2 ) == "wg" ) $GLOBALS[$setting] = $value;
+			}
+		}
+
 	}
 }
 
