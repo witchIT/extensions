@@ -16,7 +16,7 @@ $wgFormMailerRecipients = array();
 $wgFormMailerVarName    = "formmailer";
 
 # Name of sender of forms
-$wgFormMailerFrom       = 'wiki@'.ereg_replace('^.+www.', '', $wgServer);
+$wgFormMailerFrom       = 'wiki@' . preg_replace( '|^.+www\.|', '', $wgServer );
 
 # Don't post the following posted items
 $wgFormMailerDontSend   = array('title', 'action');
