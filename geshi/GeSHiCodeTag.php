@@ -51,8 +51,7 @@ function ExtensionCodeTag()
                 {
                      $wgParser->setHook($lang,
                                    create_function( '$source,$argv,&$parser', '
-$source = trim($parser->replaceVariables($source));
-
+#$source = trim($parser->replaceVariables($source));
                                          $geshi = new GeSHi($source,"' . $lang . '", $GLOBALS["languagesPath"]);
 $lang = "'.$lang.'";
 if ($lang != "r") {
@@ -132,7 +131,7 @@ function AdvancedCodeTag ($source, $settings){
           Add more GeSHi features below
           http://qbnz.com/highlighter/geshi-doc.html 
         */
-                
+               
         return $geshi->parse_code(); 
 }
 
