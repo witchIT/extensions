@@ -1,7 +1,4 @@
 <?php
-ini_set("display_errors", "on");
-ini_set('error_reporting', E_ALL );
-
 ########################
 # GeshiCodeTag.php
 # 
@@ -138,7 +135,7 @@ function AdvancedCodeTag ($source, $settings){
 
 $wgHooks['ParserBeforeStrip'][] = 'GeSHi';
 function GeSHi(&$parser, &$text, &$strip_state) {
-	if (isset($_REQUEST['action']) && ($_REQUEST['action'] == 'raw' || $_REQUEST['action'] == 'xml')) return true;
+	if(array_key_exists('action',$_REQUEST) && ($_REQUEST['action'] == 'raw' || $_REQUEST['action'] == 'xml')) return true;
         if (preg_match('/\\{\\{(xml|bash|php|perl|c|r|as|js|css|sql)\\}\\}/i',$text,$m)) $text = "<$m[1]>\n$text\n</$m[1]>";
         return true;
         }
