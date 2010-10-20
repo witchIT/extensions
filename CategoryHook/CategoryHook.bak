@@ -1,0 +1,79 @@
+<?php
+# CategoryHook Extension
+# - Adds a hook allowing articles to be added to additional categories based on wikitext content
+# - Started: 2007-04-18
+# - See http://www.mediawiki.org/wiki/Extension:CategoryHook for installation and usage details
+# - Licenced under LGPL (http://www.gnu.org/copyleft/lesser.html)
+# - Author: http://www.organicdesign.co.nz/nad
+ 
+$wgCatHookVersion              = "1.1.0/2007-05-06";
+$wgCatHookMagic                = "category";
+$wgExtensionFunctions[]        = 'wfSetupCatHook';
+$wgHooks['LanguageGetMagic'][] = 'wfCatHookLanguageGetMagic';
+ 
+$wgExtensionCredits['parserhook'][] = array(
+	'name'   => 'CatHook',
+	'author' => '[[User:Nad]]',
+	'url'    => 'http://www.mediawiki.org/wiki/Extension:CategoryHook'
+	);
+ 
+class CatHook {
+ 
+	var $catList = array();
+ 
+	# Constructor
+	function CatHook() {
+		global $wgParser,$wgCatHookMagic,$wgHooks;
+		$wgParser->setFunctionHook($wgCatHookMagic,array($this,'magicCategory'),SFH_NO_HASH);
+ 
+		# Only process if action is submit, no changes to categories otherwise
+		if ($_REQUEST['action'] == 'submit') {
+			$wgCategoryHookCatList = array();
+			$wgHooks['ParserBeforeStrip'][] = $this;
+			$wgHooks['ParserAfterTidy'][]   = $this;
+			}
+		}
+ 
+	# Expand the category-magic to nothing and parse separately as normal category links
+	function magicCategory(&$parser,$cat,$sortkey = '') {
+		if ($sortkey) $sortkey = "|$sortkey";
+		$parser->parse("[[Category:$cat$sortkey]]",$parser->mTitle,$parser->mOptions,false,false);
+		return '';
+		}
+ 
+	# Run the hook to determine the categories to add/remove
+	# - each item in the CatList is: catname => [ add(true) | del(false) , sortkey ]
+	function onParserBeforeStrip(&$parser,&$text) {
+		$title = $parser->mTitle;
+		if (is_object($title) && is_object($parser->mOptions))
+			wfRunHooks('CategoryHook',array(&$parser,&$text,&$this->catList,$title->getDBkey()));
+		return true;
+		}
+ 
+	# Add the categories
+	function onParserAfterTidy(&$parser) {
+		foreach ($this->catList as $dbkey => $item) {
+			list($add,$sortkey) = $item;
+			if ($add) $parser->mOutput->addCategory($dbkey,$sortkey);
+			else unset($parser->mOutput->mCategories[$dbkey]);
+			}
+		return true;
+		}
+ 
+	# Needed in some versions to prevent Special:Version from breaking
+	function __toString() { return 'CategoryHook'; }
+ 	}
+ 
+# Called from $wgExtensionFunctions array when initialising extensions
+function wfSetupCatHook() {
+	global $wgCatHook;
+	$wgCatHook = new CatHook();
+	}
+ 
+# Needed in MediaWiki >1.8.0 for magic word hooks to work properly
+function wfCatHookLanguageGetMagic(&$magicWords,$langCode = 0) {
+	global $wgCatHookMagic;
+	$magicWords[$wgCatHookMagic] = array(0,$wgCatHookMagic);
+	return true;
+	}
+?>
