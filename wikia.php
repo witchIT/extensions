@@ -225,3 +225,4 @@ function odLogActivity() {
 	fwrite( $handle, date( 'Y-m-d H:i:s' ) . " ($wgShortName)($user)$block: $url\n" );
 	#if ($block) { sleep(1); die; }
 }
+
