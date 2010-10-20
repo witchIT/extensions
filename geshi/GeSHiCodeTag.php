@@ -50,7 +50,7 @@ function ExtensionCodeTag()
                 foreach($languages as $lang)
                 {
                      $wgParser->setHook($lang,
-                                   create_function( '$source,$argv,&$parser', '
+                                   create_function( '$source,$argv,$parser', '
 #$source = trim($parser->replaceVariables($source));
                                          $geshi = new GeSHi($source,"' . $lang . '", $GLOBALS["languagesPath"]);
 $lang = "'.$lang.'";
