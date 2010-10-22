@@ -22,7 +22,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Constants
-define( 'WIKIA_VERSION', '1.2.3, 2010-10-17');
+define( 'WIKIA_VERSION', '1.2.4, 2010-10-23');
 
 # Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -37,6 +37,7 @@ define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_CREATE',         1014 );
 
+$wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgExtraNamespaces[NS_FORM]        = 'Form';
 $wgExtraNamespaces[NS_FORM+1]      = 'Form_talk';
 $wgExtraNamespaces[NS_EXTENSION]   = 'Extension';
