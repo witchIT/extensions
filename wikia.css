@@ -880,7 +880,6 @@ th.cal_timeslot {vertical-align:top; font-weight:bold; width:100px; padding-left
 .cal_cell_person_hour .Activity-record th {display:none}
 .prefsection table.date_maintable {border: 1px solid #bbbbbb; border-collapse:collapse;}
 
-#contentSub {display:none}
 
 /* Hide headings on cat pages*/
 .page-Category_Documents #mw-pages h2, 
