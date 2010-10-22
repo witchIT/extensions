@@ -224,6 +224,13 @@ pre {
 ** the main content area
 */
 
+#siteSub {
+	display: none;
+}
+#jump-to-nav {
+	display: none;
+}
+
 #contentSub, #contentSub2 {
 	font-size: 84%;
 	line-height: 1.2em;
