@@ -11,7 +11,9 @@
 if( !defined( 'MEDIAWIKI' ) )         die( "Not an entry point." );
 if( !defined( 'EVENTPIPE_VERSION' ) ) die( "The WikidAdmin special page extension depends on the EventPipe extension" );
 
-define( 'WIKIDADMIN_VERSION', "1.2.4, 2010-10-28" );
+define( 'WIKIDADMIN_VERSION', "1.2.5, 2010-10-28" );
+
+if( !isset( $wgWikidAdminWikiPattern ) ) $wgWikidAdminWikiPattern = "|^.+/(.+?)/.+$|";
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -150,7 +152,7 @@ class WikidAdmin extends SpecialPage {
  * - called from both special page and statically by ajax handler
  */
 function wfWikidAdminRenderWork() {
-	global $wgWikidWork;
+	global $wgWikidWork, $wgWikidAdminWikiPattern;
 	if( !is_array( $wgWikidWork ) ) wfWikidAdminLoadWork();
 	if( count( $wgWikidWork ) > 0 ) {
 		$unset = "<i>unset</i>";
@@ -163,7 +165,7 @@ function wfWikidAdminRenderWork() {
 		foreach ( $wgWikidWork as $job ) {
 			$class  = $class == 'odd' ? 'even' : 'odd';
 			$id     = isset( $job['id'] )     ? $job['id']     : $unset;
-			$wiki   = preg_replace( "|^.+?/(.+?)/.+$|", "$1", $job['wiki'] );
+			$wiki   = preg_replace( $wgWikidAdminWikiPattern, "$1", $job['wiki'] );
 			$type   = isset( $job['type'] )   ? $job['type']   : $unset;
 			$start  = isset( $job['start'] )  ? wfTimestamp( TS_DB, $job['start'] ) : $unset;
 			$len    = isset( $job['length'] ) ? $job['length'] : $unset;
@@ -189,6 +191,7 @@ function wfWikidAdminRenderWork() {
  * Return HTML table of the historical work
  */
 function wfWikidAdminRenderWorkHistory() {
+	global $wgWikidAdminWikiPattern;
 	$log = '/var/www/tools/wikid.work.log';
 	$max = 4096;
 	if( file_exists( $log ) ) {
@@ -224,7 +227,7 @@ function wfWikidAdminRenderWorkHistory() {
 			$contrib = Title::newFromText( 'Contributions', NS_SPECIAL );
 			foreach( $hist as $job ) {
 				$id        = $job['id'];
-				$wiki      = preg_replace( "|^.+?/(.+?)/.+$|", "$1", $job['wiki'] );
+				$wiki      = preg_replace( $wgWikidAdminWikiPattern, "$1", $job['Wiki'] );
 				$type      = $job['Type'];
 				$user      = $job['User'];
 				$start     = wfTimestamp( TS_DB, $job['Start'] );
