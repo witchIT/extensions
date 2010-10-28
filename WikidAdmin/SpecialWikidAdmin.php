@@ -11,7 +11,7 @@
 if( !defined( 'MEDIAWIKI' ) )         die( "Not an entry point." );
 if( !defined( 'EVENTPIPE_VERSION' ) ) die( "The WikidAdmin special page extension depends on the EventPipe extension" );
 
-define( 'WIKIDADMIN_VERSION', "1.2.3, 2010-10-28" );
+define( 'WIKIDADMIN_VERSION', "1.2.4, 2010-10-28" );
 
 $wgExtensionFunctions[] = 'wfSetupWikidAdmin';
 $wgAjaxExportList[] = 'wfWikidAdminRenderWork';
@@ -163,7 +163,7 @@ function wfWikidAdminRenderWork() {
 		foreach ( $wgWikidWork as $job ) {
 			$class  = $class == 'odd' ? 'even' : 'odd';
 			$id     = isset( $job['id'] )     ? $job['id']     : $unset;
-			$wiki   = preg_replace( "|^.+?/(.+?)/.+$", "$1", $job['wiki'] );
+			$wiki   = preg_replace( "|^.+?/(.+?)/.+$|", "$1", $job['wiki'] );
 			$type   = isset( $job['type'] )   ? $job['type']   : $unset;
 			$start  = isset( $job['start'] )  ? wfTimestamp( TS_DB, $job['start'] ) : $unset;
 			$len    = isset( $job['length'] ) ? $job['length'] : $unset;
@@ -224,7 +224,7 @@ function wfWikidAdminRenderWorkHistory() {
 			$contrib = Title::newFromText( 'Contributions', NS_SPECIAL );
 			foreach( $hist as $job ) {
 				$id        = $job['id'];
-				$wiki      = preg_replace( "|^.+?/(.+?)/.+$", "$1", $job['wiki'] );
+				$wiki      = preg_replace( "|^.+?/(.+?)/.+$|", "$1", $job['wiki'] );
 				$type      = $job['Type'];
 				$user      = $job['User'];
 				$start     = wfTimestamp( TS_DB, $job['Start'] );
