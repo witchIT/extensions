@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.8.7, 2010-08-02' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.8.8, 2010-10-28' );
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -252,22 +252,22 @@ class RAIntegratePerson {
 	 * Get the HTML for the Person form from RecordAdmin
 	 */
 	function getForm() {
-		global $wgSpecialRecordAdmin, $wgIPPersonType, $wgUser;
+		global $wgRecordAdmin, $wgIPPersonType, $wgUser;
 
 		# Use RecordAdmin to create, examine and populate the form
-		$wgSpecialRecordAdmin->preProcessForm( $wgIPPersonType );
-		$wgSpecialRecordAdmin->examineForm();
+		$wgRecordAdmin->preProcessForm( $wgIPPersonType );
+		$wgRecordAdmin->examineForm();
 
 		# If the user has a Person record, populate the form with its data
 		$title = Title::newFromText( $wgUser->getRealName() );
 		if ( is_object( $title ) && $title->exists() ) {
 			$record = new Article( $title );
 			$record = $record->getContent();
-			$wgSpecialRecordAdmin->populateForm( $record );
+			$wgRecordAdmin->populateForm( $record );
 		}
 
 		# Get the form
-		$form = $wgSpecialRecordAdmin->form;
+		$form = $wgRecordAdmin->form;
 
 		# If not a sysop, remove the administration section
 		$admin = wfMsg( 'raip-admin' );
@@ -280,17 +280,17 @@ class RAIntegratePerson {
 	 * Process any posted inputs from the Person record
 	 */
 	function processForm( ) {
-		global $wgUser, $wgSpecialRecordAdmin, $wgIPPersonType;
+		global $wgUser, $wgRecordAdmin, $wgIPPersonType;
 
 		# Update the record values from posted data
 		$this->getForm();
 		$posted = false;
 		foreach ( $_REQUEST as $k => $v ) if ( preg_match( '|^ra_(\\w+)|', $k, $m ) ) {
 			$k = $m[1];
-			if ( isset( $wgSpecialRecordAdmin->types[$k] ) ) {
+			if ( isset( $wgRecordAdmin->types[$k] ) ) {
 				if ( is_array( $v ) ) $v = join( "\n", $v );
-				elseif ( $wgSpecialRecordAdmin->types[$k] == 'bool' ) $v = 'yes';
-				$wgSpecialRecordAdmin->values[$k] = $v;
+				elseif ( $wgRecordAdmin->types[$k] == 'bool' ) $v = 'yes';
+				$wgRecordAdmin->values[$k] = $v;
 				$posted = true;
 			}
 		}
@@ -302,10 +302,10 @@ class RAIntegratePerson {
 			$user = array_key_exists( 'wpName', $_REQUEST ) ? User::newFromName( $_REQUEST['wpName'] ) : $wgUser;
 			$userpage = $user->getUserPage();
 			$username = $user->getName();
-			$wgSpecialRecordAdmin->values['User'] = $username;
+			$wgRecordAdmin->values['User'] = $username;
 
 			# Get the title if the users Person record and bail if invalid
-			$name = $wgSpecialRecordAdmin->values['FirstName'] . ' ' . $wgSpecialRecordAdmin->values['Surname'];
+			$name = $wgRecordAdmin->values['FirstName'] . ' ' . $wgRecordAdmin->values['Surname'];
 			$title = Title::newFromText( $name );
 			if ( !is_object( $title ) ) return false;
 
@@ -321,7 +321,7 @@ class RAIntegratePerson {
 
 			# Construct the record brace text
 			$record = '';
-			foreach ( $wgSpecialRecordAdmin->values as $k => $v ) $record .= " | $k = $v\n";
+			foreach ( $wgRecordAdmin->values as $k => $v ) $record .= " | $k = $v\n";
 			$record = "{{" . "$wgIPPersonType\n$record}}";
 
 			# Create or update the article
@@ -330,7 +330,7 @@ class RAIntegratePerson {
 			if ( $title->exists() ) {
 				$text = $article->getContent();
 				$braces = false;
-				foreach ( $wgSpecialRecordAdmin->examineBraces( $text ) as $brace ) if ( $brace['NAME'] == $wgIPPersonType ) $braces = $brace;
+				foreach ( $wgRecordAdmin->examineBraces( $text ) as $brace ) if ( $brace['NAME'] == $wgIPPersonType ) $braces = $brace;
 				if ( $braces ) $text = substr_replace( $text, $record, $braces['OFFSET'], $braces['LENGTH'] );
 				elseif ( $text ) $text = "$record\n\n$text";
 				else $text = $record;
@@ -366,10 +366,10 @@ class RAIntegratePerson {
 		global $wgUser, $wgIPPersonType, $wgIPRoleType, $wgIPRolesField, $wgIPParentField;
 		
 		# Store all the Person records and args
-		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPPersonType ) as $t ) {
-			$person = SpecialRecordAdmin::getRecordArgs( $t, $wgIPPersonType );
+		foreach( RecordAdmin::getRecordsByType( $wgIPPersonType ) as $t ) {
+			$person = RecordAdmin::getRecordArgs( $t, $wgIPPersonType );
 			$name = $t->getText();
-			$roles = isset( $person[$wgIPRolesField] ) ? SpecialRecordAdmin::split( $person[$wgIPRolesField] ) : array();
+			$roles = isset( $person[$wgIPRolesField] ) ? RecordAdmin::split( $person[$wgIPRolesField] ) : array();
 			$person[$wgIPRolesField] = $roles;
 			$this->people[] = $person;
 			foreach ( $roles as $role ) {
@@ -381,8 +381,8 @@ class RAIntegratePerson {
 		# Build a reverse lookup of roles structure
 		$this->roles = array();
 		$roles = array();
-		foreach( SpecialRecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
-			$args = SpecialRecordAdmin::getRecordArgs( $t, $wgIPRoleType );
+		foreach( RecordAdmin::getRecordsByType( $wgIPRoleType ) as $t ) {
+			$args = RecordAdmin::getRecordArgs( $t, $wgIPRoleType );
 			$role = $t->getText();
 			if ( !isset( $this->people[$role] ) ) $this->people[$role] = array();
 			if ( !isset( $roles[$role] ) ) $roles[$role] = array();
@@ -403,7 +403,7 @@ class RAIntegratePerson {
 
 		# Loop through this user's roles and assign the user to role-groups
 		$query = array( 'type' => $wgIPPersonType, 'record' => $wgUser->getRealname(), 'field' => $wgIPRolesField );
-		foreach( SpecialRecordAdmin::getFieldValue( $query, true ) as $role1 ) {
+		foreach( RecordAdmin::getFieldValue( $query, true ) as $role1 ) {
 			if ( isset( $roles[$role1] ) ) {
 				self::addGroup( $this->groups, $role1 );
 				$this->directRoles[] = $role1;
@@ -514,7 +514,7 @@ function wfContributorPermissions( $user, &$rights ) {
 	# If this user is an external contributor then remove all rights
 	global $wgIPPersonType, $wgIPExternalContributorField, $wgIPExternalContributorCat;
 	$query = array( 'type' => $wgIPPersonType, 'record' => $user->getRealname(), 'field' => $wgIPExternalContributorField );
-	if ( SpecialRecordAdmin::getFieldValue( $query ) ) $rights = array();
+	if ( RecordAdmin::getFieldValue( $query ) ) $rights = array();
 
 	return true;
 }
