@@ -63,6 +63,7 @@ $wgRewriteRule            = 'Friendly'; # rewrite.pl URL transformation function
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
 
+$wgMaxShellMemory         = 262144;
 $wgAllowDisplayTitle      = true;
 $wgAllowPageInfo          = true;
 $wgRawHtml                = true;
