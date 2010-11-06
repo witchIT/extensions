@@ -6,7 +6,7 @@
  
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  
-define( 'CURRENTUSERS_VERSION', '1.0.6, 2010-10-16' );
+define( 'CURRENTUSERS_VERSION', '1.0.8, 2010-11-06' );
 
 $egCurrentUsersMagic           = 'currentusers';
 $egCurrentUsersTemplate        = 'CurrentUsers';
@@ -29,7 +29,7 @@ $wgExtensionCredits['parserhook'][] = array(
 function efSetupCurrentUsers() {
 	global $wgUser, $wgParser, $egCurrentUsers, $egCurrentUsersTimeout, $egCurrentUsersMagic;
 	$wgParser->setFunctionHook( $egCurrentUsersMagic, 'efCurrentUsersMagic' );
-	if( strtolower( $_REQUEST['title'] ) == 'robots.txt' ) $bot = 'bot';
+	if( array_key_exists( 'title', $_REQUEST ) && strtolower( $_REQUEST['title'] ) == 'robots.txt' ) $bot = 'bot';
 	else $bot = '';
 	$file = dirname( __FILE__ ) . '/CurrentUsers.txt';
 	$data = file( $file );
