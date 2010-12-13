@@ -72,7 +72,7 @@ class WikiaAdmin {
 			$wgExtensionFunctions[] = array( $this, "setupSpecialPage" );
 			$wgSpecialPages['WikiaAdmin'] = "WikiaAdmin";
 			#$wgSpecialPageGroups['WikiaAdmin'] = "wiki";
-		}
+		} else die( $this->wiki );
 
 	}
 

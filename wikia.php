@@ -22,7 +22,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Constants
-define( 'WIKIA_VERSION', '1.2.4, 2010-10-23');
+define( 'WIKIA_VERSION', '1.2.5, 2010-12-14' );
 
 # Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -193,6 +193,7 @@ function odLogActivity() {
 	$sesh = preg_match( "|_session=([0-9a-z]+)|", isset( $_SERVER['HTTP_COOKIE'] ) ? $_SERVER['HTTP_COOKIE'] : '', $m ) ? $m[1] : '';
 	if ( $sesh ) $user .= ":$sesh";
 	if ( !$wgUser->isAnon() ) $user .= ':' . $_SERVER['REMOTE_ADDR'];
+	if ( !$wgUser->isBot() ) $user .= ':bot';
 	$url = $_SERVER['REQUEST_URI'];
 	if ( $wgRequest->wasPosted() ) {
 		$post = array();
