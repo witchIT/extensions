@@ -6,7 +6,7 @@
  
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  
-define( 'CURRENTUSERS_VERSION', '1.0.8, 2010-11-06' );
+define( 'CURRENTUSERS_VERSION', '1.0.9, 2010-12-14' );
 
 $egCurrentUsersMagic           = 'currentusers';
 $egCurrentUsersTemplate        = 'CurrentUsers';
@@ -29,8 +29,7 @@ $wgExtensionCredits['parserhook'][] = array(
 function efSetupCurrentUsers() {
 	global $wgUser, $wgParser, $egCurrentUsers, $egCurrentUsersTimeout, $egCurrentUsersMagic;
 	$wgParser->setFunctionHook( $egCurrentUsersMagic, 'efCurrentUsersMagic' );
-	if( array_key_exists( 'title', $_REQUEST ) && strtolower( $_REQUEST['title'] ) == 'robots.txt' ) $bot = 'bot';
-	else $bot = '';
+	$bot = $wgUser->isBot() ? 'bot' : '';
 	$file = dirname( __FILE__ ) . '/CurrentUsers.txt';
 	$data = file( $file );
 	$h = strftime( '%H' );
@@ -38,7 +37,6 @@ function efSetupCurrentUsers() {
 	$now = $h*60+$m;
 	$user = $wgUser->getUserPage()->getText();
 	$egCurrentUsers = array( "$h:$m:$user" );
-        $bot = '';
 	foreach( $data as $item ) {
 		list( $h, $m, $u, $b ) = explode( ':', trim( $item ) );
 		$age = $now-$h*60-$m;
