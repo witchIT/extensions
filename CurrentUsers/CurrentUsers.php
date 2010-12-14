@@ -6,7 +6,7 @@
  
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  
-define( 'CURRENTUSERS_VERSION', '1.0.9, 2010-12-14' );
+define( 'CURRENTUSERS_VERSION', '1.0.10, 2010-12-14' );
 
 $egCurrentUsersMagic           = 'currentusers';
 $egCurrentUsersTemplate        = 'CurrentUsers';
@@ -36,15 +36,13 @@ function efSetupCurrentUsers() {
 	$m = strftime( '%M' );
 	$now = $h*60+$m;
 	$user = $wgUser->getUserPage()->getText();
-	$egCurrentUsers = array( "$h:$m:$user" );
+	$egCurrentUsers = array( "$h:$m:$user:$bot" );
 	foreach( $data as $item ) {
 		list( $h, $m, $u, $b ) = explode( ':', trim( $item ) );
 		$age = $now-$h*60-$m;
 		if( $age < 0 ) $age += 1440;
-		if( $u == $user && $b == 'bot' ) $bot = $b;
 		if( $u != '' && $u != $user && $age < $egCurrentUsersTimeout ) $egCurrentUsers[] = "$h:$m:$u:$b";
 	}
-	$egCurrentUsers[0] .= ":$bot";
 	file_put_contents( $file, join( "\n", $egCurrentUsers ) );
 }
  
