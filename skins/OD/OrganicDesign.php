@@ -58,6 +58,7 @@ class OrganicDesignTemplate extends QuickTemplate {
 	} ?>xml:lang="<?php $this->text('lang') ?>" lang="<?php $this->text('lang') ?>" dir="<?php $this->text('dir') ?>">
 	<head>
 		<meta http-equiv="Content-Type" content="<?php $this->text('mimetype') ?>; charset=<?php $this->text('charset') ?>" />
+		<meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
 		<?php $this->html('headlinks') ?>
 		<title><?php $this->text('pagetitle') ?></title>
 		<?php print $css ?>
