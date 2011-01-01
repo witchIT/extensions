@@ -87,7 +87,7 @@ function wfSetupFormMailer() {
 	if( $wgFormMailerAntiSpam ) {
 		$wgOut->addScript( "<script type='$wgJsMimeType'>
 		function formMailerOnLoad() {
-			e = getElementsByTagname( 'input' );
+			e = document.getElementsByTagName( 'input' );
 			for( i = 0; i < e.length; i++ ) {
 				if( e[i].name == 'formmailer' ) e[i].name += '-$md5ip';
 			}
