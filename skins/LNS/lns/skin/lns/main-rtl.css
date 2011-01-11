@@ -17,35 +17,45 @@
 /* Framework */
 /* Content */
 #content {
-	margin-left: 0em;
+	margin-right: 0em;
 	padding: 1em;
 	background-image: url(images/border.png);
-	background-position: top left;
+	background-position: top right;
 	background-repeat:no-repeat;
 	background-color: white;
-	border-left-style: solid;
+	border-right-style: solid;
 	border: thick;
 }
 /* Head */
-#mw-page-base {
+#wrap-page-base {
+	width:1000px;
 	height: 5em;
 	background-color: white;
-	background-image: url(images/page-fade.png);
-	background-position: bottom left;
-	background-repeat:repeat-x;
+	border-bottom-style:solid;
+	border-bottom-color:#9F6;
+	border-bottom:thick;			
+	background-position: bottom right;
+	background-repeat:repeat-x;			
+}
+#mw-page-base {
+	height: 5em;
+	background-color: white;	
+	background-image: url(images/page-fade.png);		
+	background-position: bottom right;
+	background-repeat:repeat-x;		
 }
 #mw-head-base {
 	margin-top: -5em;
-	margin-left: 10em;
+	margin-right: 10em;
 	height: 5em;
 	background-image: url(images/border.png);
-	background-position: bottom left;
+	background-position: bottom right;
 	background-repeat: repeat-x;
 }
 #mw-head {
 	position:relative;
 	top: 0;
-	right: 0;
+	left: 0;
 	width: 100%;
 }
 #mw-head h5 {
@@ -60,8 +70,8 @@
 	#p-personal {
 		position: absolute;
 		top: 0;
-		margin-left: 10em;
-		right: 0.75em;
+		margin-right: 10em;
+		left: 0.75em;
 	}
 	#p-personal h5 {
 		display: none;
@@ -77,18 +87,18 @@
 		float: left;
 	}
 	#p-personal li {
-		margin-left: 0.75em;
+		margin-right: 0.75em;
 		margin-top: 0.5em;
 		font-size: 0.75em;
 	}
 	/* Navigation Containers */
 	#left-navigation {
 		position: absolute;
-		left: 10em;
+		right: 10em;
 		top: 2.5em;
 	}
 	#right-navigation {
-		float: right;
+		float: left;
 		margin-top: 2.5em;
 	}
 	/* Navigation Labels */
@@ -105,7 +115,7 @@
 		/*background-image: url(images/tab-break.png);
 		background-position: bottom left;
 		background-repeat: no-repeat;*/
-		padding-left: 1px;
+		padding-right: 1px;
 	}
 	/* @noflip */
 	div.vectorTabs ul {
@@ -130,7 +140,7 @@
 		padding: 0;
 		background-color: #f3f3f3;
 		background-image: url(images/tab-normal-fade.png);
-		background-position: bottom left;
+		background-position: bottom right;
 		background-repeat: repeat-x;
 		white-space:nowrap;
 	}
@@ -145,10 +155,10 @@
 	div.vectorTabs li a {
 		display: inline-block;
 		height: 2.5em;
-		padding-left: 0.4em;
 		padding-right: 0.4em;
+		padding-left: 0.4em;
 		background-image: url(images/tab-break.png);
-		background-position: bottom right;
+		background-position: bottom left;
 		background-repeat: no-repeat;
 	}
 	div.vectorTabs li a,
@@ -212,8 +222,8 @@
 		background-image: none;
 	}
 	#mw-head div.vectorMenu h5 {
-		background-position: bottom left;
-		margin-left: -1px;
+		background-position: bottom right;
+		margin-right: -1px;
 	}
 	/* OVERRIDDEN BY COMPLIANT BROWSERS */
 	/* @noflip */
@@ -226,7 +236,7 @@
 		background-repeat: no-repeat;
 	}
 	div.vectorMenu h5 a{
-		background-position: bottom right;
+		background-position: bottom left;
 	}
 	/* IGNORED BY IE6 */
 	div.vectorMenu h5 > a {
@@ -236,7 +246,7 @@
 		position: relative;
 		display: none;
 		clear: both;
-		text-align: left;
+		text-align: right;
 	}
 	/* OVERRIDDEN BY COMPLIANT BROWSERS */
 	/* @noflip */
@@ -267,8 +277,8 @@
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
-		margin-left: -1px;
-		text-align: left;
+		margin-right: -1px;
+		text-align: right;
 	}
 	/* Fixes old versions of FireFox */
 	div.vectorMenu ul,
@@ -284,7 +294,7 @@
 	div.vectorMenu li {
 		padding: 0;
 		margin: 0;
-		text-align: left;
+		text-align: right;
 		line-height: 1em;
 	}
 	/* OVERRIDDEN BY COMPLIANT BROWSERS */
@@ -316,8 +326,8 @@
 		float: left;
 	}
 	#p-search {
-		margin-right: 0.5em;
 		margin-left: 0.5em;
+		margin-right: 0.5em;
 	}
 	#p-search form,
 	#p-search input {
@@ -330,7 +340,7 @@
 		border: solid 1px #AAAAAA;
 		background-color: white;
 		background-image: url(images/search-fade.png);
-		background-position: top left;
+		background-position: top right;
 		background-repeat: repeat-x;
 	}
 	#simpleSearch label {
@@ -355,7 +365,7 @@
 		border: none;
 		cursor: pointer;
 		background-color: transparent;
-		background-image: url(images/search-ltr.png);
+		background-image: url(images/search-rtl.png);
 		background-position: center center;
 		background-repeat: no-repeat;
 	}
@@ -380,7 +390,7 @@
 	top: 40px;
 	padding-top: 1em;
 	width: 10em;
-	left: 0;
+	right: 0;
 }
 	#mw-panel div.portal {
 		padding-bottom: 1.5em;
@@ -390,7 +400,7 @@
 		color: #444444;
 		padding: 0.25em;
 		padding-top: 0;
-		padding-left: 1.75em;
+		padding-right: 1.75em;
 		cursor: default;
 		border: none;
 		font-size: 0.75em;
@@ -398,10 +408,10 @@
 	#mw-panel div.portal div.body {
 		margin: 0;
 		padding-top: 0.5em;
-		margin-left: 1.25em;
+		margin-right: 1.25em;
 		background-image: url(images/portal-break.png);
 		background-repeat: no-repeat;
-		background-position: top left;
+		background-position: top right;
 	}
 	#mw-panel div.portal div.body ul {
 		list-style: none;
@@ -444,7 +454,7 @@
 	list-style-type: none;
 }
 #footer #footer-icons {
-	float:right;
+	float:left;
 	position:relative;
 	top:-6px;
 }
@@ -459,7 +469,7 @@ body.ltr #footer #footer-places {
 	list-style-type:none;
 }
 #footer #footer-icons li {
-	float: left;
+	float: right;
 	/*margin-left: 0.5em;*/
 	list-style: none;
 	list-style-image: none;
@@ -469,8 +479,8 @@ body.ltr #footer #footer-places {
 	top:0px;
 }
 #footer #footer-places li {
-	float: left;
-	margin-right: 0.6em;
+	float: right;
+	margin-left: 0.6em;
 	line-height: 0em;
 	list-style: none;
 	list-style-image: none;
@@ -487,31 +497,31 @@ body.ltr #footer #footer-places {
 #preftoc {
 	/* Tabs */
 	width: 100%;
-	float: left;
+	float: right;
 	clear: both;
 	margin: 0 !important;
 	padding: 0 !important;
 	background-image: url(images/preferences-break.png);
-	background-position: bottom left;
+	background-position: bottom right;
 	background-repeat: no-repeat;
 }
 	#preftoc li {
 		/* Tab */
-		float: left;
+		float: right;
 		margin: 0;
 		padding: 0;
-		padding-right: 1px;
+		padding-left: 1px;
 		height: 2.25em;
 		white-space: nowrap;
 		list-style-type: none;
 		list-style-image: none;
 		background-image: url(images/preferences-break.png);
-		background-position: bottom right;
+		background-position: bottom left;
 		background-repeat: no-repeat;
 	}
 	/* IGNORED BY IE6 */
 	#preftoc li:first-child {
-		margin-left: 1px;
+		margin-right: 1px;
 	}
 	#preftoc a,
 	#preftoc a:active {
@@ -534,7 +544,7 @@ body.ltr #footer #footer-places {
 		text-decoration: none;
 	}
 #preferences {
-	float: left;
+	float: right;
 	width: 100%;
 	margin: 0;
 	margin-top: -2px;
@@ -559,8 +569,8 @@ body.ltr #footer #footer-places {
 	display: none;
 }
 #preferences td {
-	padding-left: 0.5em;
 	padding-right: 0.5em;
+	padding-left: 0.5em;
 }
 #preferences td.htmlform-tip {
 	font-size: x-small;
@@ -571,7 +581,7 @@ body.ltr #footer #footer-places {
 	padding: 1em;
 }
 #preferences div.mw-prefs-buttons input {
-	margin-right: 0.25em;
+	margin-left: 0.25em;
 }
 
 /* 
@@ -581,7 +591,7 @@ body.ltr #footer #footer-places {
 	border: solid 1px #cccccc;
 	padding: 1.2em;
 	margin: .5em;
-	float: left;
+	float: right;
 }
 
 #userlogin {
@@ -711,13 +721,13 @@ pre {
 ul {
 	line-height: 1.5em;
 	list-style-type: square;
-	margin: .3em 0 0 1.5em;
+	margin: .3em 1.5em 0 0;
 	padding: 0;
 	list-style-image: url(images/bullet-icon.png);
 }
 ol {
 	line-height: 1.5em;
-	margin: .3em 0 0 3.2em;
+	margin: .3em 3.2em 0 0;
 	padding: 0;
 	list-style-image: none;
 }
@@ -734,7 +744,7 @@ dl {
 }
 dd {
 	line-height: 1.5em;
-	margin-left: 2em;
+	margin-right: 2em;
 	margin-bottom: .1em;
 }
 /* Tables */
@@ -802,13 +812,13 @@ select {
 .toc ul {
 	list-style-type: none;
 	list-style-image: none;
-	margin-left: 0;
-	padding-left: 0;
-	text-align: left;
+	margin-right: 0;
+	padding-right: 0;
+	text-align: right;
 }
 #toc ul ul,
 .toc ul ul {
-	margin: 0 0 0 2em;
+	margin: 0 2em 0 0;
 }
 #toc .toctoggle,
 .toc .toctoggle {
@@ -816,18 +826,18 @@ select {
 }
 /* Images */
 div.floatright, table.floatright {
-	clear: right;
-	float: right;
+	clear: left;
+	float: left;
 	position: relative;
-	margin: 0 0 .5em .5em;
+	margin: 0 .5em .5em 0;
 	border: 0;
 }
 div.floatright p { font-style: italic; }
 div.floatleft, table.floatleft {
-	float: left;
-	clear: left;
+	float: right;
+	clear: right;
 	position: relative;
-	margin: 0 .5em .5em 0;
+	margin: 0 0 .5em .5em;
 	border: 0;
 }
 div.floatleft p { font-style: italic; }
@@ -852,13 +862,13 @@ html .thumbimage {
 }
 html .thumbcaption {
 	border: none;
-	text-align: left;
+	text-align: right;
 	line-height: 1.4em;
 	padding: 3px !important;
 	font-size: 94%;
 }
 div.magnify {
-	float: right;
+	float: left;
 	border: none !important;
 	background: none !important;
 }
@@ -868,15 +878,15 @@ div.magnify a, div.magnify img {
 	background: none !important;
 }
 div.tright {
-	clear: right;
-	float: right;
-	border-width: .5em 0 .8em 1.4em;
+	clear: left;
+	float: left;
+	border-width: .5em 1.4em .8em 0;
 }
 div.tleft {
-	float: left;
-	clear: left;
-	margin-right: .5em;
-	border-width: .5em 1.4em .8em 0;
+	float: right;
+	clear: right;
+	margin-left: .5em;
+	border-width: .5em 0 .8em 1.4em;
 }
 img.thumbborder {
 	border: 1px solid #dddddd;
@@ -886,8 +896,8 @@ img.thumbborder {
 }
 /* Warning */
 .mw-warning {
-	margin-left: 50px;
 	margin-right: 50px;
+	margin-left: 50px;
 	text-align: center;
 }
 /* User Message */
@@ -930,7 +940,7 @@ img.thumbborder {
 #contentSub, #contentSub2 {
 	font-size: 84%;
 	line-height: 1.2em;
-	margin: 0 0 1.4em 1em;
+	margin: 0 1em 1.4em 0;
 	color: #7d7d7d;
 	width: auto;
 }
@@ -943,8 +953,8 @@ span.subpages {
 	text-align: center;
 }
 *.center * {
-	margin-left: auto;
 	margin-right: auto;
+	margin-left: auto;
 }
 /* Small for tables and similar */
 .small, .small * {
@@ -971,33 +981,33 @@ h3, h4, h5 {
 }
 #content a.external,
 #content a[href ^="gopher://"] {
-	background: url(images/external-link-ltr-icon.png) center right no-repeat;
-	padding: 0 13px 0 0;
+	background: url(images/external-link-rtl-icon.png) center left no-repeat;
+	padding: 0 0 0 13px;
 }
 #content a[href ^="https://"],
 .link-https {
-	background: url(images/lock-icon.png) center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url(images/lock-icon.png) center left no-repeat;
+	padding: 0 0 0 18px;
 }
 #content a[href ^="mailto:"],
 .link-mailto {
-	background: url(images/mail-icon.png) center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url(images/mail-icon.png) center left no-repeat;
+	padding: 0 0 0 18px;
 }
 #content a[href ^="news://"] {
-	background: url(images/news-icon.png) center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url(images/news-icon.png) center left no-repeat;
+	padding: 0 0 0 18px;
 }
 #content a[href ^="ftp://"],
 .link-ftp {
-	background: url(images/file-icon.png) center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url(images/file-icon.png) center left no-repeat;
+	padding: 0 0 0 18px;
 }
 #content a[href ^="irc://"],
 #content a.extiw[href ^="irc://"],
 .link-irc {
-	background: url(images/talk-icon.png) center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url(images/talk-icon.png) center left no-repeat;
+	padding: 0 0 0 18px;
 }
 #content a.external[href $=".ogg"], #content a.external[href $=".OGG"],
 #content a.external[href $=".mid"], #content a.external[href $=".MID"],
@@ -1006,23 +1016,23 @@ h3, h4, h5 {
 #content a.external[href $=".wav"], #content a.external[href $=".WAV"],
 #content a.external[href $=".wma"], #content a.external[href $=".WMA"],
 .link-audio {
-	background: url("images/audio-icon.png") center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url("images/audio-icon.png") center left no-repeat;
+	padding: 0 0 0 18px;
 }
 #content a.external[href $=".ogm"], #content a.external[href $=".OGM"],
 #content a.external[href $=".avi"], #content a.external[href $=".AVI"],
 #content a.external[href $=".mpeg"], #content a.external[href $=".MPEG"],
 #content a.external[href $=".mpg"], #content a.external[href $=".MPG"],
 .link-video {
-	background: url("images/video-icon.png") center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url("images/video-icon.png") center left no-repeat;
+	padding: 0 0 0 18px;
 }
 #content a.external[href $=".pdf"], #content a.external[href $=".PDF"],
 #content a.external[href *=".pdf#"], #content a.external[href *=".PDF#"],
 #content a.external[href *=".pdf?"], #content a.external[href *=".PDF?"],
 .link-document {
-	background: url("images/document-icon.png") center right no-repeat;
-	padding: 0 18px 0 0;
+	background: url("images/document-icon.png") center left no-repeat;
+	padding: 0 0 0 18px;
 }
 /* Interwiki Styling  (Disabled) */
 #content a.extiw,
@@ -1041,8 +1051,8 @@ h3, h4, h5 {
 #pt-userpage,
 #pt-anonuserpage,
 #pt-login {
-	background: url(images/user-icon.png) left top no-repeat;
-	padding-left: 15px !important;
+	background: url(images/user-icon.png) right top no-repeat;
+	padding-right: 15px !important;
 	text-transform: none;
 }
 
@@ -1066,7 +1076,7 @@ div#bodyContent {
 /* Watch/Unwatch Icon Styling */
 #ca-unwatch.icon,
 #ca-watch.icon {
-	margin-right:1px;
+	margin-left:1px;
 }
 #ca-unwatch.icon a,
 #ca-watch.icon a {
@@ -1104,7 +1114,7 @@ div#bodyContent {
 }
 div.vectorTabs ul {
 	background-image:url(images/tab-break.png);
-	background-position:right bottom;
+	background-position:left bottom;
 	background-repeat:no-repeat;
 }
 /* SpryMenuBarHorizontal.css - version 0.6 - Spry Pre-Release 1.6.1 */
@@ -1146,8 +1156,8 @@ ul.MenuBarHorizontal li
 	position: relative;
 	text-align: center;
 	cursor: pointer;
-	width: 10em;
-	float: left;
+	width: 10.3em;
+	float: right;
 }
 /* Submenus should appear below their parent (top: 0) with a higher z-index, but they are initially off the left side of the screen (-1000em) */
 ul.MenuBarHorizontal ul
@@ -1162,12 +1172,12 @@ ul.MenuBarHorizontal ul
 	cursor: default;
 	width: 8.2em;
 	position: absolute;
-	left: -1000em;
+	right: -1000em;
 }
 /* Submenu that is showing with class designation MenuBarSubmenuVisible, we set left to auto so it comes onto the screen below its parent menu item */
 ul.MenuBarHorizontal ul.MenuBarSubmenuVisible
 {
-	left: auto;
+	right: auto;
 }
 /* Menu item containers are same fixed width as parent */
 ul.MenuBarHorizontal ul li
@@ -1178,12 +1188,12 @@ ul.MenuBarHorizontal ul li
 ul.MenuBarHorizontal ul ul
 {
 	position: absolute;
-	margin: -5% 0 5 95%;
+	margin: -5% 95% 5 0;
 }
 /* Submenu that is showing with class designation MenuBarSubmenuVisible, we set left to 0 so it comes onto the screen */
 ul.MenuBarHorizontal ul.MenuBarSubmenuVisible ul.MenuBarSubmenuVisible
 {
-	left: auto;
+	right: auto;
 	top: 0;
 }
 
@@ -1204,7 +1214,7 @@ ul.MenuBarHorizontal a
 	display: block;
 	cursor: pointer;
 	background-color: #D4F19D;
-	padding: 0.5em 0.75em;
+	padding: 0.5em 0.3em;
 	color: #333;
 	text-decoration: none;
 }
@@ -1232,28 +1242,28 @@ ul.MenuBarHorizontal a.MenuBarItemSubmenu
 {
 	background-image: url(SpryAssets/SpryMenuBarDown.gif);
 	background-repeat: no-repeat;
-	background-position: 95% 50%;
+	background-position: 5% 50%;
 }
 /* Menu items that have a submenu have the class designation MenuBarItemSubmenu and are set to use a background image positioned on the far left (95%) and centered vertically (50%) */
 ul.MenuBarHorizontal ul a.MenuBarItemSubmenu
 {
 	background-image: url(SpryAssets/SpryMenuBarRight.gif);
 	background-repeat: no-repeat;
-	background-position: 95% 50%;
+	background-position: 5% 50%;
 }
 /* Menu items that are open with submenus have the class designation MenuBarItemSubmenuHover and are set to use a "hover" background image positioned on the far left (95%) and centered vertically (50%) */
 ul.MenuBarHorizontal a.MenuBarItemSubmenuHover
 {
 	background-image: url(SpryAssets/SpryMenuBarDownHover.gif);
 	background-repeat: no-repeat;
-	background-position: 95% 50%;
+	background-position: 5% 50%;
 }
 /* Menu items that are open with submenus have the class designation MenuBarItemSubmenuHover and are set to use a "hover" background image positioned on the far left (95%) and centered vertically (50%) */
 ul.MenuBarHorizontal ul a.MenuBarItemSubmenuHover
 {
 	background-image: url(SpryAssets/SpryMenuBarRightHover.gif);
 	background-repeat: no-repeat;
-	background-position: 95% 50%;
+	background-position: 5% 50%;
 }
 
 /*******************************************************************************
@@ -1288,17 +1298,18 @@ body {
 	color: black;
 	padding: 0;	
 }
+body.anonymous .vectorTabs { display: none; }
 #wrapper {
 	background-color: #FFF;
 	width: 1000px;
-	margin-right: auto;
 	margin-left: auto;
-	border-right-width: 1px;
+	margin-right: auto;
 	border-left-width: 1px;
-	border-right-style: solid;
+	border-right-width: 1px;
 	border-left-style: solid;
-	border-right-color: #a1ca60;
-	border-left-color: #a1ca60;	
+	border-right-style: solid;
+	border-left-color: #a1ca60;
+	border-right-color: #a1ca60;	
 }
 #wrapper #logo {
 	background-color: #FFF;
@@ -1321,8 +1332,8 @@ body {
 	font-style:italic;
 	font-weight:200;
 	font-variant:small-caps;
-	text-align:right;
-	float:right;
+	text-align:left;
+	float:left;
 }
 #wrapper #filler2 {
 	width: 1000px;
@@ -1347,28 +1358,35 @@ body {
 	width: 1000px;
 	background-color:#FFF;
 	margin-top:0px;
-	margin-left:0px;
 	margin-right:0px;
+	margin-left:0px;
 	margin-bottom:1px;
 	padding-top:0px;
-	padding-left:0px;
 	padding-right:0px;
+	padding-left:0px;
 	padding-bottom:30px;
 }
 #wrapper #mbody #middle{
 	width:950px;
 	margin-top:0px;
-	margin-left:5px;
 	margin-right:5px;
+	margin-left:5px;
 	margin-bottom:10px;	
 	padding-top:0px;
-	padding-left:10px;
-	padding-right:5px;
+	padding-right:10px;
+	padding-left:5px;
 	padding-bottom:5px;			
 }
 #wrapper #mbody #middle h3 {
-	text-align:left;
+	text-align:right;
 	font-size:25px;
+	font-variant:small-caps;
+	font-weight:bold;
+	font-style:italic;
+	color: #A9E33C;
+}
+#wrapper #mbody #middle h1 {
+	text-align:right;	
 	font-variant:small-caps;
 	font-weight:bold;
 	font-style:italic;
