@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '2.1.2, 2011-01-14' );
+define( 'JAVASCRIPT_VERSION', '2.1.3, 2011-01-14' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "JavaScript",
@@ -23,6 +23,8 @@ $wgExtensionCredits['other'][] = array(
 $wgHooks['BeforePageDisplay'][] = 'wfJavaScriptAddScripts';
 function wfJavaScriptAddScripts( &$out, $skin = false ) {
 	global $wgJsMimeType, $wgScriptPath;
+
+	# Load JavaScript files
 	foreach ( glob( dirname( __FILE__ ) . "/*.js" ) as $file ) {
 		if ( is_callable( array( $out, 'includeJQuery' ) ) && preg_match( "|/jquery-\d|", $file ) ) {
 			$out->includeJQuery();
@@ -31,6 +33,12 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
 			$file = preg_replace( "|^.*/extensions/|", "$wgScriptPath/extensions/", $file );
 			$out->addScript( "<script src='$file' type='$wgJsMimeType'></script>" );
 		}
+	}
+
+	# Load CSS files
+	foreach ( glob( dirname( __FILE__ ) . "/*.css" ) as $file ) {
+		$file = preg_replace( "|^.*/extensions/|", "$wgScriptPath/extensions/", $file );
+		$out->addStyle( $file, 'screen', '', 'ltr' );
 	}
 	return true;
 }
