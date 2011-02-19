@@ -135,7 +135,7 @@ if ($wgUser->isLoggedIn()) {
 # Donations
 global $wgOrganicDesignDonations;
 if ( $wgOrganicDesignDonations ) {?>
-	<div class="portlet">
+	<div class="portlet" id="donations" >
 		<h5>Shout us a coffee :-)</h5>
 		<div class="pBody">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
