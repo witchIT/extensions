@@ -8,18 +8,18 @@ body {
 	padding: 0;
 	text-align: center;
 	line-height: 1.7em;
-	background: #dfdfdf url(/wiki/skins/organicdesign/grey/bg.png) repeat;
+	background: #dfdfdf url(/wiki/skins/organicdesign/2011/bg.png) repeat;
 	}
-#logo-r    { background: url(/wiki/skins/organicdesign/grey/logo-r.png) 0 0 no-repeat; width: 40px;  height: 173px; }
-#logo-t    { background: url(/wiki/skins/organicdesign/grey/logo-t.png) 0 0 no-repeat; width: 514px; height: 38px; }
-#shadow-l  { background: url(/wiki/skins/organicdesign/grey/l.png)      0 0 repeat-y;  width: 40px;  height: 100%; }
-#shadow-tl { background: url(/wiki/skins/organicdesign/grey/tl.png)     0 0 no-repeat; width: 40px;  height: 38px; }
-#shadow-t  { background: url(/wiki/skins/organicdesign/grey/t.png)      0 0 repeat-x;  width: 100%;  height: 38px; }
-#shadow-tr { background: url(/wiki/skins/organicdesign/grey/tr.png)     0 0 no-repeat; width: 40px;  height: 38px; }
-#shadow-r  { background: url(/wiki/skins/organicdesign/grey/r.png)      0 0 repeat-y;  width: 40px;  height: 100%; }
-#shadow-bl { background: url(/wiki/skins/organicdesign/grey/bl.png)     0 0 no-repeat; width: 40px;  height: 38px; }
-#shadow-b  { background: url(/wiki/skins/organicdesign/grey/b.png)      0 0 repeat-x;  width: 100%;  height: 38px; }
-#shadow-br { background: url(/wiki/skins/organicdesign/grey/br.png)     0 0 no-repeat; width: 40px;  height: 38px; }
+#logo-r    { background: url(/wiki/skins/organicdesign/2011/logo-r.png) 0 0 no-repeat; width: 40px;  height: 173px; }
+#logo-t    { background: url(/wiki/skins/organicdesign/2011/logo-t.png) 0 0 no-repeat; width: 514px; height: 38px; }
+#shadow-l  { background: url(/wiki/skins/organicdesign/2011/l.png)      0 0 repeat-y;  width: 40px;  height: 100%; }
+#shadow-tl { background: url(/wiki/skins/organicdesign/2011/tl.png)     0 0 no-repeat; width: 40px;  height: 38px; }
+#shadow-t  { background: url(/wiki/skins/organicdesign/2011/t.png)      0 0 repeat-x;  width: 100%;  height: 38px; }
+#shadow-tr { background: url(/wiki/skins/organicdesign/2011/tr.png)     0 0 no-repeat; width: 40px;  height: 38px; }
+#shadow-r  { background: url(/wiki/skins/organicdesign/2011/r.png)      0 0 repeat-y;  width: 40px;  height: 100%; }
+#shadow-bl { background: url(/wiki/skins/organicdesign/2011/bl.png)     0 0 no-repeat; width: 40px;  height: 38px; }
+#shadow-b  { background: url(/wiki/skins/organicdesign/2011/b.png)      0 0 repeat-x;  width: 100%;  height: 38px; }
+#shadow-br { background: url(/wiki/skins/organicdesign/2011/br.png)     0 0 no-repeat; width: 40px;  height: 38px; }
 
 p {
 	margin: 10px 0;
@@ -54,7 +54,7 @@ p {
  */
 #content {
 	text-align: left;
-	background: white url(/wiki/skins/organicdesign/logo.jpg) top right no-repeat;
+	background: white url(/wiki/skins/organicdesign/2011/logo.jpg) top right no-repeat;
 }
 
 .visualClear {
