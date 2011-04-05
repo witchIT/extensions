@@ -13,7 +13,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not a valid entry point.' );
 
-define( 'NUKEDPL_VERSION', '1.2.3, 2011-04-05' );
+define( 'NUKEDPL_VERSION', '1.2.4, 2011-04-05' );
 
 $wgGroupPermissions['sysop']['nuke'] = true;
 $wgAvailableRights[]                 = 'nuke';
@@ -57,7 +57,7 @@ notlastmodifiedby = User
 ';
 
 $wgExtensionCredits['specialpage'][] = array(
-	'name'        => 'Special:NukeDPL',
+	'name'        => 'NukeDPL',
 	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
 	'description' => 'Mass delete by DPL query',
 	'url'         => 'http://www.mediawiki.org/wiki/Extension:NukeDPL',
