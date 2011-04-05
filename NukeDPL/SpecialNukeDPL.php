@@ -13,7 +13,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not a valid entry point.' );
 
-define( 'NUKEDPL_VERSION', '1.2.2, 2010-09-23' );
+define( 'NUKEDPL_VERSION', '1.2.3, 2011-04-05' );
 
 $wgGroupPermissions['sysop']['nuke'] = true;
 $wgAvailableRights[]                 = 'nuke';
@@ -141,17 +141,17 @@ class SpecialNukeDPL extends SpecialPage {
 			wfElement( 'form', array( 'action' => $nuke->getLocalURL( 'action=delete' ), 'method' => 'post' ), null )
 			."\n<div>".wfMsgHtml( 'deletecomment' ) . ': '
 			.wfElement( 'input', array( 'name' => 'wpReason', 'value' => $reason, 'size' => 60 ) ) . "</div>\n$submit"
-			.wfElement( 'input', array( 'type' => 'hidden', 'name' => 'wpEditToken', 'value' => $wgUser->editToken() ) ) . "\n<ul>\n"
+			.wfElement( 'input', array( 'type' => 'hidden', 'name' => 'wpEditToken', 'value' => $wgUser->editToken() ) ) . "\n<br/>"
 		);
 
 		$sk =& $wgUser->getSkin();
 		foreach ( $pages as $title ) {
-			$wgOut->addHTML( '<li>'
-				.wfElement( 'input', array( 'type' => 'checkbox', 'name' => "pages[]", 'value' => $title, 'checked' => 'checked' ) )
-				.'&nbsp;' . $sk->makeKnownLinkObj( Title::newFromText( $title ) ) . "</li>\n"
+			$wgOut->addHTML(
+				wfElement( 'input', array( 'type' => 'checkbox', 'name' => "pages[]", 'value' => $title, 'checked' => 'checked' ) )
+				.'&nbsp;' . $sk->makeKnownLinkObj( Title::newFromText( $title ) ) . "<br />\n"
 			);
 		}
-		$wgOut->addHTML( "</ul>\n$submit</form>" );
+		$wgOut->addHTML( "\n$submit</form>" );
 	}
 
 	function getPages( $query ) {
