@@ -113,29 +113,6 @@ form .editsection { display:none }
 	color: white;
 	}
 
-/* Selenium */
-.selenium table {
-	border: 2px solid #dde;
-	background: white;
-	font-family: Verdana, Arial, sans-serif;
-	font-size: 12px;
-	font-weight: bold;
-	text-align: center;
-}
-.selenium td {
-	border: none;
-	padding: 4px;
-	margin: 0;
-}
-.selenium tr {
-	background: #dde;
-}
-.selenium tr + tr {
-	font-weight: normal;
-	background: #eef;
-	text-align: left;
-}
-
 /*--------------------------------------------------|
 | dTree 2.05 | www.destroydrop.com/javascript/tree/ |
 |---------------------------------------------------|
@@ -435,7 +412,6 @@ cite:target {
 }
 
 
-
 /* Tooltips */
 .tooltip + .tooltip { display:none }
 .tooltip:hover + .tooltip, .tooltip + .tooltip:hover {
@@ -446,16 +422,6 @@ cite:target {
 	border: 1px solid black;
 	background-color: #F9E4D3;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 /* Date Picker
@@ -628,56 +594,57 @@ div.datePicker table thead th.date-picker-title {
 }
 /* The "mon tue wed etc" day header button styles */
 div.datePicker table th.date-picker-day-header {
-	text-transform:lowercase;
-	width:3em;
+	text-transform: lowercase;
+	width: 3em;
 }
-div.datePicker table th.date-picker-day-header span { display:block; }
+div.datePicker table th.date-picker-day-header span { display: block; }
 /* The "todays date" style */
 div.datePicker table td.date-picker-today {
-	background:#E2E9FE;
-	color:rgb(100,100,100) !important;
+	background: #E2E9FE;
+	color: rgb(100,100,100) !important;
 }
 /* The "selected date" style */
 div.datePicker table td.date-picker-selected-date {
-	color:#333 !important;
-	border-color:#333 !important;
+	color: #333 !important;
+	border-color: #333 !important;
 }
 /* the "highlight days" style */
-td.date-picker-highlight { color:#a86666; }
+td.date-picker-highlight { color: #a86666; }
 /* The date "out of range" style */
 div.datePicker table td.out-of-range {
-	color:#ccc !important;
-	font-style:oblique;
-	background:#fcfcfc !important;
-	cursor:default !important;
+	color: #ccc !important;
+	font-style: oblique;
+	background: #fcfcfc !important;
+	cursor: default !important;
 }
 /* The "disabled days" style */
 div.datePicker table td.day-disabled {
-	color:#aaa !important;
-	background:transparent !important;
-	cursor:default !important;
+	color: #aaa !important;
+	background: transparent !important;
+	cursor: default !important;
 }
 /* The "active cursor" style */
 div.datePicker table tbody td.date-picker-hover {
-	background:#fff url(../media/bg_header.jpg) no-repeat 0 0;
-	cursor:pointer;
-	border-color:rgb(100,130,170);
-	color:rgb(100,130,170);
+	background: #fff url( ../media/bg_header.jpg ) no-repeat 0 0;
+	cursor: pointer;
+	border-color: rgb(100,130,170);
+	color: rgb(100,130,170);
 }
 /* Remove the images for Internet Explorer <= v6 using the "* html" hack */
-* html div.datePicker table td { background-image:none; }
-* html div.datePicker table td.date-picker-unused { background:#f2f2f2; }
+* html div.datePicker table td { background-image: none; }
+* html div.datePicker table td.date-picker-unused { background: #f2f2f2; }
 
 /*Stop the screen writer from displaying over the top of the picker */
 
 a.date-picker-control span.fd-screen-reader {display:none}
 
+
 /* RECORDADMIN */ 
 
 /* Recordadmin td auto-right and aligned top*/ 
 
-.template_maintable td { width:100%; }
-.template_maintable th, .recordadmin-create th { white-space:nowrap; }
+.template_maintable td { width: 100%; }
+.template_maintable th, .recordadmin-create th { white-space: nowrap; }
 
 /*
  * RecordAdmin forms and tables
@@ -725,18 +692,18 @@ table.sortable td {
 	margin: 0;
 	font-size: 8pt;
 	vertical-align: top;
-	width:auto;
+	width: auto;
 }
 table.sortable th {
 	text-align: left;
 }
 
-/*Default widths for recordtables*/
+/* Default widths for recordtables */
 
 table.recordadmin p { 
 	padding: 0; 
 	margin: 0;
-	text-align:left 
+	text-align: left; 
 }
 
 /*table.recordadmin td.long-record-description, td.colTask, td.colPurpose, td.colDescription, td.col-title, th.colTask, th.colDescription, th.col-title, th.colPurpose, table.recordadmin td.colTask, table.recordadmin td.colDescription, table.recordadmin td.col-title, table.recordadmin td.colPurpose, table.recordadmin th.colTask, table.recordadmin th.colDescription, table.recordadmin th.colPurpose, table.recordadmin th.col-title { white-space: normal }
@@ -751,16 +718,16 @@ table.recordadmin td.long-record-description pre { overflow: hidden; }
 .recordadmin fieldset th, .recordadmin fieldset td, #userlogin fieldset td, #userlogin fieldset th { 
 	padding: 8px 15px 0 0;
 	vertical-align: top;
-	text-align:left;
+	text-align: left;
  }
 
 .template_maintable th, .template_maintable td { 
 	padding: 4px 15px 0 0;
 	vertical-align: top;
-	text-align:left;
+	text-align: left;
  }
 
-.template_maintable p {margin: 0 0 0 0}
+.template_maintable p { margin: 0 0 0 0; }
 
 .template_maintable td + th, .recordadmin fieldset td + th, fieldset.prefsection fieldset table td + th, table .recordadmin-create table td + th, .date_maintable td + th, #userlogin fieldset td + th { padding-left: 20px; }
 
@@ -775,26 +742,27 @@ table.recordadmin td.long-record-description pre { overflow: hidden; }
 /*max width of form selects and i's*/
 .recordadmin-create select {
 	max-width: 435px;
-	float:left;
+	float: left;
 }
 
-/*Date Record Type*/
 
-table.date_maintable table td, table.date_maintable table th {text-align:left;}
-table.date_maintable table td p, table.date_maintable table th p {text-align:left;}
+/* Date Record Type */
+table.date_maintable table td, table.date_maintable table th { text-align: left; }
+table.date_maintable table td p, table.date_maintable table th p { text-align: left; }
+
 
 /* Template CSS */ 
-.dynamicnav_title { width:100%; text-align:left; padding-left:5px } 
+.dynamicnav_title { width: 100%; text-align: left; padding-left: 5px; } 
 .ra_infobox, .prefsection table.ra_infobox { 
-	padding-left:10px;
-	padding-top:2px;
-	padding-bottom:2px; 
-	background-color:#BBBBBB; 
+	padding-left: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px; 
+	background-color: #BBBBBB; 
 	color: white; 
 	font-size: 110%; 
 	width: 100%;
-	padding-right:20px;
-	margin-bottom:5px;
+	padding-right: 20px;
+	margin-bottom: 5px;
 }
 .ra_infobox a { 
 	color: white; 
@@ -809,8 +777,8 @@ table.date_maintable table td p, table.date_maintable table th p {text-align:lef
 	width: 100%; 
 } 
 .prefsection table.ra_infobox td, .ra_infobox td { 
-	vertical-align:middle;
-	padding-right:10px;
+	vertical-align: middle;
+	padding-right: 10px;
 }
 
 .prefsection table.ra_infobox td:first-child, .ra_infobox td:first-child { 
@@ -822,67 +790,67 @@ table.date_maintable table td p, table.date_maintable table th p {text-align:lef
 /*.recordadmin-create-id {display:none}*/
 
 /* Width of templates */
-table.recordadmin-general {width:100%; vertical-align:top}
+table.recordadmin-general { width:100%; vertical-align: top; }
 
-/*Vertical align*/
-.template_maintable td {vertical-align:top;}
+/* Vertical align */
+.template_maintable td { vertical-align: top; }
+
 
 /* Vanadium input styles */
-
 input.vanadium-invalid, select.vanadium-invalid, textarea.vanadium-invalid {
-  border-color: red !important;
-  border-style: solid !important;
+	border-color: red !important;
+	border-style: solid !important;
 }
 
 input.vanadium-valid, select.vanadium-valid, textarea.vanadium-valid {
-  border-color: #0F0 !important;
-  border-style: solid !important;
+	border-color: #0F0 !important;
+	border-style: solid !important;
 }
 
 .vanadium-message-value {
-  font-style: italic;
-  text-decoration: underline;
+	font-style: italic;
+	text-decoration: underline;
 }
 
 .vanadium-advice {
-  font-size: 13px;
+	font-size: 13px;
 }
 
 .vanadium-advice.vanadium-invalid, .vanadium-advice.vanadium-invalid * {
-  color: red;
+	color: red;
 }
 
 input.vanadium-valid ~ .vanadium-valid-advice {
-  display: inline !important;
-  color: green;
+	display: inline !important;
+	color: green;
 }
 
-/*Float-right without any margins or anything else*/
+/* Float-right without any margins or anything else */
 .floatright-nm {float:right}
 
-/*The red arrow for mandatory fields*/
+/* The red arrow for mandatory fields */
 .req-arrow {
 	background:url(/files/c/c0/Mand-arrow-2pxtop.png) no-repeat center left;
 }
 
 /* The i symbol*/
 .tooltip-nowidth-image {
-	background:url(/files/e/e0/Info-16.svg.png) no-repeat; 
+	background:url( /files/e/e0/Info-16.svg.png ) no-repeat; 
 	width:16px; 
 	height:16px;
 	vertical-align: text-bottom
 }
 
-/*Date Record Styles*/
-th.cal_timeslot {vertical-align:top; font-weight:bold; width:100px; padding-left:5px; border: 1px solid #bbbbbb}
-.cal_cell_person_week .NavContent {width:200px;}
-.cal_cell_person_hour {width:100%; vertical-align:top; display:inline; float:left; border-bottom: 1px solid #bbbbbb}
-.cal_cell_person_hour p {margin-top:0; padding-left:5px;}
-.cal_cell_person_hour .Activity-record th {display:none}
-.prefsection table.date_maintable {border: 1px solid #bbbbbb; border-collapse:collapse;}
+/* Date Record Styles */
+th.cal_timeslot { vertical-align:top; font-weight: bold; width: 100px; padding-left: 5px; border: 1px solid #bbbbbb; }
+.cal_cell_person_week .NavContent { width: 200px; }
+.cal_cell_person_hour { width: 100%; vertical-align: top; display: inline; float: left; border-bottom: 1px solid #bbbbbb; }
+.cal_cell_person_hour p { margin-top: 0; padding-left: 5px; }
+.cal_cell_person_hour .Activity-record th { display: none; }
+.prefsection table.date_maintable { border: 1px solid #bbbbbb; border-collapse: collapse; }
 
 
-/* Hide headings on cat pages*/
+/* Hide headings on cat pages */
 .page-Category_Documents #mw-pages h2, 
 .page-Category_Activities #mw-pages h2, 
 .page-Category_Dates #mw-pages h2,
@@ -895,10 +863,9 @@ th.cal_timeslot {vertical-align:top; font-weight:bold; width:100px; padding-left
 .page-Category_Posts #mw-pages h2,
 .page-Category_Transactions #mw-pages h2,
 .page-Category_Invoices #mw-pages h2,
-.page-Category_Tasks #mw-pages h2 {display:none}
+.page-Category_Tasks #mw-pages h2 { display: none; }
 
-/*Hide cat page details on load*/
-
+/* Hide cat page details on load */
 .page-Category_Documents #mw-pages, 
 .page-Category_Activities #mw-pages, 
 .page-Category_Dates #mw-pages,
@@ -911,24 +878,31 @@ th.cal_timeslot {vertical-align:top; font-weight:bold; width:100px; padding-left
 .page-Category_Posts #mw-pages,
 .page-Category_Transactions #mw-pages,
 .page-Category_Invoices #mw-pages,
-.page-Category_Tasks #mw-pages {display:none}
+.page-Category_Tasks #mw-pages { display: none; }
 
-/*Prefs cols*/
-.prefsection td.mw-label { width: auto; text-align:left}
+/* Prefs cols */
+.prefsection td.mw-label { width: auto; text-align: left; }
 
 table#mw-htmlform-display td, table#mw-htmlform-advancedwatchlist td, table#mw-htmlform-advancedsearchoptions td, table#mw-htmlform-textboxsize td, table#mw-htmlform-timeoffset td, table#mw-htmlform-files td, table#mw-htmlform-advancedrendering td, fieldset.prefsection fieldset table td, table#mw-htmlform-info td {
-text-align:left;
-padding-right:10px;
+	text-align:left;
+	padding-right:10px;
 }
 
 fieldset.prefsection fieldset table th {
-	width:125px;
-	text-align:left;
-	padding-right:10px;
+	width: 125px;
+	text-align: left;
+	padding-right: 10px;
 } 
 
+form th, .recordadmin-template th { text-align: left; }
+
+body.ns-0 div#preferences, body.ns-2 div#preferences, body.ns-14 div#preferences {
+    float: none;
+    margin-bottom: 20px;
+}
+
 body.page-Special_Preferences .prefsection table {
-	width:auto;
+	width: auto;
 }
 
 .recordadmin-create, .recordadmin-create table {
@@ -946,12 +920,12 @@ body.page-Special_Preferences .prefsection table {
 	height: 220px; 
 	min-width: 120px; 
 	margin-right: 20px;
-	margin-bottom:20px;
-	margin-top:10px;
+	margin-bottom: 20px;
+	margin-top: 10px;
 	float: left; 
 	overflow: hidden; 
-	display:inline;
-	font-size:80%;
+	display: inline;
+	font-size: 80%;
 	line-height: 1.4;
 }
 
@@ -962,12 +936,12 @@ form.person-record td.EmailList p {
 }
 
 /* lose ra-title row */
-.recordadmin-create-id { display:none }
-#record-name-input { width: 100% }
+.recordadmin-create-id { display:none; }
+#record-name-input { width: 100%; }
 
-/*fieldset deeper*/
+/* fieldset deeper */
 #mw-preferences-form, .page-Special_Preferences form {
-	margin-bottom:20px;
-	margin-top:10px 
+	margin-bottom: 20px;
+	margin-top: 10px 
 }
 
