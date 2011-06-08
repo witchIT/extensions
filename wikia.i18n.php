@@ -192,11 +192,12 @@ $messages['en'] = array(
 *[[Cheatsheet]]
 *[[Sandbox]]
 *'''Categories'''
-**[[:Category:People|People]]   [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;create&#93;</small>]
+**[[:Category:People|People]]   [{{fullurl:Special:UserLogin|type=signup}} <small>&#91;new&#93;</small>]
 **[[:Category:Departments|Departments]] {{NewRecordLinkSmall|Department}}
 **[[:Category:Roles|Roles]] {{NewRecordLinkSmall|Role}}
 **[[:Category:Projects|Projects]] {{NewRecordLinkSmall|Project}}
 **[[:Category:Organisations|Organisations]] {{NewRecordLinkSmall|Organisation}}
+**[[:Category:Locations|Locations]] {{NewRecordLinkSmall|Location}}
 **[[:Category:Subscriptions|Subscriptions]] {{NewRecordLinkSmall|Subscription}}
 **[[:Category:Documents|Documents]] {{NewRecordLinkSmall|Document}}
 **[[:Category:Procedures|Procedures]] {{NewRecordLinkSmall|Procedure}}
