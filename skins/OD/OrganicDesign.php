@@ -146,9 +146,10 @@ if ( $wgOrganicDesignDonations ) {?>
 				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Paypal" />
 			</form>
 		</div>
+		<br />
 		<h5><img alt="" src="/files/a/a0/Bitcoin-icon.png" /> We also accept <a href="/Bitcoin">Bitcoins</a>!</h5>
 		<div class="pBody">
-			<div style="font-size:7pt">1PVoayGWHbShwM6m5r2qACURBMMfTmR5jT</div>
+			<div style="font-size:6pt">1PVoayGWHbShwM6m5r2qACURBMMfTmR5jT</div>
 		</div>
 	</div>
 <?php }?>
