@@ -147,9 +147,9 @@ if ( $wgOrganicDesignDonations ) {?>
 			</form>
 		</div>
 		<br />
-		<h5><img alt="" src="/files/a/a0/Bitcoin-icon.png" /> We also accept <a href="/Bitcoin">Bitcoins</a>!</h5>
+		<h5>We accept <a href="/Bitcoin">Bitcoins</a>!</h5>
 		<div class="pBody">
-			<div style="font-size:5.3pt;">&nbsp;1PVoayGWHbShwM6m5r2qACURBMMfTmR5jT&nbsp;</div>
+			<img alt="" src="/files/a/a0/Bitcoin-icon.png" /><input style="width:100px" value="1PVoayGWHbShwM6m5r2qACURBMMfTmR5jT" onFocus="this.select()" />
 		</div>
 	</div>
 <?php }?>
