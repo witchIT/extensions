@@ -148,7 +148,7 @@ if ( $wgOrganicDesignDonations ) {?>
 		</div>
 		<h5>We also accept <a href="/Bitcoin">Bitcoins</a>!</h5>
 		<div class="pBody">
-			<img alt="" src="/files/a/a0/Bitcoin-icon.png" /><div style="font-size:8pt">1PVoayGWHbShwM6m5r2qACURBMMfTmR5jT</div>
+			<img alt="" src="/files/a/a0/Bitcoin-icon.png" /><div style="font-size:4pt">1PVoayGWHbShwM6m5r2qACURBMMfTmR5jT</div>
 		</div>
 	</div>
 <?php }?>
