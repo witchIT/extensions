@@ -196,7 +196,6 @@ function odLogActivity() {
 	$sesh = preg_match( "|_session=([0-9a-z]+)|", isset( $_SERVER['HTTP_COOKIE'] ) ? $_SERVER['HTTP_COOKIE'] : '', $m ) ? $m[1] : '';
 	if ( $sesh ) $user .= ":$sesh";
 	if ( !$wgUser->isAnon() ) $user .= ':' . $_SERVER['REMOTE_ADDR'];
-	if ( !$wgUser->isBot() ) $user .= ':bot';
 	$url = $_SERVER['REQUEST_URI'];
 	if ( $wgRequest->wasPosted() ) {
 		$post = array();
