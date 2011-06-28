@@ -193,13 +193,6 @@ class SimpleSecurity {
 
 		$groups = $user->getEffectiveGroups();
 
-		# Put the anon read right back in $wgGroupPermissions if it was there initially
-		# - it had to be removed because Title::userCanRead short-circuits with it
-		if ( $this->default_read ) {
-			$wgGroupPermissions['*']['read'] = true;
-			$rights[] = 'read';
-		}
-
 		# Filter rights according to $wgPageRestrictions
 		# - also update LS (rules from local settings) items to info array
 		$this->pageRestrictions( $rights, $groups, $title, true );
