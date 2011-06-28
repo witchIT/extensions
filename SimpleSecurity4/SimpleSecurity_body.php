@@ -19,10 +19,6 @@ class SimpleSecurity {
 			$wgRestrictionTypes, $wgRestrictionLevels, $wgGroupPermissions,
 			$wgSecurityRenderInfo, $wgSecurityAllowUnreadableLinks, $wgSecurityGroupsArticle;
 
-		# $wgGroupPermissions has to have its default read entry removed because Title::userCanRead checks it directly
-		if ( $this->default_read = ( isset( $wgGroupPermissions['*']['read'] ) && $wgGroupPermissions['*']['read'] ) )
-			$wgGroupPermissions['*']['read'] = false;
-
 		# Add our hooks
 		$wgHooks['UserGetRights'][] = $this;
 		$wgHooks['ImgAuthBeforeStream'][] = $this;
@@ -38,8 +34,6 @@ class SimpleSecurity {
 		$wgLogActions['security/deny'] = 'securitylogentry';
 
 		# Load messages
-		
-
 		foreach ( $wgSecurityExtraActions as $k => $v ) {
 			$wgRestrictionTypes[] = $k;
 		}
@@ -164,13 +158,7 @@ class SimpleSecurity {
 	 * Check if image is accessible by current user when using img_auth
 	 */
 	public function onImgAuthBeforeStream( &$title, &$path, &$name, &$result ) {
-		global $wgUser, $wgGroupPermissions;
-
-		# Put the anon read right back in $wgGroupPermissions if it was there initially
-		# - it had to be removed because Title::userCanRead short-circuits with it
-		if ( $this->default_read ) {
-			$wgGroupPermissions['*']['read'] = true;
-		}
+		global $wgUser;
 
 		if ( !$this->userCanReadTitle( $wgUser, $title, $error )) {
 			$result = array('img-auth-accessdenied', 'img-auth-noread', $name);

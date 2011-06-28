@@ -20,9 +20,9 @@
  * @license GNU General Public Licence 2.0 or later
  */
 
-if ( !defined( 'MEDIAWIKI' ) )                     die( 'Not an entry point.' );
+if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'SIMPLESECURITY_VERSION', '4.5.1, 2010-10-16' );
+define( 'SIMPLESECURITY_VERSION', '4.5.2, 2011-06-28' );
 
 # Load the SimpleSecurity class and messages
 $dir = dirname( __FILE__ ) . '/';
