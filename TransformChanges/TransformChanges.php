@@ -12,7 +12,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @licence GNU General Public Licence 2.0 or later
  */
 
-define( 'TRANSFORMCHANGES_VERSION', "2.0.2, 2010-09-21" );
+define( 'TRANSFORMCHANGES_VERSION', "2.0.3, 2011-06-30" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "TransformChanges",
@@ -26,6 +26,7 @@ $wgExtensionCredits['other'][] = array(
 $wgExtensionFunctions[] = 'wfSetupTransformChanges';
 function wfSetupTransformChanges() {
 	global $wgUser;
+	$wgUser->resetOptions();
 	$wgUser->setOption( 'usenewrc', false );
 }
 
@@ -69,10 +70,10 @@ function wfTransformChanges() {
 					$parts2[$lp] = substr( $part, $start, ( strposn( $part, "</li>", ( $lp + 1 ) * $nbedits ) ) - $start );
 					$start = ( strposn( $part, "</li>", ( $lp + 1 ) * $nbedits ) );
 				}
-				
+
 				# last part for the day
 				$parts2[$divide] = substr( $part, $start, strlen( $part ) );
- 
+
 				foreach ( $parts2 as $part2 ) {
 					$part2 = "<ul class=\"special\">$part2</ul>";
 					$text .= preg_replace_callback( "|<ul class=\"special\">(.+?)</ul>|s", 'wfTransformChangesUL', $part2 );
