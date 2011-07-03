@@ -12,7 +12,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @licence GNU General Public Licence 2.0 or later
  */
 
-define( 'TRANSFORMCHANGES_VERSION', "2.0.3, 2011-06-30" );
+define( 'TRANSFORMCHANGES_VERSION', "2.0.4, 2011-07-03" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "TransformChanges",
@@ -26,7 +26,7 @@ $wgExtensionCredits['other'][] = array(
 $wgExtensionFunctions[] = 'wfSetupTransformChanges';
 function wfSetupTransformChanges() {
 	global $wgUser;
-	$wgUser->resetOptions();
+	if( method_exists( $wgUser, 'resetOptions' ) ) $wgUser->resetOptions();
 	$wgUser->setOption( 'usenewrc', false );
 }
 
