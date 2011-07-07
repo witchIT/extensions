@@ -22,7 +22,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 # Constants
-define( 'WIKIA_VERSION', '1.2.6, 2011-01-31' );
+define( 'WIKIA_VERSION', '1.2.7, 2011-07-08' );
 
 # Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -80,7 +80,7 @@ $wgAllowCopyUploads       = true;
 $wgUploadPath             = '/files';
 $wgFileExtensions         = array(
 	'jpeg', 'jpg', 'png', 'gif', 'svg', 'swf',
-	'pdf', 'xls', 'ods', 'odt', 'doc', 'docx', 'mm',
+	'pdf', 'xls', 'xlsx', 'ods', 'odt', 'doc', 'docx', 'mm',
 	'zip', '7z', 'gz', 'tgz', 't7z', 
 	'avi', 'divx', 'mpeg', 'mpg', 'ogv', 'ogm', 'mp3', 'mp4', 'flv',
 	'torrent'
