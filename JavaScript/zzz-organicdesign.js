@@ -29,7 +29,7 @@ function odOnLoadHook() {
 			$('#record-name').hide();
 		} else {
 			$('#record-name input').addClass(':required').val($('#ra-title').val());
-			var submit = ';$("#ra-title").val($("#record-name input").val())';
+			var submit = '$("#ra-title").val($("#record-name input").val());';
 			$('form.recordadmin').attr('onSubmit', submit.concat($('form.recordadmin').attr('onSubmit')));
 		}
 	}
