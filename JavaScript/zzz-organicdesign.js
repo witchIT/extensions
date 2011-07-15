@@ -29,8 +29,9 @@ function odOnLoadHook() {
 			$('#record-name').hide();
 		} else {
 			$('#record-name input').addClass(':required').val($('#ra-title').val());
-			var submit = '$("#ra-title").val($("#record-name input").val());';
-			$('form.recordadmin').attr('onSubmit', submit.concat($('form.recordadmin').attr('onSubmit')));
+			var submit = $('form.recordadmin').attr('onSubmit');
+			if( submit ) submit = submit + ';';
+			$('form.recordadmin').attr('onSubmit', submit + '$("#ra-title").val($("#record-name input").val());');
 		}
 	}
 }
