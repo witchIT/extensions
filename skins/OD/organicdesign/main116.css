@@ -116,7 +116,7 @@ h1, h2, h3, h4, h5, h6 {
 	padding-top: 15px;
 	padding-bottom: 0;
 }
-h1 { width: 400px; font-size: 30px; padding-top: 10px; padding-bottom: 10px; line-height: 35px; }
+h1 { width: 600px; font-size: 30px; padding-top: 10px; padding-bottom: 10px; line-height: 35px; }
 .editsection { font-weight: normal; }
 h1 .editsection { font-size: 53%; }
 h2 { font-size: 140%; }
