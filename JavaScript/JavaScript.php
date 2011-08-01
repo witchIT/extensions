@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '2.1.4, 2011-07-25' );
+define( 'JAVASCRIPT_VERSION', '2.1.5, 2011-08-01' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "JavaScript",
@@ -29,26 +29,10 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
 
 		if( is_callable( array( $out, 'addModules' ) ) && preg_match( "|jquery|", $file ) ) {
 			$out->addModules( 'jquery.ui' );
-			$out->addScript( "<script src='$file' type='$wgJsMimeType'>
-				if( typeof $ != 'function' ) {
-					( function( $ ) { 
-						// Simple scope wrap, where $ is available as alias for jQuery.
-						// Code here will be executed immediately
-					} )( jQuery );
-				}
-			</script>" );
 		}
 
 		elseif ( is_callable( array( $out, 'includeJQuery' ) ) && preg_match( "|/jquery-\d|", $file ) ) {
 			$out->includeJQuery();
-			$out->addScript( "<script src='$file' type='$wgJsMimeType'>
-				if( typeof $ != 'function' ) {
-					( function( $ ) { 
-						// Simple scope wrap, where $ is available as alias for jQuery.
-						// Code here will be executed immediately
-					} )( jQuery );
-				}
-			</script>" );
 		}
 
 		else {
@@ -56,6 +40,14 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
 			$out->addScript( "<script src='$file' type='$wgJsMimeType'></script>" );
 		}
 
+		$out->addScript( "<script src='$file' type='$wgJsMimeType'>
+			if( typeof $ != 'function' ) {
+				( function( $ ) { 
+					// Simple scope wrap, where $ is available as alias for jQuery.
+					// Code here will be executed immediately
+				} )( jQuery );
+			}
+		</script>" );
 	}
 
 	# Load CSS files
