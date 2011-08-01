@@ -14,10 +14,10 @@ if ( !defined( 'RECORDADMIN_VERSION' ) )    die( 'RecordAdminIntegratePerson dep
 if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson depends on the JavaScript extension' );
 
 # Ensure running at least MediaWiki version 1.16
-if ( version_compare( substr( $wgVersion, 0, 4 ), '1.17' ) < 0 )
-	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.17 (this is version $wgVersion)" );
+if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
+	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.9.0, 2011-08-01' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.9.1, 2011-08-01' );
 
 $wgEnotifFromEditor           = true;
 $wgEnotifRevealEditorAddress  = true;
