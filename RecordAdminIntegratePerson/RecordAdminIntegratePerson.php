@@ -14,15 +14,16 @@ if ( !defined( 'RECORDADMIN_VERSION' ) )    die( 'RecordAdminIntegratePerson dep
 if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson depends on the JavaScript extension' );
 
 # Ensure running at least MediaWiki version 1.16
-if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
-	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
+if ( version_compare( substr( $wgVersion, 0, 4 ), '1.17' ) < 0 )
+	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.17 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.8.9, 2011-08-01' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.9.0, 2011-08-01' );
 
 $wgEnotifFromEditor           = true;
 $wgEnotifRevealEditorAddress  = true;
 $wgEnotifUseRealName          = true;
 $wgEnotifWatchlist            = true;
+$wgEnotifUserTalk             = true;
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
@@ -175,11 +176,12 @@ class RAIntegratePerson {
 				$('legend:contains(\"$eopt\")').parent().hide();
 				
 				// Defaults for the hidden email options
-				$('#mw-input-enotifwatchlistpages').attr('checked','yes');
-				$('#mw-input-enotifusertalkpages').attr('checked','yes');
-				$('#mw-input-enotifminoredits').attr('checked','');
-				$('#wpEmailFlag').attr('checked','');
-				$('#mw-input-ccmeonemails').attr('checked','');
+				$('#mw-input-wpenotifwatchlistpages').attr('checked','yes'); 
+				$('#mw-input-wpenotifrevealaddr').attr('checked','yes');
+				$('#mw-input-wpenotifusertalkpages').attr('checked','yes');
+				$('#mw-input-wpenotifminoredits').attr('checked','');
+				$('#mw-input-wpccmeonemails').attr('checked',''); 
+				$('#mw-input-wpdisablemail').attr('checked','yes');
 
 				// Hide realname and gender rows (and their following comment row)
 				$('#mw-input-realname').parent().parent().hide().next().hide();
