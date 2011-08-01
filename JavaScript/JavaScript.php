@@ -24,21 +24,41 @@ $wgHooks['BeforePageDisplay'][] = 'wfJavaScriptAddScripts';
 function wfJavaScriptAddScripts( &$out, $skin = false ) {
 	global $wgJsMimeType, $wgScriptPath;
 
-	// Load JavaScript files
+	# Load JavaScript files
 	foreach ( glob( dirname( __FILE__ ) . "/*.js" ) as $file ) {
-		$file = preg_replace( "|^.*/extensions/|", "$wgScriptPath/extensions/", $file );
-		$out->addScript( "<script src='$file' type='$wgJsMimeType'></script>" );
-	}
-	$out->addScript( "<script type='$wgJsMimeType'>
-		if(typeof $ != 'function') {
-			( function( $ ) { 
-				// Simple scope wrap, where $ is available as alias for jQuery.
-				// Code here will be executed immediately
-			} )( jQuery );
-		}
-	</script>" );
 
-	// Load CSS files
+		if( is_callable( array( $out, 'addModules' ) ) && preg_match( "|jquery|", $file ) ) {
+			$out->addModules( 'jquery.ui' );
+			$out->addScript( "<script src='$file' type='$wgJsMimeType'>
+				if( typeof $ != 'function' ) {
+					( function( $ ) { 
+						// Simple scope wrap, where $ is available as alias for jQuery.
+						// Code here will be executed immediately
+					} )( jQuery );
+				}
+			</script>" );
+		}
+
+		elseif ( is_callable( array( $out, 'includeJQuery' ) ) && preg_match( "|/jquery-\d|", $file ) ) {
+			$out->includeJQuery();
+			$out->addScript( "<script src='$file' type='$wgJsMimeType'>
+				if( typeof $ != 'function' ) {
+					( function( $ ) { 
+						// Simple scope wrap, where $ is available as alias for jQuery.
+						// Code here will be executed immediately
+					} )( jQuery );
+				}
+			</script>" );
+		}
+
+		else {
+			$file = preg_replace( "|^.*/extensions/|", "$wgScriptPath/extensions/", $file );
+			$out->addScript( "<script src='$file' type='$wgJsMimeType'></script>" );
+		}
+
+	}
+
+	# Load CSS files
 	foreach ( glob( dirname( __FILE__ ) . "/*.css" ) as $file ) {
 		$file = preg_replace( "|^.*/extensions/|", "$wgScriptPath/extensions/", $file );
 		$out->addStyle( $file, 'screen', '', 'ltr' );
