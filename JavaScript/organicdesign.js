@@ -16,16 +16,14 @@ Sort.date.formats[0] = {
 // OD functions to run after page load
 function odOnLoadHook() {
 
-	$('.foo').css('color','yellow');
-
 	// Make vanadium validation not work for RecordAdmin searches
 	$('#ra-find').attr('onClick','Vanadium={}');
 
 	// Improve RA record name inputs
 	// - normal record-id is always hidden (css)
 	// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
-	if ($('#record-name')) {
-		if ($('#ra-record').val()) {
+	if($('#record-name')) {
+		if($('#ra-record').val()) {
 			$('#record-name input').removeClass(':required');
 			$('#record-name').hide();
 		} else {
