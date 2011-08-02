@@ -21,8 +21,6 @@
 	// Make vanadium validation not work for RecordAdmin searches
 	$('#ra-find').attr('onClick','Vanadium={}');
 
-	$('a').css('background-color','yellow');
-
 	// Improve RA record name inputs
 	// - normal record-id is always hidden (css)
 	// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
