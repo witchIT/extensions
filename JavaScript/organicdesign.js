@@ -1,4 +1,3 @@
-		
 /*
  * Various patches and JS additions needed by wikis in the OD wikia
  */
@@ -14,32 +13,28 @@ Sort.date.formats[0] = {
 	}
 }
 
-( function( $, mw ) {
-	organicdesign = {
-		// OD functions to run after page load
-		init: function() {
-		alert('baz');
-			$('.foo').css('color','yellow');
+// OD functions to run after page load
+function odOnLoadHook() {
 
-			// Make vanadium validation not work for RecordAdmin searches
-			$('#ra-find').attr('onClick','Vanadium={}');
+	$('.foo').css('color','yellow');
 
-			// Improve RA record name inputs
-			// - normal record-id is always hidden (css)
-			// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
-			if ($('#record-name')) {
-				if ($('#ra-record').val()) {
-					$('#record-name input').removeClass(':required');
-					$('#record-name').hide();
-				} else {
-					$('#record-name input').addClass(':required').val($('#ra-title').val());
-					var submit = $('form.recordadmin').attr('onSubmit');
-					if( submit ) submit = submit + ';'; else submit = '';
-					$('form.recordadmin').attr('onSubmit', submit + '$("#ra-title").val($("#record-name input").val() );');
-				}
-			}
+	// Make vanadium validation not work for RecordAdmin searches
+	$('#ra-find').attr('onClick','Vanadium={}');
+
+	// Improve RA record name inputs
+	// - normal record-id is always hidden (css)
+	// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
+	if ($('#record-name')) {
+		if ($('#ra-record').val()) {
+			$('#record-name input').removeClass(':required');
+			$('#record-name').hide();
+		} else {
+			$('#record-name input').addClass(':required').val($('#ra-title').val());
+			var submit = $('form.recordadmin').attr('onSubmit');
+			if( submit ) submit = submit + ';'; else submit = '';
+			$('form.recordadmin').attr('onSubmit', submit + '$("#ra-title").val($("#record-name input").val());');
 		}
 	}
-} )( jQuery, mediaWiki );
+}
 
-if( typeof addOnloadHook == 'function' ) addOnloadHook(odOnLoadHook);
+if( typeof addOnloadHook == 'function' ) addOnloadHook(odOnLoadHook); else odOnLoadHook();
