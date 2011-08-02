@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '3.0.3, 2011-08-02' );
+define( 'JAVASCRIPT_VERSION', '3.0.4, 2011-08-02' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "JavaScript",
@@ -81,7 +81,7 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
 		if( $jquery ) $out->addScript( "<script type='$wgJsMimeType'>if(typeof $ != 'function') $=jQuery;</script>" );
 	}
 
-	$out->addScript( "<script src='$organicdesign/' type='$wgJsMimeType'></script>" );
+	$out->addScript( "<script src='$organicdesign' type='$wgJsMimeType'></script>" );
 
 	// Load CSS files
 	foreach( glob( dirname( __FILE__ ) . "/*.css" ) as $file ) {
