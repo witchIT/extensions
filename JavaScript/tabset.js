@@ -80,4 +80,5 @@ function tabsetUncoverSection() {
 	return false;
 }
 
-addOnloadHook(tabsetOnload);
+
+if( typeof addOnloadHook == 'function' ) addOnloadHook(tabsetOnload); else tabsetOnload();

@@ -1,6 +1,3 @@
-// for backwards compatibility
-var addLoadEvent = addOnloadHook;
-
 // Cookie set/get functions from W3C
 function setCookie(c_name, value, expiredays) {
   var exdate = new Date();
@@ -187,4 +184,4 @@ var hasClass = (function () {
    }
  }
  
- addLoadEvent(createNavigationBarToggleButton);
+if( typeof addOnloadHook == 'function' ) addOnloadHook(createNavigationBarToggleButton); else createNavigationBarToggleButton();

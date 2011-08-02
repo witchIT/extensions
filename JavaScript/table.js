@@ -36,7 +36,7 @@
 /**
  * Sort Functions
  */
-var Sort = (function(){
+window.Sort = (function(){
 	var sort = {};
 	// Default alpha-numeric sort
 	// --------------------------
@@ -121,7 +121,7 @@ var Sort = (function(){
 /**
  * The main Table namespace
  */
-var Table = (function(){
+window.Table = (function(){
 
 	/**
 	 * Determine if a reference is defined

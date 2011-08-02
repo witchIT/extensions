@@ -40,7 +40,7 @@ if( version_compare( substr( $wgVersion, 0, 4 ), '1.17' ) < 0 ) {
 			$wgResourceModules['ext.organicdesign']['scripts'][] = basename( $file );
 		}
 	}
-	$wgResourceModules['ext.organicdesign']['scripts'][] = basename( $file );
+	$wgResourceModules['ext.organicdesign']['scripts'][] = basename( $organicdesign );
 
 	foreach( glob( dirname( __FILE__ ) . "/*.css" ) as $file ) {
 		if( !preg_match( "|jquery|", $file ) ) {
