@@ -1,6 +1,6 @@
+		
 /*
  * Various patches and JS additions needed by wikis in the OD wikia
- * - this starts with 'zzz' to ensure it loads after other JS
  */
 
 // A fix for table.js to allow it to handle dates which include HH:MM time
@@ -14,26 +14,32 @@ Sort.date.formats[0] = {
 	}
 }
 
-// OD functions to run after page load
-function odOnLoadHook() {
+( function( $, mw ) {
+	organicdesign = {
+		// OD functions to run after page load
+		init: function() {
+		alert('baz');
+			$('.foo').css('color','yellow');
 
-	// Make vanadium validation not work for RecordAdmin searches
-	$('#ra-find').attr('onClick','Vanadium={}');
+			// Make vanadium validation not work for RecordAdmin searches
+			$('#ra-find').attr('onClick','Vanadium={}');
 
-	// Improve RA record name inputs
-	// - normal record-id is always hidden (css)
-	// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
-	if ($('#record-name')) {
-		if ($('#ra-record').val()) {
-			$('#record-name input').removeClass(':required');
-			$('#record-name').hide();
-		} else {
-			$('#record-name input').addClass(':required').val($('#ra-title').val());
-			var submit = $('form.recordadmin').attr('onSubmit');
-			if( submit ) submit = submit + ';'; else submit = '';
-			$('form.recordadmin').attr('onSubmit', submit + '$("#ra-title").val($("#record-name input").val());');
+			// Improve RA record name inputs
+			// - normal record-id is always hidden (css)
+			// - if a record-name row exists, then it should be visible and mandatory only if record-id also exists
+			if ($('#record-name')) {
+				if ($('#ra-record').val()) {
+					$('#record-name input').removeClass(':required');
+					$('#record-name').hide();
+				} else {
+					$('#record-name input').addClass(':required').val($('#ra-title').val());
+					var submit = $('form.recordadmin').attr('onSubmit');
+					if( submit ) submit = submit + ';'; else submit = '';
+					$('form.recordadmin').attr('onSubmit', submit + '$("#ra-title").val($("#record-name input").val() );');
+				}
+			}
 		}
 	}
-}
+} )( jQuery, mediaWiki );
 
-addOnloadHook(odOnLoadHook);
+if( typeof addOnloadHook == 'function' ) addOnloadHook(odOnLoadHook);
