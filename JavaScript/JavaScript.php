@@ -82,6 +82,7 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
 	}
 
 	$out->addScript( "<script src='$organicdesign' type='$wgJsMimeType'></script>" );
+	$out->addScript( "<script type='$wgJsMimeType'>addOnloadHook(organicdesign)</script>" );
 
 	// Load CSS files
 	foreach( glob( dirname( __FILE__ ) . "/*.css" ) as $file ) {
