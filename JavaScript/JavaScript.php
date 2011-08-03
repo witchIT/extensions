@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '3.0.5, 2011-08-03' );
+define( 'JAVASCRIPT_VERSION', '3.0.6, 2011-08-03' );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "JavaScript",
@@ -59,7 +59,6 @@ if( version_compare( substr( $wgVersion, 0, 4 ), '1.17' ) < 0 ) {
  */
 function wfJavaScriptAddModules( &$out, $skin = false ) {
 	$out->addModules( 'ext.organicdesign' );
-	global $wgResourceModules;
 	return true;
 }
 
