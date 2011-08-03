@@ -3,7 +3,7 @@
  */
 
 // OD functions to run after page load
-( window.organicdesign = function( $, mw ) {
+( window.organicdesign = function( $ ) {
 
 // A fix for table.js to allow it to handle dates which include HH:MM time
 /*
@@ -38,4 +38,4 @@
 		}
 	}
 
-} )( jQuery, mediaWiki );
+} )( jQuery );
