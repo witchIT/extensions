@@ -3,7 +3,7 @@
  */
 
 // OD functions to run after page load
-( function( $, mw ) {
+( window.organicdesign = function( $, mw ) {
 
 // A fix for table.js to allow it to handle dates which include HH:MM time
 /*
