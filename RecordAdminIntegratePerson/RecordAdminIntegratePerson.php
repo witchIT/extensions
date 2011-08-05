@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.9.4, 2011-08-05' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.9.5, 2011-08-05' );
 
 $wgEnotifFromEditor           = true;
 $wgEnotifRevealEditorAddress  = true;
@@ -26,6 +26,9 @@ $wgEnotifWatchlist            = true;
 $wgEnotifUserTalk             = true;
 $wgEmailAuthentication        = true;
 $wgUseEnotif                  = true;
+
+$wgCategoryWatchUseAutoCat = true;
+$wgCategoryWatchUseAutoCatRealName = true;
 
 $wgAutoConfirmCount           = 10^10;
 $wgIPDefaultImage             = '';
