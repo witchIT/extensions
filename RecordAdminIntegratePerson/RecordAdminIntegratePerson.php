@@ -17,7 +17,7 @@ if ( !defined( 'JAVASCRIPT_VERSION' ) )     die( 'RecordAdminIntegratePerson dep
 if ( version_compare( substr( $wgVersion, 0, 4 ), '1.16' ) < 0 )
 	die( "Sorry, RecordAdminIntegratePerson requires at least MediaWiki version 1.16 (this is version $wgVersion)" );
 
-define( 'RAINTEGRATEPERSON_VERSION', '1.9.3, 2011-08-05' );
+define( 'RAINTEGRATEPERSON_VERSION', '1.9.4, 2011-08-05' );
 
 $wgEnotifFromEditor           = true;
 $wgEnotifRevealEditorAddress  = true;
@@ -166,8 +166,8 @@ class RAIntegratePerson {
 
 			// Create the RealName pref input from the firstname and surname inputs
 			function ipSubmit() {
-				document.getElementById('mw-input-realname').value = document.getElementById('first-name').value + ' ' + document.getElementById('surname').value
-				document.getElementById('mw-input-emailaddress').value = document.getElementById('email').value
+				$('#mw-input-wprealname,#mw-input-realname').val( $('#first-name').val() + ' ' + $('#surname').val());
+				$('#mw-input-emailaddress,#mw-input-wpemailaddress').val($('#email').val());
 			}
 
 			// Hide some options and set defaults
@@ -178,16 +178,16 @@ class RAIntegratePerson {
 				$('legend:contains(\"$eopt\")').parent().hide();
 				
 				// Defaults for the hidden email options
-				$('#mw-input-wpenotifwatchlistpages').attr('checked','yes'); 
-				$('#mw-input-wpenotifrevealaddr').attr('checked','yes');
-				$('#mw-input-wpenotifusertalkpages').attr('checked','yes');
-				$('#mw-input-wpenotifminoredits').attr('checked','');
-				$('#mw-input-wpccmeonemails').attr('checked',''); 
-				$('#mw-input-wpdisablemail').attr('checked','yes');
+				$('#mw-input-wpenotifwatchlistpages,#mw-input-enotifwatchlistpages').attr('checked','yes'); 
+				$('#mw-input-wpenotifrevealaddr,#mw-input-enotifrevealaddr').attr('checked','yes');
+				$('#mw-input-wpenotifusertalkpages,#mw-input-enotifusertalkpages').attr('checked','yes');
+				$('#mw-input-wpenotifminoredits,#mw-input-enotifminoredits').attr('checked','');
+				$('#mw-input-wpccmeonemails,#mw-input-ccmeonemails').attr('checked',''); 
+				$('#mw-input-wpdisablemail,#mw-input-disablemail').attr('checked','yes');
 
 				// Hide realname and gender rows (and their following comment row)
-				$('#mw-input-realname').parent().parent().hide().next().hide();
-				$('#mw-input-gender').parent().parent().hide().next().hide();
+				$('#mw-input-wprealname,#mw-input-realname').parent().parent().hide().next().hide();
+				$('#mw-input-wpgender,#mw-input-gender').parent().parent().hide().next().hide();
 				
 			}
 			addOnloadHook(ipOnload);
