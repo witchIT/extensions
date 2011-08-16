@@ -2,26 +2,31 @@
  * Various patches and JS additions needed by wikis in the OD wikia
  */
 
-// OD functions to run after page load
-( function( $, mw ) {
+// Cookie set/get functions from W3C
+function setCookie(c_name,value,exdays) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + exdays);
+	var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+	document.cookie=c_name + "=" + c_value;
+}
 
-// A fix for table.js to allow it to handle dates which include HH:MM time
-/*
-* 	window.Sort.date.formats[0] = {
-	re : /(\d{2,4})-(\d{1,2})-(\d{1,2})\D*((\d\d):(\d\d))?/,
-	f  : function(x) {
-		var d = new Date(Sort.date.fixYear(x[1]), +x[2], +x[3]);
-		if (x[5] > 0) d.setHours(x[5]);
-		if (x[6] > 0) d.setMinutes(x[6]);
-		return d.getTime();
+function getCookie(c_name) {
+var i,x,y,ARRcookies=document.cookie.split(";");
+for (i=0;i<ARRcookies.length;i++) {
+		x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+		y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+		x=x.replace(/^\s+|\s+$/g,"");
+		if (x==c_name) return unescape(y);
 	}
 }
-*/
+
+// OD functions to run after page load
+( function( $, mw ) {
 
 	// Make vanadium validation not work for RecordAdmin searches
 	$('#ra-find').attr('onClick','Vanadium={}');
 
-	$('#pt-userpage').css('text-decoration','underline');
+	// debug: $('#pt-userpage').css('text-decoration','underline');
 
 	// Improve RA record name inputs
 	// - normal record-id is always hidden (css)
