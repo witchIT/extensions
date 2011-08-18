@@ -20,6 +20,11 @@ for (i=0;i<ARRcookies.length;i++) {
 	}
 }
 
+function copyRecordName(submit) {
+	$("#ra-title").val($("#record-name input").val());
+	return submit;
+}
+
 // OD functions to run after page load
 ( function( $, mw ) {
 
@@ -38,8 +43,7 @@ for (i=0;i<ARRcookies.length;i++) {
 		} else {
 			$('#record-name input').addClass(':required').val($('#ra-title').val());
 			var submit = $('form.recordadmin').attr('onSubmit');
-			if( submit ) submit = submit + ';'; else submit = '';
-			$('form.recordadmin').attr('onSubmit', submit + '$("#ra-title").val($("#record-name input").val() );');
+			$('form.recordadmin').attr('onSubmit', 'return copyRecordName('+submit+');');
 		}
 	}
 
