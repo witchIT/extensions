@@ -76,7 +76,7 @@ class AnnotateRecipes {
 		$li = $m[1];
 		$li = preg_replace(
 			"#([0-9./]+( [0-9./]+)? )(tb?sp\.?|tablespoons?|teaspoons?|cups?|pints?|ounces?|oz\.?|pounds?|lb\.?)?(.+?)(,|<|\(|$)#s",
-			"<span rel=\"v:ingredient\"><span typeof=\"v:Ingredient\"><span property=\"v:amount\">$1$3</span><span property=\"v:name\">$4</span></span></span>",
+			"<span rel=\"v:ingredient\"><span typeof=\"v:Ingredient\"><span property=\"v:amount\">$1$3</span><span property=\"v:name\">$4</span></span></span>$5",
 			$li
 		);
 		return "<li>$li</li>\n";
