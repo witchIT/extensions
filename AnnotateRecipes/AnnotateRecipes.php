@@ -1,6 +1,6 @@
 <?php
 /**
- * AnnotateRecipes extension - Adds RDFa annotations to articles in recipes categories
+ * AnnotateRecipes extension - Adds Microformat annotations to articles in recipes categories
  *
  * @package MediaWiki
  * @subpackage Extensions
@@ -29,7 +29,7 @@ $wgExtensionFunctions[] = 'wfSetupAnnotateRecipes';
 $wgExtensionCredits['other'][] = array(
 	'name'        => 'AnnotateRecipes',
 	'author'      => '[http://www.mediawiki.org/wiki/User:Nad User:Nad]',
-	'description' => 'Adds RDFa annotations to articles in recipes categories',
+	'description' => 'Adds Microformat annotations to articles in recipes categories',
 	'url'         => 'http://www.elance.com/php/collab/main/collab.php?bidid=25658298',
 	'version'     => ANNOTATERECIPES_VERSION
 );
