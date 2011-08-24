@@ -23,7 +23,7 @@ $wgAnnotateRecipesUnits = array(
 	"lb\.?"
 );
 
-define( 'ANNOTATERECIPES_VERSION', '1.0.2, 2011-08-24' );
+define( 'ANNOTATERECIPES_VERSION', '1.0.3, 2011-08-24' );
 
 $wgExtensionFunctions[] = 'wfSetupAnnotateRecipes';
 $wgExtensionCredits['other'][] = array(
@@ -105,10 +105,9 @@ class AnnotateRecipes {
 		$li = preg_replace(
 			"#([0-9./]+( [0-9./]+)? )($units)?(.+?)(,|<|\(|$)#s",
 			"<span class=\"amount\">$1$3</span><span class=\"name\">$4</span></span>$5",
-			$li, -1, $count
+			$li
 		);
-		$class = $count ? " class=\"ingredient\"" : "";
-		return "<li$class>$li</li>\n";
+		return "<li class=\"ingredient\">$li</li>\n";
 	}
 
 }
