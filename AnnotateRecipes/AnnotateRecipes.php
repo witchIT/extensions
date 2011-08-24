@@ -10,7 +10,20 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'ANNOTATERECIPES_VERSION', '1.0.0, 2011-08-23' );
+// The measurement units available (regular expressions)
+$wgAnnotateRecipesUnits = array(
+	"tb?sp\.?",
+	"tablespoons?",
+	"teaspoons?",
+	"cups?",
+	"pints?",
+	"ounces?",
+	"oz\.?",
+	"pounds?",
+	"lb\.?"
+);
+
+define( 'ANNOTATERECIPES_VERSION', '1.0.2, 2011-08-24' );
 
 $wgExtensionFunctions[] = 'wfSetupAnnotateRecipes';
 $wgExtensionCredits['other'][] = array(
@@ -35,9 +48,6 @@ class AnnotateRecipes {
 		// Bail if not in main namespace
 		if( $wgTitle->getNamespace() != 0 ) return true;
 
-		// Bail if not recipe section
-		#if( !preg_match( "|Recipe|", $text ) ) return true;
-
 		// Bail if the article isn't in a recipes category
 		$dbr  = &wfGetDB( DB_SLAVE );
 		$cl   = $dbr->tableName( 'categorylinks' );
@@ -46,40 +56,59 @@ class AnnotateRecipes {
 
 		// Annotate list items in sections ending in "ingredients"
 		$text = preg_replace_callback(
-			"#(class=\"mw-headline\"[^>]*>[^<]+ingredients</.+?<ul>)(.+?)(</ul>)#is",
+			"#class=\"mw-headline\"[^>]*>[^<]+ingredients</.+?<ul>.+?</ul>#is",
 			array( $this, 'annotateIngredients' ),
+			$text
+		);
+
+		// Make the first paragraph tag into the recipe summary
+		$text = preg_replace(
+			"#^(.*?<p)#s",
+			"$1 class=\"summary\"",
 			$text
 		);
 
 		// Annotate the section ending in the word "recipe" as the cooking instructions
 		$text = preg_replace(
-			"#(class=\"mw-headline\"[^>]*>[^<]+recipe</.+?)(<ol>.+?</ol>)#is",
-			"$1<div property=\"v:instructions\">\n$2\n</div>",
+			"#(class=\"mw-headline\"[^>]*>[^<]+recipe</.+?)<ol>(.+?</ol>)#is",
+			"$1<ol class=\"instructions\">\n$2",
+			$text
+		);
+
+		// Annotate the author
+		$text = preg_replace(
+			"#(offered by</th>\s*<td[^>]+>)([^>]+)(?=<)#is",
+			"$1<span class=\"author\">$2</span>",
 			$text
 		);
 
 		// Wrap the whole bodytext in recipe annotation
 		$recipe = preg_replace( "|how to make( a )?|i", "", $wgTitle->getText() );
-		$xmlns = "<div xmlns:v=\"http://rdf.data-vocabulary.org/#\" typeof=\"v:Recipe\">";
-		$title = "<h1 style=\"display:none\" property=\"v:name\">$recipe</h1>";
-		$text = "$xmlns\n$title\n$text\n</div>";
-
+		$title = "<h1 class=\"item\" style=\"display:none\"><span class=\"fn\">$recipe</span></h1>";
+		$text = "<div class=\"hrecipe\">\n$title\n$text\n</div>";
+ 
 		return true;
 	}
 
 	function annotateIngredients( $m ) {
-		$ul = preg_replace_callback( "#<li>\s*(.+?)\s*</li>#s", array( $this, 'annotateIngredient' ), $m[2] );
-		return "$m[1]$ul$m[3]";
+		return preg_replace_callback(
+			"#<li>\s*(.+?)\s*</li>#s",
+			array( $this, 'annotateIngredient' ),
+			$m[0]
+		);
 	}
 
 	function annotateIngredient( $m ) {
+		global $wgAnnotateRecipesUnits;
+		$units = join( '|', $wgAnnotateRecipesUnits );
 		$li = $m[1];
 		$li = preg_replace(
-			"#([0-9./]+( [0-9./]+)? )(tb?sp\.?|tablespoons?|teaspoons?|cups?|pints?|ounces?|oz\.?|pounds?|lb\.?)?(.+?)(,|<|\(|$)#s",
-			"<span rel=\"v:ingredient\"><span typeof=\"v:Ingredient\"><span property=\"v:amount\">$1$3</span><span property=\"v:name\">$4</span></span></span>$5",
-			$li
+			"#([0-9./]+( [0-9./]+)? )($units)?(.+?)(,|<|\(|$)#s",
+			"<span class=\"amount\">$1$3</span><span class=\"name\">$4</span></span>$5",
+			$li, -1, $count
 		);
-		return "<li>$li</li>\n";
+		$class = $count ? " class=\"ingredient\"" : "";
+		return "<li$class>$li</li>\n";
 	}
 
 }
