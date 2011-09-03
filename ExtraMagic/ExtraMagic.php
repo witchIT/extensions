@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '2.1.2, 2011-09-03' );
+define( 'EXTRAMAGIC_VERSION', '2.2.0, 2011-09-04' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -31,14 +31,25 @@ $wgCustomVariables = array(
 	'IPADDRESS',
 	'DOMAIN',
 	'NUMBERINGOFF',
-	'GUID'
+	'GUID',
+	'THIS'
 );
 
-$wgExtensionFunctions[]                    = 'efSetupExtraMagic';
-$wgHooks['MagicWordMagicWords'][]          = 'efAddCustomVariable';
-$wgHooks['MagicWordwgVariableIDs'][]       = 'efAddCustomVariableID';
-$wgHooks['LanguageGetMagic'][]             = 'efAddCustomVariableLang';
-$wgHooks['ParserGetVariableValueSwitch'][] = 'efGetCustomVariable';
+$wgExtensionFunctions[]                         = 'efSetupExtraMagic';
+$wgHooks['MagicWordMagicWords'][]               = 'efAddCustomVariable';
+$wgHooks['MagicWordwgVariableIDs'][]            = 'efAddCustomVariableID';
+$wgHooks['LanguageGetMagic'][]                  = 'efAddCustomVariableLang';
+$wgHooks['ParserGetVariableValueSwitch'][]      = 'efGetCustomVariable';
+$wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'efExtraMagicTemplateName';
+
+/**
+ * Makes a templates name available at the time of transclusion
+ */
+function efExtraMagicTemplateName( $parser, $title, $skip, $id ) {
+        global $wgThisTemplateName;
+	$wgThisTemplateName = $title->getPrefixedText();
+        return true;
+}
 
 /**
  * Called from $wgExtensionFunctions array when initialising extensions
@@ -178,6 +189,10 @@ function efGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
 			$parser->disableCache();
 			$ret = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
 		break;
+
+		case MAG_THIS:
+			global $wgThisTemplateName;
+			$ret = $wgThisTemplateName;
 
 	}
 	return true;
