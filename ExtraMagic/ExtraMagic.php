@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '2.1.1, 2011-08-30' );
+define( 'EXTRAMAGIC_VERSION', '2.1.2, 2011-09-03' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -46,6 +46,7 @@ $wgHooks['ParserGetVariableValueSwitch'][] = 'efGetCustomVariable';
 function efSetupExtraMagic() {
 	global $wgParser;
 	$wgParser->setFunctionHook( 'REQUEST', 'efExtraMagicExpandRequest', SFH_NO_HASH );
+	$wgParser->setFunctionHook( 'COOKIE',  'efExtraMagicExpandCookie',  SFH_NO_HASH );
 	$wgParser->setFunctionHook( 'USERID',  'efExtraMagicExpandUserID',  SFH_NO_HASH );
 	$wgParser->setFunctionHook( 'AVATAR',  'efExtraMagicExpandAvatar',  SFH_NO_HASH );
 }
@@ -76,6 +77,7 @@ function efAddCustomVariableLang( &$langMagic, $langCode = 0 ) {
 
 	// Parser functions
 	$langMagic['REQUEST'] = array( $langCode, 'REQUEST' );
+	$langMagic['COOKIE']  = array( $langCode, 'COOKIE' );
 	$langMagic['USERID']  = array( $langCode, 'USERID' );
 	$langMagic['AVATAR']  = array( $langCode, 'AVATAR' );
 
@@ -89,6 +91,11 @@ function efExtraMagicExpandRequest( &$parser, $param, $default = '' ) {
 	global $wgRequest;
 	$parser->disableCache();
 	return $wgRequest->getText( $param, $default );
+}
+
+function efExtraMagicExpandCookie( &$parser, $param, $default = '' ) {
+	$parser->disableCache();
+	return array_key_exists( $param, $_COOKIE ) ? $_COOKIE[$param] : $default;
 }
 
 function efExtraMagicExpandUserID( &$parser, $param ) {
