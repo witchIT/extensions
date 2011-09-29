@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '2.2.0, 2011-09-04' );
+define( 'EXTRAMAGIC_VERSION', '2.2.1, 2011-09-29' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -98,10 +98,11 @@ function efAddCustomVariableLang( &$langMagic, $langCode = 0 ) {
 /**
  * Expand parser functions
  */
-function efExtraMagicExpandRequest( &$parser, $param, $default = '' ) {
-	global $wgRequest;
+function efExtraMagicExpandRequest( &$parser, $param, $default = '', $seperator = "\n" ) {
 	$parser->disableCache();
-	return $wgRequest->getText( $param, $default );
+	$val = array_key_exists( $param, $_REQUEST ) ? $_REQUEST[$param] : $default;
+	if( is_array( $val ) ) $val = implode( $seperator, $val );
+	return $val;
 }
 
 function efExtraMagicExpandCookie( &$parser, $param, $default = '' ) {
@@ -197,3 +198,4 @@ function efGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
 	}
 	return true;
 }
+
