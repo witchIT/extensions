@@ -5,7 +5,6 @@
  * Pushes an item to Facebook wall on ArticleSave event
  */
 
-global $wgExtensionMessagesFiles, $wgFbPushEventClasses, $wgFbTimeBetweenPosts;
 $wgExtensionMessagesFiles['FBPush_OnArticleSave'] = dirname( __FILE__ ) . '/FBPush_OnArticleSave.i18n.php';
 $wgFbPushEventClasses[] = 'FBPush_OnArticleSave';
 $wgFbTimeBetweenPosts = 0;
@@ -25,12 +24,9 @@ class FBPush_OnArticleSave extends FacebookPushEvent {
 
 		if( $rev ) {
 
+			// Post to wall if time since last post greater then specified $wgFbTimeBetweenPosts
 			$ts = $rev->getTimestamp();
-			$tsPrev = $user->getOption( 'fb-last-edit-timestamp' );
-			$timediff = $ts - $tsPrev;
-$summary = "time since last: $timediff : $ts : $tsPrev";
-			// Post to wall if greater then specified period
-			if( $timediff >= $wgFbTimeBetweenPosts ) {
+			if( $wgFbTimeBetweenPosts < $ts - $user->getOption( 'fb-last-edit-timestamp' ) ) {
 				$params = array(
 					'$ARTICLENAME' => $article->getTitle()->getPrefixedText(),
 					'$WIKINAME' => $wgSitename,
@@ -42,6 +38,7 @@ $summary = "time since last: $timediff : $ts : $tsPrev";
 				self::pushEvent( self::$messageName, $params, __CLASS__ );
 				$user->setOption( 'fb-last-edit-timestamp', $ts );
 				$user->saveSettings();
+
 			}
 
 		}
