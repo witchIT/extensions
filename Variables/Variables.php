@@ -35,7 +35,7 @@ class ExtVariables {
 
 	function __construct() {
 		global $wgHooks;
-		$wgHooks['ParserClearState'][] = &$this;
+//		$wgHooks['ParserClearState'][] = &$this;
 	}
 
 	function onParserClearState( &$parser ) {
