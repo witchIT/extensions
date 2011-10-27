@@ -161,7 +161,7 @@ if ( $wgOrganicDesignDonations ) {?>
 		</div>
 	</div>
 <?php }?>
-<div class="fb-like-box" data-href="http://www.facebook.com/organicdesign.co.nz" data-width="250" data-show-faces="false" data-stream="false" data-header="false"></div></div>
+<div class="fb-like-box" data-href="http://www.facebook.com/organicdesign.co.nz" data-width="240" data-show-faces="false" data-stream="false" data-header="false"></div></div>
 <div id="p-search" class="portlet">
 	<h5><label for="searchInput"><?php $this->msg('search') ?></label></h5>
 	<div id="searchBody" class="pBody">
