@@ -1,12 +1,26 @@
 #!/usr/bin/perl
-# EmailToWiki.pl accompanies Extension:EmailArticle.php for MediaWiki{{perl}}{{Category:Extensions|EmailArticle}}
+#
+# Copyright (C) 2008-2010 Aran Dunkley
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# http://www.gnu.org/copyleft/gpl.html
+#
 # - Usage:   This script should be called periodically (eg. from crond)
-# - Docs:	http://www.mediawiki.org/wiki/Extension:EmailArticle
-# - Licence: LGPL (http://www.gnu.org/copyleft/lesser.html)
+# - Docs:	 http://www.mediawiki.org/wiki/Extension:EmailToWiki
 # - Author:  http://www.organicdesign.co.nz/nad
-# - Source:  http://www.organicdesign.co.nz/EmailToWiki.pl
-# - Started: 2007-05-25, see article history
-
+# - Started: 2007-05-25, version 2 started 2011-11-13
 use Net::POP3;
 use HTTP::Request;
 use LWP::UserAgent;
@@ -14,7 +28,7 @@ use FindBin qw($Bin);
 sub true  {1};
 sub false {0};
 
-$ver   =  '1.0.1 (2007-10-04)';
+$ver   =  '2.0.0 (2011-11-13)';
 $email =  '([-.&a-z0-9_]+@[-&.a-z0-9_]+)';
 $conf  =  $ARGV[0] or die "No configuration file specified!";
 $log   =  $conf;
@@ -41,13 +55,13 @@ $ua = LWP::UserAgent->new(
 	agent      => 'Mozilla/5.0',
 	timeout    => 10,
 	max_size   => 1024
-	);
+);
 
 
 # Get list of messages in pop box and loop through them
 @messages = keys %{$pop->list};
 logAdd "There are ".($#messages+1)." messages on $popUser\@$popServer";
-for (@messages) {
+for( @messages ) {
 
 	# Read the message and extract TO and FROM headers
 	$text   = $pop->top($_,$maxLines);
@@ -80,17 +94,17 @@ for (@messages) {
 			caction  => 'append',
 			username => $from,
 			content  => "{{$wikiTemplate|to=$to|from=$from|time=$time|subject=$subject|text=$text}}"
-			);
+		);
 		$post = $ua->post($wgServer.$wgScript,\%data)->is_success;
 		#logAdd($post ? "  Updated \"$title\" successfully." : "  Failed to update \"$title\"!");
 		logAdd "\"$title\" updated";
-		}
+	}
 
-	if ($del) {
+	if($del) {
 		logAdd "  message marked for deletion";
 		$pop->delete($_);
-		}
 	}
+}
 
 $pop->quit();
 logAdd "POP3 connection to $popServer closed and marked items deleted.";
