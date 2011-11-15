@@ -11,6 +11,9 @@
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 define( 'EMAILTOWIKI_VERSION', '2.0.0, 2011-11-13' );
 
+$wgEmailToWikiTmpDir = dirname( __FILE__ ) . '/EmailToWiki.tmp';
+
+$wgExtensionFunctions[] = 'wfSetupEmailToWiki';
 $wgExtensionCredits['other'][] = array(
 	'name'        => 'EmailToWiki',
 	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
@@ -19,45 +22,48 @@ $wgExtensionCredits['other'][] = array(
 	'version'     => EMAILTOWIKI_VERSION
 );
 
-// Add a MediaWiki variable to get the page's email address
-$wgETWCustomVariables = array('EMAILTOWIKI');
- 
-$wgHooks['MagicWordMagicWords'][]          = 'wfETWAddCustomVariable';
-$wgHooks['MagicWordwgVariableIDs'][]       = 'wfETWAddCustomVariableID';
-$wgHooks['LanguageGetMagic'][]             = 'wfETWAddCustomVariableLang';
-$wgHooks['ParserGetVariableValueSwitch'][] = 'wfETWGetCustomVariable';
- 
-function wfETWAddCustomVariable( &$magicWords ) {
-	global $wgETWCustomVariables;
-	foreach( $wgETWCustomVariables as $var ) $magicWords[] = "MAG_$var";
-	return true;
+class EmailToWiki {
+
+	function __construct() {
+		global $wgHooks;
+		$wgHooks['UnknownAction'][] = $this;
+	}
+
+	/**
+	 * Add a new email to the wiki
+	 */
+	function onUnknownAction( $action, $article ) {
+		global $wgOut, $wgRequest;
+		if( $action == 'emailtowiki' ) {
+			$wgOut->disable();
+			if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches ) && !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
+				header( 'Bad Request', true, 400 );
+				print "Emails can only be added by the EmailToWiki.pl script running on the local host!";
+			} else $this->processEmails();
+		}
+	}
+
+	/**
+	 * Process any unprocesseed email files created by EmailToWiki.pl
+	 */
+	function processEmails() {
+		global $wgEmailToWikiTmpDir;
+		if( !is_dir( $wgEmailToWikiTmpDir ) ) mkdir( $wgEmailToWikiTmpDir );
+
+		// Scan messages in folder
+		foreach( glob( "$wgEmailToWikiTmpDir/*" ) as $msg ) {
+			// upload each file
+			// create article for bodytext
+			// add file links
+		}
+	}
+
 }
- 
-function wfETWAddCustomVariableID( &$variables ) {
-	global $wgETWCustomVariables;
-	foreach($GLOBALS['wgETWCustomVariables'] as $var) $variables[] = constant("MAG_$var");
-	return true;
-	}
- 
-function wfETWAddCustomVariableLang( &$langMagic, $langCode = 0 ) {
-	global $wgETWCustomVariables;
-	foreach( $wgETWCustomVariables as $var ) {
-		$magic = "MAG_$var";
-		$langMagic[ defined( $magic ) ? constant( $magic ) : $magic ] = array( 0, $var );
-	}
-	return true;
-}
- 
-function wfETWGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
-	if( $index == MAG_EMAILTOWIKI ) {
-		global $wgTitle, $wgServer;
-		$url  = parse_url( $wgServer );
-		$host = ereg_replace( '^www.','',$url['host'] );
-		$ret  = $wgTitle->getPrefixedURL();
-		$ret  = str_replace( ':','&3A',$ret );
-		$ret  = eregi_replace( '%([0-9a-z]{2})', '&$1', $ret );
-		$ret  = "$ret@" . $url['host'];
-		$ret  = "[mailto:$ret $ret]";
-	}
-	return true;
+
+/**
+ * Called from $wgExtensionFunctions array when initialising extensions
+ */
+function wfSetupEmailToWiki() {
+	global $wgEmailToWiki;
+	$wgEmailToWiki = new EmailToWiki();
 }

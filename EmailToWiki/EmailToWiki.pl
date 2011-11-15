@@ -22,91 +22,123 @@
 # - Author:  http://www.organicdesign.co.nz/nad
 # - Started: 2007-05-25, version 2 started 2011-11-13
 use Net::POP3;
+use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
-use FindBin qw($Bin);
-sub true  {1};
-sub false {0};
+use strict;
+$::ver   =  '2.0.0 (2011-11-13)';
 
-$ver   =  '2.0.0 (2011-11-13)';
-$email =  '([-.&a-z0-9_]+@[-&.a-z0-9_]+)';
-$conf  =  $ARGV[0] or die "No configuration file specified!";
-$log   =  $conf;
-$log   =~ s/\.\w+$/.log/;
+# Wiki to import the emails and attachments
+$wiki = "localhost/wiki/index.php";
 
-# Open the log file for writing (stdout if no log file specified)
-open LOG, ">>$log";
-sub logAdd { $entry = shift; print LOG localtime()." : $entry\n"; return $entry; }
+# Email source configuration
+$host = "foo.bar";
+$type = "IMAP";
+$user = "foo";
+$pass = "bar";
+$path = "Inbox";
+$limit = 20000000;
 
-# Execute the variable assignments in the config file
-open conf,$conf or die logAdd "Couldn't read \"$conf\" configuration file!";
-eval $_ while <conf>;
-close conf;
+# Determine log file
+$0 =~ /^(.+)\..+?$/;
+$::log  = "$1.log";
 
-# Login in to POP box
-$pop   = Net::POP3->new($popServer);
-$login = $pop->login($popUser,$popPassword);
-die logAdd "Couldn't log \"$popUser\" in to $popServer!" if $login eq undef;
-die "Nothing to do" if $login < 1;
+# Location to store emails to be processed by wiki (create if nonexistent)
+$::tmp = "$1.tmp";
+mkdir $::tmp unless -e $::tmp;
 
-# Create a user agent to make the HTTP request
-$ua = LWP::UserAgent->new(
-	cookie_jar => {},
-	agent      => 'Mozilla/5.0',
-	timeout    => 10,
-	max_size   => 1024
-);
-
-
-# Get list of messages in pop box and loop through them
-@messages = keys %{$pop->list};
-logAdd "There are ".($#messages+1)." messages on $popUser\@$popServer";
-for( @messages ) {
-
-	# Read the message and extract TO and FROM headers
-	$text   = $pop->top($_,$maxLines);
-	($to)   = grep /^to:/i,   @$text;
-	$to     = $to   =~ /$email/i ? $1 : '';
-	($from) = grep /^from:/i, @$text;
-	$from   = $from =~ /$email/i ? $1 : '';
-
-	# If the TO and FROM are not filtered, process the message
-	if    ($filterTo   and $to   !~ /$filterTo/i)   { $del = $deleteToFiltered;   logAdd "email to $to filtered"; }
-	elsif ($filterFrom and $from !~ /$filterFrom/i) { $del = $deleteFromFiltered; logAdd "email from $from filtered"; }
-	else {
-		logAdd "Processing email from $from to $to, subject: $subject";
-		$del       =  $deleteProcessed;
-		$time      =  localtime();
-		($title)   =  split /@/,$to;
-		$title     =~ s/\&([a-f0-9]{2})/pack('C',hex($1))/gise;
-		($subject) =  grep /^subject:/i,@$text;
-		$subject   =~ s/^.+?:\s*(.*?)(\r?\n)*/$1/;
-
-		# Format message content
-		chomp @$text;
-		amuse.myself while shift @$text;
-		$text = join "\n\n",@$text;
-
-		# Post the data using Extension:SimpleForms to prepend/append/replace/create content
-		%data = (
-			title    => $title,
-			summary  => $subject,
-			caction  => 'append',
-			username => $from,
-			content  => "{{$wikiTemplate|to=$to|from=$from|time=$time|subject=$subject|text=$text}}"
-		);
-		$post = $ua->post($wgServer.$wgScript,\%data)->is_success;
-		#logAdd($post ? "  Updated \"$title\" successfully." : "  Failed to update \"$title\"!");
-		logAdd "\"$title\" updated";
-	}
-
-	if($del) {
-		logAdd "  message marked for deletion";
-		$pop->delete($_);
-	}
+# Process messages in a POP3 mailbox
+if ( $type eq 'POP3' ) {
+	if ( my $server = Net::POP3->new( $host ) ) {
+		logAdd( "$t Connected to $args{proto} server \"$args{host}\"" );
+		if ( $server->login( $user, $pass ) > 0 ) {
+			logAdd( "$t Logged \"$args{user}\" into $args{proto} server \"$args{host}\"" );
+			for ( keys %{ $server->list() } ) {
+				my $content = join "\n", @{ $server->top( $_, $limit ) };
+				processEmail( $content );
+			}
+		} else { emalogAddilLog( "$t Couldn't log \"$args{user}\" into $args{proto} server \"$args{host}\"" ) }
+		$server->quit();
+	} else { logAdd( "$t Couldn't connect to $args{proto} server \"$args{host}\"" ) }
 }
 
-$pop->quit();
-logAdd "POP3 connection to $popServer closed and marked items deleted.";
-close LOG;
+# Process messages in an IMAP mailbox
+elsif ( $type eq 'IMAP' ) {
+	if ( my $server = new Net::IMAP::Simple::SSL( $host ) ) {
+		if ( $server->login( $user, $pass ) > 0 ) {
+			logAdd( "$t Logged \"$args{user}\" into IMAP server \"$args{host}\"" );
+			my $i = $server->select( $path or 'Inbox' );
+			while ( $i > 0 ) {
+				my $fh = $server->getfh( $i );
+				sysread $fh, ( my $content ), $limit;
+				close $fh;
+				processEmail( $content );
+				$i--;
+			}
+		} else { logAdd( "$t Couldn't log \"$args{user}\" into $args{proto} server \"$args{host}\"" ) }
+		$server->quit();
+	} else { logAdd( "$t Couldn't connect to $args{proto} server \"$args{host}\"" ) }
+}
 
+# Tell wiki to import any unprocessed messages
+LWP::UserAgent->new( agent => 'Mozilla/5.0' )->get( "$wiki?action=emailtowiki" );
+
+# Finished
+exit(0);
+
+
+# Parse content from a single message
+# - upload attachments to wiki
+# - create article in wiki with attachments linked
+sub processEmail {
+	my $email = shift;
+
+	# Extract useful header information
+	my %message = ();
+	$message{id}      = $1 if $email =~ /^message-id:\s*(.+?)\s*$/mi;
+	$message{date}    = $1 if $email =~ /^date:\s*(.+?)\s*$/mi;
+	$message{to}      = $1 if $email =~ /^to:\s*(.+?)\s*$/mi;
+	$message{from}    = $1 if $email =~ /^from:\s*(.+?)\s*$/mi;
+	$message{subject} = $1 if $email =~ /^subject:\s*(.+?)\s*$/im;
+
+	# Create unique title according to title-format
+	return if title exists in wiki;
+
+	# Create directory of the title name for any attachments
+	mkdir "$::tmp/$title";
+
+	# Loop through attachments uploading each
+	my $body = "";
+	Email::MIME->new( $email )->walk_parts( sub {
+		my( $part ) = @_;
+		if( $part->content_type =~ /\bname="([^"]+)"/ ) {
+			my $file = "$::tmp/$title/$1";
+
+			# Extract attachments from message and save in $::tmp
+			logAdd( "Extracting attachment $file" );
+			open my $fh, ">", $file or return logAdd( "Failed to open attachment $file: $!" );
+			print $fh $part->content_type =~ m!^text/! ? $part->body_str : $part->body
+				or return logAdd( "Failed to write attachment $file: $!" );
+			close $fh or return logAdd( "Failed to close attachment $file: $!" );
+			
+		} else {
+			$body .= $part->content_type =~ m!^text/! ? $part->body_str : $part->body;
+		}
+	} );
+	
+	# Save the body-text and header info
+	my $file = "$::tmp/$title/__BODYTEXT";
+	open my $fh, ">", $file or return logAdd( "Failed to open attachment $file: $!" );
+	print $fh $body or return logAdd( "Failed to write attachment $file: $!" );
+	close $fh or return logAdd( "Failed to close attachment $file: $!" );
+}
+
+
+# Output an item to the email log file with timestamp
+sub logAdd {
+	my $entry = shift;
+	open LOGH, '>>', $::log or die "Can't open $::log for writing!";
+	print LOGH localtime() . " : $entry\n";
+	close LOGH;
+	return $entry;
+}
