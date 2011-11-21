@@ -26,22 +26,12 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.0 (2011-11-13)';
+$ver   =  '2.0.0 (2011-11-13)';
 
-# Wiki to import the emails and attachments
-$wiki = "localhost/wiki/index.php";
-
-# Email source configuration
-$host = "foo.bar";
-$type = "IMAP";
-$user = "foo";
-$pass = "bar";
-$path = "Inbox";
-$limit = 20000000;
-
-# Determine log file
+# Determine log and config file
 $0 =~ /^(.+)\..+?$/;
-$::log  = "$1.log";
+$log  = "$1.log";
+require "$1.conf";
 
 # Location to store emails to be processed by wiki (create if nonexistent)
 $::tmp = "$1.tmp";
@@ -120,7 +110,7 @@ sub processEmail {
 			print $fh $part->content_type =~ m!^text/! ? $part->body_str : $part->body
 				or return logAdd( "Failed to write attachment $file: $!" );
 			close $fh or return logAdd( "Failed to close attachment $file: $!" );
-			
+			chown $file, 'www-data';
 		} else {
 			$body .= $part->content_type =~ m!^text/! ? $part->body_str : $part->body;
 		}

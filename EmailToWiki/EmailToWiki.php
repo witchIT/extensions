@@ -53,10 +53,33 @@ class EmailToWiki {
 		// Scan messages in folder
 		foreach( glob( "$wgEmailToWikiTmpDir/*" ) as $msg ) {
 			// upload each file
+			$comment = 'File attachment uploaded by EmailToWiki';
+			$text = 'attchment in [[bla bla]] email';
+			$status = $this->upload( $file, $comment, $text );
+			if( $status !== true ) {
+				// problem, output $status wikitext
+			}
+
 			// create article for bodytext
 			// add file links
 		}
 	}
+
+	/**
+	 * Upload passed filename into the wiki
+	 */
+	function upload( $file, $comment, $text ) {
+		$user = User::newFromName( 'EmailToWiki' );
+		$name = basename( $file );
+		$_GET['wpDestFile'] = $name;
+		$_FILES['wpUploadFile'] = array( 'name' => $name, 'tmp_name' => $file, 'size' => filesize( $file ) );
+		$request = new WebRequest();
+		$upload = UploadBase::createFromRequest( $request, 'File' );
+		$upload->verifyUpload();
+		$status = $upload->performUpload( $comment, $text, false, $user );
+		return $status->isGood() ? true : $status->getWikiText();
+	}
+
 
 }
 
