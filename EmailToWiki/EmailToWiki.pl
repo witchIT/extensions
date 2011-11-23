@@ -21,16 +21,19 @@
 # - Docs:	 http://www.mediawiki.org/wiki/Extension:EmailToWiki
 # - Author:  http://www.organicdesign.co.nz/nad
 # - Started: 2007-05-25, version 2 started 2011-11-13
+# - dependencies: libnet-imap-simple-ssl-perl, libemail-mime-perl
 use Net::POP3;
+use Net::IMAP::Simple;
+use Net::IMAP::Simple::SSL;
 use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$ver   =  '2.0.0 (2011-11-13)';
+$::ver   =  '2.0.0 (2011-11-13)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;
-$log  = "$1.log";
+$::log  = "$1.log";
 require "$1.conf";
 
 # Location to store emails to be processed by wiki (create if nonexistent)
@@ -38,40 +41,40 @@ $::tmp = "$1.tmp";
 mkdir $::tmp unless -e $::tmp;
 
 # Process messages in a POP3 mailbox
-if ( $type eq 'POP3' ) {
-	if ( my $server = Net::POP3->new( $host ) ) {
-		logAdd( "$t Connected to $args{proto} server \"$args{host}\"" );
-		if ( $server->login( $user, $pass ) > 0 ) {
-			logAdd( "$t Logged \"$args{user}\" into $args{proto} server \"$args{host}\"" );
+if ( $::type eq 'POP3' ) {
+	if ( my $server = Net::POP3->new( $::host ) ) {
+		logAdd( "Connected to $::proto server \"$::host\"" );
+		if ( $server->login( $::user, $::pass ) > 0 ) {
+			logAdd( "Logged \"$::user\" into $::proto server \"$::host\"" );
 			for ( keys %{ $server->list() } ) {
-				my $content = join "\n", @{ $server->top( $_, $limit ) };
-				processEmail( $content );
+				my $content = join "\n", @{ $server->top( $_, $::limit ) };
+				processEmail( $::content );
 			}
-		} else { emalogAddilLog( "$t Couldn't log \"$args{user}\" into $args{proto} server \"$args{host}\"" ) }
+		} else { emalogAddilLog( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
 		$server->quit();
-	} else { logAdd( "$t Couldn't connect to $args{proto} server \"$args{host}\"" ) }
+	} else { logAdd( "Couldn't connect to $::proto server \"$::host\"" ) }
 }
 
 # Process messages in an IMAP mailbox
-elsif ( $type eq 'IMAP' ) {
-	if ( my $server = new Net::IMAP::Simple::SSL( $host ) ) {
-		if ( $server->login( $user, $pass ) > 0 ) {
-			logAdd( "$t Logged \"$args{user}\" into IMAP server \"$args{host}\"" );
-			my $i = $server->select( $path or 'Inbox' );
+elsif ( $::type eq 'IMAP' ) {
+	if ( my $server = new Net::IMAP::Simple::SSL( $::host ) ) {
+		if ( $server->login( $::user, $::pass ) > 0 ) {
+			logAdd( "Logged \"$::user\" into IMAP server \"$::host\"" );
+			my $i = $server->select( 'Inbox' );
 			while ( $i > 0 ) {
 				my $fh = $server->getfh( $i );
-				sysread $fh, ( my $content ), $limit;
+				sysread $fh, ( my $content ), $::limit;
 				close $fh;
 				processEmail( $content );
 				$i--;
 			}
-		} else { logAdd( "$t Couldn't log \"$args{user}\" into $args{proto} server \"$args{host}\"" ) }
+		} else { logAdd( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
 		$server->quit();
-	} else { logAdd( "$t Couldn't connect to $args{proto} server \"$args{host}\"" ) }
+	} else { logAdd( "Couldn't connect to $::proto server \"$::host\"" ) }
 }
 
 # Tell wiki to import any unprocessed messages
-LWP::UserAgent->new( agent => 'Mozilla/5.0' )->get( "$wiki?action=emailtowiki" );
+LWP::UserAgent->new( agent => 'Mozilla/5.0' )->get( "$::wiki?action=emailtowiki" );
 
 # Finished
 exit(0);
@@ -83,26 +86,28 @@ exit(0);
 sub processEmail {
 	my $email = shift;
 
-	# Extract useful header information
-	my %message = ();
-	$message{id}      = $1 if $email =~ /^message-id:\s*(.+?)\s*$/mi;
-	$message{date}    = $1 if $email =~ /^date:\s*(.+?)\s*$/mi;
-	$message{to}      = $1 if $email =~ /^to:\s*(.+?)\s*$/mi;
-	$message{from}    = $1 if $email =~ /^from:\s*(.+?)\s*$/mi;
-	$message{subject} = $1 if $email =~ /^subject:\s*(.+?)\s*$/im;
+	# Extract the useful header portion of the message
+	my $id      = $1 if $email =~ /^message-id:\s*<(.+?)>\s*$/mi;
+	my $date    = $1 if $email =~ /^date:\s*(.+?)\s*$/mi;
+	my $to      = $1 if $email =~ /^to:\s*(.+?)\s*$/mi;
+	my $from    = $1 if $email =~ /^from:\s*(.+?)\s*$/mi;
+	my $subject = $1 if $email =~ /^subject:\s*(.+?)\s*$/im;
 
-	# Create unique title according to title-format
-	return if title exists in wiki;
+	# Create unique title according to $::format
+	my $title = friendlyTitle( eval "\"$::format\"" );
 
 	# Create directory of the title name for any attachments
-	mkdir "$::tmp/$title";
+	my $dir = "$::tmp/$title";
+	mkdir $dir;
+	qx( chown $::owner:$::owner "$dir" );
 
 	# Loop through attachments uploading each
 	my $body = "";
 	Email::MIME->new( $email )->walk_parts( sub {
 		my( $part ) = @_;
 		if( $part->content_type =~ /\bname="([^"]+)"/ ) {
-			my $file = "$::tmp/$title/$1";
+			my $name = friendlyTitle( $1 );
+			my $file = $dir . '/__' . $id . '_' . $name;
 
 			# Extract attachments from message and save in $::tmp
 			logAdd( "Extracting attachment $file" );
@@ -110,17 +115,34 @@ sub processEmail {
 			print $fh $part->content_type =~ m!^text/! ? $part->body_str : $part->body
 				or return logAdd( "Failed to write attachment $file: $!" );
 			close $fh or return logAdd( "Failed to close attachment $file: $!" );
-			chown $file, 'www-data';
+			qx( chown $::owner:$::owner "$file" );
 		} else {
-			$body .= $part->content_type =~ m!^text/! ? $part->body_str : $part->body;
+			my $text = $part->content_type =~ m!^text/! ? $part->body_str : $part->body;
+			$body .= $text unless $text =~ /This is a multi-part message in MIME format/i;
 		}
 	} );
+
+	# Create the article content
+	$body =~ s/\s*<!DOCTYPE[^>]+>\s*//s;
+	$body =~ s/\s*<head>.+?<\/head>\s*//s;
+	$body =~ s/\s*<\/?body>\s*//sg;
+	$body =~ s/\r//g;
+	my $text = "{{Email
+ | id      = $id
+ | date    = $date
+ | to      = $to
+ | from    = $from
+ | subject = $subject
+}}
+$body";
 	
-	# Save the body-text and header info
-	my $file = "$::tmp/$title/__BODYTEXT";
-	open my $fh, ">", $file or return logAdd( "Failed to open attachment $file: $!" );
-	print $fh $body or return logAdd( "Failed to write attachment $file: $!" );
-	close $fh or return logAdd( "Failed to close attachment $file: $!" );
+	# Save the content for importing with attachments
+	my $file = "$dir/_BODYTEXT_";
+	open FH, ">", $file or return logAdd( "Failed to open attachment $file: $!" );
+	binmode FH, ":utf8";
+	print FH $text or return logAdd( "Failed to write attachment $file: $!" );
+	close FH or return logAdd( "Failed to close attachment $file: $!" );
+	qx( chown $::owner:$::owner "$file" );
 }
 
 
@@ -128,7 +150,16 @@ sub processEmail {
 sub logAdd {
 	my $entry = shift;
 	open LOGH, '>>', $::log or die "Can't open $::log for writing!";
-	print LOGH localtime() . " : $entry\n";
+	binmode LOGH, ":utf8";
+	print LOGH "PERL (" . localtime() . ") : $entry\n";
 	close LOGH;
 	return $entry;
+}
+
+
+# Make the passed string ok for a wiki article title
+sub friendlyTitle {
+	my $title = shift;
+	$title =~ s/[^-_ \(\)\[\]:;'"?.,%$@!+a-zA-Z0-9]+/-/g;
+	return $title;
 }
