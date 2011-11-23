@@ -1,6 +1,22 @@
 Installation
+============
 - Put all files in a directory called EmailToWiki in the wikis extensions directory
 - Create an empty directory in EmailToWiki called EmailToWiki.tmp which is writable by the webserver
 - Create an empty file in EmailToWiki called EmailToWiki.log which is writable by the webserver
 - Create configuration in a file called EmailToWiki.conf based on the EmailToWiki.conf.sample file
 - Call the script on a regular basis, say every five minutes, from crontab as root
+
+Dependencies
+============
+The Perl script depends on the following libraries:
+Net::POP3;
+Net::IMAP::Simple;
+Net::IMAP::Simple::SSL;
+Email::MIME;
+HTTP::Request;
+LWP::UserAgent;
+
+In Debian-based operating systems these dependencies are satisfied via the following packages:
+libwww-perl
+libnet-imap-simple-ssl-perl
+libemail-mime-perl
