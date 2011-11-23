@@ -1,0 +1,17 @@
+# Name of the wiki which the emails will populate (must be running on the same host)
+$::wiki = "http://localhost/wiki/index.php";
+
+# Details of the POP or IMAP server to check for messages
+$::type = "IMAP";
+$::host = "imap.gmail.com";
+$::user = "foo";
+$::pass = "bar";
+
+# Maximum amount of message to download
+$::limit = 20000000;
+
+# Format of the title for the corresponding article in the wiki
+$::format = "Email:\$id (\$subject)";
+
+# The user the webserver runs as
+$::owner = "www-data";
