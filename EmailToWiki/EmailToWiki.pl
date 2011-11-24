@@ -50,7 +50,7 @@ if ( $::type eq 'POP3' ) {
 				my $content = join "\n", @{ $server->top( $_, $::limit ) };
 				processEmail( $::content );
 			}
-		} else { emalogAddilLog( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
+		} else { logAdd( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
 		$server->quit();
 	} else { logAdd( "Couldn't connect to $::proto server \"$::host\"" ) }
 }
