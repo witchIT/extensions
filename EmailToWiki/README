@@ -1,6 +1,7 @@
 Installation
 ============
 - Put all files in a directory called EmailToWiki in the wikis extensions directory
+- add include( "$IP/EmailToWiki/EmailToWiki.php" ); into you LocalSettings.php file
 - Create an empty directory in EmailToWiki called EmailToWiki.tmp which is writable by the webserver
 - Create an empty file in EmailToWiki called EmailToWiki.log which is writable by the webserver
 - Create configuration in a file called EmailToWiki.conf based on the EmailToWiki.conf.sample file
