@@ -45,7 +45,7 @@ class EmailToWiki {
 			$wgOut->disable();
 			if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches ) && !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
 				header( 'Bad Request', true, 400 );
-				print $this->error( "Emails can only be added by the EmailToWiki.pl script running on the local host!" );
+				print $this->logAdd( "Emails can only be added by the EmailToWiki.pl script running on the local host!" );
 			} else $this->processEmails();
 		}
 	}
@@ -55,8 +55,8 @@ class EmailToWiki {
 	 */
 	function processEmails() {
 		global $wgEmailToWikiTmpDir;
-		$this->error( "EmailToWiki.php (" . EMAILTOWIKI_VERSION . ") started" );
-		if( !is_dir( $wgEmailToWikiTmpDir ) ) die( $this->error( "Directory \"$wgEmailToWikiTmpDir\" doesn't exist!" ) );
+		$this->logAdd( "EmailToWiki.php (" . EMAILTOWIKI_VERSION . ") started" );
+		if( !is_dir( $wgEmailToWikiTmpDir ) ) die( $this->logAdd( "Directory \"$wgEmailToWikiTmpDir\" doesn't exist!" ) );
 
 		// Scan messages in folder
 		foreach( glob( "$wgEmailToWikiTmpDir/*" ) as $dir ) {
@@ -74,7 +74,7 @@ class EmailToWiki {
 					$text = wfMsg( 'emailtowiki_uploadtext', $msg );
 					$status = $this->upload( $file, $name, $comment, $text );
 					if( $status === true ) $files .= "*[[:$name|$attachment]]\n";
-					else $this->error( $status );
+					else $this->logAdd( $status );
 				}
 
 				// Create article for bodytext
@@ -82,10 +82,10 @@ class EmailToWiki {
 				$content = file_get_contents( "$dir/_BODYTEXT_" );
 				if( $files ) $content .= "\n== " . wfMsg( 'emailtowiki_attachsection' ) . " ==\n$files";
 				$article->doEdit( $content, wfMsg( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
-			} else $this->error( "email \"$msg\" already exists!" );
+			} else $this->logAdd( "email \"$msg\" already exists!" );
 				
 			// Remove the processed message folder
-			exec( "rm -rf $dir" );
+			exec( "rm -rf \"$dir\"" );
 		}
 	}
 
@@ -109,10 +109,10 @@ class EmailToWiki {
 	/**
 	 * Append an error message to the log
 	 */
-	function error( $err ) {
+	function logAdd( $err ) {
 		global $wgEmailToWikiErrLog;
 		$fh = fopen( $wgEmailToWikiErrLog, 'a' );
-		fwrite( $fh, "PHP Error: $err\n" );
+		fwrite( $fh, "PHP: $err\n" );
 		fclose( $fh );
 		return $err;
 	}
