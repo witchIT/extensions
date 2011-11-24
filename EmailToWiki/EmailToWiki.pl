@@ -29,7 +29,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.4 (2011-11-24)';
+$::ver   =  '2.0.5 (2011-11-24)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;
@@ -45,24 +45,24 @@ mkdir $::tmp unless -e $::tmp;
 # Process messages in a POP3 mailbox
 if( $::type eq 'POP3' ) {
 	if( my $server = Net::POP3->new( $::host ) ) {
-		logAdd( "Connected to $::proto server \"$::host\"" );
+		logAdd( "Connected to $::type server \"$::host\"" );
 		if( $server->login( $::user, $::pass ) > 0 ) {
-			logAdd( "Logged \"$::user\" into $::proto server \"$::host\"" );
+			logAdd( "Logged \"$::user\" into $::type server \"$::host\"" );
 			for my $msg ( keys %{ $server->list() } ) {
 				my $content = join "\n", @{ $server->top( $msg, $::limit ) };
 				processEmail( $content );
 				$server->delete( $msg ) if $::remove;
 			}
-		} else { logAdd( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
+		} else { logAdd( "Couldn't log \"$::user\" into $::type server \"$::host\"" ) }
 		$server->quit();
-	} else { logAdd( "Couldn't connect to $::proto server \"$::host\"" ) }
+	} else { logAdd( "Couldn't connect to $::type server \"$::host\"" ) }
 }
 
 # Process messages in an IMAP mailbox
 elsif( $::type eq 'IMAP' ) {
 	if( my $server = new Net::IMAP::Simple::SSL( $::host ) ) {
 		if( $server->login( $::user, $::pass ) > 0 ) {
-			logAdd( "Logged \"$::user\" into IMAP server \"$::host\"" );
+			logAdd( "Logged \"$::user\" into $::type server \"$::host\"" );
 			my $msg = $server->select( 'Inbox' );
 			while( $msg > 0 ) {
 				my $fh = $server->getfh( $msg );
@@ -72,9 +72,9 @@ elsif( $::type eq 'IMAP' ) {
 				$server->delete( $msg ) if $::remove;
 				$msg--;
 			}
-		} else { logAdd( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
+		} else { logAdd( "Couldn't log \"$::user\" into $::type server \"$::host\"" ) }
 		$server->quit();
-	} else { logAdd( "Couldn't connect to $::proto server \"$::host\"" ) }
+	} else { logAdd( "Couldn't connect to $::type server \"$::host\"" ) }
 }
 
 # Tell wiki to import any unprocessed messages
