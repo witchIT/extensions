@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'MYFAVORITES_VERSION', "1.0.2, 2011-11-10" );
+define( 'MYFAVORITES_VERSION', "1.0.4, 2011-11-24" );
 
 $wgMyFavoritesColumns = 4;
 $wgMyFavoritesTitleAjax = true;
@@ -155,7 +155,7 @@ class MyFavorites extends SpecialPage {
 	 * Add 'Add to favorites' after page title
 	 */
 	function onOutputPageBeforeHTML() {
-		global $wgSciptPath, $wgTitle, $wgUser, $wgUseAjax, $wgOut, $wgJsMimeType;
+		global $wgSciptPath, $wgTitle, $wgUser, $wgUseAjax, $wgOut, $wgJsMimeType, $wgVersion;
 		if( $wgUser->isLoggedIn() && is_object( $wgTitle ) && $wgTitle->exists() ) {
 			$opt = $this->opt( $wgTitle->getPrefixedText() );
 			if( $opt && $wgUser->getOption( $opt ) ) {
@@ -166,10 +166,10 @@ class MyFavorites extends SpecialPage {
 				$msg = wfMsg( 'myfavorites-action-add' );
 			}
 			$style = "vertical-align:middle;padding-left:10pt;font-size:11pt;font-family:sans-serif";
-			$wgOut->addScript( "<script type=\"$wgJsMimeType\">
-				var t = document.getElementById( 'firstHeading' );
-				t.innerHTML = t.innerHTML + '<span id=\"mf-title-ajax\" style=\"$style\"><a href=\"$url\">($msg)</a></span>';
-			</script>" );
+			$script = "var t = document.getElementById( 'firstHeading' );
+				t.innerHTML = t.innerHTML + '<span id=\"mf-title-ajax\" style=\"$style\"><a href=\"$url\">($msg)</a></span>';";
+			if( version_compare( substr( $wgVersion, 0, 4 ), '1.17' ) < 0 ) $script = "addOnloadHook( function() { $script } );";
+			$wgOut->addScript( "<script type=\"$wgJsMimeType\">$script</script>" );
 			$opt = $this->opt( $wgTitle->getPrefixedText() );
 		}
 		return true;
@@ -288,7 +288,7 @@ class MyFavorites extends SpecialPage {
 			$msg = wfMsg( 'myfavorites-action-remove' );
 		}
 		if( $wgMyFavoritesTitleAjax ) $msg = "($msg)";
-		return "<a href=\"javascript:mfFavorites()\">$msg</a>";
+		return "<a href=\"javascript:mfFavorites()\"><span>$msg</span></a>";
 	}
 
 
