@@ -100,8 +100,9 @@ sub processEmail {
 	# Create unique title according to $::format
 	my $title = friendlyTitle( eval "\"$::format\"" );
 
-	# Create directory of the title name for any attachments
+	# Create directory of the title name for any attachments (bail if exists already)
 	my $dir = "$::tmp/$title";
+	return if -e $dir;
 	mkdir $dir;
 	qx( chown $::owner:$::owner "$dir" );
 

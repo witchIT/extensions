@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.0, 2011-11-13' );
+define( 'EMAILTOWIKI_VERSION', '2.0.2, 2011-11-13' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -24,6 +24,9 @@ $wgExtensionCredits['other'][] = array(
 	'url'         => 'http://www.mediawiki.org/wiki/Extension:EmailToWiki',
 	'version'     => EMAILTOWIKI_VERSION
 );
+
+// Allow the emailtowiki action to bypass security - it will be blocked later if non-local
+if( $_GET['action'] == 'emailtowiki' ) $wgGroupPermissions['*']['read'] = true;
 
 class EmailToWiki {
 
