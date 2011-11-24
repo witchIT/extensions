@@ -25,14 +25,14 @@ $wgExtensionCredits['other'][] = array(
 	'version'     => EMAILTOWIKI_VERSION
 );
 
-// Allow the emailtowiki action to bypass security - it will be blocked later if non-local
-if( $_GET['action'] == 'emailtowiki' ) $wgGroupPermissions['*']['read'] = true;
-
 class EmailToWiki {
 
 	function __construct() {
-		global $wgHooks;
+		global $wgHooks, $wgGroupPermissions;
 		$wgHooks['UnknownAction'][] = $this;
+
+		// Allow the emailtowiki action to bypass security - it will be blocked later if non-local
+		if( $_GET['action'] == 'emailtowiki' ) $wgGroupPermissions['*']['read'] = true;
 	}
 
 	/**
@@ -55,7 +55,7 @@ class EmailToWiki {
 	 */
 	function processEmails() {
 		global $wgEmailToWikiTmpDir;
-		$this->error( "EmailToWiki.php " . EMAILTOWIKI_VERSION . "started" );
+		$this->error( "EmailToWiki.php (" . EMAILTOWIKI_VERSION . ") started" );
 		if( !is_dir( $wgEmailToWikiTmpDir ) ) die( $this->error( "Directory \"$wgEmailToWikiTmpDir\" doesn't exist!" ) );
 
 		// Scan messages in folder
