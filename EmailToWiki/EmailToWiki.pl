@@ -29,7 +29,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.3 (2011-11-24)';
+$::ver   =  '2.0.4 (2011-11-24)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;
@@ -78,9 +78,9 @@ elsif( $::type eq 'IMAP' ) {
 }
 
 # Tell wiki to import any unprocessed messages
-my $ua = LWP::UserAgent->new( agent => 'Mozilla/5.0' );
+my $ua = LWP::UserAgent->new( agent => 'Mozilla/5.0', max_size => 100 );
 my $res = $ua->get( "$::wiki?action=emailtowiki" );
-logAdd( $res->content ) if $res->content;
+logAdd( "PHP returned output: " . $res->content ) if $res->content;
 
 # Finished
 exit(0);
