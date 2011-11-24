@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.2, 2011-11-13' );
+define( 'EMAILTOWIKI_VERSION', '2.0.3, 2011-11-24' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -55,6 +55,7 @@ class EmailToWiki {
 	 */
 	function processEmails() {
 		global $wgEmailToWikiTmpDir;
+		$this->error( "EmailToWiki.php " . EMAILTOWIKI_VERSION . "started" );
 		if( !is_dir( $wgEmailToWikiTmpDir ) ) die( $this->error( "Directory \"$wgEmailToWikiTmpDir\" doesn't exist!" ) );
 
 		// Scan messages in folder

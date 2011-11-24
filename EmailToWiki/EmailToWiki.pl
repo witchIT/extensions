@@ -29,12 +29,14 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.2 (2011-11-24)';
+$::ver   =  '2.0.3 (2011-11-24)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;
 $::log  = "$1.log";
+logAdd( "EmailToWiki.pl $::ver started" );
 require "$1.conf";
+
 
 # Location to store emails to be processed by wiki (create if nonexistent)
 $::tmp = "$1.tmp";
