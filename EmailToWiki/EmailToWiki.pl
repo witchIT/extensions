@@ -29,7 +29,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.0 (2011-11-13)';
+$::ver   =  '2.0.2 (2011-11-24)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;
@@ -41,14 +41,15 @@ $::tmp = "$1.tmp";
 mkdir $::tmp unless -e $::tmp;
 
 # Process messages in a POP3 mailbox
-if ( $::type eq 'POP3' ) {
-	if ( my $server = Net::POP3->new( $::host ) ) {
+if( $::type eq 'POP3' ) {
+	if( my $server = Net::POP3->new( $::host ) ) {
 		logAdd( "Connected to $::proto server \"$::host\"" );
-		if ( $server->login( $::user, $::pass ) > 0 ) {
+		if( $server->login( $::user, $::pass ) > 0 ) {
 			logAdd( "Logged \"$::user\" into $::proto server \"$::host\"" );
-			for ( keys %{ $server->list() } ) {
-				my $content = join "\n", @{ $server->top( $_, $::limit ) };
-				processEmail( $::content );
+			for my $msg ( keys %{ $server->list() } ) {
+				my $content = join "\n", @{ $server->top( $msg, $::limit ) };
+				processEmail( $content );
+				$server->delete( $msg ) if $::remove;
 			}
 		} else { logAdd( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
 		$server->quit();
@@ -56,17 +57,18 @@ if ( $::type eq 'POP3' ) {
 }
 
 # Process messages in an IMAP mailbox
-elsif ( $::type eq 'IMAP' ) {
-	if ( my $server = new Net::IMAP::Simple::SSL( $::host ) ) {
-		if ( $server->login( $::user, $::pass ) > 0 ) {
+elsif( $::type eq 'IMAP' ) {
+	if( my $server = new Net::IMAP::Simple::SSL( $::host ) ) {
+		if( $server->login( $::user, $::pass ) > 0 ) {
 			logAdd( "Logged \"$::user\" into IMAP server \"$::host\"" );
-			my $i = $server->select( 'Inbox' );
-			while ( $i > 0 ) {
-				my $fh = $server->getfh( $i );
+			my $msg = $server->select( 'Inbox' );
+			while( $msg > 0 ) {
+				my $fh = $server->getfh( $msg );
 				sysread $fh, ( my $content ), $::limit;
 				close $fh;
 				processEmail( $content );
-				$i--;
+				$server->delete( $msg ) if $::remove;
+				$msg--;
 			}
 		} else { logAdd( "Couldn't log \"$::user\" into $::proto server \"$::host\"" ) }
 		$server->quit();

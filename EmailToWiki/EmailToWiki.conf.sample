@@ -7,6 +7,9 @@ $::host = "imap.gmail.com";
 $::user = "foo";
 $::pass = "bar";
 
+# Delete messages after processing them
+$::remove = 0;
+
 # Maximum amount of message to download
 $::limit = 20000000;
 
