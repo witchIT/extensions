@@ -87,6 +87,7 @@ class EmailToWiki {
 			// Remove the processed message folder
 			exec( "rm -rf \"$dir\"" );
 		}
+		print "Finished.";
 	}
 
 	/**
