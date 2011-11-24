@@ -58,7 +58,6 @@ class EmailToWiki {
 		foreach( glob( "$wgEmailToWikiTmpDir/*" ) as $dir ) {
 			$msg = basename( $dir );
 			$title = Title::newFromText( $msg );
-			print "$msg<br>";
 			if( !$title->exists() ) {
 
 				// Scan attachments in this msg folder and upload into wiki
