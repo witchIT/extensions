@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.3, 2011-11-24' );
+define( 'EMAILTOWIKI_VERSION', '2.0.4, 2011-11-24' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -32,7 +32,7 @@ class EmailToWiki {
 		$wgHooks['UnknownAction'][] = $this;
 
 		// Allow the emailtowiki action to bypass security - it will be blocked later if non-local
-		if( $_GET['action'] == 'emailtowiki' ) $wgGroupPermissions['*']['read'] = true;
+		if( array_key_exists( 'action', $_GET ) && $_GET['action'] == 'emailtowiki' ) $wgGroupPermissions['*']['read'] = true;
 	}
 
 	/**
