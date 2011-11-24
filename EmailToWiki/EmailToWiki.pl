@@ -77,7 +77,7 @@ elsif( $::type eq 'IMAP' ) {
 
 # Tell wiki to import any unprocessed messages
 my $ua = LWP::UserAgent->new( agent => 'Mozilla/5.0' );
-$res = $ua->get( "$::wiki?action=emailtowiki" );
+my $res = $ua->get( "$::wiki?action=emailtowiki" );
 logAdd( $res->content ) if $res->content;
 
 # Finished
