@@ -18,3 +18,5 @@ $::format = "Email:\$id (\$subject)";
 
 # The user the webserver runs as
 $::owner = "www-data";
+
+1;
