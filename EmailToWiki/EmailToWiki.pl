@@ -47,8 +47,8 @@ if( $::type eq 'POP3' ) {
 	if( my $server = Net::POP3->new( $::host ) ) {
 		logAdd( "Connected to $::type server \"$::host\"" );
 		my $login = $server->login( $::user, $::pass );
-		if( $login >= 0 ) {
-			logAdd( "Logged \"$::user\" into $::type server \"$::host\"" );
+		if( defined $login ) {
+			logAdd( "Logged \"$::user\" into $::type server \"$::host\" ($login)" );
 			if( $login eq '0E0' ) { logAdd( "No messages" ) }
 			else {
 				for my $msg ( keys %{ $server->list() } ) {
