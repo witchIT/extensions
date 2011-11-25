@@ -29,7 +29,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.5 (2011-11-24)';
+$::ver   =  '2.0.6 (2011-11-24)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;
@@ -46,12 +46,16 @@ mkdir $::tmp unless -e $::tmp;
 if( $::type eq 'POP3' ) {
 	if( my $server = Net::POP3->new( $::host ) ) {
 		logAdd( "Connected to $::type server \"$::host\"" );
-		if( $server->login( $::user, $::pass ) > 0 ) {
+		my $login = $server->login( $::user, $::pass );
+		if( $login >= 0 ) {
 			logAdd( "Logged \"$::user\" into $::type server \"$::host\"" );
-			for my $msg ( keys %{ $server->list() } ) {
-				my $content = join "\n", @{ $server->top( $msg, $::limit ) };
-				processEmail( $content );
-				$server->delete( $msg ) if $::remove;
+			if( $login eq '0E0' ) { logAdd( "No messages" ) }
+			else {
+				for my $msg ( keys %{ $server->list() } ) {
+					my $content = join "\n", @{ $server->top( $msg, $::limit ) };
+					processEmail( $content );
+					$server->delete( $msg ) if $::remove;
+				}
 			}
 		} else { logAdd( "Couldn't log \"$::user\" into $::type server \"$::host\"" ) }
 		$server->quit();
@@ -91,6 +95,9 @@ exit(0);
 # - create article in wiki with attachments linked
 sub processEmail {
 	my $email = shift;
+
+	# Test if lines are doubled up and fix if so
+	$email =~ s/\n\n/\n/g if $email =~ /Delivered-To: \S+\n\n/s;
 
 	# Extract the useful header portion of the message
 	my $id      = $1 if $email =~ /^message-id:\s*<(.+?)>\s*$/mi;

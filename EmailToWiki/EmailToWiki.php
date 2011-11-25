@@ -85,7 +85,7 @@ class EmailToWiki {
 			} else $this->logAdd( "email \"$msg\" already exists!" );
 				
 			// Remove the processed message folder
-			exec( "rm -rf \"$dir\"" );
+			//exec( "rm -rf \"$dir\"" );
 		}
 		print "Finished.";
 	}
