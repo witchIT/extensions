@@ -1,10 +1,10 @@
 <?php
 /* EmailToWiki extension - Allows emails to be sent to the wiki and added to an existing or new article
  * Started: 2007-05-25, version 2 started 2011-11-13
+ * Contact: neill@prescientsoftware.co.uk
  *
  * @package MediaWiki
  * @subpackage Extensions
- * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
  * @copyright © 2007 - 2011 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */

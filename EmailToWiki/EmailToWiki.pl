@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 #
+# EmailToWiki extension - Allows emails to be sent to the wiki and added to an existing or new article
+# Started: 2007-05-25, version 2 started 2011-11-13
+# Contact: neill@prescientsoftware.co.uk
+#
 # Copyright (C) 2008-2010 Aran Dunkley
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,8 +21,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # http://www.gnu.org/copyleft/gpl.html
 #
-# - Started: 2007-05-25, version 2 started 2011-11-13
 # - dependencies: libnet-imap-simple-ssl-perl, libemail-mime-perl
+#
 use Net::POP3;
 use Net::IMAP::Simple;
 use Net::IMAP::Simple::SSL;
