@@ -17,9 +17,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # http://www.gnu.org/copyleft/gpl.html
 #
-# - Usage:   This script should be called periodically (eg. from crond)
-# - Docs:	 http://www.mediawiki.org/wiki/Extension:EmailToWiki
-# - Author:  http://www.organicdesign.co.nz/nad
 # - Started: 2007-05-25, version 2 started 2011-11-13
 # - dependencies: libnet-imap-simple-ssl-perl, libemail-mime-perl
 use Net::POP3;
