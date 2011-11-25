@@ -1,6 +1,9 @@
 # Name of the wiki which the emails will populate (must be running on the same host)
 $::wiki = "http://localhost/wiki/index.php";
 
+# The wiki template to wrap the email paramaters in
+$::template = "Email"
+
 # Details of the POP or IMAP server to check for messages
 $::type = "IMAP";
 $::host = "imap.gmail.com";

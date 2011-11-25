@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# EmailToWiki extension - Allows emails to be sent to the wiki and added to an existing or new article
+# EmailToWiki extension - allows emails to be sent to the wiki and imported as an article
 # Started: 2007-05-25, version 2 started 2011-11-13
 # Contact: neill@prescientsoftware.co.uk
 #
@@ -30,7 +30,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.6 (2011-11-24)';
+$::ver   =  '2.0.7 (2011-11-25)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;
@@ -142,7 +142,7 @@ sub processEmail {
 	$body =~ s/\s*<head>.+?<\/head>\s*//s;
 	$body =~ s/\s*<\/?body>\s*//sg;
 	$body =~ s/\r//g;
-	my $text = "{{Email
+	my $text = "{{$::template
  | id      = $id
  | date    = $date
  | to      = $to
