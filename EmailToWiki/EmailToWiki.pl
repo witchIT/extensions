@@ -83,9 +83,9 @@ elsif( $::type eq 'IMAP' ) {
 }
 
 # Tell wiki to import any unprocessed messages
-my $ua = LWP::UserAgent->new( agent => 'Mozilla/5.0', max_size => 100 );
-my $res = $ua->get( "$::wiki?action=emailtowiki" );
-logAdd( "PHP returned output: " . $res->content . "..." ) if $res->content;
+#my $ua = LWP::UserAgent->new( agent => 'Mozilla/5.0', max_size => 100 );
+#my $res = $ua->get( "$::wiki?action=emailtowiki" );
+#logAdd( "PHP returned output: " . $res->content . "..." ) if $res->content;
 
 # Finished
 exit(0);
