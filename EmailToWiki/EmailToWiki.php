@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.4, 2011-11-24' );
+define( 'EMAILTOWIKI_VERSION', '2.0.5, 2011-11-29' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -85,7 +85,7 @@ class EmailToWiki {
 			} else $this->logAdd( "email \"$msg\" already exists!" );
 				
 			// Remove the processed message folder
-			//exec( "rm -rf \"$dir\"" );
+			exec( "rm -rf \"$dir\"" );
 		}
 		print "Finished.";
 	}
