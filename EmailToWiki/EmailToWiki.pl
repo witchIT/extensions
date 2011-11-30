@@ -30,7 +30,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.8 (2011-11-25)';
+$::ver   =  '2.0.8 (2011-11-30)';
 
 # Determine log and config file
 $0 =~ /^(.+)\..+?$/;

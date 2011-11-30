@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.5, 2011-11-29' );
+define( 'EMAILTOWIKI_VERSION', '2.0.6, 2011-11-30' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -72,6 +72,7 @@ class EmailToWiki {
 					$attachment = $m[1];
 					$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
 					$text = wfMsg( 'emailtowiki_uploadtext', $msg );
+					$this->logAdd( "Uploading file \"$file\" to File:$name" );
 					$status = $this->upload( $file, $name, $comment, $text );
 					if( $status === true ) $files .= "*[[:$name|$attachment]]\n";
 					else $this->logAdd( $status );
