@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.6, 2011-11-30' );
+define( 'EMAILTOWIKI_VERSION', '2.0.7, 2011-11-30' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -103,6 +103,7 @@ class EmailToWiki {
 		$request = new WebRequest();
 		$upload = UploadBase::createFromRequest( $request, 'File' );
 		$upload->verifyUpload();
+		logAdd( 'Upload object: ' . var_export( $upload, true ) );
 		$status = $upload->performUpload( $comment, $text, false, $user );
 		$name = $upload->getTitle()->getPrefixedText();
 		return $status->isGood() ? true : $status->getWikiText();
