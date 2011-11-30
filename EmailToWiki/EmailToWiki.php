@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.8, 2011-11-30' );
+define( 'EMAILTOWIKI_VERSION', '2.1.1, 2011-11-30' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -46,19 +46,25 @@ class EmailToWiki {
 			if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches ) && !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
 				header( 'Bad Request', true, 400 );
 				print $this->logAdd( "Emails can only be added by the EmailToWiki.pl script running on the local host!" );
-			} else $this->processEmails();
+			} else $this->processEmails( $wgRequest->getText( 'prefix', false ) );
 		}
 	}
 
 	/**
 	 * Process any unprocesseed email files created by EmailToWiki.pl
 	 */
-	function processEmails() {
+	function processEmails( $prefix = false ) {
 		global $wgEmailToWikiTmpDir;
-		$this->logAdd( "EmailToWiki.php (" . EMAILTOWIKI_VERSION . ") started" );
+		
+		// Allow different tmp directory to be used
+		if( $prefix ) $wgEmailToWikiTmpDir = dirname( $wgEmailToWikiTmpDir ) . "/$prefix.tmp";
+		
+		$this->logAdd( "EmailToWiki.php (" . EMAILTOWIKI_VERSION . ") started processing " . basename( $wgEmailToWikiTmpDir ) );
 		if( !is_dir( $wgEmailToWikiTmpDir ) ) die( $this->logAdd( "Directory \"$wgEmailToWikiTmpDir\" doesn't exist!" ) );
 
 		// Scan messages in folder
+		$nemails = 0;
+		$nfiles = 0;
 		foreach( glob( "$wgEmailToWikiTmpDir/*" ) as $dir ) {
 			$msg = basename( $dir );
 			$title = Title::newFromText( $msg );
@@ -73,7 +79,10 @@ class EmailToWiki {
 					$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
 					$text = wfMsg( 'emailtowiki_uploadtext', $msg );
 					$status = $this->upload( $file, $name, $comment, $text );
-					if( $status === true ) $files .= "*[[:$name|$attachment]]\n";
+					if( $status === true ) {
+						$files .= "*[[:$name|$attachment]]\n";
+						$nfiles++;
+					}
 					else $this->logAdd( $status );
 				}
 
@@ -82,12 +91,13 @@ class EmailToWiki {
 				$content = file_get_contents( "$dir/_BODYTEXT_" );
 				if( $files ) $content .= "\n== " . wfMsg( 'emailtowiki_attachsection' ) . " ==\n$files";
 				$article->doEdit( $content, wfMsg( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
+				$nemails++;
 			} else $this->logAdd( "email \"$msg\" already exists!" );
 				
 			// Remove the processed message folder
 			exec( "rm -rf \"$dir\"" );
 		}
-		print "Finished.";
+		$this->logAdd( "Finished ($nemails messages and $nfiles files imported)" );
 	}
 
 	/**

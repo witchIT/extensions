@@ -30,64 +30,77 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.0.8 (2011-11-30)';
+$::ver   =  '2.1.0 (2011-11-30)';
 
-# Determine log and config file
+# Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
 $::log  = "$1.log";
+$0 =~ /^(.+)\/.+?$/;
+$::dir = $1;
 logAdd( "EmailToWiki.pl $::ver started" );
-require "$1.conf";
 
-# Location to store emails to be processed by wiki (create if nonexistent)
-$::tmp = "$1.tmp";
-mkdir $::tmp unless -e $::tmp;
+# Loop through all the *.conf files found in the programs directory
+opendir( CONF, $::dir ) or die $!;
+while ( $::config = readdir( CONF ) ) {
+	next if( $::config !~ /([^\/]+)\.conf$/ );
+	$::prefix = $1;
+	logAdd( "Processing configuration file \"$1.conf\"" );
 
-# Process messages in a POP3 mailbox
-if( $::type eq 'POP3' ) {
-	if( my $server = Net::POP3->new( $::host ) ) {
-		logAdd( "Connected to $::type server \"$::host\"" );
-		my $login = $server->login( $::user, $::pass );
-		if( defined $login ) {
-			logAdd( "Logged \"$::user\" into $::type server \"$::host\" ($login)" );
-			if( $login eq '0E0' ) { logAdd( "No messages" ) }
-			else {
-				for my $msg ( keys %{ $server->list() } ) {
-					my $content = join "\n", @{ $server->top( $msg, $::limit ) };
+	# Create a tmp directory to store the collected email and attachment data for this configuration
+	$::tmp = "$::dir/$1.tmp";
+	mkdir $::tmp unless -e $::tmp;
+
+	# Set the globals from the config file
+	require $::config;
+
+	# Process messages in a POP3 mailbox
+	if( $::type eq 'POP3' ) {
+		if( my $server = Net::POP3->new( $::host ) ) {
+			logAdd( "Connected to $::type server \"$::host\"" );
+			my $login = $server->login( $::user, $::pass );
+			if( defined $login ) {
+				logAdd( "Logged \"$::user\" into $::type server \"$::host\" ($login)" );
+				if( $login eq '0E0' ) { logAdd( "No messages" ) }
+				else {
+					for my $msg ( keys %{ $server->list() } ) {
+						my $content = join "\n", @{ $server->top( $msg, $::limit ) };
+						processEmail( $content );
+						$server->delete( $msg ) if $::remove;
+					}
+				}
+			} else { logAdd( "Couldn't log \"$::user\" into $::type server \"$::host\"" ) }
+			$server->quit();
+		} else { logAdd( "Couldn't connect to $::type server \"$::host\"" ) }
+	}
+
+	# Process messages in an IMAP mailbox
+	elsif( $::type eq 'IMAP' ) {
+		if( my $server = new Net::IMAP::Simple::SSL( $::host ) ) {
+			if( $server->login( $::user, $::pass ) > 0 ) {
+				logAdd( "Logged \"$::user\" into $::type server \"$::host\"" );
+				my $msg = $server->select( 'Inbox' );
+				while( $msg > 0 ) {
+					my $fh = $server->getfh( $msg );
+					sysread $fh, ( my $content ), $::limit;
+					close $fh;
 					processEmail( $content );
 					$server->delete( $msg ) if $::remove;
+					$msg--;
 				}
-			}
-		} else { logAdd( "Couldn't log \"$::user\" into $::type server \"$::host\"" ) }
-		$server->quit();
-	} else { logAdd( "Couldn't connect to $::type server \"$::host\"" ) }
-}
+			} else { logAdd( "Couldn't log \"$::user\" into $::type server \"$::host\"" ) }
+			$server->quit();
+		} else { logAdd( "Couldn't connect to $::type server \"$::host\"" ) }
+	}
 
-# Process messages in an IMAP mailbox
-elsif( $::type eq 'IMAP' ) {
-	if( my $server = new Net::IMAP::Simple::SSL( $::host ) ) {
-		if( $server->login( $::user, $::pass ) > 0 ) {
-			logAdd( "Logged \"$::user\" into $::type server \"$::host\"" );
-			my $msg = $server->select( 'Inbox' );
-			while( $msg > 0 ) {
-				my $fh = $server->getfh( $msg );
-				sysread $fh, ( my $content ), $::limit;
-				close $fh;
-				processEmail( $content );
-				$server->delete( $msg ) if $::remove;
-				$msg--;
-			}
-		} else { logAdd( "Couldn't log \"$::user\" into $::type server \"$::host\"" ) }
-		$server->quit();
-	} else { logAdd( "Couldn't connect to $::type server \"$::host\"" ) }
+	# Tell wiki to import any unprocessed messages
+	my $ua = LWP::UserAgent->new( agent => 'Mozilla/5.0', max_size => 1000 );
+	my $res = $ua->get( "$::wiki?action=emailtowiki&prefix=$::prefix" );
+	logAdd( "PHP returned output: " . $res->content . "..." ) if $res->content;
 }
-
-# Tell wiki to import any unprocessed messages
-my $ua = LWP::UserAgent->new( agent => 'Mozilla/5.0', max_size => 1000 );
-my $res = $ua->get( "$::wiki?action=emailtowiki" );
-logAdd( "PHP returned output: " . $res->content . "..." ) if $res->content;
 
 # Finished
-exit(0);
+closedir( CONF );
+exit( 0 );
 
 
 # Parse content from a single message
