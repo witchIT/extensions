@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.0.7, 2011-11-30' );
+define( 'EMAILTOWIKI_VERSION', '2.0.8, 2011-11-30' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -72,7 +72,6 @@ class EmailToWiki {
 					$attachment = $m[1];
 					$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
 					$text = wfMsg( 'emailtowiki_uploadtext', $msg );
-					$this->logAdd( "Uploading file \"$file\" to File:$name" );
 					$status = $this->upload( $file, $name, $comment, $text );
 					if( $status === true ) $files .= "*[[:$name|$attachment]]\n";
 					else $this->logAdd( $status );
@@ -103,9 +102,11 @@ class EmailToWiki {
 		$request = new WebRequest();
 		$upload = UploadBase::createFromRequest( $request, 'File' );
 		$upload->verifyUpload();
-		logAdd( 'Upload object: ' . var_export( $upload, true ) );
-		$status = $upload->performUpload( $comment, $text, false, $user );
-		$name = $upload->getTitle()->getPrefixedText();
+		$title = $upload->getTitle();
+		if( is_object( $title ) ) {
+			$status = $upload->performUpload( $comment, $text, false, $user );
+			$name = $title->getPrefixedText();
+		} else return 'File "' . basename( $file ) . '" could not be uploaded, the file-extension is probably not permitted by the wiki';
 		return $status->isGood() ? true : $status->getWikiText();
 	}
 
