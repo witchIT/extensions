@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'MYFAVORITES_VERSION', "1.0.4, 2011-11-24" );
+define( 'MYFAVORITES_VERSION', "1.0.6, 2011-11-24" );
 
 $wgMyFavoritesColumns = 4;
 $wgMyFavoritesTitleAjax = true;
@@ -60,6 +60,7 @@ class MyFavorites extends SpecialPage {
 	 */
 	function execute( $param ) {
 		global $wgOut, $wgJsMimeType;
+		$wgOut->includeJQuery();
 		$this->setHeaders();
 		$this->addPortalScript();
 		$this->renderPortlets();
@@ -305,6 +306,7 @@ class MyFavorites extends SpecialPage {
 		$wgOut->addScript( "<script type=\"$wgJsMimeType\" src=\"$wgMyFavoritesBaseUrl/lib/builder.js\"></script>" );
 		$wgOut->addScript( "<script type=\"$wgJsMimeType\" src=\"$wgMyFavoritesBaseUrl/lib/dragdrop.js\"></script>" );
 		$wgOut->addScript( "<script type=\"$wgJsMimeType\" src=\"$wgMyFavoritesBaseUrl/src/portal.js\"></script>" );
+		$wgOut->addScript( "<script type=\"$wgJsMimeType\">var preservedollar=$;</script>" );
 	}
 
 
@@ -351,14 +353,16 @@ class MyFavorites extends SpecialPage {
 					} else $min = false;
 					$page = $favorites[$f];
 					$title = Title::newFromText( $page );
-					$url = $title->getLocalUrl();
-					$article = new Article( $title );
-					$text = $article->getSection( $article->getContent(), 0 );
-					$html = $wgParser->parse( $text, $title, $wgParser->mOptions, true, true )->getText();
-					$content .= "<div id=\"portlet-content-$i\" style=\"display:none\">$html</div>\n";
-					$init .= "portal.add(new Xilinus.Widget('widget','widget_$f').setTitle('$page').setContent(document.getElementById('portlet-content-$i').innerHTML), $col);\n";
-					if( $min ) $init .= "document.getElementById('content_widget_$f').hide();\n";
-					$i++;
+					if( is_object( $title ) ) {
+						$url = $title->getLocalUrl();
+						$article = new Article( $title );
+						$text = $article->getSection( $article->getContent(), 0 );
+						$html = $wgParser->parse( $text, $title, $wgParser->mOptions, true, true )->getText();
+						$content .= "<div id=\"portlet-content-$i\" style=\"display:none\">$html</div>\n";
+						$init .= "portal.add(new Xilinus.Widget('widget','widget_$f').setTitle('$page').setContent(document.getElementById('portlet-content-$i').innerHTML), $col);\n";
+						if( $min ) $init .= "document.getElementById('content_widget_$f').hide();\n";
+						$i++;
+					}
 				}
 			}
 
@@ -409,6 +413,7 @@ class MyFavorites extends SpecialPage {
 					new Ajax.Request('$wgScriptPath/index.php?action=ajax&rs=MyFavorites::ajaxPositions', {parameters: parameters});
 				}
 				function init() {
+					$ = preservedollar;
 					portal = new Xilinus.Portal('#page div', {
 						onOverWidget: onOverWidget,
 						onOutWidget: onOutWidget,
