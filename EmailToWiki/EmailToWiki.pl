@@ -30,7 +30,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.1.1 (2011-12-04)';
+$::ver   =  '2.1.2 (2011-12-04)';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -109,11 +109,8 @@ exit( 0 );
 sub processEmail {
 	my $email = shift;
 
-	# Remove the CR's if running fatware
-	$email =~ s/\r//g;
-
 	# Test if lines are doubled up and fix if so
-	$email =~ s/\n\n/\n/g if $email =~ /Delivered-To: \S+\n\n/s;
+	$email =~ s/\n\n/\n/g if $email =~ /Message-ID: \S+\n\n/s;
 
 	# Extract the useful header portion of the message
 	my $id      = $1 if $email =~ /^message-id:\s*<(.+?)>\s*$/mi;
