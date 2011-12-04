@@ -30,7 +30,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.1.0 (2011-11-30)';
+$::ver   =  '2.1.1 (2011-12-04)';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -108,6 +108,9 @@ exit( 0 );
 # - create article in wiki with attachments linked
 sub processEmail {
 	my $email = shift;
+
+	# Remove the CR's if running fatware
+	$email =~ s/\r//g;
 
 	# Test if lines are doubled up and fix if so
 	$email =~ s/\n\n/\n/g if $email =~ /Delivered-To: \S+\n\n/s;
