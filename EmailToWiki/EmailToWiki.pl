@@ -150,9 +150,9 @@ sub processEmail {
 	} );
 
 	# Create the article content
-	$body =~ s/\s*<!DOCTYPE[^>]+>\s*//s;
-	$body =~ s/\s*<head>.+?<\/head>\s*//s;
-	$body =~ s/\s*<\/?body>\s*//sg;
+	$body =~ s/\s*<!DOCTYPE[^>]+>\s*//si;
+	$body =~ s/\s*<head>.+?<\/head>\s*//si;
+	$body =~ s/\s*<\/?body>\s*//sgi;
 	$body =~ s/\r//g;
 	my $text = "{{$::template
  | id      = $id
