@@ -30,7 +30,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.1.4, 2011-12-05';
+$::ver   =  '2.1.5, 2011-12-06';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -49,6 +49,13 @@ while ( $::config = readdir( CONF ) ) {
 	# Create a tmp directory to store the collected email and attachment data for this configuration
 	$::tmp = "$::dir/$1.tmp";
 	mkdir $::tmp unless -e $::tmp;
+
+	# Set default configuration options
+	$::limit = 1000000;
+	$::format = "Email:\$id (\$subject)";
+	$::owner = "www-data";
+	$::remove = 0;
+	$::template = "Email";
 
 	# Set the globals from the config file
 	require $::config;
