@@ -30,7 +30,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.1.3 (2011-12-05)';
+$::ver   =  '2.1.4 (2011-12-05)';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -152,7 +152,7 @@ sub processEmail {
 	# Create the article content
 	$body =~ s/\s*<!DOCTYPE[^>]+>\s*//si;
 	$body =~ s/\s*<head>.+?<\/head>\s*//si;
-	$body =~ s/\s*<\/?body[^>]+>\s*//sgi;
+	$body =~ s/\s*<\/?body[^>]*>\s*//sgi;
 	$body =~ s/\r//g;
 	my $text = "{{$::template
  | id      = $id
