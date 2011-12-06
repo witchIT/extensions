@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.1.1, 2011-11-30' );
+define( 'EMAILTOWIKI_VERSION', '2.1.4, 2011-12-05' );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
