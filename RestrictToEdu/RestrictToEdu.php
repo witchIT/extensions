@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'RESTRICTTOEDU_VERSION', "0.0.0, 2011-12-03" );
+define( 'RESTRICTTOEDU_VERSION', "0.0.1, 2011-12-06" );
 
 $wgEduEmailPattern = "|\.edu$|";
 $wgEduPagesWithLogin = array( 'Main Page' );
@@ -31,11 +31,13 @@ $wgExtensionCredits['specialpage'][] = array(
 class RestrictToEdu extends SpecialPage {
 
 	function __construct() {
+		global $wgHooks;
 
 		SpecialPage::SpecialPage( 'RestrictToEdu', false, true, false, false, false );
+		
+		// hook in to post-login and check if it's a temporary password, if so, confirm the users email
 
 	}
-
 
 	/**
 	 * Render the special page
@@ -44,6 +46,50 @@ class RestrictToEdu extends SpecialPage {
 		global $wgOut;
 		$this->setHeaders();
 		$wgOut->addWikiText( 'forgot password stuff to go here....' );
+	}
+
+	/**
+	 * Render the forgot password form
+	 */
+	function renderForgottenPassword() {
+	}
+
+	/**
+	 * Process a forgotten password form
+	 */
+	function processForgottenPassword() {
+	}
+
+	/**
+	 * Render the signup form
+	 */
+	function renderSignup() {
+		
+		// name
+		
+		// email
+		
+	}
+	
+	/**
+	 * Process a submitted signup form
+	 */
+	function processSignup() {
+
+		// maybe: change the temporary password messge
+		
+		// do the send-temporary password process
+		
+	}
+
+	/**
+	 * Confirm email address
+	 */
+	function confirmEmail() {
+		
+		// when a person logs in with their temporary email address
+		// their email address should be confirmed
+		
 	}
 
 }
