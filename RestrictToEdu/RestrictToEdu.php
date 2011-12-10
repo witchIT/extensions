@@ -12,6 +12,7 @@ if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 define( 'RESTRICTTOEDU_VERSION', "0.0.1, 2011-12-10" );
 
 $wgEduEmailPattern = "|\.edu$|";
+$wgEnableEmail = true;
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['RestrictToEdu'] = "$dir/RestrictToEdu.i18n.php";
@@ -29,6 +30,26 @@ $wgExtensionCredits['specialpage'][] = array(
 );
 
 class EduLoginForm extends LoginForm {
+
+	/**
+	 * Adjust some items in the initial data
+	 */
+	function __construct( &$request, $par = '' ) {
+		parent::__construct( $request, $par );
+
+		// Try and find the username from the email address
+		if( $this->mLoginattempt ) {
+			if( $this->mEmail ) {
+				$dbr = &wfGetDB( DB_SLAVE );
+				$tbl = $dbr->tableName( 'user' );
+				$email = $dbr->addQuotes( $this->mEmail );
+				if( $row = $dbr->selectRow( $tbl, 'user_name', "user_email = $email" ) ) $this->mName = $row->user_name;
+			}
+		}
+		
+		// The user name and real name are the same for .edu users
+		$this->mRealName = $this->mName;
+	}
 
 	/**
 	 * Render the user login form
@@ -69,6 +90,7 @@ class EduLoginForm extends LoginForm {
 	 * Render the user login form
 	 */
 	static function renderUserLogin() {
+		if ( !self::getLoginToken() ) self::setLoginToken();
 		$url = Title::newFromText( 'RestrictToEdu/UserLogin', NS_SPECIAL )->getLocalUrl();
 		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-have-account' ) . "</h2>\n";
@@ -82,6 +104,7 @@ class EduLoginForm extends LoginForm {
 		$forgotUrl = Title::newFromText( 'RestrictToEdu', NS_SPECIAL )->getLocalUrl();
 		$forgotLink = "<a href=\"$forgotUrl\">". wfMsg( 'edu-forgot-password' ) . "</a>";
 		$html .= "<tr><td class=\"edu-label\">$forgotLink</td></tr>\n";
+		$html .= "<input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" />";
 		$html .= "</table></form></div>\n";
 		return $html;
 	}
@@ -147,8 +170,11 @@ class RestrictToEdu extends SpecialPage {
 	 * Expand the EDULOGIN parser function
 	 */
 	function expandParserFunction( &$parser ) {
-		$login = $this->renderUserLogin();
-		$create = $this->renderCreateAccount();
+		global $wgUser;
+		$parser->disableCache();
+		if( $wgUser->isLoggedIn() ) return '';
+		$login = EduLoginForm::renderUserLogin();
+		$create = EduLoginForm::renderCreateAccount();
 		$html = "<table><tr><td>$login</td><td>$create</td></tr></table>";
 		return array( $html, 'isHTML' => true, 'noparse' => true);
 	}
@@ -183,6 +209,7 @@ class RestrictToEdu extends SpecialPage {
 	 */
 	function processUserLogin() {
 		global $wgRequest;
+		if( session_id() == '' ) wfSetupSession();
 		$form = new EduLoginForm( $wgRequest );
 		$form->execute();
 	}
