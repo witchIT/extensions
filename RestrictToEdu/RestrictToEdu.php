@@ -80,6 +80,7 @@ class EduLoginForm extends LoginForm {
 	 */
 	function mainLoginForm( $msg, $msgtype = 'error' ) {
 		global $wgOut, $wgUser;
+
 		if( $msg ) {
 			if( $this->eduError ) $msg = wfMsg( $this->eduError, $this->mEmail );
 			elseif( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|', $msg ) ) {
@@ -89,6 +90,7 @@ class EduLoginForm extends LoginForm {
 			$wgOut->addHtml( "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>" );
 			$wgOut->addHtml( "<div class=\"visualClear\"></div>" );
 		}
+
 		if( $this->mCreateaccountMail ) {
 			$login = self::renderUserLogin();
 			$create = self::renderCreateAccount();
@@ -171,8 +173,6 @@ class RestrictToEdu extends SpecialPage {
 		global $wgHooks, $wgParser;
 
 		SpecialPage::SpecialPage( 'RestrictToEdu', false, true, false, false, false );
-		
-		// hook in to post-login and check if it's a temporary password, if so, confirm the users email
 
 		// Create a parser-function to render login
 		$wgParser->setFunctionHook( 'EDULOGIN', array( $this, 'expandParserFunction' ), SFH_NO_HASH );
@@ -191,7 +191,6 @@ class RestrictToEdu extends SpecialPage {
 		}
 
 		elseif( $param == 'CreateAccount' ) {
-			//getPasswordValidity
 			$this->processCreateAccount();
 		}
 
@@ -224,7 +223,6 @@ class RestrictToEdu extends SpecialPage {
 		global $wgRequest;
 		$form = new EduLoginForm( $wgRequest );
 		$form->execute();
-		//mailPasswordInternal
 	}
 
 	
@@ -233,23 +231,22 @@ class RestrictToEdu extends SpecialPage {
 	 */
 	function processCreateAccount() {
 		global $wgRequest;
+		if( session_id() == '' ) wfSetupSession();
 		$form = new EduLoginForm( $wgRequest );
 		$form->execute();
-
-		// maybe: change the temporary password messge
-		
-		// do the send-temporary password process
-		
 	}
 
 	/**
 	 * Process a submitted user login form
 	 */
 	function processUserLogin() {
-		global $wgRequest;
+		global $wgRequest, $wgEduRequest;
 		if( session_id() == '' ) wfSetupSession();
 		$form = new EduLoginForm( $wgRequest );
+		$wgEduRequest = $wgRequest;
+		$wgRequest = new EduRequest( $form->mName );
 		$form->execute();
+		$wgRequest = $wgEduRequest;
 	}
 
 	/**
@@ -262,6 +259,60 @@ class RestrictToEdu extends SpecialPage {
 		
 	}
 
+}
+
+/**
+ * A dummy requets object that returns a wpName when only a wpEmail was submitted
+ * - $wgRequest is replaced with this dummy object temporarily within processUserLogin()
+ */
+class EduRequest {
+
+	var $name = false;
+
+	function __construct( $name ) {
+		$this->name = $name;
+	}
+
+	function getVal( $val, $default = false ) {
+		global $wgEduRequest;
+		if( $val == 'wpName' ) return $this->name;
+		return $wgEduRequest->getVal( $val, $default );
+	}
+
+	function getBool( $val, $default = false ) {
+		global $wgEduRequest;
+		return $wgEduRequest->getBool( $val, $default );
+	}
+
+	function getCheck( $val, $default = false ) {
+		global $wgEduRequest;
+		return $wgEduRequest->getCheck( $val, $default );
+	}
+
+	function wasPosted() {
+		global $wgEduRequest;
+		return $wgEduRequest->wasPosted();
+	}
+
+	function setSessionData( $name, $val ) {
+		global $wgEduRequest;
+		return $wgEduRequest->setSessionData( $name, $val );
+	}
+
+	function getSessionData( $name ) {
+		global $wgEduRequest;
+		return $wgEduRequest->getSessionData( $name );
+	}
+
+	function checkSessionCookie() {
+		global $wgEduRequest;
+		return $wgEduRequest->checkSessionCookie();
+	}
+
+	function response() {
+		global $wgEduRequest;
+		return $wgEduRequest->response();
+	}
 }
 
 /**
