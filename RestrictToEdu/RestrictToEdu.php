@@ -11,6 +11,8 @@
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 define( 'RESTRICTTOEDU_VERSION', "0.0.1, 2011-12-10" );
 
+define( 'EDU_EMAIL_NOT_FOUND', 'email address not found in database' );
+
 $wgEduEmailPattern = "|\.edu$|";
 $wgEnableEmail = true;
 
@@ -39,16 +41,32 @@ class EduLoginForm extends LoginForm {
 
 		// Try and find the username from the email address
 		if( $this->mLoginattempt ) {
-			if( $this->mEmail ) {
-				$dbr = &wfGetDB( DB_SLAVE );
-				$tbl = $dbr->tableName( 'user' );
-				$email = $dbr->addQuotes( $this->mEmail );
-				if( $row = $dbr->selectRow( $tbl, 'user_name', "user_email = $email" ) ) $this->mName = $row->user_name;
-			}
+			$this->mName = self::getUserFromEmail( $this->mEmail );
+		}
+		
+		elseif( $this->mCreateaccountMail ) {
+			
+			// If the email exists, force the username to conflict with the existing one
+			$name = self::getUserFromEmail( $this->mEmail );
+			if( $name != EDU_EMAIL_NOT_FOUND ) $this->mName = $name;
 		}
 		
 		// The user name and real name are the same for .edu users
 		$this->mRealName = $this->mName;
+	}
+
+	/**
+	 * Return a username given an email address
+	 */
+	static function getUserFromEmail( $email ) {
+		$name = EDU_EMAIL_NOT_FOUND;
+		if( $email ) {
+			$dbr = &wfGetDB( DB_SLAVE );
+			$tbl = $dbr->tableName( 'user' );
+			$email = $dbr->addQuotes( $email );
+			if( $row = $dbr->selectRow( $tbl, 'user_name', "user_email = $email" ) ) $name = $row->user_name;
+		}
+		return $name;
 	}
 
 	/**
@@ -57,31 +75,44 @@ class EduLoginForm extends LoginForm {
 	function mainLoginForm( $msg, $msgtype = 'error' ) {
 		global $wgOut, $wgUser;
 		if( $msg ) {
-			$msg = wfMsg( $msg );
-			$msg = substr( $msg, 4, strlen( $msg ) -8 ); // hack to remove &lt; and &gt;
+			if( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|', $msg ) ) {
+				$url = Title::newFromText( 'RestrictToEdu/CreateAccount', NS_SPECIAL )->getLocalUrl();
+				$msg = wfMsg( 'edu-emailnotfound', $this->mEmail, $url );
+			}
 			$wgOut->addHtml( "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>" );
 			$wgOut->addHtml( "<div class=\"visualClear\"></div>" );
 		}
-		if( $this->mCreateaccount ) $wgOut->addHtml( self::renderCreateAccount() );
-		elseif( $this->mLoginattempt ) $wgOut->addHtml( self::renderUserLogin() );
+		if( $this->mCreateaccount ) {
+			$login = self::renderUserLogin();
+			$create = self::renderCreateAccount();
+			$wgOut->addHtml( "<table><tr><td>$login</td><td>$create</td></tr></table>" );
+		}
+
+		elseif( $this->mLoginattempt ) {
+			$login = self::renderUserLogin();
+			$create = self::renderCreateAccount();
+			$wgOut->addHtml( "<table><tr><td>$login</td><td>$create</td></tr></table>" );
+		}
+
 		elseif( $this->mMailmypassword ) $wgOut->addHtml( self::renderForgottenPassword() );
 	}
 	/**
 	 * Render the account creation form
 	 */
 	static function renderCreateAccount() {
-		global $wgOut, $wgUser;
+		if( !self::getCreateaccountToken() ) self::setCreateaccountToken();
 		$url = Title::newFromText( 'RestrictToEdu/CreateAccount', NS_SPECIAL )->getLocalUrl();
 		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-dont-have-account' ) . "</h2>\n";
 		$html .= "<table>\n";
-		$html .= "<tr><td class=\"edu-label\"><label for=\"wpRealName\">" . wfMsg( 'edu-name-format' ) . ":</label></td></tr>\n";
-		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpRealName\" size=\"20\" /></td></tr>\n";
+		$html .= "<tr><td class=\"edu-label\"><label for=\"wpName\">" . wfMsg( 'edu-name-format' ) . ":</label></td></tr>\n";
+		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpName\" size=\"20\" /></td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpEmail\">E-mail:</label></td></tr>\n";
 		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\">". wfMsg( 'edu-must-be-edu' ) . "</td></tr>\n";
 		$html .= "<tr><td class=\"edu-submit\"><input type=\"submit\" value=\"Create account\" name=\"wpCreateaccountMail\"></td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\">". wfMsg( 'edu-send-temp-email' ) . "</td></tr>\n";
+		$html .= "<input type=\"hidden\" value=\"" . self::getCreateaccountToken() . "\" name=\"wpCreateaccountToken\" />";
 		$html .= "</table></form></div>\n";
 		return $html;
 	}
