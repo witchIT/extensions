@@ -33,6 +33,8 @@ $wgExtensionCredits['specialpage'][] = array(
 
 class EduLoginForm extends LoginForm {
 
+	var $eduError = false;
+
 	/**
 	 * Adjust some items in the initial data
 	 */
@@ -45,10 +47,14 @@ class EduLoginForm extends LoginForm {
 		}
 		
 		elseif( $this->mCreateaccountMail ) {
+			$this->mToken = $request->getVal( 'wpCreateaccountToken' );
 			
 			// If the email exists, force the username to conflict with the existing one
 			$name = self::getUserFromEmail( $this->mEmail );
-			if( $name != EDU_EMAIL_NOT_FOUND ) $this->mName = $name;
+			if( $name != EDU_EMAIL_NOT_FOUND ) {
+				$this->mName = $name;
+				$this->eduError = 'edu-already-registered';
+			}
 		}
 		
 		// The user name and real name are the same for .edu users
@@ -75,14 +81,15 @@ class EduLoginForm extends LoginForm {
 	function mainLoginForm( $msg, $msgtype = 'error' ) {
 		global $wgOut, $wgUser;
 		if( $msg ) {
-			if( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|', $msg ) ) {
+			if( $this->eduError ) $msg = wfMsg( $this->eduError, $this->mEmail );
+			elseif( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|', $msg ) ) {
 				$url = Title::newFromText( 'RestrictToEdu/CreateAccount', NS_SPECIAL )->getLocalUrl();
 				$msg = wfMsg( 'edu-emailnotfound', $this->mEmail, $url );
 			}
 			$wgOut->addHtml( "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>" );
 			$wgOut->addHtml( "<div class=\"visualClear\"></div>" );
 		}
-		if( $this->mCreateaccount ) {
+		if( $this->mCreateaccountMail ) {
 			$login = self::renderUserLogin();
 			$create = self::renderCreateAccount();
 			$wgOut->addHtml( "<table><tr><td>$login</td><td>$create</td></tr></table>" );
