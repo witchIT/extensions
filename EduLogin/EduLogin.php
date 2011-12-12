@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.1, 2011-12-12" );
+define( 'EDULOGIN_VERSION', "1.0.2, 2011-12-12" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
@@ -44,15 +44,15 @@ class EduLoginForm extends LoginForm {
 	function __construct( &$request, $par = '' ) {
 		parent::__construct( $request, $par );
 
-		// Try and find the username from the email address
+		// If this is a login attempt, try and find the username from the email address
 		if( $this->mLoginattempt || $this->mMailmypassword ) {
 			$this->mName = self::getUserFromEmail( $this->mEmail );
 		}
 
+		// Otherwise if it's an account creation set up the environment ready for processing
 		elseif( $this->mCreateaccountMail ) {
 			global $wgHooks;
 			$wgHooks['AbortNewAccount'][] = $this;
-
 			$this->mToken = $request->getVal( 'wpCreateaccountToken' );
 
 			// If the name for this email address doesn't already exist, create mName from first and last name fields
