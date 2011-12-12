@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.2, 2011-12-12" );
+define( 'EDULOGIN_VERSION', "1.0.3, 2011-12-12" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
@@ -67,7 +67,7 @@ class EduLoginForm extends LoginForm {
 				$this->eduError = 'edu-already-registered';
 			}
 		}
-		
+
 		// The user name and real name are the same for .edu users
 		$this->mRealName = $this->mName;
 	}
@@ -116,8 +116,10 @@ class EduLoginForm extends LoginForm {
 		if( $msg ) {
 			if( $this->eduError ) $msg = wfMsg( $this->eduError, $this->mEmail );
 			elseif( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|', $msg ) ) {
-				$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
-				$msg = wfMsg( 'edu-emailnotfound', $this->mEmail, $url );
+				if( $this->mEmail ) {
+					$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
+					$msg = wfMsg( 'edu-emailnotfound', $this->mEmail, $url );
+				} else $msg = wfMsg( 'edu-noemail' );
 			}
 			$wgOut->addHtml( "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>" );
 			$wgOut->addHtml( "<div class=\"visualClear\"></div>" );
