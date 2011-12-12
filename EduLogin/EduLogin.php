@@ -30,9 +30,13 @@ $wgExtensionCredits['specialpage'][] = array(
 	'version'     => EDULOGIN_VERSION
 );
 
+// Redirect the standard login special page to the new .edu one
 if( array_key_exists( 'title', $_REQUEST ) && strtolower( $_REQUEST['title'] ) == 'special:userlogin' )
 	$_GET['title'] = $_REQUEST['title'] = 'Special:EduLogin/UserLogin';
 
+/**
+ * Create a class for the new .edu login/create account forms based on the standard MediaWiki ones
+ */
 class EduLoginForm extends LoginForm {
 
 	// This is used to switch some login/create error messages to the edu ones
@@ -202,6 +206,9 @@ class EduLoginForm extends LoginForm {
 	}
 }
 
+/**
+ * Create a class for the .edu login special page and parser-function
+ */
 class EduLogin extends SpecialPage {
 
 	function __construct() {
