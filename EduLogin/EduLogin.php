@@ -9,9 +9,8 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EduLogin_VERSION', "0.0.1, 2011-12-10" );
-
-define( 'EDU_EMAIL_NOT_FOUND', 'email address not found in database' );
+define( 'EDULOGIN_VERSION', "1.0.0, 2011-12-12" );
+define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
 $wgEnableEmail = true;
@@ -28,11 +27,15 @@ $wgExtensionCredits['specialpage'][] = array(
 	'author'      => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
 	'description' => "Restricts account creation to users with .edu email addresses (for Elance job 27354439)",
 	'url'         => "https://www.elance.com/php/collab/main/collab.php?bidid=27354439",
-	'version'     => EduLogin_VERSION
+	'version'     => EDULOGIN_VERSION
 );
+
+if( array_key_exists( 'title', $_REQUEST ) && strtolower( $_REQUEST['title'] ) == 'special:userlogin' )
+	$_GET['title'] = $_REQUEST['title'] = 'Special:EduLogin/UserLogin';
 
 class EduLoginForm extends LoginForm {
 
+	// This is used to switch some login/create error messages to the edu ones
 	var $eduError = false;
 
 	/**
@@ -45,8 +48,11 @@ class EduLoginForm extends LoginForm {
 		if( $this->mLoginattempt || $this->mMailmypassword ) {
 			$this->mName = self::getUserFromEmail( $this->mEmail );
 		}
-		
+
 		elseif( $this->mCreateaccountMail ) {
+			global $wgHooks;
+			$wgHooks['AbortNewAccount'][] = $this;
+
 			$this->mToken = $request->getVal( 'wpCreateaccountToken' );
 
 			// If the name for this email address doesn't already exist, create mName from first and last name fields
@@ -67,6 +73,27 @@ class EduLoginForm extends LoginForm {
 	}
 
 	/**
+	 * Allow the account creation to be aborted if the email isn't a .edu or the name is bad
+	 */
+	function onAbortNewAccount( $user, &$abort ) {
+		global $wgEduEmailPattern;
+
+		// Check email is a .edu
+		if( !preg_match( $wgEduEmailPattern, $this->mEmail ) ) {
+			$abort = wfMsg( 'edu-bademail' );
+			return false;
+		}
+
+		// Check that both first and last names have been supplied
+		if( !preg_match( "| |", trim( $this->mName ) ) ) {
+			$abort = wfMsg( 'edu-badname' );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Return a username given an email address
 	 */
 	static function getUserFromEmail( $email ) {
@@ -81,7 +108,7 @@ class EduLoginForm extends LoginForm {
 	}
 
 	/**
-	 * Render the user login form
+	 * Render the login and accoutn creation forms
 	 */
 	function mainLoginForm( $msg, $msgtype = 'error' ) {
 		global $wgOut, $wgUser;
@@ -89,33 +116,34 @@ class EduLoginForm extends LoginForm {
 		if( $msg ) {
 			if( $this->eduError ) $msg = wfMsg( $this->eduError, $this->mEmail );
 			elseif( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|', $msg ) ) {
-				$url = Title::newFromText( 'EduLogin/CreateAccount', NS_SPECIAL )->getLocalUrl();
+				$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
 				$msg = wfMsg( 'edu-emailnotfound', $this->mEmail, $url );
 			}
 			$wgOut->addHtml( "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>" );
 			$wgOut->addHtml( "<div class=\"visualClear\"></div>" );
 		}
 
-		if( $this->mCreateaccountMail ) {
-			$login = self::renderUserLogin();
-			$create = self::renderCreateAccount();
-			$wgOut->addHtml( "<table><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>" );
-		}
-
-		elseif( $this->mLoginattempt ) {
-			$login = self::renderUserLogin();
-			$create = self::renderCreateAccount();
-			$wgOut->addHtml( "<table><tr><td>$login</td><td>$create</td></tr></table>" );
-		}
-
+		if( $this->mCreateaccountMail ) self::outputLoginAndCreate();
+		elseif( $this->mLoginattempt ) self::outputLoginAndCreate();
 		elseif( $this->mMailmypassword ) $wgOut->addHtml( self::renderForgottenPassword() );
 	}
+
 	/**
-	 * Render the account creation form
+	 * Send both login and account creation forms to $wgOut
+	 */
+	static function outputLoginAndCreate() {
+		global $wgOut;
+		$login = self::renderUserLogin();
+		$create = self::renderCreateAccount();
+		$wgOut->addHtml( "<table><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>" );
+	}
+
+	/**
+	 * Return the HTML for the account creation form
 	 */
 	static function renderCreateAccount() {
 		if( !self::getCreateaccountToken() ) self::setCreateaccountToken();
-		$url = Title::newFromText( 'EduLogin/CreateAccount', NS_SPECIAL )->getLocalUrl();
+		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
 		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-dont-have-account' ) . "</h2>\n";
 		$html .= "<table>\n";
@@ -133,11 +161,11 @@ class EduLoginForm extends LoginForm {
 	}
 
 	/**
-	 * Render the user login form
+	 * Return the HTML for the user login form
 	 */
 	static function renderUserLogin() {
 		if( !self::getLoginToken() ) self::setLoginToken();
-		$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
+		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
 		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-have-account' ) . "</h2>\n";
 		$html .= "<table>\n";
@@ -146,8 +174,7 @@ class EduLoginForm extends LoginForm {
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpPassword\">" . wfMsg( 'edu-password' ) . ":</label></td></tr>\n";
 		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpPassword\" type=\"password\" size=\"20\" /></td></tr>\n";
 		$html .= "<tr><td class=\"edu-submit\"><input type=\"submit\" value=\"Login\" name=\"wpLoginattempt\"></td></tr>\n";
-		$forgotUrl = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
-		$forgotLink = "<a href=\"$forgotUrl\">". wfMsg( 'edu-forgot-password' ) . "</a>";
+		$forgotLink = "<a href=\"$url\">". wfMsg( 'edu-forgot-password' ) . "</a>";
 		$html .= "<tr><td class=\"edu-label\">$forgotLink</td></tr>\n";
 		$html .= "<input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" />";
 		$html .= "</table></form></div>\n";
@@ -155,11 +182,11 @@ class EduLoginForm extends LoginForm {
 	}
 
 	/**
-	 * Render the forgot password form
+	 * Return the HTML for the forgot password form
 	 */
 	static function renderForgottenPassword() {
 		if( !self::getLoginToken() ) self::setLoginToken();
-		$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
+		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
 		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-forgot-password' ) . "</h2>\n";
 		$html .= "<table>\n";
@@ -179,9 +206,10 @@ class EduLogin extends SpecialPage {
 	function __construct() {
 		global $wgHooks, $wgParser;
 
+		// Initialise the special page
 		SpecialPage::SpecialPage( 'EduLogin', false, true, false, false, false );
 
-		// Create a parser-function to render login
+		// Create a parser-function to render login & account creations forms
 		$wgParser->setFunctionHook( 'EDULOGIN', array( $this, 'expandParserFunction' ), SFH_NO_HASH );
 
 	}
@@ -190,20 +218,30 @@ class EduLogin extends SpecialPage {
 	 * Render the special page
 	 */
 	function execute( $param ) {
-		global $wgOut;
+		global $wgOut, $wgRequest, $wgEduRequest;
 		$this->setHeaders();
+		if( session_id() == '' ) wfSetupSession();
+		$form = new EduLoginForm( $wgRequest );
 
-		if( $param == 'CreateAccount' ) {
-			$this->processCreateAccount();
+		// If this is a create account form submission process it
+		if( $form->mCreateaccountMail ) $form->execute();
+
+		// If this is a login form submission process it
+		// - a hack is required here to ensure that mName is set in the request object
+		//   (this is because the request object was created before the DB was initiated,
+		//    but the name can only be matched with the email by accessing the DB)
+		elseif( $form->mLoginattempt ) {
+			$wgEduRequest = $wgRequest;
+			$wgRequest = new EduRequest( $form->mName );
+			$form->execute();
+			$wgRequest = $wgEduRequest;
 		}
 
-		elseif( $param == 'UserLogin' ) {
-			$this->processUserLogin();
-		}
+		// If the UserLogin param is supplied, render login and account creation forms
+		elseif( $param == 'UserLogin' ) EduLoginForm::outputLoginAndCreate();
 
-		else {
-			$wgOut->addHtml( EduLoginForm::renderForgottenPassword() );
-		}
+		// By default, render the forgotten password form
+		else $wgOut->addHtml( EduLoginForm::renderForgottenPassword() );
 	}
 
 	/**
@@ -218,35 +256,13 @@ class EduLogin extends SpecialPage {
 		$html = "<table><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>";
 		return array( $html, 'isHTML' => true, 'noparse' => true);
 	}
-
-	
-	/**
-	 * Process a submitted account creation form
-	 */
-	function processCreateAccount() {
-		global $wgRequest;
-		if( session_id() == '' ) wfSetupSession();
-		$form = new EduLoginForm( $wgRequest );
-		$form->execute();
-	}
-
-	/**
-	 * Process a submitted user login form
-	 */
-	function processUserLogin() {
-		global $wgRequest, $wgEduRequest;
-		if( session_id() == '' ) wfSetupSession();
-		$form = new EduLoginForm( $wgRequest );
-		$wgEduRequest = $wgRequest;
-		$wgRequest = new EduRequest( $form->mName );
-		$form->execute();
-		$wgRequest = $wgEduRequest;
-	}
 }
 
 /**
  * A dummy requets object that returns a wpName when only a wpEmail was submitted
  * - $wgRequest is replaced with this dummy object temporarily within processUserLogin()
+ * - the dummy object refers all requests to the original object except for a request for wpName
+ * - requests for wpName have the new mName returned which has been matched to the posted wpEmail
  */
 class EduRequest {
 
@@ -265,6 +281,11 @@ class EduRequest {
 	function getBool( $val, $default = false ) {
 		global $wgEduRequest;
 		return $wgEduRequest->getBool( $val, $default );
+	}
+
+	function getCookie( $val, $default = false ) {
+		global $wgEduRequest;
+		return $wgEduRequest->getCookie( $val, $default );
 	}
 
 	function getCheck( $val, $default = false ) {

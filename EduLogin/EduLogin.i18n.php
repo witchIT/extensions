@@ -13,7 +13,7 @@ $messages = array();
  * @author Dunkley
  */
 $messages['en'] = array(
-	'restricttoedu' => "Edu login page",
+	'edulogin' => "Edu login page",
 	'edu-already-registered' => "This e-mail address is already registered. If you have forgotten your password please click the \"Forgot Password?\" link below.",
 	'edu-forgot-password' => "Forgot password?",
 	'edu-have-account' => "If you already have an account...",
@@ -27,4 +27,6 @@ $messages['en'] = array(
 	'edu-send-temp-email' => "An e-mail with a temporary password will be sent to you",
 	'edu-send-new-email' => "A new password will be sent to your registered .edu address",
 	'edu-emailnotfound' => "There was no email address \"$1\" found in the database. Check your spelling or <a href=\"$2\">create an account</a>.",
+	'edu-bademail' => "You must use a .edu email address to sign up to the wiki",
+	'edu-badname' => "Please specify both a first and last name",
 );
