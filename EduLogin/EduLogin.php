@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.0, 2011-12-12" );
+define( 'EDULOGIN_VERSION', "1.0.1, 2011-12-12" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
@@ -123,19 +123,18 @@ class EduLoginForm extends LoginForm {
 			$wgOut->addHtml( "<div class=\"visualClear\"></div>" );
 		}
 
-		if( $this->mCreateaccountMail ) self::outputLoginAndCreate();
-		elseif( $this->mLoginattempt ) self::outputLoginAndCreate();
+		if( $this->mCreateaccountMail )  $wgOut->addHtml( self::renderLoginAndCreate() );
+		elseif( $this->mLoginattempt )   $wgOut->addHtml( self::renderLoginAndCreate() );
 		elseif( $this->mMailmypassword ) $wgOut->addHtml( self::renderForgottenPassword() );
 	}
 
 	/**
-	 * Send both login and account creation forms to $wgOut
+	 * Return the HTML for both login and account creation forms
 	 */
-	static function outputLoginAndCreate() {
-		global $wgOut;
+	static function renderLoginAndCreate() {
 		$login = self::renderUserLogin();
 		$create = self::renderCreateAccount();
-		$wgOut->addHtml( "<table><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>" );
+		return "<table><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>";
 	}
 
 	/**
@@ -238,7 +237,7 @@ class EduLogin extends SpecialPage {
 		}
 
 		// If the UserLogin param is supplied, render login and account creation forms
-		elseif( $param == 'UserLogin' ) EduLoginForm::outputLoginAndCreate();
+		elseif( $param == 'UserLogin' ) $wgOut->addHtml( EduLoginForm::renderLoginAndCreate() );
 
 		// By default, render the forgotten password form
 		else $wgOut->addHtml( EduLoginForm::renderForgottenPassword() );
@@ -251,10 +250,7 @@ class EduLogin extends SpecialPage {
 		global $wgUser;
 		$parser->disableCache();
 		if( $wgUser->isLoggedIn() ) return '';
-		$login = EduLoginForm::renderUserLogin();
-		$create = EduLoginForm::renderCreateAccount();
-		$html = "<table><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>";
-		return array( $html, 'isHTML' => true, 'noparse' => true);
+		return array( EduLoginForm::renderLoginAndCreate(), 'isHTML' => true, 'noparse' => true);
 	}
 }
 
