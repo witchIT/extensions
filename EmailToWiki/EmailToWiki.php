@@ -9,7 +9,10 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.1.6, 2011-12-14' );
+define( 'EMAILTOWIKI_VERSION', '2.1.7, 2011-12-14' );
+
+// Set this if you want the attachments to be passed to a template
+$wgAttachmentTemplate = false;
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -78,9 +81,11 @@ class EmailToWiki {
 					$attachment = $m[1];
 					$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
 					$text = wfMsg( 'emailtowiki_uploadtext', $msg );
+					$size = $this->filesize( $file );
 					$status = $this->upload( $file, $name, $comment, $text );
 					if( $status === true ) {
-						$files .= "*[[:$name|$attachment]]\n";
+						global $wgAttachmentTemplate;
+						$files .= $wgAttachmentTemplate ? '{{' . "$wgAttachmentTemplate|$name|$attachment|$size}}" : "*[[:$name|$attachment]] ($size)\n";
 						$nfiles++;
 					}
 					else $this->logAdd( $status );
@@ -119,6 +124,17 @@ class EmailToWiki {
 		} else return 'File "' . basename( $file ) . '" could not be uploaded, the file-extension is probably not permitted by the wiki';
 		return $status->isGood() ? true : $status->getWikiText();
 	}
+
+	/**
+	 * Return filesize of passed file in human readable format
+	 * - Adapted from: http://www.php.net/manual/en/function.filesize.php
+	 */
+	function filesize( $file ) {
+		$size = filesize( $file );
+		$units = array( 'Bytes', 'KB', 'MB', 'GB', 'TB', 'PB' );
+		for( $i = 0; $size > 1024; $i++ ) $size /= 1024;
+		return round( $size, 2 ) . ' ' . $units[$i];
+	}         
 
 	/**
 	 * Append an error message to the log

@@ -30,7 +30,7 @@ use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
 use strict;
-$::ver   =  '2.1.6, 2011-12-14';
+$::ver   =  '2.1.7, 2011-12-14';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
