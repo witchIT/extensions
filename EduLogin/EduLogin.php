@@ -9,10 +9,11 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.3, 2011-12-12" );
+define( 'EDULOGIN_VERSION', "1.0.4, 2011-12-14" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
+$wgEduRedirectPages = array( '', 'Main_Page' );
 $wgEnableEmail = true;
 
 $dir = dirname( __FILE__ );
@@ -29,10 +30,6 @@ $wgExtensionCredits['specialpage'][] = array(
 	'url'         => "https://www.elance.com/php/collab/main/collab.php?bidid=27354439",
 	'version'     => EDULOGIN_VERSION
 );
-
-// Redirect the standard login special page to the new .edu one
-if( array_key_exists( 'title', $_REQUEST ) && strtolower( $_REQUEST['title'] ) == 'special:userlogin' )
-	$_GET['title'] = $_REQUEST['title'] = 'Special:EduLogin/UserLogin';
 
 /**
  * Create a class for the new .edu login/create account forms based on the standard MediaWiki ones
@@ -212,7 +209,14 @@ class EduLoginForm extends LoginForm {
 class EduLogin extends SpecialPage {
 
 	function __construct() {
-		global $wgHooks, $wgParser;
+		global $wgHooks, $wgParser, $wgUser, $wgRequest, $wgEduRedirectPages;
+
+		// If this is the old login page, or the user is not logged in and it's in the redirect list, redirect to the new login page
+		if( $wgRequest->getText( 'title' ) == 'Special:UserLogin' || ($wgUser->isAnon() && in_array( $wgRequest->getText( 'title' ), $wgEduRedirectPages ) ) ) {
+			$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getFullUrl();
+			header( "Location: $url" );
+			exit;
+		}
 
 		// Initialise the special page
 		SpecialPage::SpecialPage( 'EduLogin', false, true, false, false, false );
