@@ -4,6 +4,9 @@ $::wiki = "http://localhost/wiki/index.php";
 # The wiki template to wrap the email paramaters in
 $::template = "Email"
 
+# Extract just the email address portion of the FROM and TO fields
+$::emailonly = 1;
+
 # Details of the POP or IMAP server to check for messages
 $::type = "IMAP";
 $::host = "imap.gmail.com";

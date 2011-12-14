@@ -56,6 +56,7 @@ while ( $::config = readdir( CONF ) ) {
 	$::owner = "www-data";
 	$::remove = 0;
 	$::template = "Email";
+	$::emailonly = 1;
 
 	# Set the globals from the config file
 	require $::config;
@@ -125,6 +126,10 @@ sub processEmail {
 	my $to      = $1 if $email =~ /^to:\s*(.+?)\s*$/mi;
 	my $from    = $1 if $email =~ /^from:\s*(.+?)\s*$/mi;
 	my $subject = $1 if $email =~ /^subject:\s*(.+?)\s*$/im;
+
+	# Clean up email addresses
+	$from = $1 if $from =~ /<(.+?)>$/;
+	$to = $1 if $to =~ /<(.+?)>$/;
 
 	# Create unique title according to $::format
 	my $title = friendlyTitle( eval "\"$::format\"" );
