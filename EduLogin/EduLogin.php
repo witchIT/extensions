@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.4, 2011-12-14" );
+define( 'EDULOGIN_VERSION', "1.0.5, 2011-12-14" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
@@ -116,7 +116,7 @@ class EduLoginForm extends LoginForm {
 
 		if( $msg ) {
 			if( $this->eduError ) $msg = wfMsg( $this->eduError, $this->mEmail );
-			elseif( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|', $msg ) ) {
+			elseif( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|i', $msg ) ) {
 				if( $this->mEmail ) {
 					$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
 					$msg = wfMsg( 'edu-emailnotfound', $this->mEmail, $url );
@@ -188,7 +188,7 @@ class EduLoginForm extends LoginForm {
 	 */
 	static function renderForgottenPassword() {
 		if( !self::getLoginToken() ) self::setLoginToken();
-		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
+		$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
 		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-forgot-password' ) . "</h2>\n";
 		$html .= "<table>\n";
@@ -242,7 +242,7 @@ class EduLogin extends SpecialPage {
 		// - a hack is required here to ensure that mName is set in the request object
 		//   (this is because the request object was created before the DB was initiated,
 		//    but the name can only be matched with the email by accessing the DB)
-		elseif( $form->mLoginattempt ) {
+		elseif( $form->mLoginattempt || $form->mMailmypassword ) {
 			$wgEduRequest = $wgRequest;
 			$wgRequest = new EduRequest( $form->mName );
 			$form->execute();
