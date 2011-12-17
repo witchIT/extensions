@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.7, 2011-12-17" );
+define( 'EDULOGIN_VERSION', "1.0.8, 2011-12-17" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
@@ -150,7 +150,7 @@ class EduLoginForm extends LoginForm {
 	static function renderCreateAccount() {
 		if( !self::getCreateaccountToken() ) self::setCreateaccountToken();
 		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
-		$html = "<form class=\"edulogin\" id=\"edu-createaccount\" action=\"$url\" method=\"POST\">\n";
+		$html = "<div id=\"userlogin\"><form class=\"edulogin\" id=\"edu-createaccount\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-dont-have-account' ) . "</h2>\n";
 		$html .= "<table class=\"edulogin\">\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpName\">" . wfMsg( 'edu-name' ) . ":</label></td></tr>\n";
@@ -162,7 +162,7 @@ class EduLoginForm extends LoginForm {
 		$html .= "<tr><td class=\"edu-submit\"><input type=\"submit\" value=\"Create account\" name=\"wpCreateaccountMail\"></td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\">". wfMsg( 'edu-send-temp-email' ) . "</td></tr>\n";
 		$html .= "<tr><td><input type=\"hidden\" value=\"" . self::getCreateaccountToken() . "\" name=\"wpCreateaccountToken\" /></td></tr>";
-		$html .= "</table></form>\n";
+		$html .= "</table></form></div>\n";
 		return $html;
 	}
 
@@ -172,7 +172,7 @@ class EduLoginForm extends LoginForm {
 	static function renderUserLogin() {
 		if( !self::getLoginToken() ) self::setLoginToken();
 		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
-		$html = "<form class=\"edulogin\" id=\"edu-userlogin\" action=\"$url\" method=\"POST\">\n";
+		$html = "<div id=\"userlogin\"><form class=\"edulogin\" id=\"edu-userlogin\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-have-account' ) . "</h2>\n";
 		$html .= "<table class=\"edulogin\">\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpEmail\">" . wfMsg( 'edu-email' ) . ":</label></td></tr>\n";
@@ -184,7 +184,7 @@ class EduLoginForm extends LoginForm {
 		$forgotLink = "<a href=\"$url\">". wfMsg( 'edu-forgot-password' ) . "</a>";
 		$html .= "<tr><td class=\"edu-label\">$forgotLink</td></tr>\n";
 		$html .= "<tr><td><input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" /></td></tr>";
-		$html .= "</table></form>\n";
+		$html .= "</table></form></div>\n";
 		return $html;
 	}
 
@@ -196,7 +196,7 @@ class EduLoginForm extends LoginForm {
 		$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
 		$html = "<table class=\"edulogin\">\n";
 		if( $msg ) $html .= "<tr><td><div class=\"errorbox\"><strong>Login error</strong><br />$msg</div></td></tr>\n";
-		$html .= "<tr><td><form class=\"edulogin\" id=\"edu-forgotpassword\" action=\"$url\" method=\"POST\">\n";
+		$html .= "<tr><td><div id=\"userlogin\"><form class=\"edulogin\" id=\"edu-forgotpassword\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-forgot-password' ) . "</h2>\n";
 		$html .= "<table class=\"edulogin\">\n";
 		$html .= "<tr><td class=\"edu-label\">". wfMsg( 'edu-send-new-email' ) . "</td></tr>\n";
@@ -205,7 +205,7 @@ class EduLoginForm extends LoginForm {
 		$html .= "<tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
 		$html .= "<tr><td class=\"edu-submit\"><input type=\"submit\" value=\"Send Password\" name=\"wpMailmypassword\"></td></tr>\n";
 		$html .= "<tr><td><input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" /></td></tr>";
-		$html .= "</table></form></td></tr></table>\n";
+		$html .= "</table></form></div></td></tr></table>\n";
 		return $html;
 	}
 }
