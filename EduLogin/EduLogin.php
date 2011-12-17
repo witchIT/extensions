@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.5, 2011-12-14" );
+define( 'EDULOGIN_VERSION', "1.0.7, 2011-12-17" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
@@ -20,9 +20,13 @@ $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EduLogin'] = "$dir/EduLogin.i18n.php";
 require_once( "$IP/includes/SpecialPage.php" );
 
-$wgExtensionFunctions[] = 'wfSetupEduLogin';
-$wgHooks['LanguageGetMagic'][] = 'wfEduLoginLanguageGetMagic';
-$wgSpecialPages['EduLogin'] = 'EduLogin';
+// Only do anything if this isn't a resource loader request
+if( !preg_match( "|load\.php|", $_SERVER['REQUEST_URI'] ) ) {
+	$wgExtensionFunctions[] = 'wfSetupEduLogin';
+	$wgHooks['LanguageGetMagic'][] = 'wfEduLoginLanguageGetMagic';
+	$wgSpecialPages['EduLogin'] = 'EduLogin';
+}
+
 $wgExtensionCredits['specialpage'][] = array(
 	'name'        => "EduLogin",
 	'author'      => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
@@ -112,8 +116,9 @@ class EduLoginForm extends LoginForm {
 	 * Render the login and accoutn creation forms
 	 */
 	function mainLoginForm( $msg, $msgtype = 'error' ) {
-		global $wgOut, $wgUser;
+		global $wgOut;
 
+		// Adjust message if necessary
 		if( $msg ) {
 			if( $this->eduError ) $msg = wfMsg( $this->eduError, $this->mEmail );
 			elseif( preg_match( '|' . EDU_EMAIL_NOT_FOUND . '|i', $msg ) ) {
@@ -122,22 +127,21 @@ class EduLoginForm extends LoginForm {
 					$msg = wfMsg( 'edu-emailnotfound', $this->mEmail, $url );
 				} else $msg = wfMsg( 'edu-noemail' );
 			}
-			$wgOut->addHtml( "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>" );
-			$wgOut->addHtml( "<div class=\"visualClear\"></div>" );
 		}
 
-		if( $this->mCreateaccountMail )  $wgOut->addHtml( self::renderLoginAndCreate() );
-		elseif( $this->mLoginattempt )   $wgOut->addHtml( self::renderLoginAndCreate() );
-		elseif( $this->mMailmypassword ) $wgOut->addHtml( self::renderForgottenPassword() );
+		if( $this->mCreateaccountMail )  $wgOut->addHtml( self::renderLoginAndCreate( $msg ) );
+		elseif( $this->mLoginattempt )   $wgOut->addHtml( self::renderLoginAndCreate( $msg ) );
+		elseif( $this->mMailmypassword ) $wgOut->addHtml( self::renderForgottenPassword( $msg ) );
 	}
 
 	/**
 	 * Return the HTML for both login and account creation forms
 	 */
-	static function renderLoginAndCreate() {
+	static function renderLoginAndCreate( $msg = '' ) {
 		$login = self::renderUserLogin();
 		$create = self::renderCreateAccount();
-		return "<table><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>";
+		if( $msg ) $msg = "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>";	
+		return "<table class=\"edulogin\"><tr><td colspan=\"2\">$msg</td></tr><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>";
 	}
 
 	/**
@@ -146,19 +150,19 @@ class EduLoginForm extends LoginForm {
 	static function renderCreateAccount() {
 		if( !self::getCreateaccountToken() ) self::setCreateaccountToken();
 		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
-		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
+		$html = "<form class=\"edulogin\" id=\"edu-createaccount\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-dont-have-account' ) . "</h2>\n";
-		$html .= "<table>\n";
+		$html .= "<table class=\"edulogin\">\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpName\">" . wfMsg( 'edu-name' ) . ":</label></td></tr>\n";
-		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpFirstName\" size=\"20\" /> " . wfMsg( 'edu-firstname' ) . "</td></tr>\n";
-		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpLastName\" size=\"20\" /> " . wfMsg( 'edu-lastname' ) . "</td></tr>\n";
+		$html .= "<tr><td class=\"edu-input\"><input name=\"wpFirstName\" size=\"20\" /> " . wfMsg( 'edu-firstname' ) . "</td></tr>\n";
+		$html .= "<tr><td class=\"edu-input\"><input name=\"wpLastName\" size=\"20\" /> " . wfMsg( 'edu-lastname' ) . "</td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpEmail\">" . wfMsg( 'edu-email' ) . ":</label></td></tr>\n";
-		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
+		$html .= "<tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\">". wfMsg( 'edu-must-be-edu' ) . "</td></tr>\n";
 		$html .= "<tr><td class=\"edu-submit\"><input type=\"submit\" value=\"Create account\" name=\"wpCreateaccountMail\"></td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\">". wfMsg( 'edu-send-temp-email' ) . "</td></tr>\n";
-		$html .= "<input type=\"hidden\" value=\"" . self::getCreateaccountToken() . "\" name=\"wpCreateaccountToken\" />";
-		$html .= "</table></form></div>\n";
+		$html .= "<tr><td><input type=\"hidden\" value=\"" . self::getCreateaccountToken() . "\" name=\"wpCreateaccountToken\" /></td></tr>";
+		$html .= "</table></form>\n";
 		return $html;
 	}
 
@@ -168,37 +172,40 @@ class EduLoginForm extends LoginForm {
 	static function renderUserLogin() {
 		if( !self::getLoginToken() ) self::setLoginToken();
 		$url = Title::newFromText( 'EduLogin', NS_SPECIAL )->getLocalUrl();
-		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
+		$html = "<form class=\"edulogin\" id=\"edu-userlogin\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-have-account' ) . "</h2>\n";
-		$html .= "<table>\n";
+		$html .= "<table class=\"edulogin\">\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpEmail\">" . wfMsg( 'edu-email' ) . ":</label></td></tr>\n";
-		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
+		$html .= "<tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpPassword\">" . wfMsg( 'edu-password' ) . ":</label></td></tr>\n";
-		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpPassword\" type=\"password\" size=\"20\" /></td></tr>\n";
+		$html .= "<tr><td class=\"edu-input\"><input name=\"wpPassword\" type=\"password\" size=\"20\" /></td></tr>\n";
+		$html .= "<tr><td>&nbsp;</td></tr>\n";
 		$html .= "<tr><td class=\"edu-submit\"><input type=\"submit\" value=\"Login\" name=\"wpLoginattempt\"></td></tr>\n";
 		$forgotLink = "<a href=\"$url\">". wfMsg( 'edu-forgot-password' ) . "</a>";
 		$html .= "<tr><td class=\"edu-label\">$forgotLink</td></tr>\n";
-		$html .= "<input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" />";
-		$html .= "</table></form></div>\n";
+		$html .= "<tr><td><input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" /></td></tr>";
+		$html .= "</table></form>\n";
 		return $html;
 	}
 
 	/**
 	 * Return the HTML for the forgot password form
 	 */
-	static function renderForgottenPassword() {
+	static function renderForgottenPassword( $msg = '' ) {
 		if( !self::getLoginToken() ) self::setLoginToken();
 		$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getLocalUrl();
-		$html = "<div id=\"userlogin\"><form id=\"userlogin2\" action=\"$url\" method=\"POST\">\n";
+		$html = "<table class=\"edulogin\">\n";
+		if( $msg ) $html .= "<tr><td><div class=\"errorbox\"><strong>Login error</strong><br />$msg</div></td></tr>\n";
+		$html .= "<tr><td><form class=\"edulogin\" id=\"edu-forgotpassword\" action=\"$url\" method=\"POST\">\n";
 		$html .= "<h2>" . wfMsg( 'edu-forgot-password' ) . "</h2>\n";
-		$html .= "<table>\n";
+		$html .= "<table class=\"edulogin\">\n";
 		$html .= "<tr><td class=\"edu-label\">". wfMsg( 'edu-send-new-email' ) . "</td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\">&nbsp;</td></tr>\n";
 		$html .= "<tr><td class=\"edu-label\"><label for=\"wpEmail\">" . wfMsg( 'edu-email' ) . ":</label></td></tr>\n";
-		$html .= "<tr></tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
+		$html .= "<tr><td class=\"edu-input\"><input name=\"wpEmail\" size=\"20\" /></td></tr>\n";
 		$html .= "<tr><td class=\"edu-submit\"><input type=\"submit\" value=\"Send Password\" name=\"wpMailmypassword\"></td></tr>\n";
-		$html .= "<input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" />";
-		$html .= "</table></form></div>\n";
+		$html .= "<tr><td><input type=\"hidden\" value=\"" . self::getLoginToken() . "\" name=\"wpLoginToken\" /></td></tr>";
+		$html .= "</table></form></td></tr></table>\n";
 		return $html;
 	}
 }
@@ -209,13 +216,12 @@ class EduLoginForm extends LoginForm {
 class EduLogin extends SpecialPage {
 
 	function __construct() {
-		global $wgHooks, $wgParser, $wgUser, $wgRequest, $wgEduRedirectPages;
+		global $wgHooks, $wgParser, $wgUser, $wgRequest;
 
 		// If this is the old login page, or the user is not logged in and it's in the redirect list, redirect to the new login page
-		if( $wgRequest->getText( 'title' ) == 'Special:UserLogin' || ($wgUser->isAnon() && in_array( $wgRequest->getText( 'title' ), $wgEduRedirectPages ) ) ) {
-			$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getFullUrl();
-			header( "Location: $url" );
-			exit;
+		$title = $wgRequest->getText( 'title' );
+		if( $title == 'Special:UserLogin' || ( $wgUser->isAnon() && !preg_match( "|Special:EduLogin|i", $title ) ) ) {
+			$this->redirectToLogin();
 		}
 
 		// Initialise the special page
@@ -223,6 +229,9 @@ class EduLogin extends SpecialPage {
 
 		// Create a parser-function to render login & account creations forms
 		$wgParser->setFunctionHook( 'EDULOGIN', array( $this, 'expandParserFunction' ), SFH_NO_HASH );
+
+		// Redirect people back to login after logout
+		$wgHooks['UserLogoutComplete'][] = $this;
 
 	}
 
@@ -254,6 +263,24 @@ class EduLogin extends SpecialPage {
 
 		// By default, render the forgotten password form
 		else $wgOut->addHtml( EduLoginForm::renderForgottenPassword() );
+	}
+
+	/**
+	 * Redirect people back to login after logout
+	 */
+	function onUserLogoutComplete( &$user, &$inject_html, $old_name ) {
+		$this->redirectToLogin();
+	}
+
+	/**
+	 * Don't output anything, just redirect to login page
+	 */
+	function redirectToLogin() {
+		global $wgOut;
+		$wgOut->disable();
+		wfResetOutputBuffers();
+		$url = Title::newFromText( 'EduLogin/UserLogin', NS_SPECIAL )->getFullUrl();
+		header( "Location: $url" );
 	}
 
 	/**
