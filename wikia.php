@@ -114,6 +114,8 @@ else {
 	$domain = $_SERVER['SERVER_NAME'];
 }
 
+$wgServer = "http://$domain";
+
 # Add google analytics code
 $wgExtensionFunctions[] = 'wfGoogleAnalytics';
 $wgGoogleTrackingCodes = array();
