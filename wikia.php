@@ -114,7 +114,8 @@ else {
 	$domain = $_SERVER['SERVER_NAME'];
 }
 
-$wgServer = "http://$domain";
+$proto = ( array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'On' ) ? 'https' : 'http';
+$wgServer = "$proto://$domain";
 
 # Add google analytics code
 $wgExtensionFunctions[] = 'wfGoogleAnalytics';
