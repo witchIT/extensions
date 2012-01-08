@@ -14,6 +14,7 @@ $messages = array();
  */
 $messages['en'] = array(
 	'edulogin' => "Edu login page",
+	'edu-welcome' => "Welcome to the wiki, please login...",
 	'edu-already-registered' => "This e-mail address is already registered. If you have forgotten your password please click the \"Forgot Password?\" link below.",
 	'edu-forgot-password' => "Forgot password?",
 	'edu-have-account' => "If you already have an account...",
