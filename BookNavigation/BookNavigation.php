@@ -66,6 +66,12 @@ class BookNavigation {
 		global $wgBookNavigationStructureArticle;
 		$tree = '';
 
+		// JS to open only the selected node
+		// $(function() {
+		//		tamtesttree.closeAll();
+		//		tamtesttree.openTo(13);
+		// });
+
 		return $tree;
 	}
 
@@ -76,7 +82,7 @@ class BookNavigation {
 	}
 
 	/**
-	 * Get an array of the article structure from the structure article content
+	 * Get an array of the book structure from the structure article content
 	 */
 	function getStructure() {
 		global $wgBookNavigationStructureArticle;
@@ -95,8 +101,6 @@ class BookNavigation {
 			}
 		}
 
-print_r( $structure );
-		
 		return $structure;
 	}
 }
