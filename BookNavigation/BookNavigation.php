@@ -9,17 +9,19 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'BOOKNAVIGATION_VERSION', "0.0.1, 2012-01-07" );
+define( 'BOOKNAVIGATION_VERSION', "0.0.2, 2012-01-12" );
 
-define( 'BOOKNAVIGATION_DEPTH',  1 );
-define( 'BOOKNAVIGATION_TITLE',  2 );
-define( 'BOOKNAVIGATION_PARENT', 3 );
-define( 'BOOKNAVIGATION_NEXT',   4 );
-define( 'BOOKNAVIGATION_PREV',   5 );
+define( 'BOOKNAVIGATION_DEPTH',   1 );
+define( 'BOOKNAVIGATION_TITLE',   2 );
+define( 'BOOKNAVIGATION_PARENT',  3 );
+define( 'BOOKNAVIGATION_NEXT',    4 );
+define( 'BOOKNAVIGATION_PREV',    5 );
+define( 'BOOKNAVIGATION_CHAPTER', 6 );
+define( 'BOOKNAVIGATION_URL',     7 );
 
 $wgBookNavigationStructureArticle = 'MediaWiki:BookStructure';
 $wgBookNavigationPrevNextMagic = 'PrevNext';
-$wgBookNavigationTreeMagic = 'BookTree';
+$wgBookNavigationBookTreeMagic = 'BookTree';
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['BookNavigation'] = "$dir/BookNavigation.i18n.php";
@@ -40,7 +42,7 @@ $wgExtensionCredits['other'][] = array(
 class BookNavigation {
 
 	// Cache the structure because it's calculation is expensive
-	var $structure = false;
+	var $mStructure = false;
 
 	function __construct() {
 		global $wgHooks, $wgParser, $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic;
@@ -48,10 +50,6 @@ class BookNavigation {
 		// Create parser-functions
 		$wgParser->setFunctionHook( $wgBookNavigationPrevNextMagic, array( $this, 'expandPrevNext' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( $wgBookNavigationBookTreeMagic, array( $this, 'expandBookTree' ), SFH_NO_HASH );
-		
-		// TODO: add hook to put tree into sidebar
-		$this->getStructure();
-
 	}
 
 	/**
@@ -66,8 +64,18 @@ class BookNavigation {
 	/**
 	 * Expand the BookTree parser function
 	 */
-	function expandBookTree( &$parser ) {
-		return array( '< prev | next >', 'isHTML' => true, 'noparse' => true);
+	function expandBookTree( &$parser, $param ) {
+		global $wgTitle;
+		$title = $param ? $param : $wgTitle;
+		$tree = $this->renderTree( $title );
+		return array(
+			$tree,
+			'found'   => true,
+			'nowiki'  => false,
+			'noparse' => false,
+			'noargs'  => false,
+			'isHTML'  => false
+		);
 	}
 
 	/**
@@ -79,11 +87,37 @@ class BookNavigation {
 
 		$structure = $this->getStructure();
 
-		// JS to open only the selected node
-		// $(function() {
-		//		tamtesttree.closeAll();
-		//		tamtesttree.openTo(13);
-		// });
+		// If current page is in a chapter, render that chapter's heading and tree only
+		if( $info = $this->getPage( $title ) ) {
+			$chapter = $info[BOOKNAVIGATION_CHAPTER];
+			$tree .= "{{#tree:id=booknavtree|root=<span class=\"booknav-chapter\">$chapter</span>|\n";
+			foreach( $structure[$chapter] as $page ) {
+				$title = $page[BOOKNAVIGATION_TITLE];
+				$url = Title::newFromText( $title )->getFullUrl( "chapter=$chapter" );
+				$tree .= str_repeat( '*', $page[BOOKNAVIGATION_DEPTH] );
+				$tree .= "[$url $title]\n";
+			}
+			$tree .= "}}\n";
+
+			// open tree to current page and next/prev pages
+
+				// JS to open only the selected node
+				// $(function() {
+				//		tambooknavtree.closeAll();
+				//		tambooknavtree.openTo(13);
+				// });
+		}
+
+		// Else render all headings, each just a link to the first page in chapter
+		else {
+			foreach( $structure as $chapter => $pages ) {
+				if( array_key_exists( 0, $pages ) ) {
+					$page = $pages[0][BOOKNAVIGATION_TITLE];
+					$link = "[[$page|$chapter]]";
+				} else $link = $chapter;
+				$tree .= "*<span class=\"booknav-chapter\">$link</span>\n";
+			}
+		}
 
 		return $tree;
 	}
@@ -105,7 +139,7 @@ class BookNavigation {
 	 */
 	function getStructure() {
 		global $wgBookNavigationStructureArticle;
-		if( $this->structure ) return $this->structure;
+		if( $this->mStructure ) return $this->mStructure;
 
 		// Get the structure-article content
 		$title = Title::newFromText( $wgBookNavigationStructureArticle );
@@ -137,26 +171,25 @@ class BookNavigation {
 				$structure[$chapter] = $pages;
 			}
 		}
-		return $this->structure = $structure;
+		return $this->mStructure = $structure;
 	}
 
 	/**
 	 * Return structure information about the current page
 	 */
 	function getPage( $title ) {
-		global $wgRequest;
 		if( is_object( $title ) ) $page = $title->getPrefixedText();
 		else {
 			$page = $title;
 			$title = Title::newFromText( $page );
-
 		}
+
 		// What chapter(s) does this page belong to?
 		$structure = $this->getStructure();
 		$chapters = array();
 		foreach( $structure as $chapter => $pages ) {
-			foreach( $pages as $page ) {
-				if( $page[BOOKNAVIGATION_TITLE] == $page ) $chapters[] = $chapter;
+			foreach( $pages as $info ) {
+				if( strtolower( $info[BOOKNAVIGATION_TITLE] ) == strtolower( $page ) ) $chapters[] = $chapter;
 			}
 		}
 
@@ -165,17 +198,21 @@ class BookNavigation {
 
 		// If ambigous (more than one chapter), check query-string for chapter
 		if( count( $chapters ) > 1 ) {
+			global $wgRequest;
 			$chapter = $wgRequest->getText( 'chapter', '' );
 			if( !in_array( $chapter, $chapters ) ) return false;
-			$url = $title->getLocalUrl( "chapter=$chapter" );
+			$url = $title->getFullUrl( "chapter=$chapter" );
 		} else {
 			$chapter = $chapters[0];
-			$url = $title->getLocalUrl();
+			$url = $title->getFullUrl();
 		}
 
 		// Get the page index in the structure array - bail if page not found in chapter
-		$i = array_search( $page, $structure[$chapter] );
-		if( $i === false ) ) return false;
+		$i = false;
+		foreach( $structure[$chapter] as $k => $info ) {
+			if( strtolower( $info[BOOKNAVIGATION_TITLE] ) == strtolower( $page ) ) $i = $k;
+		}
+		if( $i === false ) return false;
 
 		// Get next and previous page names
 		$info = $structure[$chapter][$i];
@@ -186,6 +223,10 @@ class BookNavigation {
 		if( array_key_exists( $info[BOOKNAVIGATION_PARENT], $structure[$chapter] ) ) {
 			$info[BOOKNAVIGATION_PARENT] = $structure[$chapter][$info[BOOKNAVIGATION_PARENT]][BOOKNAVIGATION_TITLE];
 		} else $info[BOOKNAVIGATION_PARENT] = false;
+
+		// Add other missing info to the array
+		$info[BOOKNAVIGATION_CHAPTER] = $chapter;
+		$info[BOOKNAVIGATION_URL] = $url;
 
 		return $info;
 	}
@@ -200,7 +241,6 @@ function wfSetupBookNavigation() {
 	if( !defined( 'TREEANDMENU_VERSION' ) )
 		die( "The BookNavigation extension requires the <a href=\"http://www.mediawiki.org/wiki/Extension:TreeAndMenu\">TreeAndMenu</a> extension." );
 	$wgBookNavigation = new BookNavigation();
-	print_r( $wgBookNavigation->getStructure() );
 }
 
 /**
