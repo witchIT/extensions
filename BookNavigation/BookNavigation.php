@@ -59,8 +59,22 @@ class BookNavigation {
 	function expandPrevNext( &$parser, $param ) {
 		global $wgTitle;
 		$title = $param ? $param : $wgTitle;
-		$html = 'no done yet';
-		return array( $html, 'isHTML' => true, 'noparse' => true);
+		$info = $this->getPage( $title );
+
+		if( $prev = $info[BOOKNAVIGATION_PREV] ) {
+			$i = $this->getPage( $prev );
+			$url = $i[BOOKNAVIGATION_URL];
+			$prev = "<a href=\"$url\">$prev</a>";
+		} else $prev = wfMsg( 'chapter-start' );
+
+		if( $next = $info[BOOKNAVIGATION_NEXT] ) {
+			$i = $this->getPage( $next );
+			$url = $i[BOOKNAVIGATION_URL];
+			$next = "<a href=\"$url\">$next</a>";
+		} else $next = wfMsg( 'chapter-end' );
+
+		$html = "&lt; $prev | $next &gt;";
+		return array( "<div class=\"booknav-prevnext\">$html</div>", 'isHTML' => true, 'noparse' => true );
 	}
 
 	/**
@@ -146,7 +160,7 @@ class BookNavigation {
 	}
 
 	/**
-	 * Render breadcrumbs for current title in structure
+	 * Render breadcrumbs for passed title
 	 */
 	function renderBreadcrumbs( $title ) {
 		$links = array();
@@ -158,7 +172,7 @@ class BookNavigation {
 			array_unshift( $links, $link );
 		} while( $title = $info[BOOKNAVIGATION_PARENT] );
 		array_unshift( $links, $info[BOOKNAVIGATION_CHAPTER] );
-		return '<div class="booknav-breadcrumbs">' . join( ' > ', $links ) . '</div>';
+		return '<div class="booknav-breadcrumbs">' . join( ' <span class="booknav-separator">&gt;</span> ', $links ) . '</div>';
 	}
 
 	/**
