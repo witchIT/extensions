@@ -56,10 +56,11 @@ class BookNavigation {
 	/**
 	 * Expand the PrevNext parser function
 	 */
-	function expandPrevNext( &$parser ) {
-		$title = $parser->getTitle();
-		$info = $this->getPageInfo( $title );
-		return array( '< prev | next >', 'isHTML' => true, 'noparse' => true);
+	function expandPrevNext( &$parser, $param ) {
+		global $wgTitle;
+		$title = $param ? $param : $wgTitle;
+		$html = 'no done yet';
+		return array( $html, 'isHTML' => true, 'noparse' => true);
 	}
 
 	/**
@@ -150,9 +151,13 @@ class BookNavigation {
 	function renderBreadcrumbs( $title ) {
 		$links = array();
 		do {
-			$info = $this->getPageInfo( $title );
-			array_unshift( $links, $info['link'] );
-		} while( $title = $info['parent'] );
+			$info = $this->getPage( $title );
+			$url = $info[BOOKNAVIGATION_URL];
+			$anchor = $info[BOOKNAVIGATION_TITLE];
+			$link = "<a href=\"$url\">$anchor</a>";
+			array_unshift( $links, $link );
+		} while( $title = $info[BOOKNAVIGATION_PARENT] );
+		array_unshift( $links, $info[BOOKNAVIGATION_CHAPTER] );
 		return '<div class="booknav-breadcrumbs">' . join( ' > ', $links ) . '</div>';
 	}
 
@@ -223,11 +228,12 @@ class BookNavigation {
 			global $wgRequest;
 			$chapter = $wgRequest->getText( 'chapter', '' );
 			if( !in_array( $chapter, $chapters ) ) return false;
-			$url = $title->getFullUrl( "chapter=$chapter" );
+//			$url = $title->getFullUrl( "chapter=$chapter" );
 		} else {
 			$chapter = $chapters[0];
-			$url = $title->getFullUrl();
+//			$url = $title->getFullUrl();
 		}
+		$url = $title->getFullUrl( "chapter=$chapter" );
 
 		// Get the page index in the structure array - bail if page not found in chapter
 		$i = false;
