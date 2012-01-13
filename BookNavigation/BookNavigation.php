@@ -50,6 +50,7 @@ class BookNavigation {
 		// Create parser-functions
 		$wgParser->setFunctionHook( $wgBookNavigationPrevNextMagic, array( $this, 'expandPrevNext' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( $wgBookNavigationBookTreeMagic, array( $this, 'expandBookTree' ), SFH_NO_HASH );
+		$wgParser->setFunctionHook( 'booktreescript', array( $this, 'expandBookTreeScript' ) );
 	}
 
 	/**
@@ -79,6 +80,27 @@ class BookNavigation {
 	}
 
 	/**
+	 * Expand the BookTreeScript parser function
+	 * - internal parser-function to add script after the tree that ensures only the selected nodes are visible
+	 */
+	function expandBookTreeScript( &$parser, $node ) {
+		global $wgJsMimeType;
+		$script = "tambooknavtree.closeAll();\n";
+		$script .= "document.getElementById('itambooknavtree$node').parentNode.lastChild.setAttribute('class','pageselected');\n";
+		$params = func_get_args();
+		array_shift( $params );
+		foreach( $params as $id ) $script .= "tambooknavtree.openTo($id)\n";
+		return array(
+			"<script type=\"$wgJsMimeType\">/*<![CDATA[*/\n$script/*]]>*/</script>",
+			'found'   => true,
+			'nowiki'  => false,
+			'noparse' => true,
+			'noargs'  => false,
+			'isHTML'  => true
+		);
+	}
+
+	/**
 	 * Render the tree structure from the structure defined in the book-nav article
 	 */
 	function renderTree( $title ) {
@@ -90,22 +112,22 @@ class BookNavigation {
 		// If current page is in a chapter, render that chapter's heading and tree only
 		if( $info = $this->getPage( $title ) ) {
 			$chapter = $info[BOOKNAVIGATION_CHAPTER];
+			$current = $info[BOOKNAVIGATION_TITLE];
 			$tree .= "{{#tree:id=booknavtree|root=<span class=\"booknav-chapter\">$chapter</span>|\n";
+			$node = -1;
+			$i = 1;
 			foreach( $structure[$chapter] as $page ) {
 				$title = $page[BOOKNAVIGATION_TITLE];
-				$url = Title::newFromText( $title )->getFullUrl( "chapter=$chapter" );
+				if( $current == $title ) {
+					$node = $i;
+					$class = ' class="booknav-selected"';
+				} else $class = '';
+				$url = Title::newFromText( $title )->getFullUrl( 'chapter=' . urlencode( $chapter ) );
 				$tree .= str_repeat( '*', $page[BOOKNAVIGATION_DEPTH] );
 				$tree .= "[$url $title]\n";
+				$i++;
 			}
-			$tree .= "}}\n";
-
-			// open tree to current page and next/prev pages
-
-				// JS to open only the selected node
-				// $(function() {
-				//		tambooknavtree.closeAll();
-				//		tambooknavtree.openTo(13);
-				// });
+			$tree .= "}}{{#booktreescript:$node}}\n";
 		}
 
 		// Else render all headings, each just a link to the first page in chapter
@@ -250,5 +272,6 @@ function wfBookNavigationLanguageGetMagic( &$langMagic, $langCode = 0 ) {
 	global $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic;
 	$langMagic[$wgBookNavigationPrevNextMagic] = array( $langCode, $wgBookNavigationPrevNextMagic );
 	$langMagic[$wgBookNavigationBookTreeMagic] = array( $langCode, $wgBookNavigationBookTreeMagic );
+	$langMagic['booktreescript'] = array( $langCode, 'booktreescript' );
 	return true;
 }
