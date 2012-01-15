@@ -1,0 +1,1 @@
+alert( 'trailwikimaps.js loaded' );
