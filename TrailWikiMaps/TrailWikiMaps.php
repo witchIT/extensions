@@ -15,6 +15,10 @@
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'TRAILWIKIMAP_VERSION','0.0.1, 2012-01-15' );
+define( 'TRAILWIKIMAP_NAME', 1 );
+define( 'TRAILWIKIMAP_OFFSET', 2 );
+define( 'TRAILWIKIMAP_LENGTH', 3 );
+define( 'TRAILWIKIMAP_DEPTH', 4 );
 
 $wgTrailWikiMagic              = "ajaxmap";
 $wgExtensionFunctions[]        = 'wfSetupTrailWikiMaps';
@@ -34,7 +38,8 @@ class TrailWikiMaps {
 	function __construct() {
 		global $wgOut, $wgHooks, $wgParser, $wgScriptPath, $wgJsMimeType, $wgTrailWikiMagic;
 
-		// Add hooks
+		$wgHooks['UnknownAction'][] = $this;
+
 		$wgParser->setFunctionHook( $wgTrailWikiMagic, array( $this,'expandAjaxMap' ) );
 
 		$wgResourceModules['ext.trailwikimaps'] = array(
@@ -49,12 +54,56 @@ class TrailWikiMaps {
 	}
 
 	/**
+	 * Return the trail data in JSON format when the ajaxmap action is requested
+	 */
+	function onUnknownAction( $action, $article ) {
+		global $wgOut;
+
+		// Update the information for the specified ISBN (or oldest book in the wiki if none supplied)
+		// - if the book doesn't exist and the "create" query-string item is set, then create the book article
+		if( $action == 'ajaxmap' ) {
+			$wgOut->disable();
+			header( 'Content-Type: application/json' );
+			print "{\n";
+			$dbr    = &wfGetDB(DB_SLAVE);
+			$tmpl   = $dbr->addQuotes( Title::newFromText( 'Infobox Trail' )->getDBkey() );
+			$table  = $dbr->tableName( 'templatelinks' );
+			$res    = $dbr->select( $table, 'tl_from', "tl_namespace = 10 AND tl_title = $tmpl LIMIT 5" );
+			$comma  = '';
+			while( $row = $dbr->fetchRow( $res ) ) {
+				$data = self::getTrailData( $row[0] );
+				print $comma . $data;
+				$comma = ',';
+			}
+			$dbr->freeResult( $res );
+			print "}";
+		}
+		return true;
+	}
+
+
+	/**
 	 * Expand #ajaxmap parser-functions
 	 */
 	public function expandAjaxMap() {
 		$options = func_get_args();
 		array_shift( $options );
 		return 'ajaxmap';
+	}
+
+	/**
+	 * Return array of args from the trail infobox
+	 */
+	static function getTrailData( $id ) {
+		$title = Title::newFromId( $id );
+		$trail = $title->getText();
+		$article = new Article( $title );
+		preg_match( "|\{\{Infobox Trail(.+?)^\}\}|sm", $article->fetchContent(), $m );
+		$template = preg_replace( "/(?<=\S)( +\| )/s", "\n$1", $m[1] ); // fix malformed template syntax
+		preg_match_all( "|^\s*\|\s*(.+?)\s*= *(.*?) *(?=^\s*[\|\}])|sm", $template, $m );
+		$data = array();
+		foreach( $m[1] as $i => $k ) $data[] = '"' . trim( $k ) . '":"' . trim( $m[2][$i] ) . '"';
+		return "\"$trail\":\n{\n" . implode( ',', $data ) . "\n}\n";
 	}
 
 }
