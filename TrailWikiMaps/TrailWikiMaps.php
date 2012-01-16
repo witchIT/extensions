@@ -194,9 +194,15 @@ class TrailWikiMaps {
 		return $data;
 	}
 
+	/**
+	 * Return a 2dp formatted rating from the selected CommunityVoice table
+	 */
 	static function getCommunityValue( $table, $title ) {
 		$dbr = wfGetDB( DB_SLAVE );
-		return (float)$dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_category' => 'Trail', 'vot_title' => $title ) );
+		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_category' => 'Trail', 'vot_title' => $title ) );
+		$val = 0.00001 + int( $val * 100 ) / 100;
+		$val = preg_replace( "|(\.\d\d).+$|", "$1", $val );
+		return $val;
 	}
 
 	/**
