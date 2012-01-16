@@ -14,6 +14,7 @@ function InfoBox( marker ) {
 	});
 	this.setMap( this.map_ );
 }
+alert('foo');
 
 InfoBox.prototype = new google.maps.OverlayView();
 
@@ -162,12 +163,11 @@ InfoBox.prototype.loadContent = function( titles, target ) {
 	}
 };
 
-$( function() {
+$(document).ready( function() {
 
 	// Format some of the options
     window.ajaxmap_opt.center = new google.maps.LatLng( window.ajaxmap_opt.lat, window.ajaxmap_opt.lon );
     window.ajaxmap_opt.mapTypeId = google.maps.MapTypeId[window.ajaxmap_opt.type.toUpperCase()];
-    //window.ajaxmap_opt.sensor = 'true';
 
 	// Create the map and set canvas size
 	var canvas = document.getElementById('ajaxmap');	
@@ -176,7 +176,7 @@ $( function() {
 	canvas.style.height = window.ajaxmap_opt['height'] + 'px';
 
 	// Retrieve location info and create markers
-	$.ajax({
+	jQuery.ajax({
 		type: "GET",
 		url: mw.util.wikiScript(),
 		data: { action: 'traillocations' },
@@ -194,3 +194,4 @@ $( function() {
 		}
 	});
 });
+

@@ -14,11 +14,30 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','0.0.1, 2012-01-15' );
+define( 'TRAILWIKIMAP_VERSION','1.0.0, 2012-01-16' );
 define( 'TRAILWIKIMAP_NAME', 1 );
 define( 'TRAILWIKIMAP_OFFSET', 2 );
 define( 'TRAILWIKIMAP_LENGTH', 3 );
 define( 'TRAILWIKIMAP_DEPTH', 4 );
+
+// Note - these images should really be made into consistent naming such as "icon-dog.png"
+//        that way a mapping from name to image wouldn't be needed,
+//        and the sub-templates in Template:Infobox Trail wouldn't be needed either
+$wgTrailWikiIcons = array(
+	'dog' => 'Dog.gif',
+	'tent' => 'Tent.gif',
+	'hike' => 'Hike.png',
+	'bike' => 'Bike.gif',
+	'walk' => 'Walk.gif',
+	'horse' => 'Horse.png',
+	'skiing' => 'Cross_Country_Skiing.gif',
+	'snowshoe' => 'Snowshoeing.jpg',
+	'motorbike' => 'Motorbike.gif',
+	'wheelchair' => 'Wheelchair.png'
+);
+
+$wgTrailWikiRatingTable = '';
+$wgTrailWikiDifficultyTable = '';
 
 $wgTrailWikiMagic              = "ajaxmap";
 $wgExtensionFunctions[]        = 'wfSetupTrailWikiMaps';
@@ -81,11 +100,29 @@ class TrailWikiMaps {
 			global $wgTitle;
 			$data = self::getTrailInfo( $wgTitle );
 
+			// Convert the trail uses to a list of images
+			$icons = '';
+			if( !empty( $data['Trail Use'] ) ) {
+				global $wgTrailWikiIcons;
+				$uses = preg_replace( "|[^a-z ]|", "", strtolower( $data['Trail Use'] ) );
+				foreach( preg_split( "|\s+|", $uses ) as $i ) {
+					if( array_key_exists( $i, $wgTrailWikiIcons ) ) {
+						if( $icon = wfLocalFile( $wgTrailWikiIcons[$i] ) ) {
+							$icon = $icon->transform( array( 'width' => 20 ) )->toHtml();
+							$icons .= "<span class=\"ajaxmap-info-icon\">$icon</span>";
+						}
+					}
+				}
+			}
+
+			$unknown = '<i>unknown</i>';
+			$distance = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
+
 			// Render the info
 			$info = "<b>Difficulty: </b><i>Unknown</i><br />";
-			$info .= "<b>Distance: </b>" . $data['Distance'] . " Miles<br />";
+			$info .= "<b>Distance: </b>$distance<br />";
 			$info .= "<b>Trail Type: </b><i>Unknown</i><br />";
-			$info .= "<b>Trail Uses: </b><i>Unknown</i><br />";
+			$info .= "<b>Trail Uses: $icons<br />";
 
 			// Get a thumbnail image if the image field is set
 			$img = '';
@@ -143,13 +180,23 @@ class TrailWikiMaps {
 	 * Return array of args from the trail infobox for passed trail
 	 */
 	static function getTrailInfo( $title ) {
+		global $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable;
 		$article = new Article( $title );
+		$trail = $title->getText();
 		preg_match( "|\{\{Infobox Trail(.+?)^\}\}|sm", $article->fetchContent(), $m );
 		$template = preg_replace( "/(?<=\S)( +\| )/s", "\n$1", $m[1] ); // fix malformed template syntax
 		preg_match_all( "|^\s*\|\s*(.+?)\s*= *(.*?) *(?=^\s*[\|\}])|sm", $template, $m );
-		$data = array();
+		$data = array(
+			'Rating' => self::getCommunityValue( $wgTrailWikiRatingTable, $trail ),
+			'Difficulty' => self::getCommunityValue( $wgTrailWikiDifficultyTable, $trail )
+		);
 		foreach( $m[1] as $i => $k ) $data[trim( $k )] = trim( $m[2][$i] );
 		return $data;
+	}
+
+	static function getCommunityValue( $table, $title ) {
+		$dbr = wfGetDB( DB_SLAVE );
+		return (float)$dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_category' => 'Trail', 'vot_title' => $title ) );
 	}
 
 	/**
