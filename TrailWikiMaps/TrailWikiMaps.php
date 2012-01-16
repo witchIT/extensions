@@ -11,7 +11,6 @@
  * @copyright © 2007 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
-
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'TRAILWIKIMAP_VERSION','1.0.0, 2012-01-16' );
@@ -36,8 +35,8 @@ $wgTrailWikiIcons = array(
 	'wheelchair' => 'Wheelchair.png'
 );
 
-$wgTrailWikiRatingTable = '';
-$wgTrailWikiDifficultyTable = '';
+$wgTrailWikiRatingTable = 'cv_ratings_votes';
+$wgTrailWikiDifficultyTable = 'tw_difficulty_votes';
 
 $wgTrailWikiMagic              = "ajaxmap";
 $wgExtensionFunctions[]        = 'wfSetupTrailWikiMaps';
@@ -70,6 +69,7 @@ class TrailWikiMaps {
 		$wgResourceModules['ext.trailwikimaps'] = array(
 			'scripts' => array( 'trailwikimaps.js' ),
 			'styles' => array( 'trailwikimaps.css' ),
+			'dependencies' => array( 'mediawiki.util' ),
 			'localBasePath' => dirname( __FILE__ ),
 			'remoteExtPath' => basename( dirname( __FILE__ ) ),
 		);
@@ -80,6 +80,13 @@ class TrailWikiMaps {
 	 */
 	function onUnknownAction( $action, $article ) {
 		global $wgOut, $wgJsMimeType;
+
+if( $action == 'test' ) {
+	$dbr = wfGetDB( DB_SLAVE );
+	$res   = $dbr->query( 'SHOW TABLES' );
+	while( $row = $dbr->fetchRow( $res ) ) print_r($row);
+	$dbr->freeResult( $res );
+}
 
 		// Update the information for the specified ISBN (or oldest book in the wiki if none supplied)
 		// - if the book doesn't exist and the "create" query-string item is set, then create the book article
@@ -92,7 +99,7 @@ class TrailWikiMaps {
 				print "$comma\"$pos\":[\"" . implode( '","', $trails ) . "\"]\n";
 				$comma = ',';
 			}
-			print "}";
+			print "}\n";
 		}
 
 		if( $action == 'trailinfo' ) {
@@ -199,8 +206,9 @@ class TrailWikiMaps {
 	 */
 	static function getCommunityValue( $table, $title ) {
 		$dbr = wfGetDB( DB_SLAVE );
+		$table = $dbr->tableName( $table );
 		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_category' => 'Trail', 'vot_title' => $title ) );
-		$val = 0.00001 + int( $val * 100 ) / 100;
+		$val = 0.00001 + round( $val * 100 ) / 100;
 		$val = preg_replace( "|(\.\d\d).+$|", "$1", $val );
 		return $val;
 	}

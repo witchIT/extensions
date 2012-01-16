@@ -14,7 +14,6 @@ function InfoBox( marker ) {
 	});
 	this.setMap( this.map_ );
 }
-alert('foo');
 
 InfoBox.prototype = new google.maps.OverlayView();
 
@@ -163,35 +162,32 @@ InfoBox.prototype.loadContent = function( titles, target ) {
 	}
 };
 
-$(document).ready( function() {
+// Format some of the options
+window.ajaxmap_opt.center = new google.maps.LatLng( window.ajaxmap_opt.lat, window.ajaxmap_opt.lon );
+window.ajaxmap_opt.mapTypeId = google.maps.MapTypeId[window.ajaxmap_opt.type.toUpperCase()];
 
-	// Format some of the options
-    window.ajaxmap_opt.center = new google.maps.LatLng( window.ajaxmap_opt.lat, window.ajaxmap_opt.lon );
-    window.ajaxmap_opt.mapTypeId = google.maps.MapTypeId[window.ajaxmap_opt.type.toUpperCase()];
+// Create the map and set canvas size
+var canvas = document.getElementById('ajaxmap');	
+var map = new google.maps.Map( canvas, window.ajaxmap_opt );
+canvas.style.width = window.ajaxmap_opt['width'] + 'px';
+canvas.style.height = window.ajaxmap_opt['height'] + 'px';
 
-	// Create the map and set canvas size
-	var canvas = document.getElementById('ajaxmap');	
-    var map = new google.maps.Map( canvas, window.ajaxmap_opt );
-	canvas.style.width = window.ajaxmap_opt['width'] + 'px';
-	canvas.style.height = window.ajaxmap_opt['height'] + 'px';
-
-	// Retrieve location info and create markers
-	jQuery.ajax({
-		type: "GET",
-		url: mw.util.wikiScript(),
-		data: { action: 'traillocations' },
-		dataType: 'json',
-		success: function( data ) {
-			for( i in data ) {
-				var pos = i.split( ',' );
-				var marker = new google.maps.Marker({
-					position: new google.maps.LatLng( pos[0], pos[1] ),
-					map: map,
-					titles: data[i]
-				});
-				google.maps.event.addListener( marker, 'click', function() { new InfoBox( this ); });
-			}
+// Retrieve location info and create markers
+$.ajax({
+	type: "GET",
+	url: mw.util.wikiScript(),
+	data: { action: 'traillocations' },
+	dataType: 'json',
+	success: function( data ) {
+		for( i in data ) {
+			var pos = i.split( ',' );
+			var marker = new google.maps.Marker({
+				position: new google.maps.LatLng( pos[0], pos[1] ),
+				map: map,
+				titles: data[i]
+			});
+			google.maps.event.addListener( marker, 'click', function() { new InfoBox( this ); });
 		}
-	});
+	}
 });
 
