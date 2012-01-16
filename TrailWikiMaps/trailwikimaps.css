@@ -1,0 +1,40 @@
+.ajaxmap-info {
+    position: absolute;
+    z-index: 10;
+    background: #EAEFF2;
+    border: 1px solid black;
+    width: 350px;
+
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+    filter: alpha(opacity=80);
+    -moz-opacity: 0.80;
+    -khtml-opacity: 0.80;
+    opacity: 0.80;
+}
+
+.ajaxmap-info-content {
+    padding: 5px 5px 5px 8px;
+}
+.ajaxmap-info-content th {
+    vertical-align: top;
+    width: 140px;
+}
+.ajaxmap-info-content td {
+    vertical-align: top;
+    width: 100%;
+}
+
+.ajaxmap-info-top img {
+    float: right;
+    cursor: pointer;
+    margin: 1px;
+}
+
+.ajaxmap-info-top div {
+    width: 300px;
+    padding: 3px 5px;
+}
+.ajaxmap-info a {
+    font-size: 13px;
+    text-decoration: underline;
+}

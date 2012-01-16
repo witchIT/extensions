@@ -50,7 +50,7 @@ class TrailWikiMaps {
 
 		$wgResourceModules['ext.trailwikimaps'] = array(
 			'scripts' => array( 'trailwikimaps.js' ),
-			'styles' => array(),
+			'styles' => array( 'trailwikimaps.css' ),
 			'localBasePath' => dirname( __FILE__ ),
 			'remoteExtPath' => basename( dirname( __FILE__ ) ),
 		);
