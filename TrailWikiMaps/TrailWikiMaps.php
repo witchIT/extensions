@@ -73,6 +73,7 @@ class TrailWikiMaps {
 			'localBasePath' => dirname( __FILE__ ),
 			'remoteExtPath' => basename( dirname( __FILE__ ) ),
 		);
+		$wgOut->addModules( 'ext.trailwikimaps' );
 	}
 
 	/**
@@ -81,21 +82,15 @@ class TrailWikiMaps {
 	function onUnknownAction( $action, $article ) {
 		global $wgOut, $wgJsMimeType;
 
-if( $action == 'test' ) {
-	$dbr = wfGetDB( DB_SLAVE );
-	$res   = $dbr->query( 'SHOW TABLES' );
-	while( $row = $dbr->fetchRow( $res ) ) print_r($row);
-	$dbr->freeResult( $res );
-}
-
 		// Update the information for the specified ISBN (or oldest book in the wiki if none supplied)
 		// - if the book doesn't exist and the "create" query-string item is set, then create the book article
 		if( $action == 'traillocations' ) {
+			global $wgRequest;
 			$wgOut->disable();
 			header( 'Content-Type: application/json' );
 			$comma = '';
 			print "{\n";
-			foreach( self::getTrailLocations() as $pos => $trails ) {
+			foreach( self::getTrailLocations( $wgRequest->getText( 'query', false ) ) as $pos => $trails ) {
 				print "$comma\"$pos\":[\"" . implode( '","', $trails ) . "\"]\n";
 				$comma = ',';
 			}
@@ -122,13 +117,19 @@ if( $action == 'test' ) {
 				}
 			}
 
-			$unknown = '<i>unknown</i>';
-			$distance = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
+			$unknown    = '<i>unknown</i>';
+			//$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 2 ) : $unknown;
+			//$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 2 ) : $unknown;
+			$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
+			$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
+			$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
 
 			// Render the info
-			$info = "<b>Difficulty: </b><i>Unknown</i><br />";
+			//$info = "<b>Difficulty: </b>$difficulty<br />";
+			//$info = "<b>Rating: </b>$rating<br />";
 			$info .= "<b>Distance: </b>$distance<br />";
-			$info .= "<b>Trail Type: </b><i>Unknown</i><br />";
+			$info .= "<b>Elevation Gain: </b>$elevation<br />";
+			$info .= "<b>High Point: </b><i>$high</i><br />";
 			$info .= "<b>Trail Uses: $icons<br />";
 
 			// Get a thumbnail image if the image field is set
@@ -154,7 +155,12 @@ if( $action == 'test' ) {
 		global $wgOut, $wgJsMimeType;
 		foreach( func_get_args() as $opt ) {
 			if( !is_object( $opt ) && preg_match( "/^(\w+?)\s*=\s*(.*)$/s", $opt, $m ) ) {
-				$v = is_numeric( $m[2] ) ? $m[2] : '"' . str_replace( '"', '', $m[2] ) . '"';
+				if( $m[1] == 'query' ) {
+					preg_match_all( "|>(.+?)</a>|", $m[2], $n );
+					$v = '"' . join( '!', $n[1] ) . '"';
+				} else {
+					$v = is_numeric( $m[2] ) ? $m[2] : '"' . str_replace( '"', '', $m[2] ) . '"';
+				}
 				$this->opts[] = "\"$m[1]\":$v";
 			}
 		}
@@ -170,7 +176,6 @@ if( $action == 'test' ) {
 
 	public function expandAjaxMapInternal() {
 		global $wgOut, $wgJsMimeType;
-		$wgOut->addModules( 'ext.trailwikimaps' );
 		$script = "window.ajaxmap_opt = {" . implode( ',', $this->opts ) . "};";
 		$script .= "document.getElementById('ajaxmap').innerHTML = '';";
 		return array(
@@ -194,10 +199,15 @@ if( $action == 'test' ) {
 		$template = preg_replace( "/(?<=\S)( +\| )/s", "\n$1", $m[1] ); // fix malformed template syntax
 		preg_match_all( "|^\s*\|\s*(.+?)\s*= *(.*?) *(?=^\s*[\|\}])|sm", $template, $m );
 		$data = array(
-			'Rating' => self::getCommunityValue( $wgTrailWikiRatingTable, $trail ),
-			'Difficulty' => self::getCommunityValue( $wgTrailWikiDifficultyTable, $trail )
+//			'Rating' => self::getCommunityValue( $wgTrailWikiRatingTable, $trail ),
+//			'Difficulty' => self::getCommunityValue( $wgTrailWikiDifficultyTable, $trail )
 		);
-		foreach( $m[1] as $i => $k ) $data[trim( $k )] = trim( $m[2][$i] );
+		foreach( $m[1] as $i => $k ) {
+			$k = trim( $k );
+			$v = trim( $m[2][$i] );
+			if( $k == 'Elevation Gain' || $k == 'High Point' ) $v = str_replace( ',', '', $v );
+			$data[$k] = $v;
+		}
 		return $data;
 	}
 
@@ -207,24 +217,35 @@ if( $action == 'test' ) {
 	static function getCommunityValue( $table, $title ) {
 		$dbr = wfGetDB( DB_SLAVE );
 		$table = $dbr->tableName( $table );
-		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_category' => 'Trail', 'vot_title' => $title ) );
-		$val = 0.00001 + round( $val * 100 ) / 100;
-		$val = preg_replace( "|(\.\d\d).+$|", "$1", $val );
+		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_title' => $title ) );
 		return $val;
 	}
 
 	/**
 	 * Build a list of trails at each location
 	 */
-	static function getTrailLocations() {
-		$dbr   = &wfGetDB( DB_SLAVE );
-		$tmpl  = $dbr->addQuotes( Title::newFromText( 'Infobox Trail' )->getDBkey() );
-		$table = $dbr->tableName( 'templatelinks' );
-		$res   = $dbr->select( $table, 'tl_from', "tl_namespace = 10 AND tl_title = $tmpl" );
+	static function getTrailLocations( $query = false ) {
+
+		// Get all the trail articles that will be involved
+		$titles = array();
+		if( $query ) {
+			foreach( explode( '!', $query ) as $trail ) $titles[$trail] = Title::newFromText( $trail );
+		} else {			
+			$dbr   = &wfGetDB( DB_SLAVE );
+			$tmpl  = $dbr->addQuotes( Title::newFromText( 'Infobox Trail' )->getDBkey() );
+			$table = $dbr->tableName( 'templatelinks' );
+			$res   = $dbr->select( $table, 'tl_from', "tl_namespace = 10 AND tl_title = $tmpl" );
+			while( $row = $dbr->fetchRow( $res ) ) {
+				$title = Title::newFromId( $row[0] );
+				$trail = $title->getText();
+				$titles[$trail] = $title;
+			}
+			$dbr->freeResult( $res );
+		}
+
+		// Build the location list
 		$list  = array();
-		while( $row = $dbr->fetchRow( $res ) ) {
-			$title = Title::newFromId( $row[0] );
-			$trail = $title->getText();
+		foreach( $titles as $trail => $title ) {
 			$data = self::getTrailInfo( $title );
 			if( array_key_exists( 'Latitude', $data ) && array_key_exists( 'Longitude', $data ) ) {
 				if( is_numeric( $data['Latitude'] ) && is_numeric( $data['Longitude'] ) ) {
@@ -234,7 +255,7 @@ if( $action == 'test' ) {
 				}
 			}
 		}
-		$dbr->freeResult( $res );
+
 		return $list;
 	}
 

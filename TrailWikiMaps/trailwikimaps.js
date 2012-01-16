@@ -13,6 +13,8 @@ function InfoBox( marker ) {
 		return me.panMap.apply( me );
 	});
 	this.setMap( this.map_ );
+	if( window.currentInfobox ) window.currentInfobox.setMap( null );
+	window.currentInfobox = this;
 }
 
 InfoBox.prototype = new google.maps.OverlayView();
@@ -54,7 +56,7 @@ InfoBox.prototype.createElement = function() {
 		title.innerHTML = this.titles_[0];
 		title.href = mw.util.wikiScript() + '?' + $.param({ title: this.titles_[0] });
 		var closeImg = document.createElement( 'img' );
-		closeImg.src = "/files/b/bd/Close.png";
+		closeImg.src = "/w/images/5/50/Icon_delete_25.png";
 		topDiv.appendChild( closeImg );
 		topDiv.appendChild( titlep );
 		titlep.appendChild( title );
@@ -166,23 +168,30 @@ InfoBox.prototype.loadContent = function( titles, target ) {
 window.ajaxmap_opt.center = new google.maps.LatLng( window.ajaxmap_opt.lat, window.ajaxmap_opt.lon );
 window.ajaxmap_opt.mapTypeId = google.maps.MapTypeId[window.ajaxmap_opt.type.toUpperCase()];
 
+// Only one infobox at a time
+window.currentInfobox = 0;
+
 // Create the map and set canvas size
 var canvas = document.getElementById('ajaxmap');	
 var map = new google.maps.Map( canvas, window.ajaxmap_opt );
 canvas.style.width = window.ajaxmap_opt['width'] + 'px';
 canvas.style.height = window.ajaxmap_opt['height'] + 'px';
 
+// Hard-coded icon for now
+var icon = new google.maps.MarkerImage( '/w/images/b/b9/Icon_Map_Square.png' );
+
 // Retrieve location info and create markers
 $.ajax({
-	type: "GET",
+	type: "POST",
 	url: mw.util.wikiScript(),
-	data: { action: 'traillocations' },
+	data: { action: 'traillocations', query: window.ajaxmap_opt['query'] },
 	dataType: 'json',
 	success: function( data ) {
 		for( i in data ) {
 			var pos = i.split( ',' );
 			var marker = new google.maps.Marker({
 				position: new google.maps.LatLng( pos[0], pos[1] ),
+				icon: icon,
 				map: map,
 				titles: data[i]
 			});
