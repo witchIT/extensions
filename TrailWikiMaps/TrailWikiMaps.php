@@ -118,8 +118,8 @@ class TrailWikiMaps {
 			}
 
 			$unknown    = '<i>unknown</i>';
-			$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 2 ) : $unknown;
-			$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 2 ) : $unknown;
+			$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 2 ) . '/5' : $unknown;
+			$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 2 ) . '/5' : $unknown;
 			$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
 			$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
 			$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
@@ -128,9 +128,9 @@ class TrailWikiMaps {
 			$info = "<b>Distance: </b>$distance<br />";
 			$info .= "<b>Elevation Gain: </b>$elevation<br />";
 			$info .= "<b>High Point: </b>$high<br />";
-			$info .= "<b>Trail Uses:</b> $icons<br />";			// Missing the </b> 
-			$info .= "<b>Difficulty: </b>$difficulty/5<br />";  // Moved this from above
-			$info .= "<b>Rating: </b>$rating/5<br />";			// Moved this from above.
+			$info .= "<b>Trail Uses: </b>$icons<br />";
+			$info .= "<b>Difficulty: </b>$difficulty<br />";
+			$info .= "<b>Rating: </b>$rating<br />";
 
 			// Get a thumbnail image if the image field is set
 			$img = '';
