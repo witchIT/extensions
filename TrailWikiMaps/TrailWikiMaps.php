@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','1.0.5, 2012-01-16' );
+define( 'TRAILWIKIMAP_VERSION','1.0.4, 2012-01-16' );
 define( 'TRAILWIKIMAP_NAME', 1 );
 define( 'TRAILWIKIMAP_OFFSET', 2 );
 define( 'TRAILWIKIMAP_LENGTH', 3 );
@@ -23,16 +23,16 @@ define( 'TRAILWIKIMAP_DEPTH', 4 );
 //        that way a mapping from name to image wouldn't be needed,
 //        and the sub-templates in Template:Infobox Trail wouldn't be needed either
 $wgTrailWikiIcons = array(
-	'dog' => 'Dog.gif',
-	'tent' => 'Tent.gif',
-	'hike' => 'Hike.png',
-	'bike' => 'Bike.gif',
-	'walk' => 'Walk.gif',
-	'horse' => 'Horse.png',
-	'skiing' => 'Cross_Country_Skiing.gif',
-	'snowshoe' => 'Snowshoeing.jpg',
-	'motorbike' => 'Motorbike.gif',
-	'wheelchair' => 'Wheelchair.png'
+	'dog' => 'Icon_Dog_20px.png',
+	'tent' => 'Icon_Tent_20px.png',
+	'hike' => 'Icon_Hike_20px.png',
+	'bike' => 'Icon_Bike_20px.png',
+	'walk' => 'Icon_Walk_20px.png',
+	'horse' => 'Icon_Horse_20px.png',
+	'skiing' => 'Icon_Ski_20px.png',
+	'snowshoe' => 'Icon_Snowshoe_20px.png',
+	'motorbike' => 'Icon_Motorbike_20px.png',
+	'wheelchair' => 'Icon_Wheelchair_20px.png'
 );
 
 $wgTrailWikiRatingTable = 'cv_ratings_votes';
@@ -120,17 +120,17 @@ class TrailWikiMaps {
 			$unknown    = '<i>unknown</i>';
 			$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 2 ) : $unknown;
 			$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 2 ) : $unknown;
-			$distance   = ( $data['Distance'] != '*' ) ? $data['Distance'] . ' Miles' : $unknown;
+			$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
 			$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
 			$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
 
 			// Render the info
 			$info = "<b>Distance: </b>$distance<br />";
-			$info .= "<b>Difficulty: </b>$difficulty<br />";
-			$info .= "<b>Rating: </b>$rating<br />";
 			$info .= "<b>Elevation Gain: </b>$elevation<br />";
-			$info .= "<b>High Point: </b><i>$high</i><br />";
-			$info .= "<b>Trail Uses: $icons<br />";
+			$info .= "<b>High Point: </b>$high<br />";
+			$info .= "<b>Trail Uses:</b> $icons<br />";			// Missing the </b> 
+			$info .= "<b>Difficulty: </b>$difficulty/5<br />";  // Moved this from above
+			$info .= "<b>Rating: </b>$rating/5<br />";			// Moved this from above.
 
 			// Get a thumbnail image if the image field is set
 			$img = '';
