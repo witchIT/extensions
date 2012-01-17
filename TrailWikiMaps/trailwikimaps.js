@@ -43,47 +43,47 @@ InfoBox.prototype.draw = function() {
 InfoBox.prototype.createElement = function() {
 	var panes = this.getPanes();
 	var div = this.div_;
-	if( !div ) {
-		div = this.div_ = document.createElement( 'div' );
+	if(!div) {
+		div = this.div_ = document.createElement('div');
 		div.className = 'ajaxmap-info';
-		var contentDiv = document.createElement( 'div' );
+		var contentDiv = document.createElement('div');
 		contentDiv.className = 'ajaxmap-info-content';
-		this.loadContent( this.titles_, contentDiv );
-		var topDiv = document.createElement( 'div' );
+		this.loadContent(this.titles_, contentDiv);
+		var topDiv = document.createElement('div');
 		topDiv.className = 'ajaxmap-info-top';
-		titlep = document.createElement( 'div' );
-		title = document.createElement( 'a' );
+		titlep = document.createElement('div');
+		title = document.createElement('a');
 		title.innerHTML = this.titles_[0];
 		title.href = mw.util.wikiScript() + '?' + $.param({ title: this.titles_[0] });
-		var closeImg = document.createElement( 'img' );
+		var closeImg = document.createElement('img');
 		closeImg.src = "/w/images/5/50/Icon_delete_25.png";
-		topDiv.appendChild( closeImg );
-		topDiv.appendChild( titlep );
-		titlep.appendChild( title );
+		topDiv.appendChild(closeImg);
+		topDiv.appendChild(titlep);
+		titlep.appendChild(title);
 
-		function removeInfoBox( ib ) {
+		function removeInfoBox(ib) {
 			return function() {
-				ib.setMap( null );
+				ib.setMap(null);
 			};
 		}
 
-		google.maps.event.addDomListener( closeImg, 'click', removeInfoBox( this ) );
+		google.maps.event.addDomListener(closeImg, 'click', removeInfoBox(this));
 
-		div.appendChild( topDiv );
-		div.appendChild( contentDiv );
+		div.appendChild(topDiv);
+		div.appendChild(contentDiv);
 		div.style.display = 'none';
-		panes.floatPane.appendChild( div );
+		panes.floatPane.appendChild(div);
 		this.panMap();
-	} else if( div.parentNode != panes.floatPane ) {
-		div.parentNode.removeChild( div );
-		panes.floatPane.appendChild( div );
+	} else if(div.parentNode != panes.floatPane) {
+		div.parentNode.removeChild(div);
+		panes.floatPane.appendChild(div);
 	}
 }
 
 InfoBox.prototype.panMap = function() {
 	var map = this.map_;
 	var bounds = map.getBounds();
-	if( !bounds ) return;
+	if(!bounds) return;
 
 	// The position of the infowindow
 	var position = this.latlng_;
@@ -113,18 +113,18 @@ InfoBox.prototype.panMap = function() {
 	var mapSouthLat = bounds.getSouthWest().lat();
 
 	// The bounds of the infowindow
-	var iwWestLng = position.lng() + ( iwOffsetX - padX ) * degPixelX;
-	var iwEastLng = position.lng() + ( iwOffsetX + iwWidth + padX ) * degPixelX;
-	var iwNorthLat = position.lat() - ( iwOffsetY - padY ) * degPixelY;
-	var iwSouthLat = position.lat() - ( iwOffsetY + iwHeight + padY ) * degPixelY;
+	var iwWestLng = position.lng() + (iwOffsetX - padX) * degPixelX;
+	var iwEastLng = position.lng() + (iwOffsetX + iwWidth + padX) * degPixelX;
+	var iwNorthLat = position.lat() - (iwOffsetY - padY) * degPixelY;
+	var iwSouthLat = position.lat() - (iwOffsetY + iwHeight + padY) * degPixelY;
 
 	// calculate center shift
 	var shiftLng =
-	  ( iwWestLng < mapWestLng ? mapWestLng - iwWestLng : 0 ) +
-	  ( iwEastLng > mapEastLng ? mapEastLng - iwEastLng : 0 );
+	  (iwWestLng < mapWestLng ? mapWestLng - iwWestLng : 0) +
+	  (iwEastLng > mapEastLng ? mapEastLng - iwEastLng : 0);
 	var shiftLat =
-	  ( iwNorthLat > mapNorthLat ? mapNorthLat - iwNorthLat : 0 ) +
-	  ( iwSouthLat < mapSouthLat ? mapSouthLat - iwSouthLat : 0 );
+	  (iwNorthLat > mapNorthLat ? mapNorthLat - iwNorthLat : 0) +
+	  (iwSouthLat < mapSouthLat ? mapSouthLat - iwSouthLat : 0);
 
 	// The center of the map
 	var center = map.getCenter();
@@ -134,33 +134,39 @@ InfoBox.prototype.panMap = function() {
 	var centerY = center.lat() - shiftLat;
 
 	// center the map to the new shifted center
-	map.setCenter( new google.maps.LatLng( centerY, centerX ) );
+	map.setCenter(new google.maps.LatLng(centerY, centerX));
 
 	// Remove the listener after panning is complete.
-	google.maps.event.removeListener( this.boundsChangedListener_ );
+	google.maps.event.removeListener(this.boundsChangedListener_);
 	this.boundsChangedListener_ = null;
 };
 
 // Load content for passed titles and add to target element
-InfoBox.prototype.loadContent = function( titles, target ) {
+InfoBox.prototype.loadContent = function( titles, div ) {
 	for( i in titles ) {
+
+		// Add heading/link for trails except first which has its heading in infobox title bar
+		if( i > 0 ) {
+			var hr = document.createElement('hr');
+			div.appendChild(hr);
+			var heading = document.createElement('a');
+			heading.innerHTML = titles[i];
+			heading.href = mw.util.wikiScript() + '?' + $.param({ title: titles[i] });
+			div.appendChild(heading);
+		}
+
+		// Create a div element and request trail info into it
+		var target = document.createElement('div');
+		div.appendChild(target);
 		$.ajax({
 			type: "GET",
 			url: mw.util.wikiScript(),
 			data: { title: titles[i], action: 'trailinfo' },
 			dataType: 'html',
-			success: function( html ) {
-				if( target.innerHTML ) {
-					hr = document.createElement( 'hr' );
-					target.appendChild( hr );
-					h = document.createElement( 'a' );
-					h.innerHTML = titles[i];
-					h.href = mw.util.wikiScript() + '?' + $.param({ title: titles[i] });
-					target.appendChild( h );
-				}
-				target.innerHTML = target.innerHTML + html;
-			}
+			success: function( html ) { this.innerHTML = html; },
+			context: target
 		});
+
 	}
 };
 
@@ -178,7 +184,7 @@ canvas.style.width = window.ajaxmap_opt['width'] + 'px';
 canvas.style.height = window.ajaxmap_opt['height'] + 'px';
 
 // Hard-coded icon for now
-var icon = new google.maps.MarkerImage( '/w/images/b/b9/Icon_Map_Square.png' );
+var icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png');
 
 // Retrieve location info and create markers
 $.ajax({
@@ -188,14 +194,14 @@ $.ajax({
 	dataType: 'json',
 	success: function( data ) {
 		for( i in data ) {
-			var pos = i.split( ',' );
+			var pos = i.split(',');
 			var marker = new google.maps.Marker({
-				position: new google.maps.LatLng( pos[0], pos[1] ),
+				position: new google.maps.LatLng(pos[0], pos[1]),
 				icon: icon,
 				map: map,
 				titles: data[i]
 			});
-			google.maps.event.addListener( marker, 'click', function() { new InfoBox( this ); });
+			google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
 		}
 	}
 });

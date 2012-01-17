@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','1.0.0, 2012-01-16' );
+define( 'TRAILWIKIMAP_VERSION','1.0.5, 2012-01-16' );
 define( 'TRAILWIKIMAP_NAME', 1 );
 define( 'TRAILWIKIMAP_OFFSET', 2 );
 define( 'TRAILWIKIMAP_LENGTH', 3 );
@@ -118,16 +118,16 @@ class TrailWikiMaps {
 			}
 
 			$unknown    = '<i>unknown</i>';
-			//$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 2 ) : $unknown;
-			//$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 2 ) : $unknown;
-			$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
+			$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 2 ) : $unknown;
+			$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 2 ) : $unknown;
+			$distance   = ( $data['Distance'] != '*' ) ? $data['Distance'] . ' Miles' : $unknown;
 			$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
 			$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
 
 			// Render the info
-			//$info = "<b>Difficulty: </b>$difficulty<br />";
-			//$info = "<b>Rating: </b>$rating<br />";
-			$info .= "<b>Distance: </b>$distance<br />";
+			$info = "<b>Distance: </b>$distance<br />";
+			$info .= "<b>Difficulty: </b>$difficulty<br />";
+			$info .= "<b>Rating: </b>$rating<br />";
 			$info .= "<b>Elevation Gain: </b>$elevation<br />";
 			$info .= "<b>High Point: </b><i>$high</i><br />";
 			$info .= "<b>Trail Uses: $icons<br />";
@@ -199,8 +199,8 @@ class TrailWikiMaps {
 		$template = preg_replace( "/(?<=\S)( +\| )/s", "\n$1", $m[1] ); // fix malformed template syntax
 		preg_match_all( "|^\s*\|\s*(.+?)\s*= *(.*?) *(?=^\s*[\|\}])|sm", $template, $m );
 		$data = array(
-//			'Rating' => self::getCommunityValue( $wgTrailWikiRatingTable, $trail ),
-//			'Difficulty' => self::getCommunityValue( $wgTrailWikiDifficultyTable, $trail )
+			'Rating' => self::getCommunityValue( $wgTrailWikiRatingTable, $trail ),
+			'Difficulty' => self::getCommunityValue( $wgTrailWikiDifficultyTable, $trail )
 		);
 		foreach( $m[1] as $i => $k ) {
 			$k = trim( $k );
