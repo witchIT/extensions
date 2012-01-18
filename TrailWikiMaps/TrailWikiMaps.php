@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','1.0.4, 2012-01-16' );
+define( 'TRAILWIKIMAP_VERSION','1.0.8, 2012-01-18' );
 define( 'TRAILWIKIMAP_NAME', 1 );
 define( 'TRAILWIKIMAP_OFFSET', 2 );
 define( 'TRAILWIKIMAP_LENGTH', 3 );
@@ -32,7 +32,9 @@ $wgTrailWikiIcons = array(
 	'skiing' => 'Icon_Ski_20px.png',
 	'snowshoe' => 'Icon_Snowshoe_20px.png',
 	'motorbike' => 'Icon_Motorbike_20px.png',
-	'wheelchair' => 'Icon_Wheelchair_20px.png'
+	'wheelchair' => 'Icon_Wheelchair_20px.png',
+	'family' => 'Icon_Family_20px.png',
+	'jeep' => 'Icon_Jeep_20px.png'
 );
 
 $wgTrailWikiRatingTable = 'cv_ratings_votes';
@@ -85,12 +87,13 @@ class TrailWikiMaps {
 		// Update the information for the specified ISBN (or oldest book in the wiki if none supplied)
 		// - if the book doesn't exist and the "create" query-string item is set, then create the book article
 		if( $action == 'traillocations' ) {
-			global $wgRequest;
 			$wgOut->disable();
 			header( 'Content-Type: application/json' );
+			if( array_key_exists( 'query', $_REQUEST ) ) $query = explode( '!', $_REQUEST['query'] );
+			else $query = false;
 			$comma = '';
 			print "{\n";
-			foreach( self::getTrailLocations( $wgRequest->getText( 'query', false ) ) as $pos => $trails ) {
+			foreach( self::getTrailLocations( $query ) as $pos => $trails ) {
 				print "$comma\"$pos\":[\"" . implode( '","', $trails ) . "\"]\n";
 				$comma = ',';
 			}
@@ -118,8 +121,8 @@ class TrailWikiMaps {
 			}
 
 			$unknown    = '<i>unknown</i>';
-			$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 2 ) . '/5' : $unknown;
-			$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 2 ) . '/5' : $unknown;
+			$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 0 ) . '/5' : $unknown;
+			$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 0 ) . '/5' : $unknown;
 			$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
 			$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
 			$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
@@ -155,8 +158,11 @@ class TrailWikiMaps {
 		global $wgOut, $wgJsMimeType;
 		foreach( func_get_args() as $opt ) {
 			if( !is_object( $opt ) && preg_match( "/^(\w+?)\s*=\s*(.*)$/s", $opt, $m ) ) {
+				if( $m[1] == 'width' || $m[1] == 'height' ) {
+					if( is_numeric( $m[2] ) ) $m[2] .= 'px';
+				}
 				if( $m[1] == 'query' ) {
-					preg_match_all( "|>(.+?)</a>|", $m[2], $n );
+					preg_match_all( "|\|(.+?)\]\]|", $m[2], $n );
 					$v = '"' . join( '!', $n[1] ) . '"';
 				} else {
 					$v = is_numeric( $m[2] ) ? $m[2] : '"' . str_replace( '"', '', $m[2] ) . '"';
@@ -228,9 +234,9 @@ class TrailWikiMaps {
 
 		// Get all the trail articles that will be involved
 		$titles = array();
-		if( $query ) {
-			foreach( explode( '!', $query ) as $trail ) $titles[$trail] = Title::newFromText( $trail );
-		} else {			
+		if( is_array( $query ) ) {
+			foreach( $query as $trail ) if( !empty( $trail ) ) $titles[$trail] = Title::newFromText( $trail );
+		} else {
 			$dbr   = &wfGetDB( DB_SLAVE );
 			$tmpl  = $dbr->addQuotes( Title::newFromText( 'Infobox Trail' )->getDBkey() );
 			$table = $dbr->tableName( 'templatelinks' );

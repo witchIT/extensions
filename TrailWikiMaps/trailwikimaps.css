@@ -1,40 +1,46 @@
 .ajaxmap-info {
-    position: absolute;
-    z-index: 10;
-    background: #EAEFF2;
-    border: 1px solid black;
-    width: 350px;
-  /*  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
-    filter: alpha(opacity=90);
-    -moz-opacity: 0.90;
-    -khtml-opacity: 0.90;
-    opacity: 0.0; */
+	position: absolute;
+	z-index: 10;
+	border: 1px solid black;
+	width: 350px;
+
+	background: transparent url( './ajaxmap-info-bg.png' ) repeat;
+	/* background: #EAEFF2; */
+
+	/* -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
+	filter: alpha(opacity=90);
+	-moz-opacity: 0.90;
+	-khtml-opacity: 0.90;
+	opacity: 0.0; */
 }
 .ajaxmap-info-content {
-    padding: 5px 5px 5px 8px;
+	padding: 5px 5px 5px 8px;
 }
 .ajaxmap-info-content th {
-    vertical-align: top;
-    width: 140px;
+	vertical-align: top;
+	width: 140px;
 }
 .ajaxmap-info-content td {
-    vertical-align: top;
-    width: 100%;
+	vertical-align: top;
+	width: 100%;
 }
 .ajaxmap-info-top img {
-    float: right;
-    cursor: pointer;
-    margin: 1px;
+	float: right;
+	cursor: pointer;
+	margin: 1px;
 }
 .ajaxmap-info-top div {
-    width: 300px;
-    padding: 3px 5px;
+	width: 300px;
+	padding: 3px 5px;
 }
 .ajaxmap-info a {
-    font-size: 13px;
-    text-decoration: underline;
+	font-size: 13px;
+	text-decoration: underline;
 	font-weight: bold;
 }
 .ajaxmap-info-icon {
-    padding: 5px 2px;
+	padding: 5px 2px;
+}
+.ajaxmap-info-loader {
+	padding: 10px 0 10px 150px;
 }

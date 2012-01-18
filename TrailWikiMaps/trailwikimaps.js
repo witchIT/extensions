@@ -56,7 +56,7 @@ InfoBox.prototype.createElement = function() {
 		title.innerHTML = this.titles_[0];
 		title.href = mw.util.wikiScript() + '?' + $.param({ title: this.titles_[0] });
 		var closeImg = document.createElement('img');
-		closeImg.src = "/w/images/5/50/Icon_delete_25.png";
+		closeImg.src = '/w/images/5/50/Icon_delete_25.png';
 		topDiv.appendChild(closeImg);
 		topDiv.appendChild(titlep);
 		titlep.appendChild(title);
@@ -155,11 +155,17 @@ InfoBox.prototype.loadContent = function( titles, div ) {
 			div.appendChild(heading);
 		}
 
-		// Create a div element and request trail info into it
+		// Create a div element for thie info with a loading animation in it
 		var target = document.createElement('div');
 		div.appendChild(target);
+		var loader = document.createElement('img');
+		loader.src = '/w/skins/common/images/ajax-loader.gif';
+		loader.className = 'ajaxmap-info-loader';
+		target.appendChild(loader);
+
+		// Request the content for the target div
 		$.ajax({
-			type: "GET",
+			type: 'GET',
 			url: mw.util.wikiScript(),
 			data: { title: titles[i], action: 'trailinfo' },
 			dataType: 'html',
@@ -178,19 +184,21 @@ window.ajaxmap_opt.mapTypeId = google.maps.MapTypeId[window.ajaxmap_opt.type.toU
 window.currentInfobox = 0;
 
 // Create the map and set canvas size
-var canvas = document.getElementById('ajaxmap');	
+var canvas = document.getElementById('ajaxmap');
 var map = new google.maps.Map( canvas, window.ajaxmap_opt );
-canvas.style.width = window.ajaxmap_opt['width'] + 'px';
-canvas.style.height = window.ajaxmap_opt['height'] + 'px';
+canvas.style.width = window.ajaxmap_opt['width'];
+canvas.style.height = window.ajaxmap_opt['height'];
 
 // Hard-coded icon for now
 var icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png');
 
 // Retrieve location info and create markers
+var data = { action: 'traillocations' };
+if( 'query' in window.ajaxmap_opt ) data.query = ajaxmap_opt.query;
 $.ajax({
-	type: "POST",
+	type: 'POST',
 	url: mw.util.wikiScript(),
-	data: { action: 'traillocations', query: window.ajaxmap_opt['query'] },
+	data: data,
 	dataType: 'json',
 	success: function( data ) {
 		for( i in data ) {
