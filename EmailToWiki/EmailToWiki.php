@@ -9,7 +9,10 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.1.6, 2012-01-19' );
+define( 'EMAILTOWIKI_VERSION', '2.1.8, 2012-01-19' );
+
+// Set this if you want the attachments to be passed to a template
+$wgAttachmentTemplate = false;
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -18,10 +21,10 @@ $wgEmailToWikiErrLog = "$dir/EmailToWiki.log";
 
 $wgExtensionFunctions[] = 'wfSetupEmailToWiki';
 $wgExtensionCredits['other'][] = array(
-	'name'	=> 'EmailToWiki',
+	'name'        => 'EmailToWiki',
 	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
 	'description' => 'Allows emails to be sent to the wiki and added to an existing or new article',
-	'url'	 => 'http://www.mediawiki.org/wiki/Extension:EmailToWiki',
+	'url'         => 'http://www.mediawiki.org/wiki/Extension:EmailToWiki',
 	'version'     => EMAILTOWIKI_VERSION
 );
 
@@ -53,24 +56,12 @@ class EmailToWiki {
 	/**
 	 * Process any unprocesseed email files created by EmailToWiki.pl
 	 */
-	function HumanReadableFilesize($size) {
-	// Adapted from: http://www.php.net/manual/en/function.filesize.php
-    	    $mod = 1024;
-	   
-	    $units = explode(' ','B kB MB GB TB PB');
-	    for ($i = 0; $size > $mod; $i++) {
-	       $size /= $mod;
-	    }
-		    
-	    return round($size, 2) . ' ' . $units[$i];
-	}	 
-	 
 	function processEmails( $prefix = false ) {
 		global $wgEmailToWikiTmpDir;
-	       
+		
 		// Allow different tmp directory to be used
 		if( $prefix ) $wgEmailToWikiTmpDir = dirname( $wgEmailToWikiTmpDir ) . "/$prefix.tmp";
-	       
+		
 		$this->logAdd( "EmailToWiki.php (" . EMAILTOWIKI_VERSION . ") started processing " . basename( $wgEmailToWikiTmpDir ) );
 		if( !is_dir( $wgEmailToWikiTmpDir ) ) die( $this->logAdd( "Directory \"$wgEmailToWikiTmpDir\" doesn't exist!" ) );
 
@@ -90,10 +81,11 @@ class EmailToWiki {
 					$attachment = $m[1];
 					$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
 					$text = wfMsg( 'emailtowiki_uploadtext', $msg );
-					$size = filesize($file);
+					$size = $this->filesize( $file );
 					$status = $this->upload( $file, $name, $comment, $text );
 					if( $status === true ) {
-						$files .= "{{EmailAttachment|$name|$attachment|".$size."}}\n";
+						global $wgAttachmentTemplate;
+						$files .= $wgAttachmentTemplate ? '{{' . "$wgAttachmentTemplate|$name|$attachment|$size}}" : "*[[:$name|$attachment]] ($size)\n";
 						$nfiles++;
 					}
 					else $this->logAdd( $status );
@@ -106,7 +98,7 @@ class EmailToWiki {
 				$article->doEdit( $content, wfMsg( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
 				$nemails++;
 			} else $this->logAdd( "email \"$msg\" already exists!" );
-			       
+				
 			// Remove the processed message folder
 			exec( "rm -rf \"$dir\"" );
 		}
@@ -128,10 +120,21 @@ class EmailToWiki {
 		$title = $upload->getTitle();
 		if( is_object( $title ) ) {
 			$status = $upload->performUpload( $comment, $text, false, $user );
-			$name = $title->getText();
+			$name = $title->getPrefixedText();
 		} else return 'File "' . basename( $file ) . '" could not be uploaded, the file-extension is probably not permitted by the wiki';
 		return $status->isGood() ? true : $status->getWikiText();
 	}
+
+	/**
+	 * Return filesize of passed file in human readable format
+	 * - Adapted from: http://www.php.net/manual/en/function.filesize.php
+	 */
+	function filesize( $file ) {
+		$size = filesize( $file );
+		$units = array( 'Bytes', 'KB', 'MB', 'GB', 'TB', 'PB' );
+		for( $i = 0; $size > 1024; $i++ ) $size /= 1024;
+		return round( $size, 2 ) . ' ' . $units[$i];
+	}         
 
 	/**
 	 * Append an error message to the log
@@ -152,4 +155,3 @@ function wfSetupEmailToWiki() {
 	global $wgEmailToWiki;
 	$wgEmailToWiki = new EmailToWiki();
 }
-
