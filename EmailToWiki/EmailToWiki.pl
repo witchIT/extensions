@@ -32,7 +32,7 @@ use LWP::UserAgent;
 use utf8;
 use Encode;
 use strict;
-$::ver   =  '2.1.8, 2012-01-19';
+$::ver   =  '2.1.9, 2012-01-19';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -59,6 +59,7 @@ while( $::config = readdir( CONF ) ) {
 	$::remove = 0;
 	$::template = "Email";
 	$::emailonly = 1;
+	$::html_only = 0;
 
 	# Set the globals from the config file
 	require "$::dir/$::config";
@@ -189,9 +190,11 @@ sub processEmail {
 	$html_body =~ s/\s*<\/?html[^>]*>\s*//sgi; # Strip html tags too
 
 	# This feature needs $wgRawHtml = true setting!
-	$body .= "<div name=\"html_part\"><html>\n".$html_body."</html></div>\n" unless $html_body =~ /^\s*$/;
-	$body .= "<div name=\"plain_part\"><pre>\n".$plain_body."</pre></div>\n" unless $plain_body =~ /^\s*$/;
-	$body .= "<div name=\"other_part\"><pre>\n".$other_body."</pre></div>\n" unless $other_body =~ /^\s*$/;
+	$body .= "<div name=\"html_part\"><html>\n$html_body</html></div>\n" unless $html_body =~ /^\s*$/;
+	unless( $::html_only ) {
+		$body .= "<div name=\"plain_part\"><pre>\n$plain_body</pre></div>\n" unless $plain_body =~ /^\s*$/;
+		$body .= "<div name=\"other_part\"><pre>\n$other_body</pre></div>\n" unless $other_body =~ /^\s*$/;
+	}
 	$body =~ s/\r//g;
 
 	my $text = "{{$::template
