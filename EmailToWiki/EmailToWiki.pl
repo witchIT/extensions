@@ -29,8 +29,10 @@ use Net::IMAP::Simple::SSL;
 use Email::MIME;
 use HTTP::Request;
 use LWP::UserAgent;
+use utf8;
+use Encode;
 use strict;
-$::ver   =  '2.1.7, 2011-12-14';
+$::ver   =  '2.1.6, 2012-01-19';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -41,7 +43,7 @@ logAdd( "EmailToWiki.pl $::ver started" );
 
 # Loop through all the *.conf files found in the programs directory
 opendir( CONF, $::dir ) or die $!;
-while ( $::config = readdir( CONF ) ) {
+while( $::config = readdir( CONF ) ) {
 	next if( $::config !~ /([^\/]+)\.conf$/ );
 	$::prefix = $1;
 	logAdd( "Processing configuration file \"$1.conf\"" );
@@ -56,10 +58,9 @@ while ( $::config = readdir( CONF ) ) {
 	$::owner = "www-data";
 	$::remove = 0;
 	$::template = "Email";
-	$::emailonly = 1;
 
 	# Set the globals from the config file
-	require $::config;
+	require "$::dir/$::config";
 
 	# Process messages in a POP3 mailbox
 	if( $::type eq 'POP3' ) {
@@ -127,24 +128,35 @@ sub processEmail {
 	my $from    = $1 if $email =~ /^from:\s*(.+?)\s*$/mi;
 	my $subject = $1 if $email =~ /^subject:\s*(.+?)\s*$/im;
 
-	# Clean up email addresses
-	$from = $1 if $from =~ /<(.+?)>$/;
-	$to = $1 if $to =~ /<(.+?)>$/;
+	# support for MIME encoded
+	$from = decode("MIME-Header", $from);
+	$to = decode("MIME-Header", $to);
+	$subject = decode("MIME-Header", $subject);
+
+	# ensure the utf8 encoding
+	# FIXME: guess the original encoding!
+	if (!utf8::is_utf8($from)) { Encode::from_to($from, "iso-8859-2", "utf8"); }
+	if (!utf8::is_utf8($to)) { Encode::from_to($to, "iso-8859-2", "utf8"); }
+	if (!utf8::is_utf8($subject)) { Encode::from_to($subject, "iso-8859-2", "utf8"); }
 
 	# Create unique title according to $::format
 	my $title = friendlyTitle( eval "\"$::format\"" );
+	my $dirname = friendlyTitle( $id ); # $::format could generate more than 256 characters!
 
 	# Create directory of the title name for any attachments (bail if exists already)
-	my $dir = "$::tmp/$title";
+	my $dir = "$::tmp/$dirname";
 	return if -e $dir;
 	mkdir $dir;
 	qx( chown $::owner:$::owner "$dir" );
 
 	# Loop through attachments uploading each
-	my $body = "";
+	# separate the email body to 3 parts
+	my $plain_body = "";
+	my $html_body = "";
+	my $other_body = "";
 	Email::MIME->new( $email )->walk_parts( sub {
 		my( $part ) = @_;
-		if( $part->content_type =~ /\bname="([^"]+)"/ ) {
+		if( $part->content_type =~ /\bname="([^\"]+)"/ ) {
 			my $name = friendlyTitle( $1 );
 			my $file = $dir . '/__' . $id . '_' . $name;
 
@@ -156,16 +168,31 @@ sub processEmail {
 			close $fh or return logAdd( "Failed to close attachment $file: $!" );
 			qx( chown $::owner:$::owner "$file" );
 		} else {
-			my $text = $part->content_type =~ m!^text/! ? $part->body_str : $part->body;
-			$body .= $text unless $text =~ /This is a multi-part message in MIME format/i;
+			if( $part->content_type =~ m!^text/html! ) {
+				$html_body .= $part->body_str;
+			} elsif( $part->content_type =~ m!^text/! ) {
+				$plain_body .= $part->body_str;
+			} else {
+				$other_body .= $part->body unless $part->body =~ /This is a multi-part message in MIME format/i;
+			}
 		}
 	} );
 
+	my $body = "";
 	# Create the article content
-	$body =~ s/\s*<!DOCTYPE[^>]+>\s*//si;
-	$body =~ s/\s*<head>.+?<\/head>\s*//si;
-	$body =~ s/\s*<\/?body[^>]*>\s*//sgi;
+	$html_body =~ s/\s*<!DOCTYPE[^>]+>\s*//si;
+	$html_body =~ s/\s*<head>.+?<\/head>\s*//si;
+	$html_body =~ s/\s*<title>.+?<\/title>\s*//si;
+	$html_body =~ s/\s*<style[^>]*>.+?<\/style>\s*//sgi; # disable css
+	$html_body =~ s/\s*<\/?body[^>]*>\s*//sgi;
+	$html_body =~ s/\s*<\/?html[^>]*>\s*//sgi; # strip html tags too
+
+	# this feature needs $wgRawHtml = true setting!
+	$body .= "<div name=\"html_part\"><html>\n".$html_body."</html></div>\n" unless $html_body =~ /^\s*$/;
+	$body .= "<div name=\"plain_part\"><pre>\n".$plain_body."</pre></div>\n" unless $plain_body =~ /^\s*$/;
+	$body .= "<div name=\"other_part\"><pre>\n".$other_body."</pre></div>\n" unless $other_body =~ /^\s*$/;
 	$body =~ s/\r//g;
+
 	my $text = "{{$::template
  | id      = $id
  | date    = $date
@@ -174,7 +201,7 @@ sub processEmail {
  | subject = $subject
 }}
 $body";
-	
+
 	# Save the content for importing with attachments
 	my $file = "$dir/_BODYTEXT_";
 	open FH, ">", $file or return logAdd( "Failed to open attachment $file: $!" );
@@ -199,6 +226,7 @@ sub logAdd {
 # Make the passed string ok for a wiki article title
 sub friendlyTitle {
 	my $title = shift;
-	$title =~ s/[^-_ \(\)\[\]:;'"?.,%$@!+a-zA-Z0-9]+/-/g;
+	$title =~ s/[#|\\\[\]]+/-/g;
 	return $title;
 }
+
