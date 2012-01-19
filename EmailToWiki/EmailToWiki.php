@@ -58,10 +58,10 @@ class EmailToWiki {
 	 */
 	function processEmails( $prefix = false ) {
 		global $wgEmailToWikiTmpDir;
-		
+
 		// Allow different tmp directory to be used
 		if( $prefix ) $wgEmailToWikiTmpDir = dirname( $wgEmailToWikiTmpDir ) . "/$prefix.tmp";
-		
+
 		$this->logAdd( "EmailToWiki.php (" . EMAILTOWIKI_VERSION . ") started processing " . basename( $wgEmailToWikiTmpDir ) );
 		if( !is_dir( $wgEmailToWikiTmpDir ) ) die( $this->logAdd( "Directory \"$wgEmailToWikiTmpDir\" doesn't exist!" ) );
 
@@ -98,7 +98,7 @@ class EmailToWiki {
 				$article->doEdit( $content, wfMsg( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
 				$nemails++;
 			} else $this->logAdd( "email \"$msg\" already exists!" );
-				
+
 			// Remove the processed message folder
 			exec( "rm -rf \"$dir\"" );
 		}

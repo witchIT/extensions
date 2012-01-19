@@ -129,12 +129,12 @@ sub processEmail {
 	my $from    = $1 if $email =~ /^from:\s*(.+?)\s*$/mi;
 	my $subject = $1 if $email =~ /^subject:\s*(.+?)\s*$/im;
 
-	# support for MIME encoded
-	$from = decode( "MIME-Header", $from );
-	$to = decode( "MIME-Header", $to );
+	# Support for MIME encoded
+	$from    = decode( "MIME-Header", $from );
+	$to      = decode( "MIME-Header", $to );
 	$subject = decode( "MIME-Header", $subject );
 
-	# ensure the utf8 encoding
+	# Ensure the utf8 encoding
 	# FIXME: guess the original encoding!
 	Encode::from_to( $from,    "iso-8859-2", "utf8" ) if !utf8::is_utf8( $from );
 	Encode::from_to( $to,      "iso-8859-2", "utf8" ) if !utf8::is_utf8( $to );
@@ -147,10 +147,11 @@ sub processEmail {
 	my $dir = "$::tmp/$title";
 	return if -e $dir;
 	mkdir $dir;
-	qx( chown $::owner:$::owner "$dir" );
+	my( $login, $pass, $uid, $gid ) = getpwnam( $::owner );
+	chown $uid, $gid, $dir;
 
 	# Loop through attachments uploading each
-	# separate the email body to 3 parts
+	# - Separate the email body to 3 parts
 	my $plain_body = "";
 	my $html_body = "";
 	my $other_body = "";
@@ -166,7 +167,7 @@ sub processEmail {
 			print $fh $part->content_type =~ m!^text/! ? $part->body_str : $part->body
 				or return logAdd( "Failed to write attachment $file: $!" );
 			close $fh or return logAdd( "Failed to close attachment $file: $!" );
-			qx( chown $::owner:$::owner "$file" );
+			chown $uid, $gid, $file;
 		} else {
 			if( $part->content_type =~ m!^text/html! ) {
 				$html_body .= $part->body_str;
@@ -183,11 +184,11 @@ sub processEmail {
 	$html_body =~ s/\s*<!DOCTYPE[^>]+>\s*//si;
 	$html_body =~ s/\s*<head>.+?<\/head>\s*//si;
 	$html_body =~ s/\s*<title>.+?<\/title>\s*//si;
-	$html_body =~ s/\s*<style[^>]*>.+?<\/style>\s*//sgi; # disable css
+	$html_body =~ s/\s*<style[^>]*>.+?<\/style>\s*//sgi; # Disable css
 	$html_body =~ s/\s*<\/?body[^>]*>\s*//sgi;
-	$html_body =~ s/\s*<\/?html[^>]*>\s*//sgi; # strip html tags too
+	$html_body =~ s/\s*<\/?html[^>]*>\s*//sgi; # Strip html tags too
 
-	# this feature needs $wgRawHtml = true setting!
+	# This feature needs $wgRawHtml = true setting!
 	$body .= "<div name=\"html_part\"><html>\n".$html_body."</html></div>\n" unless $html_body =~ /^\s*$/;
 	$body .= "<div name=\"plain_part\"><pre>\n".$plain_body."</pre></div>\n" unless $plain_body =~ /^\s*$/;
 	$body .= "<div name=\"other_part\"><pre>\n".$other_body."</pre></div>\n" unless $other_body =~ /^\s*$/;
@@ -208,7 +209,7 @@ $body";
 	binmode FH, ":utf8";
 	print FH $text or return logAdd( "Failed to write attachment $file: $!" );
 	close FH or return logAdd( "Failed to close attachment $file: $!" );
-	qx( chown $::owner:$::owner "$file" );
+	chown $uid, $gid, $file;
 }
 
 
@@ -226,7 +227,9 @@ sub logAdd {
 # Make the passed string ok for a wiki article title
 sub friendlyTitle {
 	my $title = shift;
-	$title =~ s/[#|\\\[\]]+/-/g;
+	$title =~ tr/<{[/(/;
+	$title =~ tr/>}]/)/;
+	$title =~ tr/#|\\+/-/;
 	return $title;
 }
 
