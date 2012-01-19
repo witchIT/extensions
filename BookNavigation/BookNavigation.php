@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'BOOKNAVIGATION_VERSION', "0.0.2, 2012-01-12" );
+define( 'BOOKNAVIGATION_VERSION', "0.0.3, 2012-01-18" );
 
 define( 'BOOKNAVIGATION_DEPTH',   1 );
 define( 'BOOKNAVIGATION_TITLE',   2 );
@@ -191,12 +191,12 @@ class BookNavigation {
 		$structure = array();
 		foreach( preg_split( "|^=|m", $content ) as $chapter ) {
 			if( preg_match( "|^=\s*(.+?)\s*==$(.*)|sm", $chapter, $m ) ) {
-				$chapter = $m[1];
+				$chapter = self::pageName( $m[1] );
 				preg_match_all( "|^(\*+)\s*(.+?)\s*$|m", $m[2], $m );
 				$lastdepth = 0;
 				$pages = array();
 				foreach( $m[1] as $i => $depth ) {
-					$info = array( BOOKNAVIGATION_TITLE => $m[2][$i] );
+					$info = array( BOOKNAVIGATION_TITLE => self::pageName( $m[2][$i] ) );
 					$depth = $info[BOOKNAVIGATION_DEPTH] = strlen( $depth );
 					if( $lastdepth ) {
 						if( $depth == $lastdepth ) $info[BOOKNAVIGATION_PARENT] = $pages[$i - 1][BOOKNAVIGATION_PARENT];
@@ -271,6 +271,15 @@ class BookNavigation {
 		$info[BOOKNAVIGATION_URL] = $url;
 
 		return $info;
+	}
+
+	/**
+	 * Extract the text of an article title from passed text which might be: title, [[title]] or [[title|anchor]]
+	 */
+	static function pageName( $text ) {
+		if( preg_match( "#\[\[\s*(.+?)\s*\|.+?\]\]#", $text, $m ) ) return $m[1];
+		elseif( preg_match( "#\[\[\s*(.+?)\s*\]\]#", $text, $m ) ) return $m[1];
+		return $text;
 	}
 }
 
