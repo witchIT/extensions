@@ -21,22 +21,23 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  */
 ini_set( 'memory_limit', '64M' );
 
-# Constants
-define( 'WIKIA_VERSION', '1.2.7, 2011-07-08' );
+// Constants
+define( 'WIKIA_VERSION', '1.2.8, 2012-01-19' );
 
-# Read the DB access and bot name info from wikid.conf
+// Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
 foreach( file( '/var/www/tools/wikid.conf' ) as $line ) {
-	if ( preg_match( "|^\s*\\\$addr\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $wgWikidAddr = $m[1];
-	if ( preg_match( "|^\s*\\\$(wgDB.+?)\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $$m[1] = $m[2];
+	if( preg_match( "|^\s*\\\$addr\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $wgWikidAddr = $m[1];
+	if( preg_match( "|^\s*\\\$(wgDB.+?)\s*=\s*['\"](.+?)[\"']|m", $line, $m ) ) $$m[1] = $m[2];
 }
 
-# Namespaces
+// Namespaces
 define( 'NS_FORM',           106  );
 define( 'NS_EXTENSION',      1000 );
 define( 'NS_CONFIG',         1004 );
 define( 'NS_PORTAL',         1010 );
 define( 'NS_CREATE',         1014 );
+define( 'NS_EMAIL',          1016 );
 
 $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgExtraNamespaces[NS_FORM]        = 'Form';
@@ -49,8 +50,10 @@ $wgExtraNamespaces[NS_PORTAL]      = 'Portal';
 $wgExtraNamespaces[NS_PORTAL+1]    = 'Portal_talk';
 $wgExtraNamespaces[NS_CREATE]      = 'Create';
 $wgExtraNamespaces[NS_CREATE+1]    = 'Create_talk';
+$wgExtraNamespaces[NS_EMAIL]       = 'Email';
+$wgExtraNamespaces[NS_EMAIL+1]     = 'Email_talk';
 
-# Default globals defined before specific LocalSettings inclusion
+// Default globals defined before specific LocalSettings inclusion
 $wgArticlePath            = '/$1';
 $wgScriptPath             = '/wiki';
 
@@ -62,7 +65,7 @@ $wgTruncatedCommentLength = 50;
 $wgVerifyMimeType         = false;
 $wgUseTeX                 = true;
 $wgSVGConverter           = 'rsvg';
-$wgRewriteRule            = 'Friendly'; # rewrite.pl URL transformation function name
+$wgRewriteRule            = 'Friendly'; // rewrite.pl URL transformation function name
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
 
@@ -74,7 +77,7 @@ $wgUseSiteCss             = true;
 $wgUseSiteJs              = true;
 $wgUseWikiaCss            = true;
 
-# File upload settings
+// File upload settings
 $wgEnableUploads          = true;
 $wgAllowCopyUploads       = true;
 $wgUploadPath             = '/files';
@@ -87,39 +90,39 @@ $wgFileExtensions         = array(
 );
 $wgGroupPermissions['sysop']['upload_by_url'] = true;
 
-# Messages
+// Messages
 $wgExtensionMessagesFiles['OD'] = dirname( __FILE__ ) . '/wikia.i18n.php';
 
-# Allow fallback to OD images
+// Allow fallback to OD images
 $wgUseSharedUploads       = true;
 $wgSharedUploadDirectory  = '/var/www/wikis/od/files';
 $wgSharedUploadPath       = 'http://www.organicdesign.co.nz/files';
 
-# Global wikia configuration
+// Global wikia configuration
 $settings                 = '/var/www/wikis';
 $domains                  = '/var/www/domains';
 $extensions               = dirname( __FILE__ );
 
-# If running from command-line set the DBadmin user and pass from the ones in wikid.conf
-if ( $wgCommandLineMode ) {
+// If running from command-line set the DBadmin user and pass from the ones in wikid.conf
+if( $wgCommandLineMode ) {
 	$wgDBadminuser = $wgDBuser;
 	$wgDBadminpassword = $wgDBpassword;
 	$root = "$domains/$domain";
 }
 
-# If it's a normal web request, set the root from SERVER_NAME
+// If it's a normal web request, set the root from SERVER_NAME
 else {
 	$domain = preg_replace( "/^(www\.|wiki\.)/", "", $_SERVER['SERVER_NAME'] );
 	$root   = $_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'] . "/$domain";
 	$domain = $_SERVER['SERVER_NAME'];
 }
 
-# Add google analytics code
+// Add google analytics code
 $wgExtensionFunctions[] = 'wfGoogleAnalytics';
 $wgGoogleTrackingCodes = array();
 function wfGoogleAnalytics() {
 	global $wgOut, $wgGoogleTrackingCodes;
-	foreach ( $wgGoogleTrackingCodes as $code ) $wgOut->addScript( '<script type="text/javascript">
+	foreach( $wgGoogleTrackingCodes as $code ) $wgOut->addScript( '<script type="text/javascript">
 		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 		document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
 		</script><script type="text/javascript">
@@ -127,17 +130,17 @@ function wfGoogleAnalytics() {
 		pageTracker._trackPageview();</script>' );
 }
 
-# Include the LocalSettings file for the domain
+// Include the LocalSettings file for the domain
 $wgUploadDirectory = "$root$wgUploadPath";
 include( "$root/LocalSettings.php" );
 
-# Add our specials to the OD group
+// Add our specials to the OD group
 $wgSpecialPageGroups['RecordAdmin'] = 'od';
 $wgSpecialPageGroups['EmailPage'] = 'od';
 $wgSpecialPageGroups['NukeDPL'] = 'od';
 
-# Display a maintenance page if $wgSiteDown set (unless request is from command line)
-if ( $wgSiteDown && !$wgCommandLineMode ) {
+// Display a maintenance page if $wgSiteDown set (unless request is from command line)
+if( $wgSiteDown && !$wgCommandLineMode ) {
 	while( @ob_end_clean() );
 	$msg = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>Down for maintenance</title></head>
 	<body bgcolor="white"><table width="100%"><tr><td align="center">
@@ -150,57 +153,57 @@ if ( $wgSiteDown && !$wgCommandLineMode ) {
 	die;
 }
 
-# Post LocalSettings globals
-$wgUploadDirectory  = $_SERVER['DOCUMENT_ROOT'] . "$wgUploadPath"; # allows wiki's settings to change images location
+// Post LocalSettings globals
+$wgUploadDirectory  = $_SERVER['DOCUMENT_ROOT'] . "$wgUploadPath"; // allows wiki's settings to change images location
 $wgLocalInterwiki   = $wgSitename;
-if ( $wgEmergencyContact === false ) $wgEmergencyContact = $wgPasswordSender = 'admin@' . str_replace( 'www.', '', $domain );
+if( $wgEmergencyContact === false ) $wgEmergencyContact = $wgPasswordSender = 'admin@' . str_replace( 'www.', '', $domain );
 
 $wgNoReplyAddress = "";
 
-# Add wikia.css
-if ( $wgUseWikiaCss ) $wgHooks['BeforePageDisplay'][] = 'odAddWikiaCss';
+// Add wikia.css
+if( $wgUseWikiaCss ) $wgHooks['BeforePageDisplay'][] = 'odAddWikiaCss';
 function odAddWikiaCss( &$out, $skin = false ) {
 	global $wgScriptPath;
 	$out->addScript("<link rel=\"stylesheet\" type=\"text/css\" href=\"$wgScriptPath/extensions/wikia.css\" />");
 	return true;
 }
 
-# Map naked URL to different articles depending on domain
+// Map naked URL to different articles depending on domain
 function domainRedirect( $list ) {
 	if ( basename( $_SERVER['SCRIPT_FILENAME'] ) !== 'index.php' ) return;
 	$d = $_SERVER['SERVER_NAME'];
 	$t = $_REQUEST['title'];
-	if ( empty( $t ) ) $t = preg_replace( "|^/|", "", isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '' );
-	if ( empty( $t ) || $t == 'Main_Page' )
-		foreach ( $list as $regexp => $title )
-			if ( preg_match( "|$regexp|", $d ) ) header( "Location: $wgServer/$title" ) && die;
+	if( empty( $t ) ) $t = preg_replace( "|^/|", "", isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '' );
+	if( empty( $t ) || $t == 'Main_Page' )
+		foreach( $list as $regexp => $title )
+			if( preg_match( "|$regexp|", $d ) ) header( "Location: $wgServer/$title" ) && die;
 }
 
-# Automatically log the server user in
-#$wgHooks['UserLoadFromSession'][] = 'odWikidAccess';
+// Automatically log the server user in
+//$wgHooks['UserLoadFromSession'][] = 'odWikidAccess';
 $wgWikidUserId = 1;
 function odWikidAccess( &$user, &$result ) {
 	global $wgWikidUserId, $wgWikidAddr;
-	if ( $wgWikidUserId && $_SERVER['REMOTE_ADDR'] == $wgWikidAddr ) {
+	if( $wgWikidUserId && $_SERVER['REMOTE_ADDR'] == $wgWikidAddr ) {
 		$user->setId( $wgWikidUserId );
 		$result = false;
 	}
 	return true;
 }
 
-# Block problem users, bots and requests
+// Block problem users, bots and requests
 $wgExtensionFunctions[] = 'odLogActivity';
 function odLogActivity() {
 	global $wgUser, $wgShortName, $wgRequest;
 	$user = $wgUser->getUserPage()->getText();
 	$sesh = preg_match( "|_session=([0-9a-z]+)|", isset( $_SERVER['HTTP_COOKIE'] ) ? $_SERVER['HTTP_COOKIE'] : '', $m ) ? $m[1] : '';
-	if ( $sesh ) $user .= ":$sesh";
-	if ( !$wgUser->isAnon() ) $user .= ':' . $_SERVER['REMOTE_ADDR'];
+	if( $sesh ) $user .= ":$sesh";
+	if( !$wgUser->isAnon() ) $user .= ':' . $_SERVER['REMOTE_ADDR'];
 	$url = $_SERVER['REQUEST_URI'];
-	if ( $wgRequest->wasPosted() ) {
+	if( $wgRequest->wasPosted() ) {
 		$post = array();
-		foreach ( $wgRequest->getValues() as $k => $v ) {
-			if ( strlen( $v ) > 10 ) $v = substr( $v, 0, 9 ) . '...';
+		foreach( $wgRequest->getValues() as $k => $v ) {
+			if( strlen( $v ) > 10 ) $v = substr( $v, 0, 9 ) . '...';
 			$v = urlencode( $v );
 			$post[] = "$k=$v";
 		}
@@ -209,25 +212,25 @@ function odLogActivity() {
 	}
 	$block = '';
 
-	# IP/User based blocks
-	$list = array(        # nslookup on ipaddresses;
-		'148.243.232.98', # Bot attempting shell hacks
+	// IP/User based blocks
+	$list = array(        // nslookup on ipaddresses;
+		'148.243.232.98', // Bot attempting shell hacks
 	);
 	
-	foreach( $list as $i ) if ( $block == '' and preg_match( "|$i|", $user ) ) $block .= '(ip-block)';
+	foreach( $list as $i ) if( $block == '' and preg_match( "|$i|", $user ) ) $block .= '(ip-block)';
 
-	# Session-based blocks
-	if (
+	// Session-based blocks
+	if(
 		$sesh == '2297d58013571cb3a6adddb9c5e3c36f'
 		|| $sesh == '0bbf7493262a75e3258c8da11a303296'
 	) $block .= '(sesh-block)';
 
-	# Silently block requests
-	if ( preg_match( "/(favicon|robots.txt|action=rawxxx)/i", $url ) ) return;
+	// Silently block requests
+	if( preg_match( "/(favicon|robots.txt|action=rawxxx)/i", $url ) ) return;
 
-	# Write log entry
+	// Write log entry
 	$handle = fopen( "/var/www/activity.log", "a" );
 	fwrite( $handle, date( 'Y-m-d H:i:s' ) . " ($wgShortName)($user)$block: $url\n" );
-	#if ($block) { sleep(1); die; }
+	//if ($block) { sleep(1); die; }
 }
 

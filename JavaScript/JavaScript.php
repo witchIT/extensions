@@ -33,7 +33,8 @@ if( version_compare( substr( $wgVersion, 0, 4 ), '1.17' ) < 0 ) {
 		'styles' => array(),
 		'dependencies' => array( 'jquery' ),
 		'localBasePath' => dirname( __FILE__ ),
-		'remoteExtPath' => $wgJavaScriptExterenalPath
+		'remoteExtPath' => basename( dirname( __FILE__ ) ),
+		'position' => 'top'
 	);
 
 	foreach( glob( dirname( __FILE__ ) . "/*.js" ) as $file ) {

@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'EDULOGIN_VERSION', "1.0.9, 2012-01-06" );
+define( 'EDULOGIN_VERSION', "1.0.10, 2012-01-09" );
 define( 'EDU_EMAIL_NOT_FOUND', 'internal message - emailnotfound' );
 
 $wgEduEmailPattern = "|\.edu$|";
@@ -140,7 +140,7 @@ class EduLoginForm extends LoginForm {
 	static function renderLoginAndCreate( $msg = '' ) {
 		$login = self::renderUserLogin();
 		$create = self::renderCreateAccount();
-		$welcome = wfMsg( 'edu-welcome' );
+		$welcome = "<div id=\"edu-welcome\">" . cwfMsg( 'edu-welcome' ) . "</div>";
 		if( $msg ) $msg = "<div class=\"errorbox\"><strong>Login error</strong><br />$msg</div>";
 		return "<table class=\"edulogin\"><tr><td colspan=\"2\">$welcome<br />$msg</td></tr><tr><td valign=\"top\">$login</td><td>$create</td></tr></table>";
 	}
