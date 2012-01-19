@@ -58,6 +58,7 @@ while( $::config = readdir( CONF ) ) {
 	$::owner = "www-data";
 	$::remove = 0;
 	$::template = "Email";
+	$::emailonly = 1;
 
 	# Set the globals from the config file
 	require "$::dir/$::config";
@@ -129,22 +130,21 @@ sub processEmail {
 	my $subject = $1 if $email =~ /^subject:\s*(.+?)\s*$/im;
 
 	# support for MIME encoded
-	$from = decode("MIME-Header", $from);
-	$to = decode("MIME-Header", $to);
-	$subject = decode("MIME-Header", $subject);
+	$from = decode( "MIME-Header", $from );
+	$to = decode( "MIME-Header", $to );
+	$subject = decode( "MIME-Header", $subject );
 
 	# ensure the utf8 encoding
 	# FIXME: guess the original encoding!
-	if (!utf8::is_utf8($from)) { Encode::from_to($from, "iso-8859-2", "utf8"); }
-	if (!utf8::is_utf8($to)) { Encode::from_to($to, "iso-8859-2", "utf8"); }
-	if (!utf8::is_utf8($subject)) { Encode::from_to($subject, "iso-8859-2", "utf8"); }
+	Encode::from_to( $from,    "iso-8859-2", "utf8" ) if !utf8::is_utf8( $from );
+	Encode::from_to( $to,      "iso-8859-2", "utf8" ) if !utf8::is_utf8( $to );
+	Encode::from_to( $subject, "iso-8859-2", "utf8" ) if !utf8::is_utf8( $subject );
 
 	# Create unique title according to $::format
 	my $title = friendlyTitle( eval "\"$::format\"" );
-	my $dirname = friendlyTitle( $id ); # $::format could generate more than 256 characters!
 
 	# Create directory of the title name for any attachments (bail if exists already)
-	my $dir = "$::tmp/$dirname";
+	my $dir = "$::tmp/$title";
 	return if -e $dir;
 	mkdir $dir;
 	qx( chown $::owner:$::owner "$dir" );
