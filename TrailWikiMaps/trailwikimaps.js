@@ -176,41 +176,51 @@ InfoBox.prototype.loadContent = function( titles, div ) {
 	}
 };
 
-// Format some of the options
-window.ajaxmap_opt.center = new google.maps.LatLng( window.ajaxmap_opt.lat, window.ajaxmap_opt.lon );
-window.ajaxmap_opt.mapTypeId = google.maps.MapTypeId[window.ajaxmap_opt.type.toUpperCase()];
 
-// Only one infobox at a time
-window.currentInfobox = 0;
+/**
+ * Loop through the map options array creating each map
+ */
+if( 'ajaxmap_opt' in window ) {
+	for( map in window.ajaxmap_opt ) {
+		var opt = window.ajaxmap_opt[map];
 
-// Create the map and set canvas size
-var canvas = document.getElementById('ajaxmap');
-var map = new google.maps.Map( canvas, window.ajaxmap_opt );
-canvas.style.width = window.ajaxmap_opt['width'];
-canvas.style.height = window.ajaxmap_opt['height'];
+		// Format some of the options
+		opt.center = new google.maps.LatLng( opt.lat, opt.lon );
+		opt.mapTypeId = google.maps.MapTypeId[opt.type.toUpperCase()];
 
-// Hard-coded icon for now
-var icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png');
+		// Only one infobox at a time
+		window.currentInfobox = 0;
 
-// Retrieve location info and create markers
-var data = { action: 'traillocations' };
-if( 'query' in window.ajaxmap_opt ) data.query = ajaxmap_opt.query;
-$.ajax({
-	type: 'POST',
-	url: mw.util.wikiScript(),
-	data: data,
-	dataType: 'json',
-	success: function( data ) {
-		for( i in data ) {
-			var pos = i.split(',');
-			var marker = new google.maps.Marker({
-				position: new google.maps.LatLng(pos[0], pos[1]),
-				icon: icon,
-				map: map,
-				titles: data[i]
-			});
-			google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
-		}
+		// Create the map and set canvas size
+		var canvas = document.getElementById(map);
+		opt.map = new google.maps.Map(canvas, opt);
+		canvas.style.width = opt.width;
+		canvas.style.height = opt.height;
+
+		// Hard-coded icon for now
+		opt.icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png');
+
+		// Retrieve location info and create markers
+		var data = { action: 'traillocations' };
+		if( 'query' in opt ) data.query = opt.query;
+		$.ajax({
+			type: 'POST',
+			url: mw.util.wikiScript(),
+			data: data,
+			dataType: 'json',
+			context: opt,
+			success: function( data ) {
+				for( i in data ) {
+					var pos = i.split(',');
+					var marker = new google.maps.Marker({
+						position: new google.maps.LatLng(pos[0], pos[1]),
+						icon: this.icon,
+						map: this.map,
+						titles: data[i]
+					});
+					google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
+				}
+			}
+		});
 	}
-});
-
+}

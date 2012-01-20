@@ -13,11 +13,12 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','1.0.8, 2012-01-18' );
-define( 'TRAILWIKIMAP_NAME', 1 );
-define( 'TRAILWIKIMAP_OFFSET', 2 );
-define( 'TRAILWIKIMAP_LENGTH', 3 );
-define( 'TRAILWIKIMAP_DEPTH', 4 );
+define( 'TRAILWIKIMAP_VERSION','2.0.2, 2012-01-20' );
+
+$wgTrailWikiMagic           = "ajaxmap";
+$wgTrailWikiIdMagic         = "articleid";
+$wgTrailWikiRatingTable     = 'cv_ratings_votes';
+$wgTrailWikiDifficultyTable = 'tw_difficulty_votes';
 
 // Note - these images should really be made into consistent naming such as "icon-dog.png"
 //        that way a mapping from name to image wouldn't be needed,
@@ -37,13 +38,7 @@ $wgTrailWikiIcons = array(
 	'jeep' => 'Icon_Jeep_20px.png'
 );
 
-$wgTrailWikiRatingTable = 'cv_ratings_votes';
-$wgTrailWikiDifficultyTable = 'tw_difficulty_votes';
-
-$wgTrailWikiMagic              = "ajaxmap";
-$wgExtensionFunctions[]        = 'wfSetupTrailWikiMaps';
-$wgHooks['LanguageGetMagic'][] = 'wfTrailWikiMapsLanguageGetMagic';
-
+$wgExtensionFunctions[] = 'wfSetupTrailWikiMaps';
 $wgExtensionCredits['parserhook'][] = array(
 	'path'        => __FILE__,
 	'name'        => 'TrailWikiMaps',
@@ -53,25 +48,34 @@ $wgExtensionCredits['parserhook'][] = array(
 	'version'     => TRAILWIKIMAP_VERSION
 );
 
+define( 'TRAILWIKIMAP_NAME', 1 );
+define( 'TRAILWIKIMAP_OFFSET', 2 );
+define( 'TRAILWIKIMAP_LENGTH', 3 );
+define( 'TRAILWIKIMAP_DEPTH', 4 );
+
 class TrailWikiMaps {
 
-	var $opts = array(
-		'"type":"TERRAIN"',
-		'"zoom":8'
-	);
+	var $mapid = 1;
+	var $opts = array();
 
 	function __construct() {
 		global $wgOut, $wgHooks, $wgParser, $wgResourceModules, $wgTrailWikiMagic;
 
-		$wgHooks['UnknownAction'][] = $this;
+		// Set up magic words
+		$wgHooks['UnknownAction'][]                = $this;
+		$wgHooks['ParserGetVariableValueSwitch'][] = $this;
+		$wgHooks['MagicWordwgVariableIDs'][]       = $this;
+		$wgHooks['LanguageGetMagic'][]             = $this;
 
+		// Set up parser-functions
 		$wgParser->setFunctionHook( $wgTrailWikiMagic, array( $this,'expandAjaxMap' ) );
 		$wgParser->setFunctionHook( 'ajaxmapinternal', array( $this,'expandAjaxMapInternal' ) );
 
+		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.trailwikimaps'] = array(
-			'scripts' => array( 'trailwikimaps.js' ),
-			'styles' => array( 'trailwikimaps.css' ),
-			'dependencies' => array( 'mediawiki.util' ),
+			'scripts'       => array( 'trailwikimaps.js' ),
+			'styles'        => array( 'trailwikimaps.css' ),
+			'dependencies'  => array( 'mediawiki.util' ),
 			'localBasePath' => dirname( __FILE__ ),
 			'remoteExtPath' => basename( dirname( __FILE__ ) ),
 		);
@@ -84,8 +88,7 @@ class TrailWikiMaps {
 	function onUnknownAction( $action, $article ) {
 		global $wgOut, $wgJsMimeType;
 
-		// Update the information for the specified ISBN (or oldest book in the wiki if none supplied)
-		// - if the book doesn't exist and the "create" query-string item is set, then create the book article
+		// Returns the list of trails in each location in JSON format
 		if( $action == 'traillocations' ) {
 			$wgOut->disable();
 			header( 'Content-Type: application/json' );
@@ -100,54 +103,83 @@ class TrailWikiMaps {
 			print "}\n";
 		}
 
-		if( $action == 'trailinfo' ) {
+		// Returns the rendered HTML of a popup box for the specified trail
+		elseif( $action == 'trailinfo' ) {
 			$wgOut->disable();
 			global $wgTitle;
-			$data = self::getTrailInfo( $wgTitle );
+			print $this->renderTrailInfo( $wgTitle );
+		}
 
-			// Convert the trail uses to a list of images
-			$icons = '';
-			if( !empty( $data['Trail Use'] ) ) {
-				global $wgTrailWikiIcons;
-				$uses = preg_replace( "|[^a-z ]|", "", strtolower( $data['Trail Use'] ) );
-				foreach( preg_split( "|\s+|", $uses ) as $i ) {
-					if( array_key_exists( $i, $wgTrailWikiIcons ) ) {
-						if( $icon = wfLocalFile( $wgTrailWikiIcons[$i] ) ) {
-							$icon = $icon->transform( array( 'width' => 20 ) )->toHtml();
-							$icons .= "<span class=\"ajaxmap-info-icon\">$icon</span>";
-						}
+		// Returns information about the data stored in the ratings table (internal maintenance action)
+		elseif( $action == 'ratinginfo' ) {
+			global $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable;
+			$wgOut->disable();
+			print "<table border>\n";
+			$dbr = wfGetDB( DB_SLAVE );
+			foreach( array( $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable ) as $table ) {
+				print "<tr><th colspan=\"3\">$table</th></tr>\n";
+				$table = $dbr->tableName( $table );
+				$res   = $dbr->select( $table, 'vot_title,vot_rating', array() );
+				while( $row = $dbr->fetchRow( $res ) ) {
+					print "<tr><td>$row[0]</td><td>$row[1]</td>";
+					if( is_numeric( $row[0] ) ) {
+						$title = Title::newFromId( $row[0] )->getPrefixedText();
+						print "<td>Title: $title</td>";
+					} else {
+						$id = Title::newFromText( $row[0] )->getArticleID();
+						print "<td>ID: $id</td>";
 					}
+					print "</tr>\n";
 				}
+				$dbr->freeResult( $res );
 			}
-
-			$unknown    = '<i>unknown</i>';
-			$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 0 ) . '/5' : $unknown;
-			$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 0 ) . '/5' : $unknown;
-			$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
-			$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
-			$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
-
-			// Render the info
-			$info = "<b>Distance: </b>$distance<br />";
-			$info .= "<b>Elevation Gain: </b>$elevation<br />";
-			$info .= "<b>High Point: </b>$high<br />";
-			$info .= "<b>Trail Uses: </b>$icons<br />";
-			$info .= "<b>Difficulty: </b>$difficulty<br />";
-			$info .= "<b>Rating: </b>$rating<br />";
-
-			// Get a thumbnail image if the image field is set
-			$img = '';
-			if( !empty( $data['Image Name'] ) ) {
-				if( $img = wfLocalFile( $data['Image Name'] ) ) $img = $img->transform( array( 'width' => 140 ) )->toHtml();
-			}
-
-			// Return the data in a table
-			print "<table><tr><td>$info</td><th>$img</th></tr></table>";
+			print "</table>\n";
 		}
 
 		return true;
 	}
 
+	/**
+	 * Return a rating value from the selected CommunityVoice table
+	 */
+	static function getCommunityValue( $table, $title ) {
+		$dbr = wfGetDB( DB_SLAVE );
+		$table = $dbr->tableName( $table );
+		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_title' => $title ) );
+		return $val;
+	}
+
+	/**
+	 * Register all magic words
+	 */
+	function onLanguageGetMagic( &$magicWords, $langCode = 0 ) {
+		global $wgTrailWikiMagic, $wgTrailWikiIdMagic;
+		$magicWords[$wgTrailWikiIdMagic] = array( 0, $wgTrailWikiIdMagic );
+		$magicWords[$wgTrailWikiMagic]   = array( 0, $wgTrailWikiMagic );
+		$magicWords['ajaxmapinternal']   = array( 0, 'ajaxmapinternal' );
+		return true;
+	}
+
+	/**
+	 * Register variable magic word for Artcile ID
+	 */
+	function onMagicWordwgVariableIDs( &$variables ) {
+		global $wgTrailWikiIdMagic;
+		$variables[] = $wgTrailWikiIdMagic;
+		return true;
+	}
+
+	/**
+	 * Expand Article ID magic word
+	 */
+	function onParserGetVariableValueSwitch( &$parser, &$cache, &$index, &$ret ) {
+		global $wgTrailWikiIdMagic;
+		if( $index == $wgTrailWikiIdMagic ) {
+			global $wgTitle;
+			if( is_object( $wgTitle ) ) $ret = $wgTitle->getArticleID();
+		}
+		return true;
+	}
 
 	/**
 	 * Expand #ajaxmap parser-functions
@@ -156,6 +188,15 @@ class TrailWikiMaps {
 	 */
 	public function expandAjaxMap() {
 		global $wgOut, $wgJsMimeType;
+
+		// Set default map options for this map ID
+		$id = 'ajaxmap' . $this->mapid++;
+		$this->opts[$id] = array(
+			'type' => '"TERRAIN"',
+			'zoom' => 8
+		);
+
+		// Update options from parameters specified in parser-function
 		foreach( func_get_args() as $opt ) {
 			if( !is_object( $opt ) && preg_match( "/^(\w+?)\s*=\s*(.*)$/s", $opt, $m ) ) {
 				if( $m[1] == 'width' || $m[1] == 'height' ) {
@@ -167,11 +208,14 @@ class TrailWikiMaps {
 				} else {
 					$v = is_numeric( $m[2] ) ? $m[2] : '"' . str_replace( '"', '', $m[2] ) . '"';
 				}
-				$this->opts[] = "\"$m[1]\":$v";
+				$this->opts[$id][$m[1]] = $v;
 			}
 		}
+
+		// Return a div element for this map making use of the current Maps extensions for its JS resources
+		$wikitext = '<div id="' . $id . '">{{#display_map:0,0}}{{#ajaxmapinternal:' . $id . '}}</div>';
 		return array(
-			'<div id="ajaxmap">{{#display_map:0,0}}{{#ajaxmapinternal:}}</div>',
+			$wikitext,
 			'found'   => true,
 			'nowiki'  => false,
 			'noparse' => false,
@@ -180,10 +224,16 @@ class TrailWikiMaps {
 		);
 	}
 
-	public function expandAjaxMapInternal() {
+	public function expandAjaxMapInternal( $parser, $id ) {
 		global $wgOut, $wgJsMimeType;
-		$script = "window.ajaxmap_opt = {" . implode( ',', $this->opts ) . "};";
-		$script .= "document.getElementById('ajaxmap').innerHTML = '';";
+		$script = $id == 'ajaxmap1' ? "window.ajaxmap_opt = {};" : "";
+		$script .= "window.ajaxmap_opt.$id = {";
+		$c = '';
+		foreach( $this->opts[$id] as $k => $v ) {
+			$script .= "$c\"$k\":$v";
+			$c = ',';
+		}
+		$script .= "};document.getElementById('$id').innerHTML = '';";
 		return array(
 			"<script type=\"$wgJsMimeType\">$script</script>",
 			'found'   => true,
@@ -192,39 +242,6 @@ class TrailWikiMaps {
 			'noargs'  => false,
 			'isHTML'  => true
 		);
-	}
-
-	/**
-	 * Return array of args from the trail infobox for passed trail
-	 */
-	static function getTrailInfo( $title ) {
-		global $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable;
-		$article = new Article( $title );
-		$trail = $title->getText();
-		preg_match( "|\{\{Infobox Trail(.+?)^\}\}|sm", $article->fetchContent(), $m );
-		$template = preg_replace( "/(?<=\S)( +\| )/s", "\n$1", $m[1] ); // fix malformed template syntax
-		preg_match_all( "|^\s*\|\s*(.+?)\s*= *(.*?) *(?=^\s*[\|\}])|sm", $template, $m );
-		$data = array(
-			'Rating' => self::getCommunityValue( $wgTrailWikiRatingTable, $trail ),
-			'Difficulty' => self::getCommunityValue( $wgTrailWikiDifficultyTable, $trail )
-		);
-		foreach( $m[1] as $i => $k ) {
-			$k = trim( $k );
-			$v = trim( $m[2][$i] );
-			if( $k == 'Elevation Gain' || $k == 'High Point' ) $v = str_replace( ',', '', $v );
-			$data[$k] = $v;
-		}
-		return $data;
-	}
-
-	/**
-	 * Return a 2dp formatted rating from the selected CommunityVoice table
-	 */
-	static function getCommunityValue( $table, $title ) {
-		$dbr = wfGetDB( DB_SLAVE );
-		$table = $dbr->tableName( $table );
-		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_title' => $title ) );
-		return $val;
 	}
 
 	/**
@@ -265,6 +282,74 @@ class TrailWikiMaps {
 		return $list;
 	}
 
+	/**
+	 * Return array of args from the trail infobox for passed trail
+	 */
+	static function getTrailInfo( $title ) {
+		global $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable;
+		$article = new Article( $title );
+		$trail = $title->getText();
+		preg_match( "|\{\{Infobox Trail(.+?)^\}\}|sm", $article->fetchContent(), $m );
+		$template = preg_replace( "/(?<=\S)( +\| )/s", "\n$1", $m[1] ); // fix malformed template syntax
+		preg_match_all( "|^\s*\|\s*(.+?)\s*= *(.*?) *(?=^\s*[\|\}])|sm", $template, $m );
+		$data = array(
+			'Rating' => self::getCommunityValue( $wgTrailWikiRatingTable, $trail ),
+			'Difficulty' => self::getCommunityValue( $wgTrailWikiDifficultyTable, $trail )
+		);
+		foreach( $m[1] as $i => $k ) {
+			$k = trim( $k );
+			$v = trim( $m[2][$i] );
+			if( $k == 'Elevation Gain' || $k == 'High Point' ) $v = str_replace( ',', '', $v );
+			$data[$k] = $v;
+		}
+		return $data;
+	}
+
+	/**
+	 * Return the HTML of a popup box for the passed trail title
+	 */
+	function renderTrailInfo( $title ) {
+		$data = self::getTrailInfo( $title );
+
+		// Convert the trail uses to a list of images
+		$icons = '';
+		if( !empty( $data['Trail Use'] ) ) {
+			global $wgTrailWikiIcons;
+			$uses = preg_replace( "|[^a-z ]|", "", strtolower( $data['Trail Use'] ) );
+			foreach( preg_split( "|\s+|", $uses ) as $i ) {
+				if( array_key_exists( $i, $wgTrailWikiIcons ) ) {
+					if( $icon = wfLocalFile( $wgTrailWikiIcons[$i] ) ) {
+						$icon = $icon->transform( array( 'width' => 20 ) )->toHtml();
+						$icons .= "<span class=\"ajaxmap-info-icon\">$icon</span>";
+					}
+				}
+			}
+		}
+
+		$unknown    = '<i>unknown</i>';
+		$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 0 ) . '/5' : $unknown;
+		$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 0 ) . '/5' : $unknown;
+		$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
+		$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
+		$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
+
+		// Render the info
+		$info = "<b>Distance: </b>$distance<br />";
+		$info .= "<b>Elevation Gain: </b>$elevation<br />";
+		$info .= "<b>High Point: </b>$high<br />";
+		$info .= "<b>Trail Uses: </b>$icons<br />";
+		$info .= "<b>Difficulty: </b>$difficulty<br />";
+		$info .= "<b>Rating: </b>$rating<br />";
+
+		// Get a thumbnail image if the image field is set
+		$img = '';
+		if( !empty( $data['Image Name'] ) ) {
+			if( $img = wfLocalFile( $data['Image Name'] ) ) $img = $img->transform( array( 'width' => 140 ) )->toHtml();
+		}
+
+		// Return the data in a table
+		return "<table><tr><td>$info</td><th>$img</th></tr></table>";
+	}
 }
 
 function wfSetupTrailWikiMaps() {
@@ -272,9 +357,3 @@ function wfSetupTrailWikiMaps() {
 	$wgTrailWikiMaps = new TrailWikiMaps();
 }
 
-function wfTrailWikiMapsLanguageGetMagic( &$magicWords, $langCode = 0 ) {
-	global $wgTrailWikiMagic;
-	$magicWords[$wgTrailWikiMagic] = array( $langCode, $wgTrailWikiMagic );
-	$magicWords['ajaxmapinternal'] = array( $langCode, 'ajaxmapinternal' );
-	return true;
-}
