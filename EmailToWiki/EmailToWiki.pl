@@ -32,7 +32,7 @@ use LWP::UserAgent;
 use utf8;
 use Encode;
 use strict;
-$::ver   =  '2.1.9, 2012-01-19';
+$::ver   =  '2.1.10, 2012-01-20';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -140,6 +140,12 @@ sub processEmail {
 	Encode::from_to( $from,    "iso-8859-2", "utf8" ) if !utf8::is_utf8( $from );
 	Encode::from_to( $to,      "iso-8859-2", "utf8" ) if !utf8::is_utf8( $to );
 	Encode::from_to( $subject, "iso-8859-2", "utf8" ) if !utf8::is_utf8( $subject );
+
+	# Extract only real email address portion
+	if( $::emailonly ) {
+		$from = $1 if $from =~ /<(.+?)>$/;
+		$to = $1 if $to =~ /<(.+?)>$/;
+	}
 
 	# Create unique title according to $::format
 	my $title = friendlyTitle( eval "\"$::format\"" );
