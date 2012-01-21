@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'BOOKNAVIGATION_VERSION', "0.0.3, 2012-01-18" );
+define( 'BOOKNAVIGATION_VERSION', "0.0.4, 2012-01-21" );
 
 define( 'BOOKNAVIGATION_DEPTH',   1 );
 define( 'BOOKNAVIGATION_TITLE',   2 );
@@ -45,12 +45,24 @@ class BookNavigation {
 	var $mStructure = false;
 
 	function __construct() {
-		global $wgHooks, $wgParser, $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic;
+		global $wgOut, $wgResourceModules, $wgHooks, $wgParser, $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic;
 
 		// Create parser-functions
 		$wgParser->setFunctionHook( $wgBookNavigationPrevNextMagic, array( $this, 'expandPrevNext' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( $wgBookNavigationBookTreeMagic, array( $this, 'expandBookTree' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'booktreescript', array( $this, 'expandBookTreeScript' ) );
+
+		$wgHooks['UnknownAction'][] = $this;
+
+		// Set up JavaScript and CSS resources
+		$wgResourceModules['ext.booknav'] = array(
+			'scripts'       => array( 'booknavigation.js' ),
+			'styles'        => array( 'booknavigation.css' ),
+			'dependencies'  => array( 'mediawiki.util' ),
+			'localBasePath' => dirname( __FILE__ ),
+			'remoteExtPath' => basename( dirname( __FILE__ ) ),
+		);
+		$wgOut->addModules( 'ext.booknav' );
 	}
 
 	/**
@@ -75,6 +87,20 @@ class BookNavigation {
 
 		$html = "&lt; $prev | $next &gt;";
 		return array( "<div class=\"booknav-prevnext\">$html</div>", 'isHTML' => true, 'noparse' => true );
+	}
+
+	/**
+	 * Return sidebar BookTree
+	 */
+	function onUnknownAction( $action, $article ) {
+		if( $action == 'booknavtree' ) {
+			global $wgOut, $wgTitle, $wgParser, $wgUser;
+			$wgOut->disable();
+			print "<h5>Book navigation</h5>";
+			$opt = ParserOptions::newFromUser( $wgUser );
+			print $wgParser->parse( $this->renderTree( $wgTitle ), $wgTitle, $opt, true, true )->getText();
+		}
+		return true;
 	}
 
 	/**
