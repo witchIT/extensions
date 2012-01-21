@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','2.0.3, 2012-01-21' );
+define( 'TRAILWIKIMAP_VERSION','2.0.4, 2012-01-21' );
 
 $wgTrailWikiMagic           = "ajaxmap";
 $wgTrailWikiIdMagic         = "articleid";
@@ -341,7 +341,7 @@ class TrailWikiMaps {
 			}
 		}
 
-		$unknown    = '<i>unknown</i>';
+		$unknown    = $format == 'json' ? '' : '<i>unknown</i>';
 		$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 0 ) . '/5' : $unknown;
 		$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 0 ) . '/5' : $unknown;
 		$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
@@ -356,22 +356,24 @@ class TrailWikiMaps {
 
 		// Return info as JSON
 		if( $format == 'json' ) {
+			if( preg_match( '|placeholder|i', $img ) ) $img = '';
+			else $img = str_replace( '/w/images/thumb/', '', $img );
 			$uses = '{';
 			$c = '';
 			foreach( $icons as $k => $v ) {
+				$v = str_replace( '/w/images/', '', $v );
 				$uses .= "$c\"$k\":\"$v\"";
 				$c = ',';
 			}
 			$uses .= '}';
 			if( is_object( $title ) ) $title = $title->getText();
-			$info = "\"$title\":{";
-			$info .= "\"Distance\":\"$distance\",";
-			$info .= "\"Elevation Gain\":\"$elevation\",";
-			$info .= "\"High Point\":\"$high\",";
-			$info .= "\"Trail Uses\":$uses,";
-			$info .= "\"Difficulty\":\"$difficulty\",";
-			$info .= "\"Rating\":\"$rating\",";
-			$info .= "\"Image\":\"$img\"";
+			$info = "\"$title\":{\"u\":$uses";
+			if( $distance )   $info .= ",\"d\":\"$distance\"";
+			if( $elevation )  $info .= ",\"e\":\"$elevation\"";
+			if( $high )       $info .= ",\"h\":\"$high\"";
+			if( $difficulty ) $info .= ",\"s\":\"$difficulty\"";
+			if( $rating )     $info .= ",\"r\":\"$rating\"";
+			if( $img )        $info .= ",\"i\":\"$img\"";
 			$info .= "}\n";
 		}
 

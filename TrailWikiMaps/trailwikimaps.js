@@ -7,6 +7,7 @@ function InfoBox( marker ) {
 	google.maps.OverlayView.call( this );
 	this.latlng_ = marker.position;
 	this.map_ = marker.map;
+	this.opt_ = marker.opt;
 	this.titles_ = marker.titles;
 	var me = this;
 	this.boundsChangedListener_ = google.maps.event.addListener( this.map_, "bounds_changed", function() {
@@ -48,7 +49,7 @@ InfoBox.prototype.createElement = function() {
 		div.className = 'ajaxmap-info';
 		var contentDiv = document.createElement('div');
 		contentDiv.className = 'ajaxmap-info-content';
-		this.loadContent(this.titles_, contentDiv);
+		this.loadContent(this.titles_, contentDiv, this.opt_);
 		var topDiv = document.createElement('div');
 		topDiv.className = 'ajaxmap-info-top';
 		titlep = document.createElement('div');
@@ -142,7 +143,7 @@ InfoBox.prototype.panMap = function() {
 };
 
 // Load content for passed titles and add to target element
-InfoBox.prototype.loadContent = function( titles, div ) {
+InfoBox.prototype.loadContent = function( titles, div, opt ) {
 	for( i in titles ) {
 
 		// Add heading/link for trails except first which has its heading in infobox title bar
@@ -155,27 +156,57 @@ InfoBox.prototype.loadContent = function( titles, div ) {
 			div.appendChild(heading);
 		}
 
-		// Create a div element for thie info with a loading animation in it
-		var target = document.createElement('div');
-		div.appendChild(target);
-		var loader = document.createElement('img');
-		loader.src = '/w/skins/common/images/ajax-loader.gif';
-		loader.className = 'ajaxmap-info-loader';
-		target.appendChild(loader);
+		// First check if it exits in the loaded opt info
+		if( titles[i] in opt.trailinfo ) this.renderTrailInfo( titles[i], opt.trailinfo[titles[i]], div );
+		else {
 
-		// Request the content for the target div
-		$.ajax({
-			type: 'GET',
-			url: mw.util.wikiScript(),
-			data: { title: titles[i], action: 'trailinfo' },
-			dataType: 'html',
-			success: function( html ) { this.innerHTML = html; },
-			context: target
-		});
+			// Create a div element for the info with a loading animation in it
+			var target = document.createElement('div');
+			div.appendChild(target);
+			var loader = document.createElement('img');
+			loader.src = '/w/skins/common/images/ajax-loader.gif';
+			loader.className = 'ajaxmap-info-loader';
+			target.appendChild(loader);
 
+			// Request the content for the target div
+			$.ajax({
+				type: 'GET',
+				url: mw.util.wikiScript(),
+				data: { title: titles[i], action: 'trailinfo' },
+				dataType: 'html',
+				success: function( html ) { this.innerHTML = html; },
+				context: target
+			});
+		}
 	}
 };
 
+// Render passed trail info into the passed element
+InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
+	var unknown = '<i>unknown</i>';
+	var d = 'd' in info ? info.d : unknown;
+	var e = 'e' in info ? info.e : unknown;
+	var h = 'h' in info ? info.h : unknown;
+	var s = 's' in info ? info.s : unknown;
+	var r = 'r' in info ? info.r : unknown;
+
+	var uses = '';
+	for( i in info.u ) {
+		uses = uses + '<img class="ajaxmap-info-icon" alt="' + i + '" src="/w/images/' + info.u[i] + '" />';
+	}
+
+	var img = 'i' in info ? info.i : '/5/56/Placeholder.gif/140px-Placeholder.gif';
+	var img = '<img class="ajaxmap-info-image" alt="' + title + '" src="/w/images/thumb/' + img + '" />';
+
+	html = '<b>Distance: </b>' + d + '<br />';
+	html = html + '<b>Elevation Gain: </b>' + e + '<br />';
+	html = html + '<b>High Point: </b>' + h + '<br />';
+	html = html + '<b>Trail Uses: </b>' + uses + '<br />';
+	html = html + '<b>Difficulty: </b>' + s + '<br />';
+	html = html + '<b>Rating: </b>' + r + '<br />';
+
+	div.innerHTML = '<table><tr><td>' + html + '</td><td>' + img + '</td></tr></table>';
+}
 
 /**
  * Loop through the map options array creating each map
@@ -184,9 +215,10 @@ if( 'ajaxmap_opt' in window ) {
 	for( map in window.ajaxmap_opt ) {
 		var opt = window.ajaxmap_opt[map];
 
-		// Format some of the options
+		// Initialise some of the options
 		opt.center = new google.maps.LatLng( opt.lat, opt.lon );
 		opt.mapTypeId = google.maps.MapTypeId[opt.type.toUpperCase()];
+		opt.trailinfo = {};
 
 		// Only one infobox at a time
 		window.currentInfobox = 0;
@@ -216,11 +248,23 @@ if( 'ajaxmap_opt' in window ) {
 						position: new google.maps.LatLng(pos[0], pos[1]),
 						icon: this.icon,
 						map: this.map,
+						opt: this,
 						titles: data[i]
 					});
 					google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
 				}
 			}
+		});
+
+		// Retrieve the detailed information for each trail
+		data.action = 'trailinfo';
+		$.ajax({
+			type: 'POST',
+			url: mw.util.wikiScript(),
+			data: data,
+			dataType: 'json',
+			context: opt,
+			success: function( data ) { this.trailinfo = data; }
 		});
 	}
 }
