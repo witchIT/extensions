@@ -1,4 +1,4 @@
-$('#p-logo').after( '<div id="booknav-sidebar" class="portal"></div>' );
+$('#p-logo').after( '<div id="booknav-sidebar"></div>' );
 
 $.ajax({
 	type: 'GET',

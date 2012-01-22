@@ -79,7 +79,6 @@ class BookNavigation {
 		if( $action == 'booknavtree' ) {
 			global $wgOut, $wgTitle, $wgParser, $wgUser;
 			$wgOut->disable();
-			print "<h5>Book navigation</h5>";
 			$opt = ParserOptions::newFromUser( $wgUser );
 			print $wgParser->parse( $this->renderTree( $wgTitle ), $wgTitle, $opt, true, true )->getText();
 		}
@@ -172,8 +171,8 @@ class BookNavigation {
 		$tree = '';
 
 		$info = $this->getPage( $title );
-		$chapter = $info[BOOKNAVIGATION_CHAPTER];
-		$current = $info[BOOKNAVIGATION_LINK];
+		$current_chapter = $info[BOOKNAVIGATION_CHAPTER];
+		$current_link = $info[BOOKNAVIGATION_LINK];
 
 		// Render each top-levl chapter heading
 		$structure = $this->getStructure();
@@ -184,22 +183,24 @@ class BookNavigation {
 			} else $link = $chapter;
 			$tree .= "<div class=\"booknav-chapter\">$link</div>";
 
-			// If current page is in a chapter, render that chapter's heading and tree only
-			$tree .= "<div class=\"booknavtree\">{{#tree:id=$id||\n";
-			$node = -1;
-			$i = 1;
-			foreach( $structure[$chapter] as $page ) {
-				$title = $page[BOOKNAVIGATION_TITLE];
-				$link = $page[BOOKNAVIGATION_LINK];
-				if( $current == $link ) $node = $i;
-				$tree .= str_repeat( '*', $page[BOOKNAVIGATION_DEPTH] );
-				if( $link ) {
-					$url = Title::newFromText( $link )->getFullUrl( 'chapter=' . urlencode( $chapter ) );
-					$tree .= "[$url $title]\n";
-				} else $tree .= "$title\n";
-				$i++;
+			// If current page is in this chapter, render that chapter's heading and tree only
+			if( $chapter == $current_chapter ) {
+				$tree .= "<div class=\"booknavtree\">{{#tree:id=$id||\n";
+				$node = -1;
+				$i = 1;
+				foreach( $structure[$chapter] as $page ) {
+					$title = $page[BOOKNAVIGATION_TITLE];
+					$link = $page[BOOKNAVIGATION_LINK];
+					if( $link == $current_link ) $node = $i;
+					$tree .= str_repeat( '*', $page[BOOKNAVIGATION_DEPTH] );
+					if( $link ) {
+						$url = Title::newFromText( $link )->getFullUrl( 'chapter=' . urlencode( $chapter ) );
+						$tree .= "[$url $title]\n";
+					} else $tree .= "$title\n";
+					$i++;
+				}
+				$tree .= "}}{{#booktreescript:$id|$node}}</div>";
 			}
-			$tree .= "}}{{#booktreescript:$id|$node}}</div>";
 		}
 
 		return $tree;

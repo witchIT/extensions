@@ -12,7 +12,7 @@
 	color: white;
 	font-size: 16pt;
 	padding: 10px;
-	width: 600px;
+	width: 700px;
 	height: 18px;
 }
 .booknav-breadcrumbs a {
@@ -30,7 +30,7 @@
 	color: black;
 	font-size: 16pt;
 	padding: 10px;
-	width: 600px;
+	width: 700px;
 	height: 18px;
 }
 .booknav-prevnext a {
@@ -56,18 +56,21 @@
  * Chapter headers
  */
 .booknav-chapter {
+	position: relative;
+	z-index: 10;
 	width: 150px;
 	color: white;
 	background: #18385f;
 	text-align: center;
 	font-size: 14pt;
+	margin: 0 0 10px 0;
 	padding: 5px;
 	border-radius: 9px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-khtml-border-radius: 5px;
 }
-.booknav-chapter a {
+.booknav-chapter a, .booknav-chapter a:visited {
 	color: white;
 }
 
@@ -75,19 +78,26 @@
 /*
  * Navigation tree
  */
+#booknav-sidebar {
+	padding: 0 0 0 5px;
+}
 .booknavtree {
 	position: relative;
-	top: -25px;
+	z-index: 9;
+	top: -30px;
 	left: 5px;
 }
-#content .booknavtree .dTreeNode, #content .booknavtree .dTreeNode a {
+.booknavtree p {
+	display: none;
+}
+body .booknavtree .dTreeNode, body .booknavtree .dTreeNode a {
 	font-size: 12pt;
 	color: black;
 	margin-top: 6pt;
 	background: transparent;
 	padding: 0 0 0 2pt;
 }
-#content .booknavtree div div div div .dTreeNode, #content .booknavtree div div div div .dTreeNode a {
+body .booknavtree div div div div .dTreeNode, body .booknavtree div div div div .dTreeNode a {
 	font-size: 10pt;
 	margin-top: 2pt;
 }
