@@ -21,8 +21,9 @@ define( 'BOOKNAVIGATION_LINK',    7 );
 define( 'BOOKNAVIGATION_URL',     8 );
 
 $wgBookNavigationStructureArticle = 'MediaWiki:BookStructure';
-$wgBookNavigationPrevNextMagic = 'PrevNext';
-$wgBookNavigationBookTreeMagic = 'BookTree';
+$wgBookNavigationPrevNextMagic    = 'PrevNext';
+$wgBookNavigationBreadCrumbsMagic = 'BreadCrumbs';
+$wgBookNavigationBookTreeMagic    = 'BookTree';
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['BookNavigation'] = "$dir/BookNavigation.i18n.php";
@@ -49,11 +50,13 @@ class BookNavigation {
 	var $treeID = 0;
 
 	function __construct() {
-		global $wgOut, $wgResourceModules, $wgHooks, $wgParser, $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic;
+		global $wgOut, $wgResourceModules, $wgHooks, $wgParser,
+			$wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic, $wgBookNavigationBreadCrumbsMagic;
 
 		// Create parser-functions
-		$wgParser->setFunctionHook( $wgBookNavigationPrevNextMagic, array( $this, 'expandPrevNext' ), SFH_NO_HASH );
-		$wgParser->setFunctionHook( $wgBookNavigationBookTreeMagic, array( $this, 'expandBookTree' ), SFH_NO_HASH );
+		$wgParser->setFunctionHook( $wgBookNavigationPrevNextMagic,    array( $this, 'expandPrevNext' ),    SFH_NO_HASH );
+		$wgParser->setFunctionHook( $wgBookNavigationBreadCrumbsMagic, array( $this, 'expandBreadCrumbs' ), SFH_NO_HASH );
+		$wgParser->setFunctionHook( $wgBookNavigationBookTreeMagic,    array( $this, 'expandBookTree' ),    SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'booktreescript', array( $this, 'expandBookTreeScript' ) );
 
 		$wgHooks['UnknownAction'][] = $this;
@@ -67,6 +70,20 @@ class BookNavigation {
 			'remoteExtPath' => basename( dirname( __FILE__ ) ),
 		);
 		$wgOut->addModules( 'ext.booknav' );
+	}
+
+	/**
+	 * Return sidebar BookTree
+	 */
+	function onUnknownAction( $action, $article ) {
+		if( $action == 'booknavtree' ) {
+			global $wgOut, $wgTitle, $wgParser, $wgUser;
+			$wgOut->disable();
+			print "<h5>Book navigation</h5>";
+			$opt = ParserOptions::newFromUser( $wgUser );
+			print $wgParser->parse( $this->renderTree( $wgTitle ), $wgTitle, $opt, true, true )->getText();
+		}
+		return true;
 	}
 
 	/**
@@ -89,22 +106,18 @@ class BookNavigation {
 			$next = "<a href=\"$url\">$next</a>";
 		} else $next = wfMsg( 'chapter-end' );
 
-		$html = "&lt; $prev | $next &gt;";
+		$html = "|<div class=\"booknav-prev\">$prev</div><div class=\"booknav-next\">$next</div>";
 		return array( "<div class=\"booknav-prevnext\">$html</div>", 'isHTML' => true, 'noparse' => true );
 	}
 
 	/**
-	 * Return sidebar BookTree
+	 * Expand the PrevNext parser function
 	 */
-	function onUnknownAction( $action, $article ) {
-		if( $action == 'booknavtree' ) {
-			global $wgOut, $wgTitle, $wgParser, $wgUser;
-			$wgOut->disable();
-			print "<h5>Book navigation</h5>";
-			$opt = ParserOptions::newFromUser( $wgUser );
-			print $wgParser->parse( $this->renderTree( $wgTitle ), $wgTitle, $opt, true, true )->getText();
-		}
-		return true;
+	function expandBreadCrumbs( &$parser, $param ) {
+		global $wgTitle;
+		$title = $param ? $param : $wgTitle;
+		$html = $this->renderBreadcrumbs( $title );
+		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 
 	/**
@@ -355,9 +368,10 @@ function wfSetupBookNavigation() {
  * Set up magic words for parser-functions
  */
 function wfBookNavigationLanguageGetMagic( &$langMagic, $langCode = 0 ) {
-	global $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic;
-	$langMagic[$wgBookNavigationPrevNextMagic] = array( $langCode, $wgBookNavigationPrevNextMagic );
-	$langMagic[$wgBookNavigationBookTreeMagic] = array( $langCode, $wgBookNavigationBookTreeMagic );
+	global $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic, $wgBookNavigationBreadCrumbsMagic;
+	$langMagic[$wgBookNavigationPrevNextMagic]    = array( $langCode, $wgBookNavigationPrevNextMagic );
+	$langMagic[$wgBookNavigationBreadCrumbsMagic] = array( $langCode, $wgBookNavigationBreadCrumbsMagic );
+	$langMagic[$wgBookNavigationBookTreeMagic]    = array( $langCode, $wgBookNavigationBookTreeMagic );
 	$langMagic['booktreescript'] = array( $langCode, 'booktreescript' );
 	return true;
 }

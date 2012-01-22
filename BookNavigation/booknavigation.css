@@ -1,21 +1,60 @@
 /*
-
-#booknavtree img[id] {
-	display: none;
-}
-#booknavtree a img[id] {
-	display: block;
-}
-
-*/
-
-/*
  * #18385f - dark blue
  * #d1d8ea - light blue
  * #fffe00 - yellow
 */
 
+/*
+ * Breadcrumbs
+ */
+.booknav-breadcrumbs {
+	background: #18385f;
+	color: white;
+	font-size: 16pt;
+	padding: 10px;
+	width: 600px;
+	height: 18px;
+}
+.booknav-breadcrumbs a {
+	color: white;
+	background: transparent;
+	padding-right: 0;
+}
 
+/*
+ * Prev/next
+ */
+.booknav-prevnext {
+	text-align: center;
+	background: #d1d8ea;
+	color: black;
+	font-size: 16pt;
+	padding: 10px;
+	width: 600px;
+	height: 18px;
+}
+.booknav-prevnext a {
+	color: black;
+	background: transparent;
+	padding-right: 0;
+}
+.booknav-prev {
+	text-align: right;
+	float: left;
+	width: 45%;
+	background: url( /wiki/extensions/BookNavigation/img/prev.gif ) left no-repeat;
+}
+.booknav-next {
+	text-align: left;
+	float: right;
+	width: 45%;
+	background: url( /wiki/extensions/BookNavigation/img/next.gif ) right no-repeat;
+}
+
+
+/*
+ * Chapter headers
+ */
 .booknav-chapter {
 	width: 150px;
 	color: white;
@@ -28,17 +67,19 @@
 	-webkit-border-radius: 5px;
 	-khtml-border-radius: 5px;
 }
-
 .booknav-chapter a {
 	color: white;
 }
 
+
+/*
+ * Navigation tree
+ */
 .booknavtree {
 	position: relative;
 	top: -25px;
 	left: 5px;
 }
-
 #content .booknavtree .dTreeNode, #content .booknavtree .dTreeNode a {
 	font-size: 12pt;
 	color: black;
