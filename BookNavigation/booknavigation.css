@@ -1,1 +1,52 @@
-/* no css yet */
+/*
+
+#booknavtree img[id] {
+	display: none;
+}
+#booknavtree a img[id] {
+	display: block;
+}
+
+*/
+
+/*
+ * #18385f - dark blue
+ * #d1d8ea - light blue
+ * #fffe00 - yellow
+*/
+
+
+.booknav-chapter {
+	width: 150px;
+	color: white;
+	background: #18385f;
+	text-align: center;
+	font-size: 14pt;
+	padding: 5px;
+	border-radius: 9px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+
+.booknav-chapter a {
+	color: white;
+}
+
+.booknavtree {
+	position: relative;
+	top: -25px;
+	left: 5px;
+}
+
+#content .booknavtree .dTreeNode, #content .booknavtree .dTreeNode a {
+	font-size: 12pt;
+	color: black;
+	margin-top: 6pt;
+	background: transparent;
+	padding: 0 0 0 2pt;
+}
+#content .booknavtree div div div div .dTreeNode, #content .booknavtree div div div div .dTreeNode a {
+	font-size: 10pt;
+	margin-top: 2pt;
+}

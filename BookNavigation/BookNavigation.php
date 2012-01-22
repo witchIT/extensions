@@ -17,7 +17,8 @@ define( 'BOOKNAVIGATION_PARENT',  3 );
 define( 'BOOKNAVIGATION_NEXT',    4 );
 define( 'BOOKNAVIGATION_PREV',    5 );
 define( 'BOOKNAVIGATION_CHAPTER', 6 );
-define( 'BOOKNAVIGATION_URL',     7 );
+define( 'BOOKNAVIGATION_LINK',    7 );
+define( 'BOOKNAVIGATION_URL',     8 );
 
 $wgBookNavigationStructureArticle = 'MediaWiki:BookStructure';
 $wgBookNavigationPrevNextMagic = 'PrevNext';
@@ -43,6 +44,9 @@ class BookNavigation {
 
 	// Cache the structure because it's calculation is expensive
 	var $mStructure = false;
+
+	// Keep track of ids for multiple trees
+	var $treeID = 0;
 
 	function __construct() {
 		global $wgOut, $wgResourceModules, $wgHooks, $wgParser, $wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic;
@@ -124,13 +128,18 @@ class BookNavigation {
 	 * Expand the BookTreeScript parser function
 	 * - internal parser-function to add script after the tree that ensures only the selected nodes are visible
 	 */
-	function expandBookTreeScript( &$parser, $node ) {
+	function expandBookTreeScript( &$parser ) {
 		global $wgJsMimeType;
-		$script = "tambooknavtree.closeAll();\n";
-		$script .= "document.getElementById('itambooknavtree$node').parentNode.lastChild.setAttribute('class','pageselected');\n";
+
 		$params = func_get_args();
 		array_shift( $params );
-		foreach( $params as $id ) $script .= "tambooknavtree.openTo($id)\n";
+		$tree = array_shift( $params );
+		$node = array_shift( $params );
+
+		$script = "tam$tree.closeAll();\n";
+		$script .= "document.getElementById('itam$tree$node').parentNode.lastChild.setAttribute('class','pageselected');\n";
+		//$script .= "document.getElementById('$tree').firstChild.firstChild.setAttribute('style','height:1px');\n";
+		foreach( $params as $id ) $script .= "tam$tree.openTo($id)\n";
 		return array(
 			"<script type=\"$wgJsMimeType\">/*<![CDATA[*/\n$script/*]]>*/</script>",
 			'found'   => true,
@@ -146,40 +155,38 @@ class BookNavigation {
 	 */
 	function renderTree( $title ) {
 		global $wgBookNavigationStructureArticle;
+		$id = 'booknav' . $this->treeID++ . 'tree';
 		$tree = '';
 
-		$structure = $this->getStructure();
+		$info = $this->getPage( $title );
+		$chapter = $info[BOOKNAVIGATION_CHAPTER];
+		$current = $info[BOOKNAVIGATION_LINK];
 
-		// If current page is in a chapter, render that chapter's heading and tree only
-		if( $info = $this->getPage( $title ) ) {
-			$chapter = $info[BOOKNAVIGATION_CHAPTER];
-			$current = $info[BOOKNAVIGATION_TITLE];
-			$tree .= "{{#tree:id=booknavtree|root=<span class=\"booknav-chapter\">$chapter</span>|\n";
+		// Render each top-levl chapter heading
+		$structure = $this->getStructure();
+		foreach( $structure as $chapter => $pages ) {
+			if( array_key_exists( 0, $pages ) ) {
+				$page = $pages[0][BOOKNAVIGATION_TITLE];
+				$link = "[[$page|$chapter]]";
+			} else $link = $chapter;
+			$tree .= "<div class=\"booknav-chapter\">$link</div>";
+
+			// If current page is in a chapter, render that chapter's heading and tree only
+			$tree .= "<div class=\"booknavtree\">{{#tree:id=$id||\n";
 			$node = -1;
 			$i = 1;
 			foreach( $structure[$chapter] as $page ) {
 				$title = $page[BOOKNAVIGATION_TITLE];
-				if( $current == $title ) {
-					$node = $i;
-					$class = ' class="booknav-selected"';
-				} else $class = '';
-				$url = Title::newFromText( $title )->getFullUrl( 'chapter=' . urlencode( $chapter ) );
+				$link = $page[BOOKNAVIGATION_LINK];
+				if( $current == $link ) $node = $i;
 				$tree .= str_repeat( '*', $page[BOOKNAVIGATION_DEPTH] );
-				$tree .= "[$url $title]\n";
+				if( $link ) {
+					$url = Title::newFromText( $link )->getFullUrl( 'chapter=' . urlencode( $chapter ) );
+					$tree .= "[$url $title]\n";
+				} else $tree .= "$title\n";
 				$i++;
 			}
-			$tree .= "}}{{#booktreescript:$node}}\n";
-		}
-
-		// Else render all headings, each just a link to the first page in chapter
-		else {
-			foreach( $structure as $chapter => $pages ) {
-				if( array_key_exists( 0, $pages ) ) {
-					$page = $pages[0][BOOKNAVIGATION_TITLE];
-					$link = "[[$page|$chapter]]";
-				} else $link = $chapter;
-				$tree .= "*<span class=\"booknav-chapter\">$link</span>\n";
-			}
+			$tree .= "}}{{#booktreescript:$id|$node}}</div>";
 		}
 
 		return $tree;
@@ -222,7 +229,10 @@ class BookNavigation {
 				$lastdepth = 0;
 				$pages = array();
 				foreach( $m[1] as $i => $depth ) {
-					$info = array( BOOKNAVIGATION_TITLE => self::pageName( $m[2][$i] ) );
+					$info = array(
+						BOOKNAVIGATION_TITLE => self::pageName( $m[2][$i] ),
+						BOOKNAVIGATION_LINK  => self::pageLink( $m[2][$i] )
+					);
 					$depth = $info[BOOKNAVIGATION_DEPTH] = strlen( $depth );
 					if( $lastdepth ) {
 						if( $depth == $lastdepth ) $info[BOOKNAVIGATION_PARENT] = $pages[$i - 1][BOOKNAVIGATION_PARENT];
@@ -256,7 +266,7 @@ class BookNavigation {
 		$chapters = array();
 		foreach( $structure as $chapter => $pages ) {
 			foreach( $pages as $info ) {
-				if( strtolower( $info[BOOKNAVIGATION_TITLE] ) == strtolower( $page ) ) $chapters[] = $chapter;
+				if( $info[BOOKNAVIGATION_LINK] == $page ) $chapters[] = $chapter;
 			}
 		}
 
@@ -278,7 +288,7 @@ class BookNavigation {
 		// Get the page index in the structure array - bail if page not found in chapter
 		$i = false;
 		foreach( $structure[$chapter] as $k => $info ) {
-			if( strtolower( $info[BOOKNAVIGATION_TITLE] ) == strtolower( $page ) ) $i = $k;
+			if( $info[BOOKNAVIGATION_LINK] == $page ) $i = $k;
 		}
 		if( $i === false ) return false;
 
@@ -300,12 +310,22 @@ class BookNavigation {
 	}
 
 	/**
-	 * Extract the text of an article title from passed text which might be: title, [[title]] or [[title|anchor]]
+	 * Extract the text label of a page from passed text which might be: title, [[title]] or [[title|anchor]]
 	 */
 	static function pageName( $text ) {
-		if( preg_match( "#\[\[\s*(.+?)\s*\|.+?\]\]#", $text, $m ) ) return $m[1];
+		if( preg_match( "#\[\[\s*.+?\s*\|(.+?)\]\]#", $text, $m ) ) return $m[1];
 		elseif( preg_match( "#\[\[\s*(.+?)\s*\]\]#", $text, $m ) ) return $m[1];
 		return $text;
+	}
+
+	/**
+	 * Extract the link information of a page from passed text which might be: title, [[title]] or [[title|anchor]]
+	 * - returns false or a target article title
+	 */
+	static function pageLink( $text ) {
+		if( preg_match( "#\[\[\s*(.+?)\s*\|.+?\]\]#", $text, $m ) ) return $m[1];
+		elseif( preg_match( "#\[\[\s*(.+?)\s*\]\]#", $text, $m ) ) return $m[1];
+		return false;
 	}
 }
 
@@ -314,9 +334,20 @@ class BookNavigation {
  * Called from $wgExtensionFunctions array when initialising extensions
  */
 function wfSetupBookNavigation() {
-	global $wgBookNavigation;
+	global $wgBookNavigation, $wgTreeViewImages, $wgExtensionAssetsPath;
+
+	// TreeAndMenu settings
 	if( !defined( 'TREEANDMENU_VERSION' ) )
 		die( "The BookNavigation extension requires the <a href=\"http://www.mediawiki.org/wiki/Extension:TreeAndMenu\">TreeAndMenu</a> extension." );
+	$img = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ) . '/img';
+	$wgTreeViewImages['root'] = '';
+	$wgTreeViewImages['folder'] = '';
+	$wgTreeViewImages['folderOpen'] = '';
+	$wgTreeViewImages['node'] = $img . '/bullet.gif';
+	$wgTreeViewImages['nlPlus'] = $img . '/right-arrow.gif';
+	$wgTreeViewImages['nlMinus'] = $img . '/down-arrow.gif';
+
+
 	$wgBookNavigation = new BookNavigation();
 }
 
