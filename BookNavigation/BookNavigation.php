@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'BOOKNAVIGATION_VERSION', "0.0.4, 2012-01-21" );
+define( 'BOOKNAVIGATION_VERSION', "0.0.5, 2012-01-22" );
 
 define( 'BOOKNAVIGATION_DEPTH',   1 );
 define( 'BOOKNAVIGATION_TITLE',   2 );
@@ -80,7 +80,7 @@ class BookNavigation {
 			global $wgOut, $wgTitle, $wgParser, $wgUser;
 			$wgOut->disable();
 			$opt = ParserOptions::newFromUser( $wgUser );
-			print $wgParser->parse( $this->renderTree( $wgTitle ), $wgTitle, $opt, true, true )->getText();
+			print $wgParser->parse( $this->renderTree( $wgTitle, 'sidebar' ), $wgTitle, $opt, true, true )->getText();
 		}
 		return true;
 	}
@@ -146,14 +146,13 @@ class BookNavigation {
 		$params = func_get_args();
 		array_shift( $params );
 		$tree = array_shift( $params );
-		$node = array_shift( $params );
+		$node = $params[0];
 
-		$script = "tam$tree.closeAll();\n";
-		$script .= "document.getElementById('itam$tree$node').parentNode.lastChild.setAttribute('class','pageselected');\n";
-		//$script .= "document.getElementById('$tree').firstChild.firstChild.setAttribute('style','height:1px');\n";
-		foreach( $params as $id ) $script .= "tam$tree.openTo($id)\n";
+		$script = "tam$tree.closeAll();";
+		$script .= "document.getElementById('itam$tree$node').parentNode.lastChild.setAttribute('class','booknav-selected');";
+		foreach( $params as $id ) $script .= "tam$tree.openTo($id);";
 		return array(
-			"<script type=\"$wgJsMimeType\">/*<![CDATA[*/\n$script/*]]>*/</script>",
+			"<script type=\"$wgJsMimeType\">$script</script>",
 			'found'   => true,
 			'nowiki'  => false,
 			'noparse' => true,
@@ -165,16 +164,15 @@ class BookNavigation {
 	/**
 	 * Render the tree structure from the structure defined in the book-nav article
 	 */
-	function renderTree( $title ) {
+	function renderTree( $title, $id = false ) {
 		global $wgBookNavigationStructureArticle;
-		$id = 'booknav' . $this->treeID++ . 'tree';
+		$id = $id ? $id : 'booknav' . $this->treeID++ . 'tree';
 		$tree = '';
-
 		$info = $this->getPage( $title );
 		$current_chapter = $info[BOOKNAVIGATION_CHAPTER];
 		$current_link = $info[BOOKNAVIGATION_LINK];
 
-		// Render each top-levl chapter heading
+		// Render each top-level chapter heading
 		$structure = $this->getStructure();
 		foreach( $structure as $chapter => $pages ) {
 			if( array_key_exists( 0, $pages ) ) {
@@ -292,12 +290,10 @@ class BookNavigation {
 			global $wgRequest;
 			$chapter = $wgRequest->getText( 'chapter', '' );
 			if( !in_array( $chapter, $chapters ) ) return false;
-//			$url = $title->getFullUrl( "chapter=$chapter" );
-		} else {
-			$chapter = $chapters[0];
-//			$url = $title->getFullUrl();
 		}
-		$url = $title->getFullUrl( "chapter=$chapter" );
+
+		// if ambiguous and no query-string indicator, we just tak ethe first		
+		else $chapter = $chapters[0];
 
 		// Get the page index in the structure array - bail if page not found in chapter
 		$i = false;
@@ -318,7 +314,7 @@ class BookNavigation {
 
 		// Add other missing info to the array
 		$info[BOOKNAVIGATION_CHAPTER] = $chapter;
-		$info[BOOKNAVIGATION_URL] = $url;
+		$info[BOOKNAVIGATION_URL] = $title->getFullUrl( "chapter=$chapter" );
 
 		return $info;
 	}
@@ -349,8 +345,9 @@ class BookNavigation {
  */
 function wfSetupBookNavigation() {
 	global $wgBookNavigation, $wgTreeViewImages, $wgExtensionAssetsPath;
+	$wgBookNavigation = new BookNavigation();
 
-	// TreeAndMenu settings
+	// Must have TreeAndMenu settings
 	if( !defined( 'TREEANDMENU_VERSION' ) )
 		die( "The BookNavigation extension requires the <a href=\"http://www.mediawiki.org/wiki/Extension:TreeAndMenu\">TreeAndMenu</a> extension." );
 	$img = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ) . '/img';
@@ -358,11 +355,9 @@ function wfSetupBookNavigation() {
 	$wgTreeViewImages['folder'] = '';
 	$wgTreeViewImages['folderOpen'] = '';
 	$wgTreeViewImages['node'] = $img . '/bullet.gif';
+	$wgTreeViewImages['empty'] = $img . '/empty.gif';
 	$wgTreeViewImages['nlPlus'] = $img . '/right-arrow.gif';
 	$wgTreeViewImages['nlMinus'] = $img . '/down-arrow.gif';
-
-
-	$wgBookNavigation = new BookNavigation();
 }
 
 /**

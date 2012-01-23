@@ -1,8 +1,36 @@
 /*
- * #18385f - dark blue
- * #d1d8ea - light blue
- * #fffe00 - yellow
-*/
+ * Default treeview styles
+ */
+.dtree {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	white-space: nowrap;
+}
+.dtree img {
+	border: 0px;
+	vertical-align: middle;
+}
+.dTreeNode { height: 18px }
+.dtree a {
+	color: black;
+	text-decoration: none;
+}
+.dtree a.node, .dtree a.nodeSel {
+	white-space: nowrap;
+	padding: 1px 2px 1px 2px;
+}
+.dtree a:hover, .dtree a.node:hover, .dtree a.nodeSel:hover {
+	color: black;
+	text-decoration: underline;
+}
+.dtree a.nodeSel {
+	background-color: #c0d2ec;
+}
+.dtree .clip {
+	overflow: hidden;
+	padding-bottom: 1px;
+}
 
 /*
  * Breadcrumbs
@@ -20,6 +48,7 @@
 	background: transparent;
 	padding-right: 0;
 }
+
 
 /*
  * Prev/next
@@ -73,7 +102,9 @@
 .booknav-chapter a, .booknav-chapter a:visited {
 	color: white;
 }
-
+.booknav-chapter strong {
+	font-weight: normal;
+}
 
 /*
  * Navigation tree
@@ -86,6 +117,9 @@
 	z-index: 9;
 	top: -30px;
 	left: 5px;
+}
+body .booknavtree .dTreeNode a.booknav-selected {
+	background-color: #fffe00;
 }
 .booknavtree p {
 	display: none;
