@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'BOOKNAVIGATION_VERSION', "0.0.5, 2012-01-22" );
+define( 'BOOKNAVIGATION_VERSION', "1.0.0, 2012-01-22" );
 
 define( 'BOOKNAVIGATION_DEPTH',   1 );
 define( 'BOOKNAVIGATION_TITLE',   2 );
@@ -37,6 +37,9 @@ $wgExtensionCredits['other'][] = array(
 	'url'         => "https://www.elance.com/php/collab/main/collab.php?bidid=27932975",
 	'version'     => BOOKNAVIGATION_VERSION
 );
+
+// Make sure that the AJAX request can always get its data
+if( array_key_exists( 'action' , $_GET ) && $_GET['action'] == 'booknavtree' ) $wgGroupPermissions['*']['read'] = true;
 
 /**
  * Main BookNavigation class definition
@@ -175,11 +178,11 @@ class BookNavigation {
 		// Render each top-level chapter heading
 		$structure = $this->getStructure();
 		foreach( $structure as $chapter => $pages ) {
-			if( array_key_exists( 0, $pages ) ) {
-				$page = $pages[0][BOOKNAVIGATION_TITLE];
-				$link = "[[$page|$chapter]]";
-			} else $link = $chapter;
-			$tree .= "<div class=\"booknav-chapter\">$link</div>";
+
+			// Render the chapter heading if it's the current chapter or there is no current chapter
+			if( $current_chapter == false || $chapter == $current_chapter ) {
+				$tree .= "<div class=\"booknav-chapter\">$chapter</div>";
+			}
 
 			// If current page is in this chapter, render that chapter's heading and tree only
 			if( $chapter == $current_chapter ) {
@@ -236,7 +239,7 @@ class BookNavigation {
 		$structure = array();
 		foreach( preg_split( "|^=|m", $content ) as $chapter ) {
 			if( preg_match( "|^=\s*(.+?)\s*==$(.*)|sm", $chapter, $m ) ) {
-				$chapter = self::pageName( $m[1] );
+				$chapter = $m[1];
 				preg_match_all( "|^(\*+)\s*(.+?)\s*$|m", $m[2], $m );
 				$lastdepth = 0;
 				$pages = array();

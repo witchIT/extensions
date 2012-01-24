@@ -1,4 +1,17 @@
 /*
+ * Increase width of sidebar to 15em (vector)
+ */
+div#content, div#footer, div#mw-head-base {
+    margin-left: 15em;
+}
+div#left-navigation {
+    left: 15em;
+}
+div#mw-panel {
+    width: 15em;
+}
+
+/*
  * Default treeview styles
  */
 .dtree {
@@ -109,14 +122,19 @@
 /*
  * Navigation tree
  */
+body .dtree {
+	white-space: normal;
+}
+body .dTreeNode {
+	height: auto;
+}
 #booknav-sidebar {
 	padding: 0 0 0 5px;
 }
 .booknavtree {
 	position: relative;
 	z-index: 9;
-	top: -30px;
-	left: 5px;
+	top: -10px;
 }
 body .booknavtree .dTreeNode a.booknav-selected {
 	background-color: #fffe00;
