@@ -14,8 +14,8 @@ function InfoBox( marker ) {
 		return me.panMap.apply( me );
 	});
 	this.setMap( this.map_ );
-	if( window.currentInfobox ) window.currentInfobox.setMap( null );
-	window.currentInfobox = this;
+	if( this.opt.currentInfobox ) this.opt.currentInfobox.setMap( null );
+	this.opt.currentInfobox = this;
 }
 
 InfoBox.prototype = new google.maps.OverlayView();
@@ -142,7 +142,10 @@ InfoBox.prototype.panMap = function() {
 	this.boundsChangedListener_ = null;
 };
 
-// Load content for passed titles and add to target element
+
+/**
+ * Load content for passed titles and add to target element
+ */
 InfoBox.prototype.loadContent = function( titles, div, opt ) {
 	for( i in titles ) {
 
@@ -181,7 +184,10 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
 	}
 };
 
-// Render passed trail info into the passed element
+
+/**
+ * Render passed trail info into the passed element
+ */
 InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 	var unknown = '<i>unknown</i>';
 	var d = 'd' in info ? info.d : unknown;
@@ -209,30 +215,51 @@ InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 }
 
 /**
+ * Create a transformed location table from the passed filter data and update the markers to match it
+ */
+function transformMarkers( opt, filter ) {
+
+	// Create new location table from the original data and the filter
+
+
+	// Update markers that have changed
+	for( i in data ) {
+		var pos = i.split(',');
+		var marker = new google.maps.Marker({
+			position: new google.maps.LatLng(pos[0], pos[1]),
+			icon: this.icon,
+			map: this.map,
+			opt: this,
+			titles: data[i]
+		});
+		google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
+	}
+
+	// Make the new location table current
+}
+
+
+/**
  * Loop through the map options array creating each map
  */
 if( 'ajaxmap_opt' in window ) {
 	for( map in window.ajaxmap_opt ) {
 		var opt = window.ajaxmap_opt[map];
 
-		// Initialise some of the options
-		opt.center = new google.maps.LatLng( opt.lat, opt.lon );
-		opt.mapTypeId = google.maps.MapTypeId[opt.type.toUpperCase()];
-		opt.trailinfo = {};
-
-		// Only one infobox at a time
-		window.currentInfobox = 0;
-
 		// Create the map and set canvas size
 		var canvas = document.getElementById(map);
-		opt.map = new google.maps.Map(canvas, opt);
 		canvas.style.width = opt.width;
 		canvas.style.height = opt.height;
 
-		// Hard-coded icon for now
-		opt.icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png');
+		// Initialise some of the options
+		opt.map = new google.maps.Map(canvas, opt);
+		opt.center = new google.maps.LatLng( opt.lat, opt.lon );
+		opt.mapTypeId = google.maps.MapTypeId[opt.type.toUpperCase()];
+		opt.trailinfo = {};
+		opt.currentInfobox = 0;
+		opt.icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png'); // hard-coded icon for now
 
-		// Retrieve location info and create markers
+		// Retrieve location info from server
 		var data = { action: 'traillocations' };
 		if( 'query' in opt ) data.query = opt.query;
 		$.ajax({
@@ -242,17 +269,8 @@ if( 'ajaxmap_opt' in window ) {
 			dataType: 'json',
 			context: opt,
 			success: function( data ) {
-				for( i in data ) {
-					var pos = i.split(',');
-					var marker = new google.maps.Marker({
-						position: new google.maps.LatLng(pos[0], pos[1]),
-						icon: this.icon,
-						map: this.map,
-						opt: this,
-						titles: data[i]
-					});
-					google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
-				}
+				this.locations = data;
+				transformMarkers( this, {} ); // update markers with no filter
 			}
 		});
 
@@ -266,5 +284,6 @@ if( 'ajaxmap_opt' in window ) {
 			context: opt,
 			success: function( data ) { this.trailinfo = data; }
 		});
+
 	}
 }
