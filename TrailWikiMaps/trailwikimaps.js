@@ -14,8 +14,8 @@ function InfoBox( marker ) {
 		return me.panMap.apply( me );
 	});
 	this.setMap( this.map_ );
-	if( this.opt.currentInfobox ) this.opt.currentInfobox.setMap( null );
-	this.opt.currentInfobox = this;
+	if( this.opt_.currentInfobox ) this.opt_.currentInfobox.setMap( null );
+	this.opt_.currentInfobox = this;
 }
 
 InfoBox.prototype = new google.maps.OverlayView();
@@ -32,8 +32,8 @@ InfoBox.prototype.draw = function() {
 	if( !this.div_ ) return;
 	var pixPosition = this.getProjection().fromLatLngToDivPixel( this.latlng_ );
 	if( !pixPosition ) return;
-	this.width_ = $( this.div_ ).width();
-	this.height_ = $( this.div_ ).height();
+	this.width_ = jQuery( this.div_ ).width();
+	this.height_ = jQuery( this.div_ ).height();
 	this.offsetVertical_ = -this.height_;
 	this.offsetHorizontal_ = 0;
 	this.div_.style.left = ( pixPosition.x + this.offsetHorizontal_ ) + "px";
@@ -55,7 +55,7 @@ InfoBox.prototype.createElement = function() {
 		titlep = document.createElement('div');
 		title = document.createElement('a');
 		title.innerHTML = this.titles_[0];
-		title.href = mw.util.wikiScript() + '?' + $.param({ title: this.titles_[0] });
+		title.href = mw.util.wikiScript() + '?' + jQuery.param({ title: this.titles_[0] });
 		var closeImg = document.createElement('img');
 		closeImg.src = '/w/images/5/50/Icon_delete_25.png';
 		topDiv.appendChild(closeImg);
@@ -155,7 +155,7 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
 			div.appendChild(hr);
 			var heading = document.createElement('a');
 			heading.innerHTML = titles[i];
-			heading.href = mw.util.wikiScript() + '?' + $.param({ title: titles[i] });
+			heading.href = mw.util.wikiScript() + '?' + jQuery.param({ title: titles[i] });
 			div.appendChild(heading);
 		}
 
@@ -172,13 +172,13 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
 			target.appendChild(loader);
 
 			// Request the content for the target div
-			$.ajax({
+			jQuery.ajax({
 				type: 'GET',
 				url: mw.util.wikiScript(),
 				data: { title: titles[i], action: 'trailinfo' },
 				dataType: 'html',
-				success: function( html ) { this.innerHTML = html; },
-				context: target
+				context: target,
+				success: function( html ) { this.innerHTML = html; }
 			});
 		}
 	}
@@ -217,20 +217,22 @@ InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 /**
  * Create a transformed location table from the passed filter data and update the markers to match it
  */
-function transformMarkers( opt, filter ) {
+function transformMarkers( filter ) {
 
-	// Create new location table from the original data and the filter
-
+	// Build a new transform table by applying the filter to the original location data
+	newtable = {};
+	for( loc in this.locations ) {
+	}
 
 	// Update markers that have changed
-	for( i in data ) {
-		var pos = i.split(',');
+	for( loc in this.locations ) {
+		var locxy = loc.split(',');
 		var marker = new google.maps.Marker({
-			position: new google.maps.LatLng(pos[0], pos[1]),
+			position: new google.maps.LatLng(locxy[0], locxy[1]),
 			icon: this.icon,
 			map: this.map,
 			opt: this,
-			titles: data[i]
+			titles: this.locations[loc]
 		});
 		google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
 	}
@@ -252,9 +254,9 @@ if( 'ajaxmap_opt' in window ) {
 		canvas.style.height = opt.height;
 
 		// Initialise some of the options
-		opt.map = new google.maps.Map(canvas, opt);
 		opt.center = new google.maps.LatLng( opt.lat, opt.lon );
 		opt.mapTypeId = google.maps.MapTypeId[opt.type.toUpperCase()];
+		opt.map = new google.maps.Map(canvas, opt);
 		opt.trailinfo = {};
 		opt.currentInfobox = 0;
 		opt.icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png'); // hard-coded icon for now
@@ -262,7 +264,7 @@ if( 'ajaxmap_opt' in window ) {
 		// Retrieve location info from server
 		var data = { action: 'traillocations' };
 		if( 'query' in opt ) data.query = opt.query;
-		$.ajax({
+		jQuery.ajax({
 			type: 'POST',
 			url: mw.util.wikiScript(),
 			data: data,
@@ -270,13 +272,13 @@ if( 'ajaxmap_opt' in window ) {
 			context: opt,
 			success: function( data ) {
 				this.locations = data;
-				transformMarkers( this, {} ); // update markers with no filter
+				transformMarkers.call(this,{}); // update markers with no filter
 			}
 		});
 
 		// Retrieve the detailed information for each trail
 		data.action = 'trailinfo';
-		$.ajax({
+		jQuery.ajax({
 			type: 'POST',
 			url: mw.util.wikiScript(),
 			data: data,
