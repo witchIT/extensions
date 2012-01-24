@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'BOOKNAVIGATION_VERSION', "1.0.0, 2012-01-22" );
+define( 'BOOKNAVIGATION_VERSION', "1.0.1, 2012-01-23" );
 
 define( 'BOOKNAVIGATION_DEPTH',   1 );
 define( 'BOOKNAVIGATION_TITLE',   2 );
@@ -38,9 +38,6 @@ $wgExtensionCredits['other'][] = array(
 	'version'     => BOOKNAVIGATION_VERSION
 );
 
-// Make sure that the AJAX request can always get its data
-if( array_key_exists( 'action' , $_GET ) && $_GET['action'] == 'booknavtree' ) $wgGroupPermissions['*']['read'] = true;
-
 /**
  * Main BookNavigation class definition
  */
@@ -53,8 +50,11 @@ class BookNavigation {
 	var $treeID = 0;
 
 	function __construct() {
-		global $wgOut, $wgResourceModules, $wgHooks, $wgParser,
+		global $wgOut, $wgRequest, $wgResourceModules, $wgHooks, $wgParser, $wgGroupPermissions,
 			$wgBookNavigationPrevNextMagic, $wgBookNavigationBookTreeMagic, $wgBookNavigationBreadCrumbsMagic;
+
+		// Make sure that the AJAX request can always get its data
+		if( $wgRequest->getText( 'action', false ) == 'booknavtree' ) $wgGroupPermissions['*']['read'] = true;
 
 		// Create parser-functions
 		$wgParser->setFunctionHook( $wgBookNavigationPrevNextMagic,    array( $this, 'expandPrevNext' ),    SFH_NO_HASH );
