@@ -13,29 +13,21 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','2.0.4, 2012-01-21' );
+define( 'TRAILWIKIMAP_VERSION','2.0.6, 2012-01-25' );
 
 $wgTrailWikiMagic           = "ajaxmap";
 $wgTrailWikiIdMagic         = "articleid";
 $wgTrailWikiRatingTable     = 'cv_ratings_votes';
 $wgTrailWikiDifficultyTable = 'tw_difficulty_votes';
 
-// Note - these images should really be made into consistent naming such as "icon-dog.png"
-//        that way a mapping from name to image wouldn't be needed,
-//        and the sub-templates in Template:Infobox Trail wouldn't be needed either
-$wgTrailWikiIcons = array(
-	'dog' => 'Icon_Dog_20px.png',
-	'tent' => 'Icon_Tent_20px.png',
-	'hike' => 'Icon_Hike_20px.png',
-	'bike' => 'Icon_Bike_20px.png',
-	'walk' => 'Icon_Walk_20px.png',
-	'horse' => 'Icon_Horse_20px.png',
-	'skiing' => 'Icon_Ski_20px.png',
-	'snowshoe' => 'Icon_Snowshoe_20px.png',
-	'motorbike' => 'Icon_Motorbike_20px.png',
-	'wheelchair' => 'Icon_Wheelchair_20px.png',
-	'family' => 'Icon_Family_20px.png',
-	'jeep' => 'Icon_Jeep_20px.png'
+/*
+ * Marker clustering information
+ * - title: lat, lon, radius, max-active-zoom
+ * - the clustering will not take effect at greater zoom levels than max-active-zoom
+ * - clusters with lower max-active-zoom levels take precedence
+ */
+$wgTrailWikiClusters = array(
+	'Test cluster' => array( 46.832167, -121.525918, 1, 8 )
 );
 
 $wgExtensionFunctions[] = 'wfSetupTrailWikiMaps';
@@ -86,21 +78,31 @@ class TrailWikiMaps {
 	 * Return the trail data in JSON format when the ajaxmap action is requested
 	 */
 	function onUnknownAction( $action, $article ) {
-		global $wgOut, $wgJsMimeType;
+		global $wgOut, $wgJsMimeType, $wgTrailWikiClusters;
 
 		// Returns the list of trails in each location in JSON format
 		if( $action == 'traillocations' ) {
 			$wgOut->disable();
 			header( 'Content-Type: application/json' );
+
+			// Send clusters
+			$c = '';
+			print "{\"clusters\":[\n";
+			foreach( $wgTrailWikiClusters as $cluster => $data ) {
+				print $c . "[\"$cluster\"," . implode( ',', $data ) . "]";
+				$c = ",\n";
+			}
+
+			// Send trails
 			if( array_key_exists( 'query', $_REQUEST ) ) $query = explode( '!', $_REQUEST['query'] );
 			else $query = false;
 			$c = '';
-			print "{\n";
-			foreach( self::getTrailLocations( $query ) as $pos => $trails ) {
-				print "$c\"$pos\":[\"" . implode( '","', $trails ) . "\"]\n";
-				$c = ',';
+			print "\n],\n\"locations\":[\n";
+			foreach( self::getTrailLocations( $query ) as $trails ) {
+				print $c . "[\"" . implode( '","', $trails ) . "\"]";
+				$c = ",\n";
 			}
-			print "}\n";
+			print "\n]}\n";
 		}
 
 		// Returns the rendered HTML of a popup box for the specified trail
@@ -290,7 +292,7 @@ class TrailWikiMaps {
 			if( array_key_exists( 'Latitude', $data ) && array_key_exists( 'Longitude', $data ) ) {
 				if( is_numeric( $data['Latitude'] ) && is_numeric( $data['Longitude'] ) ) {
 					$pos = $data['Latitude'] . ',' . $data['Longitude'];
-					if( !array_key_exists( $pos, $list ) ) $list[$pos] = array( $trail );
+					if( !array_key_exists( $pos, $list ) ) $list[$pos] = array( $data['Latitude'], $data['Longitude'], $trail );
 					else $list[$pos][] = $trail;
 				}
 			}
@@ -331,20 +333,14 @@ class TrailWikiMaps {
 		$icons = array();
 		if( !empty( $data['Trail Use'] ) ) {
 			global $wgTrailWikiIcons;
-			$uses = preg_replace( "|[^a-z ]|", "", strtolower( $data['Trail Use'] ) );
-			foreach( preg_split( "|\s+|", $uses ) as $i ) {
-				if( array_key_exists( $i, $wgTrailWikiIcons ) ) {
-					if( $icon = wfLocalFile( $wgTrailWikiIcons[$i] ) ) {
-						$icons[ucfirst( $i )] = $icon->transform( array( 'width' => 20 ) )->getUrl();
-					}
-				}
-			}
+			$uses = preg_replace( "|[^a-z ]|i", "", $data['Trail Use'] );
+			foreach( preg_split( "|\s+|", $uses ) as $i ) $icons[] = ucfirst( $i );
 		}
 
 		$unknown    = $format == 'json' ? '' : '<i>unknown</i>';
 		$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 0 ) . '/5' : $unknown;
 		$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 0 ) . '/5' : $unknown;
-		$distance   = is_numeric( $data['Distance'] ) ? $data['Distance'] . ' Miles' : $unknown;
+		$distance   = $data['Distance'] ? $data['Distance'] . ' Miles' : $unknown;
 		$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
 		$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
 
@@ -358,14 +354,13 @@ class TrailWikiMaps {
 		if( $format == 'json' ) {
 			if( preg_match( '|placeholder|i', $img ) ) $img = '';
 			else $img = str_replace( '/w/images/thumb/', '', $img );
-			$uses = '{';
+			$uses = '[';
 			$c = '';
-			foreach( $icons as $k => $v ) {
-				$v = str_replace( '/w/images/', '', $v );
-				$uses .= "$c\"$k\":\"$v\"";
+			foreach( $icons as $i ) {
+				$uses .= "$c\"$i\"";
 				$c = ',';
 			}
-			$uses .= '}';
+			$uses .= ']';
 			if( is_object( $title ) ) $title = $title->getText();
 			$info = "\"$title\":{\"u\":$uses";
 			if( $distance )   $info .= ",\"d\":\"$distance\"";
@@ -379,8 +374,10 @@ class TrailWikiMaps {
 
 		// Return info as HTML
 		else {
+			global $wgExtensionAssetsPath;
+			$img = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ) . '/images';
 			$uses = '';
-			foreach( $icons as $k => $v ) $uses .= "<img class=\"ajaxmap-info-icon\" alt=\"$k\" src=\"$v\" />";
+			foreach( $icons as $i ) $uses .= "<img class=\"ajaxmap-info-icon\" alt=\"$i\" src=\"$img/$i.png\" />";
 			$info = "<b>Distance: </b>$distance<br />";
 			$info .= "<b>Elevation Gain: </b>$elevation<br />";
 			$info .= "<b>High Point: </b>$high<br />";

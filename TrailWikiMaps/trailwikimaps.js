@@ -8,6 +8,7 @@ function InfoBox( marker ) {
 	this.latlng_ = marker.position;
 	this.map_ = marker.map;
 	this.opt_ = marker.opt;
+	this.title_ = marker.title;
 	this.titles_ = marker.titles;
 	var me = this;
 	this.boundsChangedListener_ = google.maps.event.addListener( this.map_, "bounds_changed", function() {
@@ -54,7 +55,7 @@ InfoBox.prototype.createElement = function() {
 		topDiv.className = 'ajaxmap-info-top';
 		titlep = document.createElement('div');
 		title = document.createElement('a');
-		title.innerHTML = this.titles_[0];
+		title.innerHTML = this.title_;
 		title.href = mw.util.wikiScript() + '?' + jQuery.param({ title: this.titles_[0] });
 		var closeImg = document.createElement('img');
 		closeImg.src = '/w/images/5/50/Icon_delete_25.png';
@@ -147,12 +148,14 @@ InfoBox.prototype.panMap = function() {
  * Load content for passed titles and add to target element
  */
 InfoBox.prototype.loadContent = function( titles, div, opt ) {
-	for( i in titles ) {
+	for( var i in titles ) {
 
-		// Add heading/link for trails except first which has its heading in infobox title bar
-		if( i > 0 ) {
-			var hr = document.createElement('hr');
-			div.appendChild(hr);
+		// Add heading/link for trails except if it's the first of a multi-item group
+		if( i > 0 || titles.length > 1 ) {
+			if( i > 0 ) {
+				var hr = document.createElement('hr');
+				div.appendChild(hr);
+			}
 			var heading = document.createElement('a');
 			heading.innerHTML = titles[i];
 			heading.href = mw.util.wikiScript() + '?' + jQuery.param({ title: titles[i] });
@@ -178,7 +181,7 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
 				data: { title: titles[i], action: 'trailinfo' },
 				dataType: 'html',
 				context: target,
-				success: function( html ) { this.innerHTML = html; }
+				success: function(html) { this.innerHTML = html; }
 			});
 		}
 	}
@@ -197,7 +200,7 @@ InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 	var r = 'r' in info ? info.r : unknown;
 
 	var uses = '';
-	for( i in info.u ) {
+	for( var i in info.u ) {
 		uses = uses + '<img class="ajaxmap-info-icon" alt="' + i + '" src="/w/images/' + info.u[i] + '" />';
 	}
 
@@ -217,27 +220,86 @@ InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 /**
  * Create a transformed location table from the passed filter data and update the markers to match it
  */
-function transformMarkers( filter ) {
+function renderMarkers( filter ) {
 
-	// Build a new transform table by applying the filter to the original location data
-	newtable = {};
-	for( loc in this.locations ) {
+	var markers = [];
+
+	// If clustering enabled, 
+	var clustering = true;
+	if( 'cluster' in this ) clustering = this.cluster;
+	if( clustering ) {
+		for( i in this.clusters ) {
+			markers.push([ this.clusters[i][0], this.clusters[i][1], this.clusters[i][2] ]);
+		}
 	}
 
-	// Update markers that have changed
-	for( loc in this.locations ) {
-		var locxy = loc.split(',');
+	// Populate table of markers
+	for( i in this.locations ) {
+		var data = this.locations[i];
+
+		// Check if this location should be filtered out
+		var show = true;
+		for( f in filter ) {
+			if( 0 ) show = false;
+		}
+
+		// If this location hasn't been filtered out add it to the list as a marker or cluster item
+		if( show ) {
+
+			// If clustering enabled, check if this location belongs to a cluster
+			var cluster = -1;
+			if( clustering ) {
+
+				// Loop through clusters checking if this location is in one
+				// TODO - loop from most significant first based on zoom and bail when first match found
+				var x1 = data[0];
+				var y1 = data[1];
+				for( c in this.clusters ) {
+					var cdata = this.clusters[c];
+					var x2 = cdata[1];
+					var y2 = cdata[2];
+					var dx = x2 - x1;
+					var dy = y2 - y1;
+					var d = cdata[3];
+					if( dx*dx + dy*dy < d ) {
+
+						// This location is within the rectangular bounds of this cluster
+						cluster = c;
+
+						// TODO: check radial bounds
+
+					}
+				}
+			}
+
+			// Location is in a cluster
+			if( cluster >= 0 ) {
+				markers[cluster].push( data.slice(2) );
+			}
+
+			// Clustering not enabled, or location not in a cluster
+			else {
+				data.unshift( data.length > 3 ? (data.length-2) + ' trails' : data[2] );
+				markers.push( data );
+			}
+		}
+	}
+
+
+	// Create the markers
+	for( i in markers ) {
+		var data = markers[i];
 		var marker = new google.maps.Marker({
-			position: new google.maps.LatLng(locxy[0], locxy[1]),
+			position: new google.maps.LatLng(data[1],data[2]),
 			icon: this.icon,
 			map: this.map,
 			opt: this,
-			titles: this.locations[loc]
+			title: data[0],
+			titles: data.slice(3)
 		});
 		google.maps.event.addListener( marker, 'click', function() { new InfoBox(this); });
 	}
 
-	// Make the new location table current
 }
 
 
@@ -270,9 +332,10 @@ if( 'ajaxmap_opt' in window ) {
 			data: data,
 			dataType: 'json',
 			context: opt,
-			success: function( data ) {
-				this.locations = data;
-				transformMarkers.call(this,{}); // update markers with no filter
+			success: function(json) {
+				this.clusters = json.clusters;
+				this.locations = json.locations;
+				renderMarkers.call(this,{});
 			}
 		});
 
@@ -284,7 +347,7 @@ if( 'ajaxmap_opt' in window ) {
 			data: data,
 			dataType: 'json',
 			context: opt,
-			success: function( data ) { this.trailinfo = data; }
+			success: function(json) { this.trailinfo = json; }
 		});
 
 	}
