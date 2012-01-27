@@ -2,7 +2,6 @@
  * JavaScript for TrailWikiMaps MediaWiki extension
  * - creates a map with markers positions retrieved via AJAX and custom info overlays with content retrieved via AJAX
  */
-
 function InfoBox( marker ) {
 	google.maps.OverlayView.call( this );
 	this.latlng_ = marker.position;
@@ -162,13 +161,15 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
 			div.appendChild(heading);
 		}
 
+		// Create a div to put the trail info into
+		var target = document.createElement('div');
+		div.appendChild(target);
+
 		// First check if it exits in the loaded opt info
-		if( titles[i] in opt.trailinfo ) this.renderTrailInfo( titles[i], opt.trailinfo[titles[i]], div );
+		if( titles[i] in opt.trailinfo ) this.renderTrailInfo( titles[i], opt.trailinfo[titles[i]], target );
 		else {
 
 			// Create a div element for the info with a loading animation in it
-			var target = document.createElement('div');
-			div.appendChild(target);
 			var loader = document.createElement('img');
 			loader.src = '/w/skins/common/images/ajax-loader.gif';
 			loader.className = 'ajaxmap-info-loader';
@@ -201,13 +202,13 @@ InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 
 	var uses = '';
 	for( var i in info.u ) {
-		uses = uses + '<img class="ajaxmap-info-icon" alt="' + i + '" src="/w/images/' + info.u[i] + '" />';
+		uses = uses + '<img class="ajaxmap-info-icon" alt="' + i + '" src="' + window.tw_img + info.u[i] + '.png" />';
 	}
 
 	var img = 'i' in info ? info.i : '/5/56/Placeholder.gif/140px-Placeholder.gif';
 	var img = '<img class="ajaxmap-info-image" alt="' + title + '" src="/w/images/thumb/' + img + '" />';
 
-	html = '<b>Distance: </b>' + d + '<br />';
+	var html = '<b>Distance: </b>' + d + '<br />';
 	html = html + '<b>Elevation Gain: </b>' + e + '<br />';
 	html = html + '<b>High Point: </b>' + h + '<br />';
 	html = html + '<b>Trail Uses: </b>' + uses + '<br />';
@@ -321,7 +322,7 @@ if( 'ajaxmap_opt' in window ) {
 		opt.map = new google.maps.Map(canvas, opt);
 		opt.trailinfo = {};
 		opt.currentInfobox = 0;
-		opt.icon = new google.maps.MarkerImage('/w/images/b/b9/Icon_Map_Square.png'); // hard-coded icon for now
+		opt.icon = new google.maps.MarkerImage(window.tw_img + 'marker.png');
 
 		// Retrieve location info from server
 		var data = { action: 'traillocations' };
@@ -352,3 +353,4 @@ if( 'ajaxmap_opt' in window ) {
 
 	}
 }
+

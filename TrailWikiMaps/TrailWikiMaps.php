@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','2.0.6, 2012-01-25' );
+define( 'TRAILWIKIMAP_VERSION','2.0.8, 2012-01-27' );
 
 $wgTrailWikiMagic           = "ajaxmap";
 $wgTrailWikiIdMagic         = "articleid";
@@ -51,7 +51,7 @@ class TrailWikiMaps {
 	var $opts = array();
 
 	function __construct() {
-		global $wgOut, $wgHooks, $wgParser, $wgResourceModules, $wgTrailWikiMagic;
+		global $wgOut, $wgJsMimeType, $wgExtensionAssetsPath, $wgHooks, $wgParser, $wgResourceModules, $wgTrailWikiMagic;
 
 		// Set up magic words
 		$wgHooks['UnknownAction'][]                = $this;
@@ -109,17 +109,15 @@ class TrailWikiMaps {
 		elseif( $action == 'trailinfo' ) {
 			global $wgTitle, $wgRequest;
 			$wgOut->disable();
-			$format = $wgRequest->getText( 'format', false );
-			if( $format == 'json' ) header( 'Content-Type: application/json' );
-			if( is_object( $wgTitle ) && array_key_exists( 'title', $_REQUEST ) ) {
-				print $this->renderTrailInfo( $wgTitle, $format );
-			} else {
+			header( 'Content-Type: application/json' );
+			if( is_object( $wgTitle ) && array_key_exists( 'title', $_REQUEST ) ) print $this->renderTrailInfo( $wgTitle );
+			else {
 				if( array_key_exists( 'query', $_REQUEST ) ) $query = explode( '!', $_REQUEST['query'] );
 				else $query = false;
 				$c = '';
 				print "{\n";
 				foreach( self::getTrailList( $query ) as $trail => $title ) {
-					print $c . $this->renderTrailInfo( $title, 'json' );
+					print $c . $this->renderTrailInfo( $title );
 					$c = ',';
 				}
 				print "}\n";
@@ -241,8 +239,14 @@ class TrailWikiMaps {
 	}
 
 	public function expandAjaxMapInternal( $parser, $id ) {
-		global $wgOut, $wgJsMimeType;
-		$script = $id == 'ajaxmap1' ? "window.ajaxmap_opt = {};" : "";
+		global $wgOut, $wgJsMimeType, $wgExtensionAssetsPath;
+
+		// First time running? declare opts array and make the images path available
+		if( $id == 'ajaxmap1' ) {
+			$img = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ) . '/images/';
+			$script = "window.tw_img='$img';window.ajaxmap_opt = {};";
+		} else $script = '';
+
 		$script .= "window.ajaxmap_opt.$id = {";
 		$c = '';
 		foreach( $this->opts[$id] as $k => $v ) {
@@ -250,6 +254,7 @@ class TrailWikiMaps {
 			$c = ',';
 		}
 		$script .= "};document.getElementById('$id').innerHTML = '';";
+
 		return array(
 			"<script type=\"$wgJsMimeType\">$script</script>",
 			'found'   => true,
@@ -324,68 +329,46 @@ class TrailWikiMaps {
 	}
 
 	/**
-	 * Return the HTML of a popup box for the passed trail title
+	 * Return info in JSON format for the passed trail title
 	 */
-	function renderTrailInfo( $title, $format = false ) {
+	function renderTrailInfo( $title ) {
 		$data = self::getTrailInfo( $title );
 
-		// Convert the trail uses to a list of images
-		$icons = array();
-		if( !empty( $data['Trail Use'] ) ) {
-			global $wgTrailWikiIcons;
-			$uses = preg_replace( "|[^a-z ]|i", "", $data['Trail Use'] );
-			foreach( preg_split( "|\s+|", $uses ) as $i ) $icons[] = ucfirst( $i );
-		}
-
-		$unknown    = $format == 'json' ? '' : '<i>unknown</i>';
-		$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 0 ) . '/5' : $unknown;
-		$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 0 ) . '/5' : $unknown;
-		$distance   = $data['Distance'] ? $data['Distance'] . ' Miles' : $unknown;
-		$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) . ' Feet' : $unknown;
-		$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) . ' Feet' : $unknown;
+		$difficulty = is_numeric( $data['Difficulty'] ) ? number_format( $data['Difficulty'], 0 ) : '';
+		$rating     = is_numeric( $data['Rating'] ) ? number_format( $data['Rating'], 0 ) : '';
+		$distance   = $data['Distance'] ? $data['Distance'] :'';
+		$elevation  = is_numeric( $data['Elevation Gain'] ) ? number_format( $data['Elevation Gain'], 0 ) : '';
+		$high       = is_numeric( $data['High Point'] ) ? number_format( $data['High Point'], 0 ) : '';
 
 		// Get a thumbnail image if the image field is set
 		$img = '';
 		if( !empty( $data['Image Name'] ) ) {
 			if( $img = wfLocalFile( $data['Image Name'] ) ) $img = $img->transform( array( 'width' => 140 ) )->getUrl();
 		}
+		if( preg_match( '|placeholder|i', $img ) ) $img = ''; else $img = str_replace( '/w/images/thumb/', '', $img );
 
-		// Return info as JSON
-		if( $format == 'json' ) {
-			if( preg_match( '|placeholder|i', $img ) ) $img = '';
-			else $img = str_replace( '/w/images/thumb/', '', $img );
-			$uses = '[';
-			$c = '';
-			foreach( $icons as $i ) {
+		// Convert the trail uses to a list of images
+		$uses = '[';
+		$c = '';
+		if( !empty( $data['Trail Use'] ) ) {
+			global $wgTrailWikiIcons;
+			$uses = preg_replace( "|[^a-z ]|i", "", ucwords( strtolower( $data['Trail Use'] ) ) );
+			foreach( preg_split( "|\s+|", $uses ) as $i ) {
 				$uses .= "$c\"$i\"";
 				$c = ',';
 			}
-			$uses .= ']';
-			if( is_object( $title ) ) $title = $title->getText();
-			$info = "\"$title\":{\"u\":$uses";
-			if( $distance )   $info .= ",\"d\":\"$distance\"";
-			if( $elevation )  $info .= ",\"e\":\"$elevation\"";
-			if( $high )       $info .= ",\"h\":\"$high\"";
-			if( $difficulty ) $info .= ",\"s\":\"$difficulty\"";
-			if( $rating )     $info .= ",\"r\":\"$rating\"";
-			if( $img )        $info .= ",\"i\":\"$img\"";
-			$info .= "}\n";
 		}
+		$uses .= ']';
 
-		// Return info as HTML
-		else {
-			global $wgExtensionAssetsPath;
-			$img = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ) . '/images';
-			$uses = '';
-			foreach( $icons as $i ) $uses .= "<img class=\"ajaxmap-info-icon\" alt=\"$i\" src=\"$img/$i.png\" />";
-			$info = "<b>Distance: </b>$distance<br />";
-			$info .= "<b>Elevation Gain: </b>$elevation<br />";
-			$info .= "<b>High Point: </b>$high<br />";
-			$info .= "<b>Trail Uses: </b>$uses<br />";
-			$info .= "<b>Difficulty: </b>$difficulty<br />";
-			$info .= "<b>Rating: </b>$rating<br />";
-			$info = "<table><tr><td>$info</td><td><img class=\"ajaxmap-info-image\" alt=\"$title\" src=\"$img\" /></td></tr></table>";
-		}
+		if( is_object( $title ) ) $title = $title->getText();
+		$info = "\"$title\":{\"u\":$uses";
+		if( $distance )   $info .= ",\"d\":\"$distance\"";
+		if( $elevation )  $info .= ",\"e\":\"$elevation\"";
+		if( $high )       $info .= ",\"h\":\"$high\"";
+		if( $difficulty ) $info .= ",\"s\":\"$difficulty\"";
+		if( $rating )     $info .= ",\"r\":\"$rating\"";
+		if( $img )        $info .= ",\"i\":\"$img\"";
+		$info .= "}\n";
 
 		return $info;
 	}
