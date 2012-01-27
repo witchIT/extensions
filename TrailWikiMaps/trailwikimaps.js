@@ -171,7 +171,7 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
 
 			// Create a div element for the info with a loading animation in it
 			var loader = document.createElement('img');
-			loader.src = '/w/skins/common/images/ajax-loader.gif';
+			loader.src = mw.config.get('wgStylePath') + '/common/images/ajax-loader.gif';
 			loader.className = 'ajaxmap-info-loader';
 			target.appendChild(loader);
 
@@ -180,9 +180,12 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
 				type: 'GET',
 				url: mw.util.wikiScript(),
 				data: { title: titles[i], action: 'trailinfo' },
-				dataType: 'html',
+				dataType: 'json',
 				context: target,
-				success: function(html) { this.innerHTML = html; }
+				success: function(trailinfo) {
+					opt.trailinfo[titles[i]] = trailinfo;
+					this.renderTrailInfo( titles[i], trailinfo, this );
+				}
 			});
 		}
 	}
@@ -194,15 +197,15 @@ InfoBox.prototype.loadContent = function( titles, div, opt ) {
  */
 InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 	var unknown = '<i>unknown</i>';
-	var d = 'd' in info ? info.d : unknown;
-	var e = 'e' in info ? info.e : unknown;
-	var h = 'h' in info ? info.h : unknown;
-	var s = 's' in info ? info.s : unknown;
-	var r = 'r' in info ? info.r : unknown;
+	var d = 'd' in info ? info.d + ' Miles' : unknown;
+	var e = 'e' in info ? info.e + ' Feet'  : unknown;
+	var h = 'h' in info ? info.h + ' Feet'  : unknown;
+	var s = 's' in info ? this.rating( info.s, 'boot' ) : unknown;
+	var r = 'r' in info ? this.rating( info.r, 'star' ) : unknown;
 
 	var uses = '';
 	for( var i in info.u ) {
-		uses = uses + '<img class="ajaxmap-info-icon" alt="' + i + '" src="' + window.tw_img + info.u[i] + '.png" />';
+		uses = uses + '<img class="ajaxmap-info-icon" alt="' + info.u[i] + '" src="' + window.tw_img + info.u[i] + '.png" />';
 	}
 
 	var img = 'i' in info ? info.i : '/5/56/Placeholder.gif/140px-Placeholder.gif';
@@ -217,6 +220,18 @@ InfoBox.prototype.renderTrailInfo = function( title, info, div ) {
 
 	div.innerHTML = '<table><tr><td>' + html + '</td><td>' + img + '</td></tr></table>';
 }
+
+/**
+ * Render rating out of five as icons
+ */
+InfoBox.prototype.rating = function( rating, icon ) {
+	var html = '';
+	for( var i=1; i<6; i++ ) {
+		var src = window.tw_img + icon + '-' + ( rating >= i ? 1 : 0 ) + '.png';
+		html = html + '<img alt="' + rating + ' out of 5" src="' + src + '" />';
+	}
+	return html;
+} 
 
 /**
  * Create a transformed location table from the passed filter data and update the markers to match it

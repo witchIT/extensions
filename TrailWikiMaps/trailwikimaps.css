@@ -4,8 +4,8 @@
 	border: 1px solid black;
 	width: 350px;
 
-	background: transparent url( './ajaxmap-info-bg.png' ) repeat;
-	/* background: #EAEFF2; */
+	/* background: transparent url( './ajaxmap-info-bg.png' ) repeat;*/
+	background: #EAEFF2; 
 
 	/* -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
 	filter: alpha(opacity=90);

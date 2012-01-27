@@ -13,14 +13,20 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TRAILWIKIMAP_VERSION','2.0.8, 2012-01-27' );
+define( 'TRAILWIKIMAP_VERSION','2.1.0, 2012-01-27' );
 
 $wgTrailWikiMagic           = "ajaxmap";
 $wgTrailWikiIdMagic         = "articleid";
+$wgTrailWikiRatingMagic     = "trailwikirating";
 $wgTrailWikiRatingTable     = 'cv_ratings_votes';
 $wgTrailWikiDifficultyTable = 'tw_difficulty_votes';
+$wgTrailWikiRatingCats      = array(
+	$wgTrailWikiDifficultyTable => array( 'Unknown difficulty', 'Easy', 'Easy/Moderate', 'Moderate', 'Moderate/Difficult', 'Difficult' ),
+	$wgTrailWikiRatingTable     => array( 'Unrated', '1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars' )
+);
 
-/*
+
+/**
  * Marker clustering information
  * - title: lat, lon, radius, max-active-zoom
  * - the clustering will not take effect at greater zoom levels than max-active-zoom
@@ -51,7 +57,8 @@ class TrailWikiMaps {
 	var $opts = array();
 
 	function __construct() {
-		global $wgOut, $wgJsMimeType, $wgExtensionAssetsPath, $wgHooks, $wgParser, $wgResourceModules, $wgTrailWikiMagic;
+		global $wgOut, $wgJsMimeType, $wgExtensionAssetsPath, $wgHooks, $wgParser, $wgResourceModules,
+			$wgTrailWikiMagic, $wgTrailWikiRatingMagic;
 
 		// Set up magic words
 		$wgHooks['UnknownAction'][]                = $this;
@@ -61,6 +68,7 @@ class TrailWikiMaps {
 
 		// Set up parser-functions
 		$wgParser->setFunctionHook( $wgTrailWikiMagic, array( $this,'expandAjaxMap' ) );
+		$wgParser->setFunctionHook( $wgTrailWikiRatingMagic, array( $this,'expandRating' ) );
 		$wgParser->setFunctionHook( 'ajaxmapinternal', array( $this,'expandAjaxMapInternal' ) );
 
 		// Set up JavaScript and CSS resources
@@ -125,52 +133,50 @@ class TrailWikiMaps {
 		}
 
 		// Returns information about the data stored in the ratings table (internal maintenance action)
-		elseif( $action == 'ratinginfo' ) {
+		elseif( $action == 'updateratingtables' ) {
 			global $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable;
 			$wgOut->disable();
-			print "<table border>\n";
+			$dbw = wfGetDB( DB_MASTER );
 			$dbr = wfGetDB( DB_SLAVE );
 			foreach( array( $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable ) as $table ) {
-				print "<tr><th colspan=\"3\">$table</th></tr>\n";
 				$table = $dbr->tableName( $table );
-				$res   = $dbr->select( $table, 'vot_title,vot_rating', array() );
+				$res   = $dbr->select( $table, '*', array() );
 				while( $row = $dbr->fetchRow( $res ) ) {
-					print "<tr><td>$row[0]</td><td>$row[1]</td>";
-					if( is_numeric( $row[0] ) ) {
-						$title = Title::newFromId( $row[0] )->getPrefixedText();
-						print "<td>Title: $title</td>";
-					} else {
-						$id = Title::newFromText( $row[0] )->getArticleID();
-						print "<td>ID: $id</td>";
+					if( !is_numeric( $row['vot_title'] ) ) {
+						$title = Title::newFromText( $row['vot_title'] );
+						$trail = $title->getPrefixedText();
+						$id = $title->getArticleID();
+						$row['vot_title'] = $id;
+						unset( $row[0], $row[1], $row[2], $row[3] );
+						$dbw->insert( $table, $row, __METHOD__, 'IGNORE' );
+						print "$trail ($id) (" . $dbw->affectedRows() . ")<br />\n";
 					}
-					print "</tr>\n";
 				}
 				$dbr->freeResult( $res );
 			}
-			print "</table>\n";
+		}
+
+		elseif( $action == 'updatetrailcats' ) {
+			$wgOut->disable();
+			foreach( self::getTrailList() as $trail => $title ) {
+				$article = new Article( $title );
+				$article->doEdit( $article->fetchContent(), 'Updating catlinks', EDIT_UPDATE );
+				print "$trail<br />\n";
+			}
 		}
 
 		return true;
 	}
 
 	/**
-	 * Return a rating value from the selected CommunityVoice table
-	 */
-	static function getCommunityValue( $table, $title ) {
-		$dbr = wfGetDB( DB_SLAVE );
-		$table = $dbr->tableName( $table );
-		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_title' => $title ) );
-		return $val;
-	}
-
-	/**
 	 * Register all magic words
 	 */
 	function onLanguageGetMagic( &$magicWords, $langCode = 0 ) {
-		global $wgTrailWikiMagic, $wgTrailWikiIdMagic;
-		$magicWords[$wgTrailWikiIdMagic] = array( 0, $wgTrailWikiIdMagic );
-		$magicWords[$wgTrailWikiMagic]   = array( 0, $wgTrailWikiMagic );
-		$magicWords['ajaxmapinternal']   = array( 0, 'ajaxmapinternal' );
+		global $wgTrailWikiMagic, $wgTrailWikiIdMagic, $wgTrailWikiRatingMagic;
+		$magicWords[$wgTrailWikiIdMagic]     = array( 0, $wgTrailWikiIdMagic );
+		$magicWords[$wgTrailWikiRatingMagic] = array( 0, $wgTrailWikiRatingMagic );
+		$magicWords[$wgTrailWikiMagic]       = array( 0, $wgTrailWikiMagic );
+		$magicWords['ajaxmapinternal']       = array( 0, 'ajaxmapinternal' );
 		return true;
 	}
 
@@ -236,6 +242,37 @@ class TrailWikiMaps {
 			'noargs'  => false,
 			'isHTML'  => false
 		);
+	}
+
+	/**
+	 * Expand #trailwikirating parser-function
+	 */
+	public function expandRating( &$parser, $param ) {
+		global $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable, $wgTrailWikiRatingCats;
+		$wikitext = '';
+		foreach( array( $wgTrailWikiRatingTable, $wgTrailWikiDifficultyTable ) as $table ) {
+			$rating = self::getCommunityValue( $table, $param );
+			$cat = $wgTrailWikiRatingCats[$table][number_format( $rating, 0 )];
+			$wikitext .= "[[Category:$cat]]";
+		}
+		return array(
+			$wikitext,
+			'found'   => true,
+			'nowiki'  => false,
+			'noparse' => false,
+			'noargs'  => false,
+			'isHTML'  => false
+		);
+	}
+
+	/**
+	 * Return a rating value from the selected CommunityVoice table
+	 */
+	static function getCommunityValue( $table, $title ) {
+		$dbr = wfGetDB( DB_SLAVE );
+		$table = $dbr->tableName( $table );
+		$val = $dbr->selectField( $table, 'AVG(vot_rating)', array( 'vot_title' => $title ) );
+		return $val;
 	}
 
 	public function expandAjaxMapInternal( $parser, $id ) {
@@ -352,8 +389,8 @@ class TrailWikiMaps {
 		$c = '';
 		if( !empty( $data['Trail Use'] ) ) {
 			global $wgTrailWikiIcons;
-			$uses = preg_replace( "|[^a-z ]|i", "", ucwords( strtolower( $data['Trail Use'] ) ) );
-			foreach( preg_split( "|\s+|", $uses ) as $i ) {
+			$u = ucwords( preg_replace( "|[^a-z ]|i", "", strtolower( $data['Trail Use'] ) ) );
+			foreach( preg_split( "|\s+|", $u ) as $i ) {
 				$uses .= "$c\"$i\"";
 				$c = ',';
 			}
