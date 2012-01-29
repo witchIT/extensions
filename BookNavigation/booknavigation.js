@@ -1,9 +1,3 @@
-$('#p-logo').after( '<div id="booknav-sidebar"></div>' );
-
-$.ajax({
-	type: 'GET',
-	url: mw.config.get( 'wgScript' ),
-	data: { title: mw.config.get( 'wgTitle' ), action: 'booknavtree' },
-	dataType: 'html',
-	success: function( data ) { $('#booknav-sidebar').html(data); }
-});
+var tree = $('#booknav-sidebar').parent();
+$('#p-logo').after( tree.html() );
+tree.html('');

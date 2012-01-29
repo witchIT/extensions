@@ -33,9 +33,12 @@ div#mw-panel {
 	white-space: nowrap;
 	padding: 1px 2px 1px 2px;
 }
-.dtree a:hover, .dtree a.node:hover, .dtree a.nodeSel:hover {
+.dtree a:hover, .dtree a.nodeSel:hover {
 	color: black;
 	text-decoration: underline;
+}
+body .dtree a.node:hover {
+	text-decoration: none;
 }
 .dtree a.nodeSel {
 	background-color: #c0d2ec;
@@ -117,6 +120,9 @@ div#mw-panel {
 }
 .booknav-chapter strong {
 	font-weight: normal;
+}
+div.booknav-navlink {
+	background: black;
 }
 
 /*

@@ -15,6 +15,7 @@ $messages = array();
 $messages['en'] = array(
 	'booknav-next' => 'Next',
 	'booknav-prev' => 'Prev',
-	'chapter-start' => 'Chapter start',
-	'chapter-end' => 'Chapter end',
+	'booknav-chapter-start' => 'Chapter start',
+	'booknav-chapter-end' => 'Chapter end',
+	'booknav-notinbook' => 'Error: page not in book structure',
 );
