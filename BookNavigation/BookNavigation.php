@@ -200,15 +200,15 @@ class BookNavigation {
 	 */
 	function expandBookTreeScript( &$parser ) {
 		global $wgJsMimeType;
-
 		$params = func_get_args();
 		array_shift( $params );
 		$tree = array_shift( $params );
 		$node = $params[0];
-
-		$script = "window.tamOnload_tam$tree.push(function(){ $('#itam$tree$node').parent().children().last().attr('class','booknav-selected');";
+		$script = "window.tamOnload_tam$tree.push( function() {";
+		$script .= "tam$tree.closeAll();";
+		$script .= "$('#itam$tree$node').parent().children().last().attr('class','booknav-selected');";
 		foreach( $params as $node ) {
-			//if( $node ) $script .= "tam$tree.openTo($node);";
+			if( $node ) $script .= "tam$tree.openTo($node);";
 		}
 		$script .= "});";
 		return array(
@@ -264,7 +264,7 @@ class BookNavigation {
 
 			// If current page is in this chapter (or is this chapter), render that chapter's tree only
 			if( $chapter == $current_chapter ) {
-				$tree .= "<div class=\"booknavtree\">{{#tree:id=$id||\n";
+				$tree .= "<div class=\"booknavtree\">{{#tree:id=$id|\n";
 				$node = -1;
 				$prev = '';
 				$next = '';
@@ -280,6 +280,7 @@ class BookNavigation {
 						// If this is the current page, mark as selected and note prev and next nodes
 						if( $link == $current_link ) {
 							$node = $i;
+							$page = $this->getPage( $link );
 							$prev = $this->prevLinkable( $page, true );
 							$next = $this->nextLinkable( $page, true );
 						}
