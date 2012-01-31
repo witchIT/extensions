@@ -11,7 +11,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'LINKTREE_VERSION','0.0.0, 2012-01-31' );
+define( 'LINKTREE_VERSION','1.0.0, 2012-01-31' );
 
 $wgExtensionFunctions[] = 'wfSetupLinkTree';
 
@@ -37,7 +37,7 @@ class LinkTree {
 
 	public function expandLinkTree( &$parser, $levels ) {
 		$parser->disableCache();
-		$tree = "*[[foosh]]\n**[[bar]]\n*[[baz]]\n";
+		$tree = $this->linkTree( $parser->getTitle(), $levels );
 		return array(
 			$tree,
 			'found'   => true,
@@ -46,6 +46,44 @@ class LinkTree {
 			'noargs'  => false,
 			'isHTML'  => false
 		);
+	}
+
+	/**
+	 * Recursive link tree
+	 */
+	function linkTree( $title, $limit, $level = 1 ) {
+		$tree = '';
+		$links = $this->getLinksFrom( $title );
+		foreach( $links as $title ) {
+			$url = $title->getFullURL();
+			$text = $title->getPrefixedText();
+			$tree .= str_repeat( "*", $level ) . "[$url $text]\n";
+			if( $level < $limit ) $tree .= $this->linkTree( $title, $limit, $level + 1 );
+		}
+		return $tree;
+	}
+
+	/**
+	 * Return a list of titles for links out from the passed title
+	 */
+	function getLinksFrom( $title ) {
+		$dbr = wfGetDB( DB_SLAVE );
+		$res = $dbr->select(
+			array( 'page', 'pagelinks' ),
+			array( 'pl_namespace', 'pl_title' ),
+			array( 'pl_from' => $title->getArticleId() ),
+			__METHOD__,
+			array(),
+			array(
+				'page' => array(
+					'LEFT JOIN',
+					array( 'pl_namespace=page_namespace', 'pl_title=page_title' )
+				)
+			)
+		);
+		$links = array();
+		foreach( $res as $row ) $links[] = Title::makeTitle( $row->pl_namespace, $row->pl_title );
+		return $links;
 	}
 
 }
