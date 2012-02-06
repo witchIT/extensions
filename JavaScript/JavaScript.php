@@ -10,7 +10,9 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '3.0.6, 2011-08-03' );
+define( 'JAVASCRIPT_VERSION', '3.0.7, 2012-02-06' );
+
+$wgUseMWJquery = true;
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "JavaScript",
@@ -67,14 +69,14 @@ function wfJavaScriptAddModules( &$out, $skin = false ) {
  * This is for MediaWiki 1.16 and earlier
  */
 function wfJavaScriptAddScripts( &$out, $skin = false ) {
-	global $wgJsMimeType, $wgScriptPath, $wgJavaScriptExterenalPath;
+	global $wgJsMimeType, $wgScriptPath, $wgJavaScriptExterenalPath, $wgUseMWJquery;
 
 	// Load JavaScript files
 	foreach( glob( dirname( __FILE__ ) . "/*.js" ) as $file ) {
 		$file = wfJavaScriptExternalPath( $file );
 		if( !preg_match( "|organicdesign|", $file ) ) {
 			$jquery = preg_match( "|/jquery-\d|", $file );
-			if ( is_callable( array( $out, 'includeJQuery' ) ) && $jquery ) {
+			if ( $wgUseMWJquery && is_callable( array( $out, 'includeJQuery' ) ) && $jquery ) {
 				$out->includeJQuery();
 			} else {
 				$out->addScript( "<script src='$file' type='$wgJsMimeType'></script>" );
