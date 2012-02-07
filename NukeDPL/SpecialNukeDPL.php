@@ -13,7 +13,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not a valid entry point.' );
 
-define( 'NUKEDPL_VERSION', '1.2.4, 2011-04-05' );
+define( 'NUKEDPL_VERSION', '1.2.5, 2012-02-07' );
 
 $wgGroupPermissions['sysop']['nuke'] = true;
 $wgAvailableRights[]                 = 'nuke';
@@ -74,9 +74,6 @@ function wfSetupNukeDPL() {
 	) );
 }
 
-/**
- * Define a new class based on the SpecialPage class
- */
 class SpecialNukeDPL extends SpecialPage {
 
 	function __construct() {
@@ -86,7 +83,7 @@ class SpecialNukeDPL extends SpecialPage {
 	function execute( $par ) {
 		global $wgUser, $wgRequest;
 
-		if ( !$this->userCanExecute( $wgUser ) ) {
+		if( !$this->userCanExecute( $wgUser ) ) {
 			$this->displayRestrictionError();
 			return;
 		}
@@ -98,11 +95,11 @@ class SpecialNukeDPL extends SpecialPage {
 		$reason = $wgRequest->getText( 'wpReason', wfMsgForContent( 'nuke-defaultreason', $target ) );
 		$posted = $wgRequest->wasPosted() && $wgUser->matchEditToken( $wgRequest->getVal( 'wpEditToken' ) );
 
-		if ( $posted ) {
-			if ( $pages = $wgRequest->getArray( 'pages' ) ) return $this->doDelete( $pages, $reason );
+		if( $posted ) {
+			if( $pages = $wgRequest->getArray( 'pages' ) ) return $this->doDelete( $pages, $reason );
 		}
 
-		if ( $target ) $this->listForm( $target, $reason ); else $this->promptForm();
+		if( $target ) $this->listForm( $target, $reason ); else $this->promptForm();
 	}
 
 	function promptForm() {
@@ -110,7 +107,7 @@ class SpecialNukeDPL extends SpecialPage {
 
 		$sk =& $wgUser->getSkin();
 		$nuke = Title::makeTitle( NS_SPECIAL, 'NukeDPL' );
-		$submit = wfElement( 'input', array( 'type' => 'submit', 'value' => 'View candidate list' ) );
+		$submit = Xml::element( 'input', array( 'type' => 'submit', 'value' => 'View candidate list' ) );
 
 		$wgOut->addWikiText( "This tool allows for mass deletions of pages selected by a DPL query.<br>" );
 		$wgOut->addWikiText( "Enter a query below to generate a list of titles to delete." );
@@ -118,7 +115,7 @@ class SpecialNukeDPL extends SpecialPage {
 		$wgOut->addWikiText( "*Remember, article titles are case-sensitive." );
 		$wgOut->addWikiText( "*Queries shouldn't be surrounded by any DPL tags or braces." );
 		$wgOut->addWikiText( "*For information about the parameter meanings, see the [http://semeb.com/dpldemo/index.php?title=DPL:Manual DPL Manual]." );
-		$wgOut->addHTML( wfElement( 'form', array( 'action' => $nuke->getLocalURL( 'action=submit' ), 'method' => 'post' ), null )
+		$wgOut->addHTML( Xml::element( 'form', array( 'action' => $nuke->getLocalURL( 'action=submit' ), 'method' => 'post' ), null )
 			. "<textarea name=\"target\" cols=\"25\" rows=\"30\">$wgNukeDPLDefaultText</textarea>"
 			. "\n$submit\n" );
 		$wgOut->addHTML( "</form>" );
@@ -128,7 +125,7 @@ class SpecialNukeDPL extends SpecialPage {
 		global $wgUser, $wgOut, $wgLang;
 
 		$pages = $this->getPages( $query );
-		if ( count( $pages ) == 0 ) {
+		if( count( $pages ) == 0 ) {
 			$wgOut->addWikiText( wfMsg( 'nuke-nopages', $query ) );
 			return $this->promptForm();
 		}
@@ -136,18 +133,18 @@ class SpecialNukeDPL extends SpecialPage {
 		$wgOut->addWikiText( wfMsg( 'nuke-list',$query ) );
 
 		$nuke = Title::makeTitle( NS_SPECIAL, 'NukeDPL' );
-		$submit = wfElement( 'input', array( 'type' => 'submit', 'value' => 'Nuke!' ) );
+		$submit = Xml::element( 'input', array( 'type' => 'submit', 'value' => 'Nuke!' ) );
 		$wgOut->addHTML(
-			wfElement( 'form', array( 'action' => $nuke->getLocalURL( 'action=delete' ), 'method' => 'post' ), null )
+			Xml::element( 'form', array( 'action' => $nuke->getLocalURL( 'action=delete' ), 'method' => 'post' ), null )
 			."\n<div>".wfMsgHtml( 'deletecomment' ) . ': '
-			.wfElement( 'input', array( 'name' => 'wpReason', 'value' => $reason, 'size' => 60 ) ) . "</div>\n$submit"
-			.wfElement( 'input', array( 'type' => 'hidden', 'name' => 'wpEditToken', 'value' => $wgUser->editToken() ) ) . "\n<br/>"
+			.Xml::element( 'input', array( 'name' => 'wpReason', 'value' => $reason, 'size' => 60 ) ) . "</div>\n$submit"
+			.Xml::element( 'input', array( 'type' => 'hidden', 'name' => 'wpEditToken', 'value' => $wgUser->editToken() ) ) . "\n<br/>"
 		);
 
 		$sk =& $wgUser->getSkin();
-		foreach ( $pages as $title ) {
+		foreach( $pages as $title ) {
 			$wgOut->addHTML(
-				wfElement( 'input', array( 'type' => 'checkbox', 'name' => "pages[]", 'value' => $title, 'checked' => 'checked' ) )
+				Xml::element( 'input', array( 'type' => 'checkbox', 'name' => "pages[]", 'value' => $title, 'checked' => 'checked' ) )
 				.'&nbsp;' . $sk->makeKnownLinkObj( Title::newFromText( $title ) ) . "<br />\n"
 			);
 		}
@@ -165,13 +162,12 @@ class SpecialNukeDPL extends SpecialPage {
 	}
 
 	function doDelete( $pages, $reason ) {
-		foreach ( $pages as $page ) {
+		foreach( $pages as $page ) {
 			if( $title = Title::newFromText( $page ) ) {
 				$article = new Article( $title );
 				$article->doDelete( $reason );
 			} else die( "Bad title: \"$page\"" );
 		}
 	}
-
 }
 
