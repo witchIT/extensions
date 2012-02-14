@@ -8,10 +8,10 @@
 # http://www.wikics.org/
 ########################
 
-include_once('/var/www/extensions/geshi/geshi.php');
-
 // change directory accordingly
-$languagesPath = "/var/www/extensions/geshi/geshi";
+$languagesPath = dirname( __FILE__ ) . "/geshi";
+
+include_once( "$languagesPath/../geshi.php" );
 
 // 1 - ENABLED, 0 - DISABLED
 $codeTag["simple"] = 1;                       // ex. <php> echo </php> 
