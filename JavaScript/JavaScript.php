@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'JAVASCRIPT_VERSION', '3.0.7, 2012-02-06' );
+define( 'JAVASCRIPT_VERSION', '3.0.8, 2012-02-15' );
 
 $wgUseMWJquery = true;
 
@@ -99,5 +99,5 @@ function wfJavaScriptAddScripts( &$out, $skin = false ) {
  */
 function wfJavaScriptExternalPath( $internalPath ) {
 	global $wgScriptPath;
-	return preg_replace( "|^.*/extensions/|", "$wgScriptPath/extensions/", $internalPath );
+	return preg_replace( "|^.*/extensions|", "$wgScriptPath/extensions", $internalPath );
 }
