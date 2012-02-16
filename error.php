@@ -4,8 +4,10 @@
 		<link rel="stylesheet" href="/wiki/extensions/error.css" media="all" />
 	</head>
 <?php
-$code = array_key_exists( 'REDIRECT_STATUS', $_SERVER ) ? $_SERVER['REDIRECT_STATUS'] : 404;
-switch ($code) {
+$code = 404;
+if( array_key_exists( 'REDIRECT_STATUS', $_SERVER ) ) $code = $_SERVER['REDIRECT_STATUS'];
+elseif ( array_key_exists( 'code', $_REQUEST ) ) $code = $_REQUEST['code'];
+switch ( $code ) {
 	case 100: $text = 'Continue'; break;
 	case 101: $text = 'Switching Protocols'; break;
 	case 200: $text = 'OK'; break;
