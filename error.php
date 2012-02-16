@@ -41,4 +41,13 @@ switch ($code) {
 default: $text = 'Unknown http status code "' . htmlentities($code) . '"';
 break;
 }
-print "<h1>Oops! an error has occurred.</h1><br /><br /><h2>Error $code: $text</h2>";
+?>
+<html>
+	<body class="error-page error<?php echo $code;?>">
+		<div>
+			<h1>Oops! an error has occurred.</h1>
+			<br /><br />
+			<h2>Error <?php echo "$code: $text";?></h2>
+		</div>
+	</body>
+</html>
