@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="./error.css" media="all" />
+	</head>
 <?php
 $code = $_SERVER['REDIRECT_STATUS'];
 switch ($code) {
@@ -42,7 +47,6 @@ default: $text = 'Unknown http status code "' . htmlentities($code) . '"';
 break;
 }
 ?>
-<html>
 	<body class="error-page error<?php echo $code;?>">
 		<div>
 			<h1>Oops! an error has occurred.</h1>
