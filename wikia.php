@@ -145,9 +145,9 @@ if( $wgSiteDown && !$wgCommandLineMode ) {
 	$msg = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>Down for maintenance</title></head>
 	<body bgcolor="white"><table width="100%"><tr><td align="center">
 	<img border="0" src="http://www.organicdesign.co.nz/files/9/9c/Cone.png" style="padding-top:100px"/><br>
-	<div style="font-family:sans;font-weight:bold;color:#89a;font-size:16pt;padding-top:25px">'
-	. wfMsg( 'od-sitedown', $wgSitename ) . ',<br><br><small>' . wfMsg( 'od-trysoon' )
-	. '</small></div></td></tr></table></body></html>';
+	<div style="font-family:sans;font-weight:bold;color:#89a;font-size:16pt;padding-top:25px">
+	This site is temporarily down for maintenance<br><br><small>Please try again soon</small>
+	</div></td></tr></table></body></html>';
 	if ( in_array('Content-Encoding: gzip', headers_list() ) ) $msg = gzencode( $msg );
 	echo $msg;
 	die;
