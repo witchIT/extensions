@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="./error.css" media="all" />
+		<link rel="stylesheet" href="/wiki/extensions/error.css" media="all" />
 	</head>
 <?php
 $code = $_SERVER['REDIRECT_STATUS'];
