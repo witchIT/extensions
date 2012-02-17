@@ -18,6 +18,17 @@ if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'WIKIOBJECT_VERSION','0.0.0, 2012-02-16' );
 
+// The first namespace index for the WikiObject classes
+$wgWikiObjectsBaseNamespace = 1725676;
+
+// WikiObject class definitions
+$wgWikiObjectsClasses = array(
+	'Example' => array(
+		'Col1' => 'TEXT',
+		'Col2' => 'INT(11)'
+	)
+);
+
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'WikiObjects',
@@ -27,9 +38,40 @@ $wgExtensionCredits['other'][] = array(
 	'version'        => WIKIOBJECT_VERSION,
 );
 
+/**
+ * The main extension class and also the base-class for WikiObject instances
+ */
 class WikiObject {
 
 	function __construct() {
+		global $wgHooks, $wgWikiObjectsBaseNamespace, $wgWikiObjectsClasses;
+
+		// Add hooks
+		$wgHooks['ArticleSaveComplete'][] = $this;
+		$wgHooks['ArticleDeleteComplete'][] = $this;
+
+		// Create the namespaces for the WikiObject classes and ensure the DB tables exist
+		foreach( $wgWikiObjectsClasses as $name => $properties ) {
+		}
 	}
 
+	/**
+	 * When an article in one of the WikiObject namespaces is created, create a corresponding DB entry
+	 */
+	function onArticleSaveComplete( &$article, &$user, $text, $summary, $minor, $watch, $section, &$flags, $rev, &$status, $baseRevId ) {
+		return true;
+	}
+
+	/**
+	 * When an article in one of the WikiObject namespaces is deleted, remove the corresponding DB entry
+	 */
+	function onArticleDeleteComplete( &$article, &$user, $reason, $id ) {
+		return true;
+	}
+
+
 }
+
+// Create a wrapper class for each WikiObject type for creation and updating
+// - create new - ExampleType::new()
+// - create from title - e.g. $ex = ExampleType::new( Title )
