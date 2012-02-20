@@ -32,7 +32,7 @@ use LWP::UserAgent;
 use utf8;
 use Encode;
 use strict;
-$::ver   =  '2.1.10, 2012-01-20';
+$::ver   =  '2.1.11, 2012-02-20';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -196,7 +196,7 @@ sub processEmail {
 	$html_body =~ s/\s*<\/?html[^>]*>\s*//sgi; # Strip html tags too
 
 	# This feature needs $wgRawHtml = true setting!
-	$body .= "<div name=\"html_part\"><html>\n$html_body</html></div>\n" unless $html_body =~ /^\s*$/;
+	if( $html_body =~ /^\s*$/ ) { $::html_only = 0 } else { $body .= "<div name=\"html_part\"><html>\n$html_body</html></div>\n" }
 	unless( $::html_only ) {
 		$body .= "<div name=\"plain_part\"><pre>\n$plain_body</pre></div>\n" unless $plain_body =~ /^\s*$/;
 		$body .= "<div name=\"other_part\"><pre>\n$other_body</pre></div>\n" unless $other_body =~ /^\s*$/;
