@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '2.2.1, 2011-09-29' );
+define( 'EXTRAMAGIC_VERSION', '2.2.2, 2012-02-27' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -177,7 +177,7 @@ function efGetCustomVariable( &$parser, &$cache, &$index, &$ret ) {
 
 		case MAG_DOMAIN:
 			$parser->disableCache();
-			$ret = $_SERVER['SERVER_NAME'];
+			$ret = str_replace( 'www.', '', $_SERVER['SERVER_NAME'] );
 		break;
 
 		case MAG_NUMBERINGOFF:
