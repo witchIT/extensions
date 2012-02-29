@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '2.2.2, 2012-02-27' );
+define( 'EXTRAMAGIC_VERSION', '2.3.0, 2012-02-29' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -43,15 +43,6 @@ $wgHooks['ParserGetVariableValueSwitch'][]      = 'efGetCustomVariable';
 $wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'efExtraMagicTemplateName';
 
 /**
- * Makes a templates name available at the time of transclusion
- */
-function efExtraMagicTemplateName( $parser, $title, $skip, $id ) {
-        global $wgThisTemplateName;
-	$wgThisTemplateName = $title->getPrefixedText();
-        return true;
-}
-
-/**
  * Called from $wgExtensionFunctions array when initialising extensions
  */
 function efSetupExtraMagic() {
@@ -60,6 +51,7 @@ function efSetupExtraMagic() {
 	$wgParser->setFunctionHook( 'COOKIE',  'efExtraMagicExpandCookie',  SFH_NO_HASH );
 	$wgParser->setFunctionHook( 'USERID',  'efExtraMagicExpandUserID',  SFH_NO_HASH );
 	$wgParser->setFunctionHook( 'AVATAR',  'efExtraMagicExpandAvatar',  SFH_NO_HASH );
+	$wgParser->setFunctionHook( 'IFGROUP', 'efExtraMagicExpandIfGroup' );
 }
 
 /**
@@ -91,6 +83,7 @@ function efAddCustomVariableLang( &$langMagic, $langCode = 0 ) {
 	$langMagic['COOKIE']  = array( $langCode, 'COOKIE' );
 	$langMagic['USERID']  = array( $langCode, 'USERID' );
 	$langMagic['AVATAR']  = array( $langCode, 'AVATAR' );
+	$langMagic['IFGROUP'] = array( $langCode, 'IFGROUP' );
 
 	return true;
 }
@@ -131,6 +124,12 @@ function efExtraMagicExpandAvatar( &$parser, $param ) {
 		}
 	}
 	return '';
+}
+
+function efExtraMagicExpandIfGroup( &$parser, $groups, $then, $else = '' ) {
+	global $wgUser;
+	$intersection = array_intersect( array_map( 'strtolower', explode( ',', $groups ) ), $wgUser->getEffectiveGroups() );
+	return count( $intersection ) > 0 ? $then : $else;
 }
 
 /**
