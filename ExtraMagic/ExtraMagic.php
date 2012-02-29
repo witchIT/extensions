@@ -40,7 +40,6 @@ $wgHooks['MagicWordMagicWords'][]               = 'efAddCustomVariable';
 $wgHooks['MagicWordwgVariableIDs'][]            = 'efAddCustomVariableID';
 $wgHooks['LanguageGetMagic'][]                  = 'efAddCustomVariableLang';
 $wgHooks['ParserGetVariableValueSwitch'][]      = 'efGetCustomVariable';
-$wgHooks['BeforeParserFetchTemplateAndtitle'][] = 'efExtraMagicTemplateName';
 
 /**
  * Called from $wgExtensionFunctions array when initialising extensions
