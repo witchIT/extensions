@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleProperties - Creates a flexible interface to the page_props table which stores per-article named-properties
+ * TemplateProperties - Synchronise article properties with template named parameters
  *
  * @package MediaWiki
  * @subpackage Extensions
@@ -9,22 +9,24 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'ARTICLEPROPS_VERSION', "0.0.1, 2012-03-01" );
+define( 'TEMPLATEPROPS_VERSION', "0.0.1, 2012-03-03" );
 
-$wgExtensionFunctions[] = 'wfSetupArticleProperties';
+$wgExtensionFunctions[] = 'wfSetupTemplateProperties';
 $wgExtensionCredits['specialpage'][] = array(
-	'name'        => "ArticleProperties",
+	'name'        => "TemplateProperties",
 	'author'      => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
-	'description' => "Creates a flexible interface to the page_props table which stores per-article named-properties",
-	'url'         => "http://www.mediawiki.org/wiki/ArticleProperties",
-	'version'     => ARTICLEPROPS_VERSION
+	'description' => "Synchronise article properties with template named parameters",
+	'url'         => "http://www.mediawiki.org/wiki/TemplateProperties",
+	'version'     => TEMPLATEPROPS_VERSION
 );
 
+// Load messages and dependencies
 $dir = dirname( __FILE__ );
-//$wgExtensionMessagesFiles['ArticleProperties'] = "$dir/ArticleProperties.i18n.php";
-require_once( "$dir/ArticleProperties.class.php" );
+$wgExtensionMessagesFiles['TemplateProperties'] = "$dir/TemplateProperties.i18n.php";
+$wgExtensionMessagesFiles['TemplatePropertiesMagic'] = "$dir/TemplateProperties.i18n.magic.php";
+require_once( "$dir/TemplateProperties.class.php" );
 
-function wfSetupArticleProperties() {
-	global $wgArticleProperties;
-	$wgArticleProperties = new ArticleProperties();
+function wfSetupTemplateProperties() {
+	global $wgTemplateProperties;
+	$wgTemplateProperties = new TemplateProperties();
 }
