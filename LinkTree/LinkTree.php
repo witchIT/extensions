@@ -11,7 +11,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'LINKTREE_VERSION','1.0.0, 2012-01-31' );
+define( 'LINKTREE_VERSION','1.0.1, 2012-03-06' );
 
 $wgExtensionFunctions[] = 'wfSetupLinkTree';
 
@@ -30,14 +30,19 @@ $wgExtensionMessagesFiles['LinkTreeMagic'] = $dir . 'LinkTree.i18n.magic.php';
 
 class LinkTree {
 
+	var $exclusions = array();
+
 	function __construct() {
 		global $wgOut, $wgHooks, $wgParser;
 		$wgParser->setFunctionHook( 'linktree', array( $this, 'expandLinkTree' ) );
 	}
 
-	public function expandLinkTree( &$parser, $levels ) {
+	public function expandLinkTree( &$parser, $limit ) {
 		$parser->disableCache();
-		$tree = $this->linkTree( $parser->getTitle(), $levels );
+		$this->exclusions = func_get_args();
+		array_shift( $this->exclusions );
+		array_shift( $this->exclusions );
+		$tree = $this->linkTree( $parser->getTitle(), $limit );
 		return array(
 			$tree,
 			'found'   => true,
@@ -55,10 +60,12 @@ class LinkTree {
 		$tree = '';
 		$links = $this->getLinksFrom( $title );
 		foreach( $links as $title ) {
-			$url = $title->getFullURL();
 			$text = $title->getPrefixedText();
-			$tree .= str_repeat( "*", $level ) . "[$url $text]\n";
-			if( $level < $limit ) $tree .= $this->linkTree( $title, $limit, $level + 1 );
+			if( !in_array( $text, $this->exclusions ) ) {
+				$url = $title->getFullURL();
+				$tree .= str_repeat( "*", $level ) . "[$url $text]\n";
+				if( $level < $limit ) $tree .= $this->linkTree( $title, $limit, $level + 1 );
+			}
 		}
 		return $tree;
 	}
