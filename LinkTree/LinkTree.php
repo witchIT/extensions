@@ -13,8 +13,8 @@ if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'LINKTREE_VERSION','1.0.1, 2012-03-06' );
 
+$wgLinkTreeMaxChr = false;
 $wgExtensionFunctions[] = 'wfSetupLinkTree';
-
 $wgExtensionCredits['parserhook'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'LinkTree',
@@ -57,11 +57,13 @@ class LinkTree {
 	 * Recursive link tree
 	 */
 	function linkTree( $title, $limit, $level = 1 ) {
+		global $wgLinkTreeMaxChr;
 		$tree = '';
 		$links = $this->getLinksFrom( $title );
 		foreach( $links as $title ) {
 			$text = $title->getPrefixedText();
 			if( !in_array( $text, $this->exclusions ) ) {
+				if( $wgLinkTreeMaxChr && strlen( $text ) > $wgLinkTreeMaxChr ) $text = substr( $text, 0, $wgLinkTreeMaxChr ) . '...';
 				$url = $title->getFullURL();
 				$tree .= str_repeat( "*", $level ) . "[$url $text]\n";
 				if( $level < $limit ) $tree .= $this->linkTree( $title, $limit, $level + 1 );
