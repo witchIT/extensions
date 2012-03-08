@@ -9,9 +9,8 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'ARTICLEPROPS_VERSION', "0.0.1, 2012-03-01" );
+define( 'ARTICLEPROPS_VERSION', "0.0.2, 2012-03-08" );
 
-$wgExtensionFunctions[] = 'wfSetupArticleProperties';
 $wgExtensionCredits['specialpage'][] = array(
 	'name'        => "ArticleProperties",
 	'author'      => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
