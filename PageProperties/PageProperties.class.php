@@ -5,7 +5,7 @@ class PageProperties extends WikiPage {
 	 * Contstruct as a normal article with no differences
 	 */
 	function __construct( $param ) {
-		return parent::__contruct( $param );
+		return parent::__construct( $param );
 	}
 
 	/**
