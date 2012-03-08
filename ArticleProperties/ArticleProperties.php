@@ -23,8 +23,3 @@ $wgExtensionCredits['specialpage'][] = array(
 $dir = dirname( __FILE__ );
 //$wgExtensionMessagesFiles['ArticleProperties'] = "$dir/ArticleProperties.i18n.php";
 require_once( "$dir/ArticleProperties.class.php" );
-
-function wfSetupArticleProperties() {
-	global $wgArticleProperties;
-	$wgArticleProperties = new ArticleProperties();
-}
