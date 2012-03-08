@@ -53,8 +53,6 @@ class ArticleProperties extends Article {
 
 						// add to array that will be sent ot the change event
 						$changed[$k] = array( $v0, $v1 );
-
-						}
 					}
 				}
 			}
