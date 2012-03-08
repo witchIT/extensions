@@ -57,7 +57,7 @@ class ArticleProperties extends Article {
 				}
 			}
 
-			if( $changed ) wfRunHook( 'ArticleProperties:changed', array( &$this, &$changed ) );
+			if( $changed ) wfRunHook( 'ArticlePropertiesChanged', array( &$this, &$changed ) );
 		}
 
 		return $props;
