@@ -1,5 +1,5 @@
 <?php
-class ArticleProperties extends Article {
+class PageProperties extends WikiPage {
 
 	/**
 	 * Contstruct as a normal article with no differences
