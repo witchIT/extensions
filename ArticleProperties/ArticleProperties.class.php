@@ -23,19 +23,15 @@ class ArticleProperties extends Article {
 	 * When a new article is created, allow PageProperties sub-class to specify if they or their sub-classes should be used for this article
 	 */
 	public static function onArticleFromTitle( $title, &$page ) {
-		$class = null;
 
 		// ArticleProperties sub-classes can use this to select a new class for the page Article
 		// - a new class name is returned for pre-defined classes
 		// - or an array of ( classname, filename ) to lazy-load the class
+		$class = null;
 		wfRunHooks( 'ArticlePropertiesClassFromTitle', array( &$title, &$class ) );
-
-		// No sub-class changed the class, so let MediaWiki handle the page-class decision
 		if( !$class ) return true;
-
-		// A classname and file
 		if( !is_array( $class ) ) $class = array( $class, false );
-		list( $classname, $classfile ) = $ap;
+		list( $classname, $classfile ) = $class;
 
 		// If a file was specified, declare the class now
 		if( $classfile ) {
