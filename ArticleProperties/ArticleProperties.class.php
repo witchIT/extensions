@@ -44,7 +44,7 @@ class ArticleProperties extends Article {
 	/**
 	 * Executed for showEditForm hook of our article types and calls the sub-class edit function if exists
 	 */
-	public static function onShowEditFormFields( &$editpage, $out ) {
+	function onShowEditFormFields( &$editpage, $out ) {
 		return $this->edit( $editpage, $out );
 	}
 
