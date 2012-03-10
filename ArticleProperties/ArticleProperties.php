@@ -23,4 +23,4 @@ $dir = dirname( __FILE__ );
 require_once( "$dir/ArticleProperties.class.php" );
 
 // This hook allows us to change the class of article to one of our classes
-$wgHooks['ArticleFromTitle'] = 'ArticleProperties::onArticleFromTitle';
+$wgHooks['ArticleFromTitle'][] = 'ArticleProperties::onArticleFromTitle';
