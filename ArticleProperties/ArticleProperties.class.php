@@ -51,7 +51,7 @@ class ArticleProperties extends Article {
 	/**
 	 * Executed for ArticleSave hook of our article types and calls the sub-class save function if exists
 	 */
-	public static function onArticleSave( &$article, &$user, &$text, &$summary, $minor, $watchthis, $sectionanchor, &$flags, &$status ) {
+	function onArticleSave( &$article, &$user, &$text, &$summary, $minor, $watchthis, $sectionanchor, &$flags, &$status ) {
 		return $this->save();
 	}
 
