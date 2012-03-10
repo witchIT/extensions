@@ -7,9 +7,6 @@ class ArticleProperties extends Article {
 	function __construct( $param ) {
 		global $wgHooks;
 
-		// This hook allows us to change the class of article to one of our classes
-		$wgHooks['ArticleFromTitle'] = $this;
-
 		// Allow sub-classes to have an edit method that can add its own fields
 		$wgHooks['EditPage::showEditForm:fields'][] = array( $this, 'onShowEditFormFields' );
 
@@ -47,31 +44,30 @@ class ArticleProperties extends Article {
 	/**
 	 * Executed for showEditForm hook of our article types and calls the sub-class edit function if exists
 	 */
-	static function onShowEditFormFields( &$editpage, $out ) {
-		$ap = self::factory( $editpage->getArticle()->getTitle() );
-		return $ap->edit( $editpage, $out );
+	public static function onShowEditFormFields( &$editpage, $out ) {
+		return $this->edit( $editpage, $out );
 	}
 
 	/**
 	 * Executed for ArticleSave hook of our article types and calls the sub-class save function if exists
 	 */
-	static function onArticleSave( &$article, &$user, &$text, &$summary, $minor, $watchthis, $sectionanchor, &$flags, &$status ) {
-		$ap = self::factory( $article->getTitle() );
-		return $ap->save();
+	public static function onArticleSave( &$article, &$user, &$text, &$summary, $minor, $watchthis, $sectionanchor, &$flags, &$status ) {
+		return $this->save();
 	}
 
-	/**
-	 * Default methods for view/edit and save incase the sub-classes don't define them
-	 */
-	function view() {
-		$article = new Article( $this->getTitle() );
-		return $article->render();
-	}
 	function edit( &$editpage, $out ) {
 		return true;
 	}
+
 	function save() {
 		return true;
+	}
+
+	/**
+	 * The default view method just renders the page
+	 */
+	function view() {
+		return $this->render();
 	}
 
 	/**
