@@ -61,7 +61,7 @@ class ArticleProperties extends Article {
 	function edit( &$editpage, $out ) {
 	}
 
-	function save() {
+	function save( $request ) {
 	}
 
 	/**
