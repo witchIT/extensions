@@ -65,13 +65,6 @@ class ArticleProperties extends Article {
 	}
 
 	/**
-	 * The default view method just renders the page
-	 */
-	function view() {
-		return $this->render();
-	}
-
-	/**
 	 * Add a properties method to interface with the article's page_props
 	 */
 	public function properties( $props = array() ) {
