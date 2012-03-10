@@ -45,22 +45,22 @@ class ArticleProperties extends Article {
 	 * Executed for showEditForm hook of our article types and calls the sub-class edit function if exists
 	 */
 	function onShowEditFormFields( &$editpage, $out ) {
-		return $this->edit( $editpage, $out );
+		$this->edit( $editpage, $out );
+		return true;
 	}
 
 	/**
 	 * Executed for ArticleSave hook of our article types and calls the sub-class save function if exists
 	 */
 	function onArticleSave( &$article, &$user, &$text, &$summary, $minor, $watchthis, $sectionanchor, &$flags, &$status ) {
-		return $this->save();
+		$this->save();
+		return true;
 	}
 
 	function edit( &$editpage, $out ) {
-		return true;
 	}
 
 	function save() {
-		return true;
 	}
 
 	/**
@@ -192,7 +192,7 @@ class ArticleProperties extends Article {
 	 */
 	function label( $label, $name = false ) {
 		if( $name === false ) $name = ucfirst( $label );
-		return "<label for=\"wp$name\">" . wfMsg( "znazza-$label" ) . "</label>";
+		return "<label for=\"wp$name\">" . wfMsg( $label ) . "</label>";
 	}
 
 	/**
@@ -222,7 +222,7 @@ class ArticleProperties extends Article {
 		$value = $this->getValue( $name, $default );
 		$html = "<select name=\"wp$name\" id=\"wp$name\">$first";
 		foreach( $options as $opt ) {
-			$text = wfMsg( "znazza-$opt" );
+			$text = wfMsg( $opt );
 			$selected = $value == $opt ? ' selected="yes"' : '';
 			$html .= "<option value=\"$opt\"$selected>$text</option>";
 		}
@@ -236,7 +236,7 @@ class ArticleProperties extends Article {
 		$value = $this->getValue( $name, $default );
 		$html = '';
 		foreach( $options as $opt ) {
-			$text = wfMsg( "znazza-$opt" );
+			$text = wfMsg( $opt );
 			$checked = $value == $opt ? ' checked="yes"' : '';
 			$html .= "<input type=\"radio\" name=\"wp$name\" value=\"$opt\"$checked>$text</input>";
 		}
