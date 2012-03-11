@@ -237,5 +237,12 @@ class ArticleProperties extends Article {
 		return $html;
 	}
 
+	/**
+	 * Render a textarea
+	 */
+	function textarea( $name, $default = '' ) {
+		$value = $this->getValue( $name, $default );
+		return "<textarea name=\"wp$name\">$value</textarea>";
+	}
 
 }
