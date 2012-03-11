@@ -203,7 +203,7 @@ class ArticleProperties extends Article {
 	function inputRow( $label, $name = false, $default = '', $extra = '' ) {
 		$label = $this->label( $label, $name );
 		$input = $this->input( $name, $default );
-		return "<tr><td>$label</td><td>$input$extra</td></tr>";
+		return "<tr><th>$label</th><td>$input$extra</td></tr>";
 	}
 
 	/**
