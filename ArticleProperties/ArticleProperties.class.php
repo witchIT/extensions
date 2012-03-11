@@ -232,7 +232,7 @@ class ArticleProperties extends Article {
 		foreach( $options as $opt ) {
 			$text = wfMsg( $opt );
 			$checked = $value == $opt ? ' checked="yes"' : '';
-			$html .= "<input type=\"radio\" name=\"wp$name\" value=\"$opt\"$checked>$text</input>";
+			$html .= "<input type=\"radio\" name=\"wp$name\" value=\"$opt\"$checked /><label>$text</label>";
 		}
 		return $html;
 	}
