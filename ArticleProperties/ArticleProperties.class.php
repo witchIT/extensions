@@ -227,7 +227,7 @@ class ArticleProperties extends Article {
 	 * Render a radio option group with supplied options list and selected/default value from page_props if any
 	 */
 	function options( $name, $options, $default = '' ) {
-		$value = $this->getValue( $name, $default );
+		$value = $this->getValue( $name, $options[0] );
 		$html = '';
 		foreach( $options as $opt ) {
 			$text = wfMsg( $opt );
