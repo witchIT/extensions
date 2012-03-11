@@ -242,7 +242,7 @@ class ArticleProperties extends Article {
 	 */
 	function textarea( $name, $default = '' ) {
 		$value = $this->getValue( $name, $default );
-		return "<textarea name=\"wp$name\">$value</textarea>";
+		return "<textarea name=\"wp$name\" id=\"wp$name\">$value</textarea>";
 	}
 
 }
