@@ -183,7 +183,7 @@ class ArticleProperties extends Article {
 		$props = array();
 		foreach( $names as $k ) {
 			$v = $wgRequest->getText( "wp$k", false );
-			if( $v !== false ) $prop[$k] = $v;
+			if( $v !== false ) $props[$k] = $v;
 		}
 		$this->properties( $props );
 	}
