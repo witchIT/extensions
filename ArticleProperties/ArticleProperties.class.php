@@ -14,7 +14,7 @@ class ArticleProperties extends Article {
 		$wgHooks['EditPage::showEditForm:fields'][] = array( $this, 'onShowEditFormFields' );
 
 		// Allow sub-classes to have a save method that can store its fields into the page_props
-		$wgHooks['ArticleSave'][] = $this;
+		$wgHooks['ArticleSaveComplete'][] = $this;
 
 		return parent::__construct( $param );
 	}
@@ -64,7 +64,7 @@ class ArticleProperties extends Article {
 	/**
 	 * Executed for ArticleSave hook of our article types and calls the sub-class save function if exists
 	 */
-	function onArticleSave( &$article, &$user, &$text, &$summary, $minor, $watchthis, $sectionanchor, &$flags, &$status ) {
+	function onArticleSaveComplete( &$article, &$user, $text, $summary, $minor, $watch, $section, &$flags, $rev, &$status, $baseRevId ) {
 		global $wgRequest;
 		$this->save( $wgRequest );
 		return true;
