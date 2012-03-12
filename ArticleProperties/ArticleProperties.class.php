@@ -68,7 +68,7 @@ class ArticleProperties extends Article {
 	 * Add a properties method to interface with the article's page_props
 	 */
 	public function properties( $props = array() ) {
-		if( $id = $this->getArticleId() ) {
+		if( $id = $this->getTitle()->getArticleId() ) {
 			$changed = false;
 			$dbr = wfGetDB( DB_SLAVE );
 			$dbw = false;
