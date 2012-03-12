@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'ARTICLEPROPS_VERSION', "0.2.0, 2012-03-10" );
+define( 'ARTICLEPROPS_VERSION', "0.3.0, 2012-03-12" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "ArticleProperties",
@@ -24,3 +24,22 @@ require_once( "$dir/ArticleProperties.class.php" );
 
 // This hook allows us to change the class of article to one of our classes
 $wgHooks['ArticleFromTitle'][] = 'ArticleProperties::onArticleFromTitle';
+
+
+$wgExtensionFunctions[] = 'wfSetupArticleProperties';
+
+/**
+ * Create the article_props table if it doesn't exist
+ */
+function wfSetupArticleProperties() {
+	$dbw = &wfGetDB( DB_MASTER );
+	$tbl = $dbw->tableName( 'article_props' );
+	if( !$dbw->tableExists( $tbl ) ) {
+		$dbw->query( "CREATE TABLE `wiki_page_props` (
+			`ap_page` int(11) NOT NULL,
+			`ap_namespace` int(11) NOT NULL,
+			`ap_propname` varbinary(30) NOT NULL,
+			`ap_value` blob NOT NULL
+		)" );
+	}
+}

@@ -68,25 +68,26 @@ class ArticleProperties extends Article {
 	 * Add a properties method to interface with the article's page_props
 	 */
 	public function properties( $props = array() ) {
-		if( $id = $this->getTitle()->getArticleId() ) {
+		$title = $this->getTitle();
+		if( $id = $title->getArticleId() ) {
 			$changed = false;
 			$dbr = wfGetDB( DB_SLAVE );
 			$dbw = false;
 
 			// If the input array is empty, return all properties
 			if( count( $props ) == 0 ) {
-				$res = $dbr->select( 'page_props', 'pp_propname,pp_value', array( 'pp_page' => $id ) );
+				$res = $dbr->select( 'article_props', 'ap_propname,ap_value', array( 'ap_page' => $id ) );
 				while( $row = $dbr->fetchRow( $res ) ) $props[$row[0]] = $row[1];
 				$dbr->freeResult( $res );
 			}
 
 			// Otherwise return only those specified
 			else {
+				$ns = $title->getNamespace();
 				foreach( $props as $k => $v1 ) {
 
 					// Read the current value of this property
-					$key = "ap_$k";
-					$v0 = $dbr->selectField( 'page_props', 'pp_value', array( 'pp_page' => $id, 'pp_propname' => $key ) );
+					$v0 = $dbr->selectField( 'article_props', 'ap_value', array( 'ap_page' => $id, 'ap_propname' => $k ) );
 
 					// If a key has a null value, then read the value if there was one
 					if( $v1 === null ) {
@@ -101,12 +102,12 @@ class ArticleProperties extends Article {
 
 						// Update the existing value in the props table
 						if( $v0 === false ) {
-							$dbw->insert( 'page_props', array( 'pp_page' => $id, 'pp_propname' => $key, 'pp_value' => $v1 ) );
+							$dbw->insert( 'article_props', array( 'ap_page' => $id, 'ap_namespace' => $ns, 'ap_propname' => $key, 'ap_value' => $v1 ) );
 						}
 
 						// Create this value in the props table
 						else {
-							$dbw->update( 'page_props', array( 'pp_value' => $v1 ), array( 'pp_page' => $id, 'pp_propname' => $key ) );
+							$dbw->update( 'article_props', array( 'ap_value' => $v1 ), array( 'pp_page' => $id, 'pp_propname' => $key ) );
 						}
 
 						// add to array that will be sent ot the change event
@@ -127,7 +128,7 @@ class ArticleProperties extends Article {
 	public static function query( $type, $conds, $options = null ) {
 		$list = array();
 		$dbr = wfGetDB( DB_SLAVE );
-		$res = $dbr->select( 'page_props', 'pp_page', $conds, $options );
+		$res = $dbr->select( 'article_props', 'ap_page', $conds, $options );
 		while( $row = $dbr->fetchRow( $res ) ) $list[] = Title::newFromId( $row[0] );
 		$dbr->freeResult( $res );
 		return $list;
