@@ -102,12 +102,12 @@ class ArticleProperties extends Article {
 
 						// Update the existing value in the props table
 						if( $v0 === false ) {
-							$dbw->insert( 'article_properties', array( 'ap_page' => $id, 'ap_namespace' => $ns, 'ap_propname' => $key, 'ap_value' => $v1 ) );
+							$dbw->insert( 'article_properties', array( 'ap_page' => $id, 'ap_namespace' => $ns, 'ap_propname' => $k, 'ap_value' => $v1 ) );
 						}
 
 						// Create this value in the props table
 						else {
-							$dbw->update( 'article_properties', array( 'ap_value' => $v1 ), array( 'pp_page' => $id, 'pp_propname' => $key ) );
+							$dbw->update( 'article_properties', array( 'ap_value' => $v1 ), array( 'pp_page' => $id, 'pp_propname' => $k ) );
 						}
 
 						// add to array that will be sent ot the change event
