@@ -77,6 +77,15 @@ class ArticleProperties extends Article {
 	}
 
 	/**
+	 * After an article is deleted remove it's properties
+	 */
+	function onArticleDeleteComplete( &$article, &$user, $reason, $id ) {
+		$dbw = wfGetDB( DB_MASTER );
+		$dbw->delete( 'article_properties', array( 'ap_page' => $id ) );
+		return true;
+	}
+
+	/**
 	 * Add a properties method to interface with the article's page_props
 	 */
 	public function properties( $props = array() ) {
