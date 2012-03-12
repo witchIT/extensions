@@ -61,7 +61,7 @@ class ArticleProperties extends Article {
 	function edit( &$editpage, $out ) {
 	}
 
-	function save( $request ) {
+	function save( $request = false ) {
 	}
 
 	/**
@@ -173,6 +173,19 @@ class ArticleProperties extends Article {
 		// Close the table and return content
 		$html .= "</table>\n";
 		return $html;
+	}
+
+	/**
+	 * Set an array of values from the global request
+	 */
+	function updatePropertiesFromRequest( $names ) {
+		global $wgRequest;
+		$props = array();
+		foreach( $names as $k ) {
+			$v = $wgRequest->getText( "wp$k", false );
+			if( $v !== false ) $prop[$k] = $v;
+		}
+		$this->properties( $props );
 	}
 
 	/**
