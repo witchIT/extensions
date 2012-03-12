@@ -16,6 +16,9 @@ class ArticleProperties extends Article {
 		// Allow sub-classes to have a save method that can store its fields into the page_props
 		$wgHooks['ArticleSaveComplete'][] = $this;
 
+		// Remove associated properties when an article is deleted
+		$wgHooks['ArticleDeleteComplete'][] = $this;
+
 		return parent::__construct( $param );
 	}
 
