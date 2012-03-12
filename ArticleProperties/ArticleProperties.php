@@ -35,7 +35,7 @@ function wfSetupArticleProperties() {
 	$dbw = &wfGetDB( DB_MASTER );
 	$tbl = $dbw->tableName( 'article_props' );
 	if( !$dbw->tableExists( $tbl ) ) {
-		$dbw->query( "CREATE TABLE `$tbl` (
+		$dbw->query( "CREATE TABLE $tbl (
 			`ap_page` int(11) NOT NULL,
 			`ap_namespace` int(11) NOT NULL,
 			`ap_propname` varbinary(30) NOT NULL,
