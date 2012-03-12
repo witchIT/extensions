@@ -99,7 +99,7 @@ class ArticleProperties extends Article {
 
 						// Update the existing value in the props table
 						if( $v0 === false ) {
-							$dbw->insert( 'page_props', array( 'pp_page' => $id, 'prop_name' => $key, 'pp_value' => $v1 ) );
+							$dbw->insert( 'page_props', array( 'pp_page' => $id, 'pp_propname' => $key, 'pp_value' => $v1 ) );
 						}
 
 						// Create this value in the props table
