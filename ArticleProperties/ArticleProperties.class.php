@@ -107,7 +107,7 @@ class ArticleProperties extends Article {
 
 						// Create this value in the props table
 						else {
-							$dbw->update( 'article_properties', array( 'ap_value' => $v1 ), array( 'pp_page' => $id, 'pp_propname' => $k ) );
+							$dbw->update( 'article_properties', array( 'ap_value' => $v1 ), array( 'ap_page' => $id, 'ap_propname' => $k ) );
 						}
 
 						// add to array that will be sent ot the change event
