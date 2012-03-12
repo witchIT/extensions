@@ -7,6 +7,9 @@ class ArticleProperties extends Article {
 	function __construct( $param ) {
 		global $wgHooks;
 
+		// The text for newly created ArticleProperties articles should be preloaded with a default message
+		$wgHooks['EditFormPreloadText'][] = $this;
+
 		// Allow sub-classes to have an edit method that can add its own fields
 		$wgHooks['EditPage::showEditForm:fields'][] = array( $this, 'onShowEditFormFields' );
 
@@ -38,6 +41,15 @@ class ArticleProperties extends Article {
 		// Set the page to an instance of the class
 		$page = new $classname( $title );
 
+		return true;
+	}
+
+	/**
+	 * The text for newly created ArticleProperties articles should be preloaded with a default message,
+	 * if this isn't done then the article won't get created since text content is needed
+	 */
+	function onEditFormPreloadText( &$textbox, &$title ) {
+		$textbox = wfMsg( 'znazza-preload-text' );
 		return true;
 	}
 
