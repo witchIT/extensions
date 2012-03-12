@@ -89,7 +89,9 @@ class ArticleProperties extends Article {
 					$v0 = $dbr->selectField( 'page_props', 'pp_value', array( 'pp_page' => $id, 'pp_propname' => $key ) );
 
 					// If a key has a null value, then read the value if there was one
-					if( $v1 === null && $v0 !== false ) $v1 = $v0;
+					if( $v1 === null ) {
+						if( $v0 !== false ) $props[$k] = $v0;
+					}
 
 					// Otherwise set the value if it's changed
 					elseif( $v0 !== $v1 ) {
