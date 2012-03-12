@@ -225,14 +225,14 @@ class ArticleProperties extends Article {
 	/**
 	 * Render a select list with supplied options list and selected/default value from page_props if any
 	 */
-	function select( $name, $options, $first = '', $default = '' ) {
+	function select( $name, $options, $first = '', $default = '', $messages = true ) {
 		if( $first === false ) $first = '';
 		elseif( $first == '' ) $first = "<option />";
 		else $first = "<option value=\"\">$first</option>";
 		$value = $this->getValue( $name, $default );
 		$html = "<select name=\"wp$name\" id=\"wp$name\">$first";
 		foreach( $options as $opt ) {
-			$text = wfMsg( $opt );
+			$text = $messages ? wfMsg( $opt ) : $opt;
 			$selected = $value == $opt ? ' selected="yes"' : '';
 			$html .= "<option value=\"$opt\"$selected>$text</option>";
 		}
