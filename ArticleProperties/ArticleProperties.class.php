@@ -150,9 +150,10 @@ class ArticleProperties extends Article {
 	 * Add a static query method to select a list of articles by SQL conditions and options
 	 */
 	public static function query( $type, $conds, $options = null ) {
+		$conds = array_unshift( $conds, 'ap_namespace = ' . constant( 'NS_' . strtoupper( $type ) ) );
 		$list = array();
 		$dbr = wfGetDB( DB_SLAVE );
-		$res = $dbr->select( 'article_properties', 'ap_page', $conds, $options );
+		$res = $dbr->select( 'article_properties', 'DISTINCT ap_page', $conds, $options );
 		while( $row = $dbr->fetchRow( $res ) ) $list[] = Title::newFromId( $row[0] );
 		$dbr->freeResult( $res );
 		return $list;
