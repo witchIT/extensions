@@ -223,6 +223,14 @@ class ArticleProperties extends Article {
 	}
 
 	/**
+	 * Set a value for a field from the current article
+	 */
+	function setValue( $name, $value ) {
+		if( !$this->exists() ) return false;
+		return $this->properties( array( $name => $value ) );
+	}
+
+	/**
 	 * Render a label element for an input
 	 */
 	function label( $label, $name = false ) {
