@@ -217,7 +217,7 @@ class ArticleProperties extends Article {
 	 * Get a value for a field from the current article
 	 */
 	function getValue( $name, $default = false ) {
-		if( !$this->exists() ) return $default;
+		if( $this->getArticleID() == 0 ) return $default;
 		$prop = $this->properties( array( $name => null ) );
 		return $prop[$name] ? $prop[$name] : $default;
 	}
@@ -226,7 +226,7 @@ class ArticleProperties extends Article {
 	 * Set a value for a field from the current article
 	 */
 	function setValue( $name, $value ) {
-		if( !$this->exists() ) return false;
+		if( $this->getArticleID() == 0 ) return false;
 		return $this->properties( array( $name => $value ) );
 	}
 
