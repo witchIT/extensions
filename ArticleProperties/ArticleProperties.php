@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'ARTICLEPROPS_VERSION', "0.3.0, 2012-03-12" );
+define( 'ARTICLEPROPS_VERSION', "1.0.1, 2012-03-19" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "ArticleProperties",
