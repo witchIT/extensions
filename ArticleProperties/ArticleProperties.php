@@ -20,6 +20,7 @@ $wgExtensionCredits['other'][] = array(
 );
 
 $dir = dirname( __FILE__ );
+$wgExtensionMessagesFiles['ArticleProperties'] = "$dir/ArticleProperties.i18n.php";
 require_once( "$dir/ArticleProperties.class.php" );
 
 // This hook allows us to change the class of article to one of our classes
