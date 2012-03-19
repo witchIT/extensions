@@ -66,9 +66,15 @@ class ArticleProperties extends Article {
 
 	/**
 	 * Executed for ArticleSave hook of our article types and calls the sub-class save function if exists
+	 * - only call sub-classes save() once incase they in turn do article-edits
 	 */
 	function onArticleSaveComplete( &$article, &$user, $text, $summary, $minor, $watch, $section, &$flags, $rev, &$status, $baseRevId ) {
 		global $wgRequest;
+
+		static $done = false;
+		if( $done ) return;
+		$done = true;
+
 		$this->save( $wgRequest );
 		return true;
 	}
