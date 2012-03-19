@@ -70,13 +70,9 @@ class ArticleProperties extends Article {
 	 */
 	function onArticleSaveComplete( &$article, &$user, $text, $summary, $minor, $watch, $section, &$flags, $rev, &$status, $baseRevId ) {
 		global $wgRequest;
-
 		static $done = false;
-		if( $done ) return;
-		$done = true;
-
-		$this->save( $wgRequest );
-		return true;
+		if( !$done ) $this->save( $wgRequest );
+		return $done = true;
 	}
 
 	function edit( &$editpage, $out ) {
