@@ -52,7 +52,7 @@ class ArticleProperties extends Article {
 	 * if this isn't done then the article won't get created since text content is needed
 	 */
 	function onEditFormPreloadText( &$textbox, &$title ) {
-		$textbox = wfMsg( 'znazza-preload-text' );
+		$textbox = "This article has no text content, it's information is stored in the Article Properties";
 		return true;
 	}
 
