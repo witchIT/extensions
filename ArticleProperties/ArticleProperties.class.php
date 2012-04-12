@@ -268,10 +268,11 @@ class ArticleProperties extends Article {
 		else $first = "<option value=\"\">$first</option>";
 		$value = $this->getValue( $name, $default );
 		$html = "<select name=\"wp$name\" id=\"wp$name\">$first";
-		foreach( $options as $opt ) {
-			$text = $messages ? wfMsg( $opt ) : $opt;
-			$selected = $value == $opt ? ' selected="yes"' : '';
-			$html .= "<option value=\"$opt\"$selected>$text</option>";
+		foreach( $options as $k => $v ) {
+			if( is_numeric( $k ) ) $k = $v;
+			$text = $messages ? wfMsg( $v ) : $v;
+			$selected = $value == $v ? ' selected="yes"' : '';
+			$html .= "<option value=\"$k\"$selected>$text</option>";
 		}
 		return $html . "</select>";
 	}
