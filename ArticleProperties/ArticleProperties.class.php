@@ -281,7 +281,7 @@ class ArticleProperties extends Article {
 		elseif( $first == '' ) $first = "<option />";
 		else $first = "<option value=\"\">$first</option>";
 		$value = $this->getValue( $name, $default );
-		$html = "<select$atts>$first";
+		$html = "<select$attstxt>$first";
 		foreach( $options as $k => $v ) {
 			if( is_numeric( $k ) ) $k = $v;
 			$text = $messages ? wfMsg( $v ) : $v;
