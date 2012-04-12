@@ -266,7 +266,13 @@ class ArticleProperties extends Article {
 	function select( $atts, $options, $first = '', $default = '', $messages = true ) {
 
 		// Build attributes
-		if( !is_array( $atts ) ) $atts = array( 'name' => "wp$atts" );
+		if( is_array( $atts ) ) {
+			$name = $atts['name'];
+			$atts['name'] = "wp$name";
+		} else {
+			$name = $atts;
+			$atts = array( 'name' => "wp$name" );
+		}
 		if( !array_key_exists( 'id', $atts ) ) $atts['id'] = $atts['name'];
 		$attstxt = '';
 		foreach( $atts as $k => $v ) $attstxt .= " $k=\"$v\"";
