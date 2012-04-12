@@ -262,6 +262,7 @@ class ArticleProperties extends Article {
 	/**
 	 * Render a select list with supplied options list and selected/default value from page_props if any
 	 * - first parameter can be an array of attributes including name and id or just a text name
+	 * - Name parameter will be given a preceding "wp" for input and id values
 	 */
 	function select( $atts, $options, $first = '', $default = '', $messages = true ) {
 
