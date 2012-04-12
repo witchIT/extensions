@@ -261,13 +261,21 @@ class ArticleProperties extends Article {
 
 	/**
 	 * Render a select list with supplied options list and selected/default value from page_props if any
+	 * - first parameter can be an array of attributes including name and id or just a text name
 	 */
-	function select( $name, $options, $first = '', $default = '', $messages = true ) {
+	function select( $atts, $options, $first = '', $default = '', $messages = true ) {
+
+		// Build attributes
+		if( !is_array( $atts ) ) $atts = array( 'name' => "wp$atts" );
+		if( !array_key_exists( 'id', $atts ) ) $atts['id'] = $atts['name'];
+		$attstxt = '';
+		foreach( $atts as $k => $v ) $attstxt .= " $k=\"$v\"";
+
 		if( $first === false ) $first = '';
 		elseif( $first == '' ) $first = "<option />";
 		else $first = "<option value=\"\">$first</option>";
 		$value = $this->getValue( $name, $default );
-		$html = "<select name=\"wp$name\" id=\"wp$name\">$first";
+		$html = "<select$atts>$first";
 		foreach( $options as $k => $v ) {
 			if( is_numeric( $k ) ) $k = $v;
 			$text = $messages ? wfMsg( $v ) : $v;
