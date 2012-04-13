@@ -286,7 +286,7 @@ class ArticleProperties extends Article {
 		foreach( $options as $k => $v ) {
 			if( is_numeric( $k ) ) $k = $v;
 			$text = $messages ? wfMsg( $v ) : $v;
-			$selected = $value == $v ? ' selected="yes"' : '';
+			$selected = $value == $k ? ' selected="yes"' : '';
 			$html .= "<option value=\"$k\"$selected>$text</option>";
 		}
 		return $html . "</select>";
