@@ -9,10 +9,13 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.1.11, 2012-02-20' );
+define( 'EMAILTOWIKI_VERSION', '2.2.0, 2012-04-13' );
 
 // Set this if you want the attachments to be passed to a template
 $wgAttachmentTemplate = false;
+
+// Set this to filter for only emails from users that exist in the wiki
+$wgWikiEmailsOnly = false;
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -57,7 +60,7 @@ class EmailToWiki {
 	 * Process any unprocesseed email files created by EmailToWiki.pl
 	 */
 	function processEmails( $prefix = false ) {
-		global $wgEmailToWikiTmpDir;
+		global $wgEmailToWikiTmpDir, $wgWikiEmailsOnly;
 
 		// Allow different tmp directory to be used
 		if( $prefix ) $wgEmailToWikiTmpDir = dirname( $wgEmailToWikiTmpDir ) . "/$prefix.tmp";
@@ -73,30 +76,37 @@ class EmailToWiki {
 			$title = Title::newFromText( $msg );
 			if( !$title->exists() ) {
 
-				// Scan attachments in this msg folder and upload into wiki
-				$files = '';
-				foreach( glob( "$dir/__*" ) as $file ) {
-					$name = substr( basename( $file ), 2 );
-					preg_match( "/_(.+)/", $name, $m );
-					$attachment = $m[1];
-					$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
-					$text = wfMsg( 'emailtowiki_uploadtext', $msg );
-					$size = $this->filesize( $file );
-					$status = $this->upload( $file, $name, $comment, $text );
-					if( $status === true ) {
-						global $wgAttachmentTemplate;
-						$files .= $wgAttachmentTemplate ? '{{' . "$wgAttachmentTemplate|$name|$attachment|$size}}" : "*[[:$name|$attachment]] ($size)\n";
-						$nfiles++;
-					}
-					else $this->logAdd( $status );
-				}
-
-				// Create article for bodytext
-				$article = new Article( $title );
+				// Get bodytext for thsi message
 				$content = file_get_contents( "$dir/_BODYTEXT_" );
-				if( $files ) $content .= "\n== " . wfMsg( 'emailtowiki_attachsection' ) . " ==\n$files";
-				$article->doEdit( $content, wfMsg( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
-				$nemails++;
+
+				// Apply filtering
+				if( $this->filter( $content ) ) {
+
+					// Scan attachments in this msg folder and upload into wiki
+					$files = '';
+					foreach( glob( "$dir/__*" ) as $file ) {
+						$name = substr( basename( $file ), 2 );
+						preg_match( "/_(.+)/", $name, $m );
+						$attachment = $m[1];
+						$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
+						$text = wfMsg( 'emailtowiki_uploadtext', $msg );
+						$size = $this->filesize( $file );
+						$status = $this->upload( $file, $name, $comment, $text );
+						if( $status === true ) {
+							global $wgAttachmentTemplate;
+							$files .= $wgAttachmentTemplate ? '{{' . "$wgAttachmentTemplate|$name|$attachment|$size}}" : "*[[:$name|$attachment]] ($size)\n";
+							$nfiles++;
+						}
+						else $this->logAdd( $status );
+					}
+
+					// Create article for bodytext
+					$article = new Article( $title );
+					if( $files ) $content .= "\n== " . wfMsg( 'emailtowiki_attachsection' ) . " ==\n$files";
+					$article->doEdit( $content, wfMsg( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
+					$nemails++;
+				} else $this->logAdd( "email \"$msg\" was blocked by the filter." );
+
 			} else $this->logAdd( "email \"$msg\" already exists!" );
 
 			// Remove the processed message folder
@@ -145,6 +155,23 @@ class EmailToWiki {
 		fwrite( $fh, "PHP: $err\n" );
 		fclose( $fh );
 		return $err;
+	}
+
+	/**
+	 * Apply filtering rules to the email and return whether allowed or not
+	 * - currently just checks if from address exists in wiki (if $wgWikiEmailsOnly set)
+	 */
+	function filter( $message ) {
+		global $wgWikiEmailsOnly;
+		if( $wgWikiEmailsOnly ) {
+			if( preg_match( "/^\s*\|\s*from\s*=\s*(.+?)\s*$/m", $message, $m ) ) {
+				$from = $m[1];
+				$dbr = &wfGetDB( DB_SLAVE );
+				$tbl = $dbr->tableName( 'user' );
+				if( $dbr->selectRow( $tbl, '1', "user_email = '$from'" ) === false ) return false;
+			}
+		}
+		return true;
 	}
 }
 
