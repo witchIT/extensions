@@ -2,9 +2,9 @@
 class ArticleProperties extends Article {
 
 	// These are set by a sub-class if it should use its own database table
-	private static $table = false;
-	private static $columns = false;
-	private static $prefix = '';
+	public static $table = false;
+	public static $columns = false;
+	public static $prefix = '';
 
 	/**
 	 * Contstruct as a normal article with no differences
