@@ -9,20 +9,23 @@ class SpecialArticleProperties extends SpecialPage {
 	function execute( $param ) {
 		global $wgOut;
 		$this->setHeaders();
+
 		if( $param == 'submit' ) {
+			$wgOut->addHTML( '<pre>' );
 			$dbw = &wfGetDB( DB_MASTER );
 
 			// Check all ArticleProperties sub-classes checking that their tables exists and they have matching columns
 			foreach( get_declared_classes() as $class ) {
 				if( get_parent_class( $class ) == 'ArticleProperties' ) {
+					$wgOut->addHTML( "\nChecking class \"$class\"\n" );
 
 					// Get the table name, prefix and columns names/types
 					$vars = get_class_vars( $class );
 					$prefix = $vars['prefix'];
 					$table = $vars['table'];
 					$cols = $vars['columns'];
-					if( $table === false ) die( "No DB table name defined for ArticleProperties class \"$class\"" );
-					if( $cols === false ) die( "No DB columns defined for ArticleProperties class \"$class\"" );
+					if( $table === false ) $wgOut->addHTML( "No DB table name defined for ArticleProperties class \"$class\"\n" );
+					if( $cols === false ) $wgOut->addHTML( "No DB columns defined for ArticleProperties class \"$class\"\n" );
 
 					// Create table for this class if it doesn't exists
 					$tbl = $dbw->tableName( $table );
@@ -43,6 +46,8 @@ class SpecialArticleProperties extends SpecialPage {
 					// TODO: check and adjust column types if necessary
 					else {
 					}
+
+				$wgOut->addHTML( '</pre>' );
 				}
 			}
 		} else {
