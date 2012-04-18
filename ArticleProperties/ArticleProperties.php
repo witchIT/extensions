@@ -10,6 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 define( 'ARTICLEPROPS_VERSION', "1.0.1, 2012-03-19" );
+define( 'AP_VOID', "\x07AP_VOID" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "ArticleProperties",

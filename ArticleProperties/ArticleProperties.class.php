@@ -5,12 +5,16 @@ class ArticleProperties extends Article {
 	public static $table = false;
 	public static $columns = false;
 	public static $prefix = '';
+	private static  $cache = array();
 
 	/**
 	 * Contstruct as a normal article with no differences
 	 */
 	function __construct( $param ) {
 		global $wgHooks;
+
+		// Initialise the function cache
+		self::$cache = array();
 
 		// The text for newly created ArticleProperties articles should be preloaded with a default message
 		$wgHooks['EditFormPreloadText'][] = $this;
@@ -101,18 +105,21 @@ class ArticleProperties extends Article {
 	 * Convert a property name to a DB column name
 	 */
 	public static function getColumnName( $name, $prefix = false ) {
+		if( AP_VOID !== $cache = self::cache( __METHOD__, $key = "$name\x07$prefix" ) ) return $cache;
 		if( $prefix === false ) $prefix = self::$prefix;
-		return $prefix . strtolower( $name );
+		return self::cache( __METHOD__, $key, $prefix . strtolower( $name ) );
 	}
 
 	/**
 	 * Convert a DB column name to a property name
 	 */
-	public static function getPropertyName( $name ) {
+	public static function getPropertyName( $name, $prefix = false ) {
+		if( AP_VOID !== $cache = self::cache( __METHOD__, $key = "$name\x07$prefix" ) ) return $cache;
+		$ret = false;
 		foreach( self::$columns as $k => $v ) {
-			if( self::getColumnName( $k ) == $name ) return $k;
+			if( self::getColumnName( $k, $prefix ) == $name ) $ret = $k;
 		}
-		return false;
+		return self::cache( __METHOD__, $key, $ret );
 	}
 
 	/**
@@ -130,18 +137,20 @@ class ArticleProperties extends Article {
 
 			// If the input array is empty, return all properties
 			if( count( $props ) == 0 ) {
-				$res = $dbr->select( $this->table, '*', array( $page => $id ) );
-				while( $row = $dbr->fetchRow( $res ) && $row[0] != $page ) $props[$row[0]] = $row[1];
-				$dbr->freeResult( $res );
+				if( $row = $dbr->selectRow( $this->table, '*', array( $page => $id ) ) ) {
+					foreach( $class::$columns as $k => $v ) $props[self::getColumnName( $k, $prefix )] = $v;
+				}
 			}
 
 			// Otherwise return only those specified
 			else {
 				$ns = $title->getNamespace();
+				$updates = array();
 				foreach( $props as $k => $v1 ) {
+					$col = self::getColumnName( $k, $prefix );
 
 					// Read the current value of this property
-					$v0 = $dbr->selectField( $this->table, 'ap_value', array( $page => $id, 'ap_propname' => $k ) );
+					$v0 = $dbr->selectField( $this->table, $col, array( $page => $id ) );
 
 					// If a key has a null value, then read the value if there was one
 					if( $v1 === null ) {
@@ -156,7 +165,7 @@ class ArticleProperties extends Article {
 
 						// Update the existing value in the props table
 						if( $v0 === false ) {
-							$dbw->insert( $this->table, array( 'ap_page' => $id, 'ap_namespace' => $ns, 'ap_propname' => $k, 'ap_value' => $v1 ) );
+							$dbw->insert( $this->table, array( $page => $id, $col => $k, 'ap_value' => $v1 ) );
 						}
 
 						// Create this value in the props table
@@ -174,19 +183,6 @@ class ArticleProperties extends Article {
 		}
 
 		return $props;
-	}
-
-	/**
-	 * Add a static query method to select a list of articles by SQL conditions and options
-	 */
-	public static function query( $type, $conds, $options = null ) {
-		array_unshift( $conds, 'ap_namespace = ' . constant( 'NS_' . strtoupper( $type ) ) );
-		$list = array();
-		$dbr = wfGetDB( DB_SLAVE );
-		$res = $dbr->select( $this->table, 'DISTINCT ap_page', $conds, $options );
-		while( $row = $dbr->fetchRow( $res ) ) $list[] = Title::newFromId( $row[0] );
-		$dbr->freeResult( $res );
-		return $list;
 	}
 
 	/**
