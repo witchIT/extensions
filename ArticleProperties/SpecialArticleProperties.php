@@ -22,8 +22,8 @@ class SpecialArticleProperties extends SpecialPage {
 					// Get the table name, prefix and columns names/types
 					$vars = get_class_vars( $class );
 					$prefix = $class::$prefix;
-					$table = $vars['table'];
-					$cols = $vars['columns'];
+					$table = $class::$table;
+					$cols = $class::$columns;
 					if( $table === false ) $wgOut->addHTML( "No DB table name defined for \"$class\" class\n" );
 					elseif( $cols === false ) $wgOut->addHTML( "No DB columns defined for \"$class\" class\n" );
 
@@ -34,7 +34,7 @@ class SpecialArticleProperties extends SpecialPage {
 							$query = "CREATE TABLE $tbl (\n    `{$prefix}page` INT(11) NOT NULL";
 							$comma = ",\n";
 							foreach( $cols as $name => $type ) {
-								$name = ArticleProperties::getColumnName( $name );
+								$name = $class::getColumnName( $name );
 								$query .= "$comma    `$name` $type";
 							}
 							$query .= "\n)";
