@@ -21,7 +21,6 @@ class SpecialArticleProperties extends SpecialPage {
 
 					// Get the table name, prefix and columns names/types
 					$vars = get_class_vars( $class );
-					print_r($vars);
 					$prefix = $vars['prefix'];
 					$table = $vars['table'];
 					$cols = $vars['columns'];
@@ -35,7 +34,7 @@ class SpecialArticleProperties extends SpecialPage {
 							$query = "CREATE TABLE $tbl (\n    `{$prefix}page` INT(11) NOT NULL";
 							$comma = ",\n";
 							foreach( $cols as $name => $type ) {
-								$name = $prefix . strtolower( $name );
+								$name = ArticleProperties::getColumnName( $name );
 								$query .= "$comma    `$name` $type";
 							}
 							$query .= "\n)";

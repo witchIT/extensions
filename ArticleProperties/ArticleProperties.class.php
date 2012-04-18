@@ -2,9 +2,9 @@
 class ArticleProperties extends Article {
 
 	// These are set by a sub-class if it should use its own database table
-	var $table = false;
-	var $columns = false;
-	var $prefix = '';
+	private static $table = false;
+	private static $columns = false;
+	private static $prefix = '';
 
 	/**
 	 * Contstruct as a normal article with no differences
@@ -98,6 +98,23 @@ class ArticleProperties extends Article {
 	}
 
 	/**
+	 * Convert a property name to a DB column name
+	 */
+	public static function getColumnName( $name ) {
+		return self::$prefix . strtolower( $name );
+	}
+
+	/**
+	 * Convert a DB column name to a property name
+	 */
+	public static function getPropertyName( $name ) {
+		foreach( self::$columns as $k => $v ) {
+			if( self::getColumnName( $k ) == $name ) return $k;
+		}
+		return false;
+	}
+
+	/**
 	 * Add a properties method to interface with the article's DB data in either page_props or its own table
 	 */
 	public function properties( $props = array() ) {
@@ -106,11 +123,13 @@ class ArticleProperties extends Article {
 			$changed = false;
 			$dbr = wfGetDB( DB_SLAVE );
 			$dbw = false;
+			$tbl = $dbr->tableName( $this->table );
+			$page = self::$prefix . 'page';
 
 			// If the input array is empty, return all properties
 			if( count( $props ) == 0 ) {
-				$res = $dbr->select( 'article_properties', 'ap_propname,ap_value', array( 'ap_page' => $id ) );
-				while( $row = $dbr->fetchRow( $res ) ) $props[$row[0]] = $row[1];
+				$res = $dbr->select( $tbl, '*', array( $page => $id ) );
+				while( $row = $dbr->fetchRow( $res ) && $row[0] != $page ) $props[$row[0]] = $row[1];
 				$dbr->freeResult( $res );
 			}
 
