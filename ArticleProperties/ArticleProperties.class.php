@@ -12,8 +12,9 @@ class ArticleProperties extends Article {
 	function __construct( $param ) {
 		global $wgHooks;
 
-		if( $this->table === false ) die( "No DB table name defined for ArticleProperties class \"" . __CLASS__ . "\"" );
-		if( $this->columns === false ) die( "No DB columns defined for ArticleProperties class \"" . __CLASS__ . "\"" );
+		$class = get_class( $this );
+		if( $this->table === false ) die( "No DB table name defined for ArticleProperties class \"$class\"" );
+		if( $this->columns === false ) die( "No DB columns defined for ArticleProperties class \"$class\"" );
 
 		// The text for newly created ArticleProperties articles should be preloaded with a default message
 		$wgHooks['EditFormPreloadText'][] = $this;
