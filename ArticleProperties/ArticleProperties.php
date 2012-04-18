@@ -21,26 +21,10 @@ $wgExtensionCredits['other'][] = array(
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['ArticleProperties'] = "$dir/ArticleProperties.i18n.php";
+require_once( "$IP/includes/SpecialPage.php" );
 require_once( "$dir/ArticleProperties.class.php" );
+require_once( "$dir/SpecialArticleProperties.php" );
+$wgSpecialPages['ArticleProperties'] = 'SpecialArticleProperties';
 
 // This hook allows us to change the class of article to one of our classes
 $wgHooks['ArticleFromTitle'][] = 'ArticleProperties::onArticleFromTitle';
-
-
-$wgExtensionFunctions[] = 'wfSetupArticleProperties';
-
-/**
- * Create the article_props table if it doesn't exist
- */
-function wfSetupArticleProperties() {
-	$dbw = &wfGetDB( DB_MASTER );
-	$tbl = $dbw->tableName( 'article_properties' );
-	if( !$dbw->tableExists( $tbl ) ) {
-		$dbw->query( "CREATE TABLE $tbl (
-			`ap_page` int(11) NOT NULL,
-			`ap_namespace` int(11) NOT NULL,
-			`ap_propname` varbinary(30) NOT NULL,
-			`ap_value` blob NOT NULL
-		)" );
-	}
-}

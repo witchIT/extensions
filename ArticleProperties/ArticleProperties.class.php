@@ -1,11 +1,19 @@
 <?php
 class ArticleProperties extends Article {
 
+	// These are set by a sub-class if it should use its own database table
+	var $table = false;
+	var $columns = false;
+	var $prefix = '';
+
 	/**
 	 * Contstruct as a normal article with no differences
 	 */
 	function __construct( $param ) {
 		global $wgHooks;
+
+		if( $this->table === false ) die( "No DB table name defined for ArticleProperties class \"" . __CLASS__ . "\"" );
+		if( $this->columns === false ) die( "No DB columns defined for ArticleProperties class \"" . __CLASS__ . "\"" );
 
 		// The text for newly created ArticleProperties articles should be preloaded with a default message
 		$wgHooks['EditFormPreloadText'][] = $this;
@@ -21,6 +29,20 @@ class ArticleProperties extends Article {
 
 		return parent::__construct( $param );
 	}
+
+	/**
+	 * Create an action for updating table integrity
+	 */
+	function updateTables() {
+		// Scan all the classes and ensure their columns all exist
+		/*
+		$chkcol = mysql_query("SELECT * FROM `my_table_name` LIMIT 1");
+		$mycol = mysql_fetch_array($chkcol);
+		if(!isset($mycol['my_new_column']))
+			mysql_query("ALTER TABLE `my_table_name` ADD `my_new_column` BOOL NOT NULL DEFAULT '0'");
+		*/
+  	}
+
 
 	/**
 	 * When a new article is created, allow PageProperties sub-class to specify if they or their sub-classes should be used for this article
@@ -93,7 +115,7 @@ class ArticleProperties extends Article {
 	}
 
 	/**
-	 * Add a properties method to interface with the article's page_props
+	 * Add a properties method to interface with the article's DB data in either page_props or its own table
 	 */
 	public function properties( $props = array() ) {
 		$title = $this->getTitle();
