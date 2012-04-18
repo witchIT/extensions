@@ -24,19 +24,18 @@ class SpecialArticleProperties extends SpecialPage {
 					$prefix = $vars['prefix'];
 					$table = $vars['table'];
 					$cols = $vars['columns'];
-					if( $table === false ) $wgOut->addHTML( "No DB table name defined for ArticleProperties class \"$class\"\n" );
-					elseif( $cols === false ) $wgOut->addHTML( "No DB columns defined for ArticleProperties class \"$class\"\n" );
+					if( $table === false ) $wgOut->addHTML( "No DB table name defined for \"$class\" class\n" );
+					elseif( $cols === false ) $wgOut->addHTML( "No DB columns defined for \"$class\" class\n" );
 
 					// Create table for this class if it doesn't exists
 					if( $table ) {
 						$tbl = $dbw->tableName( $table );
 						if( !$dbw->tableExists( $tbl ) ) {
-							$query = "CREATE TABLE $tbl (";
-							$comma = "\n";
+							$query = "CREATE TABLE $tbl (\n    {$prefix}page INT(11) NOT NULL";
+							$comma = ",\n";
 							foreach( $cols as $name => $type ) {
 								$name = $prefix . strtolower( $name );
 								$query .= "$comma    `$name` $type";
-								$comma = ",\n";
 							}
 							$query .= "\n)";
 							$wgOut->addHTML( "<pre>$query</pre>\n" );
@@ -46,6 +45,12 @@ class SpecialArticleProperties extends SpecialPage {
 						// If it does exist, check all the columns exist
 						// TODO: check and adjust column types if necessary
 						else {
+							/*
+							$chkcol = mysql_query("SELECT * FROM `my_table_name` LIMIT 1");
+							$mycol = mysql_fetch_array($chkcol);
+							if(!isset($mycol['my_new_column']))
+								mysql_query("ALTER TABLE `my_table_name` ADD `my_new_column` BOOL NOT NULL DEFAULT '0'");
+							*/
 						}
 					}
 				}
