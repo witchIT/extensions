@@ -28,20 +28,6 @@ class ArticleProperties extends Article {
 	}
 
 	/**
-	 * Create an action for updating table integrity
-	 */
-	function updateTables() {
-		// Scan all the classes and ensure their columns all exist
-		/*
-		$chkcol = mysql_query("SELECT * FROM `my_table_name` LIMIT 1");
-		$mycol = mysql_fetch_array($chkcol);
-		if(!isset($mycol['my_new_column']))
-			mysql_query("ALTER TABLE `my_table_name` ADD `my_new_column` BOOL NOT NULL DEFAULT '0'");
-		*/
-  	}
-
-
-	/**
 	 * When a new article is created, allow PageProperties sub-class to specify if they or their sub-classes should be used for this article
 	 */
 	public static function onArticleFromTitle( $title, &$page ) {

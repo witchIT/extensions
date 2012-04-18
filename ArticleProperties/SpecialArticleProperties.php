@@ -21,6 +21,7 @@ class SpecialArticleProperties extends SpecialPage {
 
 					// Get the table name, prefix and columns names/types
 					$vars = get_class_vars( $class );
+					print_r($vars);
 					$prefix = $vars['prefix'];
 					$table = $vars['table'];
 					$cols = $vars['columns'];
