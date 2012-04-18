@@ -119,17 +119,18 @@ class ArticleProperties extends Article {
 	 * Add a properties method to interface with the article's DB data in either page_props or its own table
 	 */
 	public function properties( $props = array() ) {
+		$class = get_class( $this );
+		$prefix = $class::$prefix;
 		$title = $this->getTitle();
 		if( $id = $title->getArticleId() ) {
 			$changed = false;
 			$dbr = wfGetDB( DB_SLAVE );
 			$dbw = false;
-			$tbl = $dbr->tableName( $this->table );
-			$page = self::$prefix . 'page';
+			$page = $prefix . 'page';
 
 			// If the input array is empty, return all properties
 			if( count( $props ) == 0 ) {
-				$res = $dbr->select( $tbl, '*', array( $page => $id ) );
+				$res = $dbr->select( $this->table, '*', array( $page => $id ) );
 				while( $row = $dbr->fetchRow( $res ) && $row[0] != $page ) $props[$row[0]] = $row[1];
 				$dbr->freeResult( $res );
 			}
@@ -140,7 +141,7 @@ class ArticleProperties extends Article {
 				foreach( $props as $k => $v1 ) {
 
 					// Read the current value of this property
-					$v0 = $dbr->selectField( 'article_properties', 'ap_value', array( 'ap_page' => $id, 'ap_propname' => $k ) );
+					$v0 = $dbr->selectField( $this->table, 'ap_value', array( $page => $id, 'ap_propname' => $k ) );
 
 					// If a key has a null value, then read the value if there was one
 					if( $v1 === null ) {
@@ -155,12 +156,12 @@ class ArticleProperties extends Article {
 
 						// Update the existing value in the props table
 						if( $v0 === false ) {
-							$dbw->insert( 'article_properties', array( 'ap_page' => $id, 'ap_namespace' => $ns, 'ap_propname' => $k, 'ap_value' => $v1 ) );
+							$dbw->insert( $this->table, array( 'ap_page' => $id, 'ap_namespace' => $ns, 'ap_propname' => $k, 'ap_value' => $v1 ) );
 						}
 
 						// Create this value in the props table
 						else {
-							$dbw->update( 'article_properties', array( 'ap_value' => $v1 ), array( 'ap_page' => $id, 'ap_propname' => $k ) );
+							$dbw->update( $this->table, array( 'ap_value' => $v1 ), array( 'ap_page' => $id, 'ap_propname' => $k ) );
 						}
 
 						// add to array that will be sent ot the change event
@@ -182,7 +183,7 @@ class ArticleProperties extends Article {
 		array_unshift( $conds, 'ap_namespace = ' . constant( 'NS_' . strtoupper( $type ) ) );
 		$list = array();
 		$dbr = wfGetDB( DB_SLAVE );
-		$res = $dbr->select( 'article_properties', 'DISTINCT ap_page', $conds, $options );
+		$res = $dbr->select( $this->table, 'DISTINCT ap_page', $conds, $options );
 		while( $row = $dbr->fetchRow( $res ) ) $list[] = Title::newFromId( $row[0] );
 		$dbr->freeResult( $res );
 		return $list;
