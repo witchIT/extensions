@@ -52,7 +52,7 @@ class SpecialArticleProperties extends SpecialPage {
 			}
 		} else {
 			$url = Title::newFromText( 'ArticleProperties/submit', NS_SPECIAL )->getLocalUrl();
-			$wgOut->addHTML("<form action=\"$url\"><input type=\"submit\" value=\"update ArticleProperties database tables\" /></form>" );
+			$wgOut->addHTML("<form action=\"$url\"><br /><input type=\"submit\" value=\"Update ArticleProperties database tables\" /><br /></form>" );
 		}
 	}
 
