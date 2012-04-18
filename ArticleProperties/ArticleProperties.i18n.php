@@ -13,6 +13,6 @@ $messages = array();
  * @author Dunkley
  */
 $messages['en'] = array(
-	'specialarticleproperties' => "ArticleProperties database maintenance",
+	'articleproperties' => "ArticleProperties database maintenance",
 	'ap_preloadtext' => "This article has no text content, it's information is stored in the Article Properties",
 );
