@@ -32,13 +32,13 @@ class SpecialArticleProperties extends SpecialPage {
 						$tbl = $dbw->tableName( $table );
 						if( !$dbw->tableExists( $tbl ) ) {
 							$query = "CREATE TABLE $tbl (";
-							$comma = '';
+							$comma = "\n";
 							foreach( $cols as $name => $type ) {
 								$name = $prefix . strtolower( $name );
-								$query .= "$comma`$name` $type";
-								$comma = ',';
+								$query .= "$comma    `$name` $type";
+								$comma = ",\n";
 							}
-							$query .= ")";
+							$query .= "\n)";
 							$wgOut->addHTML( "<pre>$query</pre>\n" );
 							$dbw->query( $query );
 						}
