@@ -28,23 +28,25 @@ class SpecialArticleProperties extends SpecialPage {
 					if( $cols === false ) $wgOut->addHTML( "No DB columns defined for ArticleProperties class \"$class\"\n" );
 
 					// Create table for this class if it doesn't exists
-					$tbl = $dbw->tableName( $table );
-					if( !$dbw->tableExists( $tbl ) ) {
-						$query = "CREATE TABLE $tbl (";
-						$comma = '';
-						foreach( $cols as $name => $type ) {
-							$name = $prefix . strtolower( $name );
-							$query .= "$comma`$name` $type";
-							$comma = ',';
+					if( $table ) {
+						$tbl = $dbw->tableName( $table );
+						if( !$dbw->tableExists( $tbl ) ) {
+							$query = "CREATE TABLE $tbl (";
+							$comma = '';
+							foreach( $cols as $name => $type ) {
+								$name = $prefix . strtolower( $name );
+								$query .= "$comma`$name` $type";
+								$comma = ',';
+							}
+							$query .= ")";
+							$wgOut->addHTML( "<pre>$query</pre>\n" );
+							$dbw->query( $query );
 						}
-						$query .= ")";
-						$wgOut->addHTML( "<pre>$query</pre>\n" );
-						$dbw->query( $query );
-					}
 
-					// If it does exist, check all the columns exist
-					// TODO: check and adjust column types if necessary
-					else {
+						// If it does exist, check all the columns exist
+						// TODO: check and adjust column types if necessary
+						else {
+						}
 					}
 
 				$wgOut->addHTML( '</pre>' );
