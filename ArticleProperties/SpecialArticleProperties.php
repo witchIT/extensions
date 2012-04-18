@@ -3,7 +3,7 @@
 class SpecialArticleProperties extends SpecialPage {
 
 	function __construct() {
-		SpecialPage::SpecialPage( 'SpecialArticleProperties', false );
+		SpecialPage::SpecialPage( 'ArticleProperties', false );
 	}
 
 	function execute( $param ) {

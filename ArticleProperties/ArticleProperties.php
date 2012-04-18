@@ -24,7 +24,7 @@ $wgExtensionMessagesFiles['ArticleProperties'] = "$dir/ArticleProperties.i18n.ph
 require_once( "$IP/includes/SpecialPage.php" );
 require_once( "$dir/ArticleProperties.class.php" );
 require_once( "$dir/SpecialArticleProperties.php" );
-$wgSpecialPages['ArticleProperties'] = 'ArticleProperties';
+$wgSpecialPages['ArticleProperties'] = 'SpecialArticleProperties';
 
 // This hook allows us to change the class of article to one of our classes
 $wgHooks['ArticleFromTitle'][] = 'ArticleProperties::onArticleFromTitle';
