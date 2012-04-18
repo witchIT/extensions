@@ -21,7 +21,7 @@ class SpecialArticleProperties extends SpecialPage {
 
 					// Get the table name, prefix and columns names/types
 					$vars = get_class_vars( $class );
-					$prefix = $vars['prefix'];
+					$prefix = $class::$prefix;
 					$table = $vars['table'];
 					$cols = $vars['columns'];
 					if( $table === false ) $wgOut->addHTML( "No DB table name defined for \"$class\" class\n" );
