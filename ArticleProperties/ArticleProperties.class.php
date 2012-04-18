@@ -100,8 +100,8 @@ class ArticleProperties extends Article {
 	/**
 	 * Convert a property name to a DB column name
 	 */
-	public static function getColumnName( $name ) {
-		return self::$prefix . strtolower( $name );
+	public static function getColumnName( $name, $prefix = self::$prefix ) {
+		return $prefix . strtolower( $name );
 	}
 
 	/**

@@ -34,7 +34,7 @@ class SpecialArticleProperties extends SpecialPage {
 							$query = "CREATE TABLE $tbl (\n    `{$prefix}page` INT(11) NOT NULL";
 							$comma = ",\n";
 							foreach( $cols as $name => $type ) {
-								$name = $class::getColumnName( $name );
+								$name = ArticleProperties::getColumnName( $name, $prefix );
 								$query .= "$comma    `$name` $type";
 							}
 							$query .= "\n)";
