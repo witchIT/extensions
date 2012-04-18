@@ -25,7 +25,7 @@ class SpecialArticleProperties extends SpecialPage {
 					$table = $vars['table'];
 					$cols = $vars['columns'];
 					if( $table === false ) $wgOut->addHTML( "No DB table name defined for ArticleProperties class \"$class\"\n" );
-					if( $cols === false ) $wgOut->addHTML( "No DB columns defined for ArticleProperties class \"$class\"\n" );
+					elseif( $cols === false ) $wgOut->addHTML( "No DB columns defined for ArticleProperties class \"$class\"\n" );
 
 					// Create table for this class if it doesn't exists
 					if( $table ) {
@@ -48,10 +48,9 @@ class SpecialArticleProperties extends SpecialPage {
 						else {
 						}
 					}
-
-				$wgOut->addHTML( '</pre>' );
 				}
 			}
+			$wgOut->addHTML( '</pre>' );
 		} else {
 			$url = Title::newFromText( 'ArticleProperties/submit', NS_SPECIAL )->getLocalUrl();
 			$wgOut->addHTML("<form action=\"$url\"><br /><input type=\"submit\" value=\"Update ArticleProperties database tables\" /><br /></form>" );
