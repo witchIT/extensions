@@ -31,7 +31,7 @@ class SpecialArticleProperties extends SpecialPage {
 					if( $table ) {
 						$tbl = $dbw->tableName( $table );
 						if( !$dbw->tableExists( $tbl ) ) {
-							$query = "CREATE TABLE $tbl (\n    {$prefix}page INT(11) NOT NULL";
+							$query = "CREATE TABLE $tbl (\n    `{$prefix}page` INT(11) NOT NULL";
 							$comma = ",\n";
 							foreach( $cols as $name => $type ) {
 								$name = $prefix . strtolower( $name );
