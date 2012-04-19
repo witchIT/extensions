@@ -82,8 +82,8 @@ class SpecialArticleProperties extends SpecialPage {
 		$props = array();
 		while( $row = $dbw->fetchRow( $res ) ) {
 			$k = $row[0];
-			if( array_key_exists( $k, $props ) ) $props[$k] = array( $row[1] => $row[2] );
-			else $props[$k][$row[1]] = $row[2];
+			if( array_key_exists( $k, $props ) ) $props[$k][$row[1]] = $row[2];
+			else $props[$k] = array( $row[1] => $row[2] );
 		}
 		$dbw->freeResult( $res );
 
