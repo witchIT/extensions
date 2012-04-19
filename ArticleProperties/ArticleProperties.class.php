@@ -196,7 +196,7 @@ class ArticleProperties extends Article {
 	public static function query( $class, $conds ) {
 		$dbr = wfGetDB( DB_SLAVE );
 		$table = $dbr->tableName( $class::$table );
-		$prefix = $dbr->tableName( $class::$prefix );
+		$prefix = $class::$prefix;
 		$res = $dbr->select( $table, $prefix . 'page', $conds );
 		$titles = array();
 		while( $row = $dbr->fetchRow( $res ) ) $titles[] = Title::newFromID( $row[0] );
