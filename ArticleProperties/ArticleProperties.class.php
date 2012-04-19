@@ -5,6 +5,8 @@ class ArticleProperties extends Article {
 	public static $table = false;
 	public static $columns = false;
 	public static $prefix = '';
+
+	// Some methods can benefit from caching their results
 	private static  $cache = array();
 
 	/**
