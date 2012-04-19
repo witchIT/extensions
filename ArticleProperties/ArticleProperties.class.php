@@ -34,6 +34,16 @@ class ArticleProperties extends Article {
 	}
 
 	/**
+	 * Cache for expensive methods with small inputs and deterministic results
+	 * - we use AP_VOID so that storing false or null doesn't confuse the cache logic
+	 */
+	function cache( $func, $key, $val = AP_VOID ) {
+		$key = "$func\x07$key";
+		if( $val === AP_VOID ) return array_key_exists( $key, self::$cache ) ? self::$cache[$key] : AP_VOID;
+		return self::$cache[$key] = $val;
+	}
+
+	/**
 	 * When a new article is created, allow PageProperties sub-class to specify if they or their sub-classes should be used for this article
 	 */
 	public static function onArticleFromTitle( $title, &$page ) {
