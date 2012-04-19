@@ -89,7 +89,6 @@ class SpecialArticleProperties extends SpecialPage {
 
 		// Insert them into the class-specific table
 		$tbl = $dbw->tableName( $table );
-		print_r($props);
 		foreach( $props as $page => $data ) {
 			$row = array( $prefix . 'page' => $page );
 			foreach( $data as $k => $v ) {

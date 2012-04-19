@@ -142,56 +142,48 @@ class ArticleProperties extends Article {
 		$prefix = $class::$prefix;
 		$title = $this->getTitle();
 		if( $id = $title->getArticleId() ) {
-			$changed = false;
+			$change = array();
+			$update = array();
 			$dbr = wfGetDB( DB_SLAVE );
-			$dbw = false;
 			$page = $prefix . 'page';
 
-			// If the input array is empty, return all properties
+			// Get the row if it exists
+			$row = $dbr->selectRow( $this->table, '*', array( $page => $id ) );
+
+			// If the input array is empty, fill in all values from the row
 			if( count( $props ) == 0 ) {
-				if( $row = $dbr->selectRow( $this->table, '*', array( $page => $id ) ) ) {
-					foreach( $class::$columns as $k => $v ) $props[self::getColumnName( $k, $prefix )] = $v;
+				foreach( $row as $k => $v ) {
+					if( $k != $page ) $props[self::getColumnName( $k, $prefix )] = $v;
 				}
 			}
 
 			// Otherwise return only those specified
 			else {
 				$ns = $title->getNamespace();
-				$updates = array();
 				foreach( $props as $k => $v1 ) {
 					$col = self::getColumnName( $k, $prefix );
 
 					// Read the current value of this property
-					$v0 = $dbr->selectField( $this->table, $col, array( $page => $id ) );
+					$v0 = array_key_exists( $col, $row ) ? $row[$col] : false;
 
-					// If a key has a null value, then read the value if there was one
-					if( $v1 === null ) {
-						if( $v0 !== false ) $props[$k] = $v0;
-					}
+					// If a key has a null value, then set to the read value
+					if( $v1 === null ) $props[$k] = $v0;
 
-					// Otherwise set the value if it's changed
+					// Otherwise add to the change and update arrays if changed
 					elseif( $v0 !== $v1 ) {
-
-						// Get a db connection to write to if we don't have one yet
-						if( $dbw === false ) $dbw = wfGetDB( DB_MASTER );
-
-						// Update the existing value in the props table
-						if( $v0 === false ) {
-							$dbw->insert( $this->table, array( $page => $id, $col => $k, 'ap_value' => $v1 ) );
-						}
-
-						// Create this value in the props table
-						else {
-							$dbw->update( $this->table, array( 'ap_value' => $v1 ), array( 'ap_page' => $id, 'ap_propname' => $k ) );
-						}
-
-						// add to array that will be sent ot the change event
-						$changed[$k] = array( $v0, $v1 );
+						$change[$k] = array( $v0, $v1 );
+						$update[$col] = $v1;
 					}
 				}
 			}
 
-			if( $changed ) wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$changed ) );
+			// If anything changed, update the row and execute the change hook
+			if( count( $change ) > 0 ) {
+				$dbw = wfGetDB( DB_MASTER )
+				$tbl = $dbw->tableName( $tabl );
+				$dbw->update( $this->table, $update, array( $page => $id ) );
+				wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$change ) );
+			}
 		}
 
 		return $props;
