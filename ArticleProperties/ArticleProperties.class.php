@@ -138,17 +138,18 @@ class ArticleProperties extends Article {
 	 * Add a properties method to interface with the article's DB data in either page_props or its own table
 	 */
 	public function properties( $props = array() ) {
-		$class = get_class( $this );
-		$prefix = $class::$prefix;
 		$title = $this->getTitle();
 		if( $id = $title->getArticleId() ) {
+			$class = get_class( $this );
+			$table = $dbr->tableName( $class::$table );
+			$prefix = $class::$prefix;
 			$change = array();
 			$update = array();
 			$dbr = wfGetDB( DB_SLAVE );
 			$page = $prefix . 'page';
 
 			// Get the row if it exists
-			$row = $dbr->selectRow( $this->$table, '*', array( $page => $id ) );
+			$row = $dbr->selectRow( $table, '*', array( $page => $id ) );
 
 			// If the input array is empty, fill in all values from the row
 			if( count( $props ) == 0 ) {
@@ -180,7 +181,7 @@ class ArticleProperties extends Article {
 			// If anything changed, update the row and execute the change hook
 			if( count( $change ) > 0 ) {
 				$dbw = wfGetDB( DB_MASTER );
-				$dbw->update( $this->$table, $update, array( $page => $id ) );
+				$dbw->update( $table, $update, array( $page => $id ) );
 				wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$change ) );
 			}
 		}
