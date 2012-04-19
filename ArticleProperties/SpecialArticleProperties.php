@@ -76,8 +76,9 @@ class SpecialArticleProperties extends SpecialPage {
 		$dbw = &wfGetDB( DB_MASTER );
 
 		// Get all the properties of the given type and store in $props hash
-		$props = array();
+		$tbl = $dbw->tableName( 'article_properties' );
 		$res = $dbw->select( $tbl, 'ap_page,ap_propame,ap_value', "ap_namespace = $ns" );
+		$props = array();
 		while( $row = $dbw->fetchRow( $res ) ) {
 			$k = $row[0];
 			if( array_key_exists( $k, $props ) ) $props[$k] = array( $row[1] => $row[2] );
