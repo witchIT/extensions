@@ -142,7 +142,7 @@ class ArticleProperties extends Article {
 		if( $id = $title->getArticleId() ) {
 			$dbr = wfGetDB( DB_SLAVE );
 			$class = get_class( $this );
-			$table = $dbr->tableName( $this->table );
+			$table = $dbr->tableName( $class::$table );
 			$prefix = $class::$prefix;
 			$change = array();
 			$update = array();
