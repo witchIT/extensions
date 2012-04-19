@@ -140,12 +140,12 @@ class ArticleProperties extends Article {
 	public function properties( $props = array() ) {
 		$title = $this->getTitle();
 		if( $id = $title->getArticleId() ) {
+			$dbr = wfGetDB( DB_SLAVE );
 			$class = get_class( $this );
 			$table = $dbr->tableName( $class::$table );
 			$prefix = $class::$prefix;
 			$change = array();
 			$update = array();
-			$dbr = wfGetDB( DB_SLAVE );
 			$page = $prefix . 'page';
 
 			// Get the row if it exists
