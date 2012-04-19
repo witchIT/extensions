@@ -73,6 +73,7 @@ class SpecialArticleProperties extends SpecialPage {
 	 * Migrates data from a single article_properties table into a class-specific table
 	 */
 	function migrateArticleProperties( $table, $prefix, $ns ) {
+		$dbw = &wfGetDB( DB_MASTER );
 
 		// Get all the properties of the given type and store in $props hash
 		$props = array();
