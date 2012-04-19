@@ -148,7 +148,7 @@ class ArticleProperties extends Article {
 			$page = $prefix . 'page';
 
 			// Get the row if it exists
-			$row = $dbr->selectRow( $this->table, '*', array( $page => $id ) );
+			$row = $dbr->selectRow( $this->$table, '*', array( $page => $id ) );
 
 			// If the input array is empty, fill in all values from the row
 			if( count( $props ) == 0 ) {
@@ -180,7 +180,7 @@ class ArticleProperties extends Article {
 			// If anything changed, update the row and execute the change hook
 			if( count( $change ) > 0 ) {
 				$dbw = wfGetDB( DB_MASTER );
-				$dbw->update( $this->table, $update, array( $page => $id ) );
+				$dbw->update( $this->$table, $update, array( $page => $id ) );
 				wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$change ) );
 			}
 		}
