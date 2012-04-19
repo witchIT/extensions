@@ -181,7 +181,11 @@ class ArticleProperties extends Article {
 			// If anything changed, update the row and execute the change hook
 			if( count( $change ) > 0 ) {
 				$dbw = wfGetDB( DB_MASTER );
-				$dbw->update( $table, $update, array( $page => $id ) );
+				if( $row ) $dbw->update( $table, $update, array( $page => $id ) );
+				else {
+					$update[$page] = $id;
+					$dbw->insert( $table, $update );
+				}
 				wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$change ) );
 			}
 		}
