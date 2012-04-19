@@ -165,7 +165,7 @@ class ArticleProperties extends Article {
 					$col = self::getColumnName( $k, $prefix );
 
 					// Read the current value of this property
-					$v0 = array_key_exists( $col, $row ) ? $row[$col] : false;
+					$v0 = array_key_exists( $col, $row ) ? $row->$col : false;
 
 					// If a key has a null value, then set to the read value
 					if( $v1 === null ) $props[$k] = $v0;
