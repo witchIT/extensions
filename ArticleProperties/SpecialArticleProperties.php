@@ -57,7 +57,7 @@ class SpecialArticleProperties extends SpecialPage {
 			}
 
 			// TMP: If there's an article_properties table, copy the property data to the zp_property table
-			$this->migrateArticleProperties( 'properties', 'zp_', 20000 );
+			//$this->migrateArticleProperties( 'properties', 'zp_', 20000 );
 
 			$wgOut->addHTML( '</pre>' );
 		}
