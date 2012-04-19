@@ -57,30 +57,7 @@ class SpecialArticleProperties extends SpecialPage {
 			}
 
 			// TMP: If there's an article_properties table, copy the property data to the zp_property table
-			$tbl = $dbw->tableName( 'article_properties' );
-			if( $dbw->tableExists( $tbl ) ) {
-
-				// Get all the properties of the given type and store in $props hash
-				$props = array();
-				$res = $dbw->select( $tbl, 'ap_page,ap_name,ap_value', "ap_namespace = 20000" );
-				while( $row = $dbw->fetchRow( $res ) ) {
-					$k = $row[0];
-					if( array_key_exists( $k, $props ) ) $props[$k] = array( $row[1] => $row[2] );
-					else $props[$k][$row[1]] = $row[2];
-				}
-				$dbw->freeResult( $res );
-
-				// Insert them into the properties table
-				$tbl = $dbw->tableName( 'properties' );
-				foreach( $props as $page => $data ) {
-					$row = array( 'zp_page' => $page );
-					foreach( $data as $k => $v ) {
-						$col = "zp_$k";
-						$row[$col] = $v;
-					}
-					$dbw->insert( $tbl, $row );
-				}
-			}
+			$this->migrateArticleProperties( 'properties', 'zp_', 20000 );
 
 			$wgOut->addHTML( '</pre>' );
 		}
@@ -92,4 +69,30 @@ class SpecialArticleProperties extends SpecialPage {
 		}
 	}
 
+	/**
+	 * Migrates data from a single article_properties table into a class-specific table
+	 */
+	function migrateArticleProperties( $table, $prefix, $ns ) {
+
+		// Get all the properties of the given type and store in $props hash
+		$props = array();
+		$res = $dbw->select( $tbl, 'ap_page,ap_propame,ap_value', "ap_namespace = $ns" );
+		while( $row = $dbw->fetchRow( $res ) ) {
+			$k = $row[0];
+			if( array_key_exists( $k, $props ) ) $props[$k] = array( $row[1] => $row[2] );
+			else $props[$k][$row[1]] = $row[2];
+		}
+		$dbw->freeResult( $res );
+
+		// Insert them into the class-specific table
+		$tbl = $dbw->tableName( $table );
+		foreach( $props as $page => $data ) {
+			$row = array( $prefix . 'page' => $page );
+			foreach( $data as $k => $v ) {
+				$col = ArticleProperties::getColumnName( $k, $prefix );
+				$row[$col] = $v;
+			}
+			$dbw->insert( $tbl, $row );
+		}
+	}
 }
