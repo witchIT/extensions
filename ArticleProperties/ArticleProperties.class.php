@@ -180,7 +180,6 @@ class ArticleProperties extends Article {
 			// If anything changed, update the row and execute the change hook
 			if( count( $change ) > 0 ) {
 				$dbw = wfGetDB( DB_MASTER );
-				$tbl = $dbw->tableName( $tabl );
 				$dbw->update( $this->table, $update, array( $page => $id ) );
 				wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$change ) );
 			}
