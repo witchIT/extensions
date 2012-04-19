@@ -73,6 +73,7 @@ class SpecialArticleProperties extends SpecialPage {
 	 * Migrates data from a single article_properties table into a class-specific table
 	 */
 	function migrateArticleProperties( $table, $prefix, $ns ) {
+		global $wgOut;
 		$dbw = &wfGetDB( DB_MASTER );
 
 		// Get all the properties of the given type and store in $props hash
@@ -92,6 +93,7 @@ class SpecialArticleProperties extends SpecialPage {
 			$row = array( $prefix . 'page' => $page );
 			foreach( $data as $k => $v ) {
 				$col = ArticleProperties::getColumnName( $k, $prefix );
+				$wgOut->addHTML("\t$k = $v\n");
 				$row[$col] = $v;
 			}
 			$dbw->insert( $tbl, $row );
