@@ -95,7 +95,7 @@ class SpecialArticleProperties extends SpecialPage {
 			foreach( $data as $k => $v ) {
 				$col = ArticleProperties::getColumnName( $k, $prefix );
 				$wgOut->addHTML("\t$k = $v\n");
-				$row[$col] = $v;
+				if( $col != 'zp_region' ) $row[$col] = $v;
 			}
 			$dbw->insert( $tbl, $row );
 		}
