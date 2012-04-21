@@ -116,22 +116,8 @@ class ArticleProperties extends Article {
 	/**
 	 * Convert a property name to a DB column name
 	 */
-	public static function getColumnName( $name, $prefix = false ) {
-		if( AP_VOID !== $cache = self::cache( __METHOD__, $key = "$name\x07$prefix" ) ) return $cache;
-		if( $prefix === false ) $prefix = self::$prefix;
-		return self::cache( __METHOD__, $key, $prefix . strtolower( $name ) );
-	}
-
-	/**
-	 * Convert a DB column name to a property name
-	 */
-	public static function getPropertyName( $name, $prefix = false ) {
-		if( AP_VOID !== $cache = self::cache( __METHOD__, $key = "$name\x07$prefix" ) ) return $cache;
-		$ret = false;
-		foreach( self::$columns as $k => $v ) {
-			if( self::getColumnName( $k, $prefix ) == $name ) $ret = $k;
-		}
-		return self::cache( __METHOD__, $key, $ret );
+	public static function getColumnName( $name, $prefix ) {
+		return $prefix . strtolower( $name );
 	}
 
 	/**
@@ -153,8 +139,11 @@ class ArticleProperties extends Article {
 
 			// If the input array is empty, fill in all values from the row
 			if( count( $props ) == 0 ) {
+				$rev = array();
+				foreach( $class::$columns as $prop => $type ) $rev[$prop] = self::getColumnName( $prop, $prefix );
+				$rev = array_flip( $rev );
 				foreach( $row as $k => $v ) {
-					if( $k != $page ) $props[self::getPropertyName( $k, $prefix )] = $v;
+					if( array_key_exists( $k, $rev ) ) $props[$rev[$k]] = $v;
 				}
 			}
 
