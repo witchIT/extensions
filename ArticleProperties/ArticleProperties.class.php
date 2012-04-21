@@ -154,7 +154,7 @@ class ArticleProperties extends Article {
 			// If the input array is empty, fill in all values from the row
 			if( count( $props ) == 0 ) {
 				foreach( $row as $k => $v ) {
-					if( $k != $page ) $props[self::getColumnName( $k, $prefix )] = $v;
+					if( $k != $page ) $props[self::getPropertyName( $k, $prefix )] = $v;
 				}
 			}
 
