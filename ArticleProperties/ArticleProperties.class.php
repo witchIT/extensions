@@ -138,6 +138,7 @@ class ArticleProperties extends Article {
 			$row = $dbr->selectRow( $table, '*', array( $page => $id ) );
 
 			// If the input array is empty, fill in all values from the row
+			// (a reverse lookup array is needed to find a property name from a database column name)
 			if( count( $props ) == 0 ) {
 				$rev = array();
 				foreach( $class::$columns as $prop => $type ) $rev[$prop] = self::getColumnName( $prop, $prefix );
