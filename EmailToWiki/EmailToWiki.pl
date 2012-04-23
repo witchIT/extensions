@@ -207,7 +207,7 @@ sub processEmail {
 	# Add original address if this is a forwarded message
 	my $forward = '';
 	if( $subject =~ /^fwd?:/i and $body =~ /^from:\s*(.+?)$/m ) {
-		$forward = $1
+		$forward = $1;
 		if( $::emailonly ) {
 			$forward = $1 if $forward =~ /<(.+?)>$/;
 		}
