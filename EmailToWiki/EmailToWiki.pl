@@ -32,7 +32,7 @@ use LWP::UserAgent;
 use utf8;
 use Encode;
 use strict;
-$::ver   =  '2.2.1, 2012-04-14';
+$::ver   =  '2.2.2, 2012-04-22';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
