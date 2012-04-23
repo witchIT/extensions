@@ -1,9 +1,6 @@
 <?php
 class ArticleProperties extends Article {
 
-	// This is set to false if the article is created using newFromTitle with a context set (i.e. it's a full page-render)
-	var $passive = true;
-
 	// These are set by a sub-class if it should use its own database table
 	public static $table = false;
 	public static $columns = false;
@@ -66,11 +63,8 @@ class ArticleProperties extends Article {
 			require_once( $classfile );
 		}
 
-		// Set the page to an instance of the class
-		$page = new $classname( $title );
-
-		// This is a full page-render operation
-		$page->passive = false;
+		// Set the page to an instance of the class specifying it to be non-passive (i.e. a full page render)
+		$page = new $classname( $title, false );
 
 		return true;
 	}
