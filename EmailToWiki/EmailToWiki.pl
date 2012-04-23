@@ -32,7 +32,7 @@ use LWP::UserAgent;
 use utf8;
 use Encode;
 use strict;
-$::ver   =  '2.2.2, 2012-04-22';
+$::ver   =  '2.2.3, 2012-04-23';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -213,11 +213,13 @@ sub processEmail {
 		$forward = "\n | forward = $forward";
 	}
 
+	my $filter = $::fromfilter ? "\n | filter = yes" : '';
+
 	my $text = "{{$::template
  | id      = $id
  | date    = $date
  | to      = $to
- | from    = $from$forward
+ | from    = $from$forward$filter
  | subject = $subject
 }}
 $body";

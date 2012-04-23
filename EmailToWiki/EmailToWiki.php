@@ -9,13 +9,10 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.2.2, 2012-04-22' );
+define( 'EMAILTOWIKI_VERSION', '2.2.3, 2012-04-23' );
 
 // Set this if you want the attachments to be passed to a template
 $wgAttachmentTemplate = false;
-
-// Set this to filter for only emails from users that exist in the wiki
-$wgWikiEmailsOnly = false;
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -160,11 +157,10 @@ class EmailToWiki {
 
 	/**
 	 * Apply filtering rules to the email and return whether allowed or not
-	 * - currently just checks if from address exists in wiki (if $wgWikiEmailsOnly set)
+	 * - currently just checks if from address exists in wiki (if there's a filter paramater provided in the message)
 	 */
 	function filter( $message ) {
-		global $wgWikiEmailsOnly;
-		if( $wgWikiEmailsOnly ) {
+		if( preg_match( "/^\s*\|\s*filter\s*=/m", $message ) ) {
 			if( preg_match( "/^\s*\|\s*from\s*=\s*(.+?)\s*$/m", $message, $m ) ) {
 				$from = $m[1];
 				if( preg_match( "/<(.+?)>$/", $from, $m ) ) $from = $m[1];

@@ -7,6 +7,9 @@ $::template = "Email"
 # Extract just the email address portion of the FROM and TO fields
 $::emailonly = 1;
 
+# Don't import emails into the wiki if the From address isn't registered in the wiki
+$::fromfilter = 0;
+
 # If there's HTML formatting in the email don't also add <pre> sections for non-HTML versions of the content
 $::html_only = 0;
 
