@@ -2,7 +2,7 @@
 $::wiki = "http://localhost/wiki/index.php";
 
 # The wiki template to wrap the email paramaters in
-$::template = "Email"
+$::template = "Email";
 
 # Extract just the email address portion of the FROM and TO fields
 $::emailonly = 1;
