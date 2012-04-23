@@ -152,7 +152,8 @@ class EmailToWiki {
 	function logAdd( $err ) {
 		global $wgEmailToWikiErrLog;
 		$fh = fopen( $wgEmailToWikiErrLog, 'a' );
-		fwrite( $fh, "PHP: $err\n" );
+		$time = date('d M Y, H:i:s');
+		fwrite( $fh, "PHP [$time]: $err\n" );
 		fclose( $fh );
 		return $err;
 	}
@@ -166,6 +167,7 @@ class EmailToWiki {
 		if( $wgWikiEmailsOnly ) {
 			if( preg_match( "/^\s*\|\s*from\s*=\s*(.+?)\s*$/m", $message, $m ) ) {
 				$from = $m[1];
+				if( preg_match( "/<(.+?)>$/", $from, $m ) ) $from = $m[1];
 				$dbr = &wfGetDB( DB_SLAVE );
 				$tbl = $dbr->tableName( 'user' );
 				if( $dbr->selectRow( $tbl, '1', "user_email = '$from'" ) === false ) return false;
