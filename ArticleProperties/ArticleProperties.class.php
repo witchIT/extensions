@@ -1,6 +1,9 @@
 <?php
 class ArticleProperties extends Article {
 
+	// This is set to false if the article is created using newFromTitle with a context set (i.e. it's a full page-render)
+	var $passive = true;
+
 	// These are set by a sub-class if it should use its own database table
 	public static $table = false;
 	public static $columns = false;
@@ -45,8 +48,12 @@ class ArticleProperties extends Article {
 
 	/**
 	 * When a new article is created, allow PageProperties sub-class to specify if they or their sub-classes should be used for this article
+	 * - this is called from Article::newFromTitle() which in a normal page render is called from MediaWiki::initializeArticle()
 	 */
 	public static function onArticleFromTitle( $title, &$page ) {
+
+		// This is a full page-render operation
+		$this->passive = false;
 
 		// ArticleProperties sub-classes can use this to select a new class for the page Article
 		// - a new class name is returned for pre-defined classes
