@@ -52,9 +52,6 @@ class ArticleProperties extends Article {
 	 */
 	public static function onArticleFromTitle( $title, &$page ) {
 
-		// This is a full page-render operation
-		$this->passive = false;
-
 		// ArticleProperties sub-classes can use this to select a new class for the page Article
 		// - a new class name is returned for pre-defined classes
 		// - or an array of ( classname, filename ) to lazy-load the class
@@ -71,6 +68,9 @@ class ArticleProperties extends Article {
 
 		// Set the page to an instance of the class
 		$page = new $classname( $title );
+
+		// This is a full page-render operation
+		$page->passive = false;
 
 		return true;
 	}
