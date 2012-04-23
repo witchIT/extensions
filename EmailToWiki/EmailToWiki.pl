@@ -60,6 +60,7 @@ while( $::config = readdir( CONF ) ) {
 	$::template = "Email";
 	$::emailonly = 1;
 	$::html_only = 0;
+	$::fromfilter = 0;
 
 	# Set the globals from the config file
 	require "$::dir/$::config";
