@@ -32,7 +32,7 @@ use LWP::UserAgent;
 use utf8;
 use Encode;
 use strict;
-$::ver   =  '2.2.3, 2012-04-23';
+$::ver   =  '2.2.4, 2012-04-24';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -46,11 +46,8 @@ opendir( CONF, $::dir ) or die $!;
 while( $::config = readdir( CONF ) ) {
 	next if( $::config !~ /([^\/]+)\.conf$/ );
 	$::prefix = $1;
-	logAdd( "Processing configuration file \"$1.conf\"" );
-
-	# Create a tmp directory to store the collected email and attachment data for this configuration
 	$::tmp = "$::dir/$1.tmp";
-	mkdir $::tmp unless -e $::tmp;
+	logAdd( "Processing configuration file \"$1.conf\"" );
 
 	# Set default configuration options
 	$::limit = 1000000;
@@ -64,6 +61,11 @@ while( $::config = readdir( CONF ) ) {
 
 	# Set the globals from the config file
 	require "$::dir/$::config";
+
+	# Create a tmp directory to store the collected email and attachment data for this configuration
+	mkdir $::tmp unless -e $::tmp;
+	my( $login, $pass, $uid, $gid ) = getpwnam( $::owner );
+	chown $uid, $gid, $::tmp;
 
 	# Process messages in a POP3 mailbox
 	if( $::type eq 'POP3' ) {
@@ -215,7 +217,6 @@ sub processEmail {
 	}
 
 	my $filter = $::fromfilter ? "\n | filter = yes" : '';
-
 	my $text = "{{$::template
  | id      = $id
  | date    = $date
