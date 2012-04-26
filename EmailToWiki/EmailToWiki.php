@@ -9,10 +9,14 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.2.4, 2012-04-24' );
+define( 'EMAILTOWIKI_VERSION', '2.2.5, 2012-04-26' );
 
 // Set this if you want the attachments to be passed to a template
 $wgAttachmentTemplate = false;
+
+// Default DB table and field for checking existence of From address when filtering
+$wgEmailToWikiFilterTable = 'user';
+$wgEmailToWikiFilterField = 'user_email';
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['EmailToWiki'] = "$dir/EmailToWiki.i18n.php";
@@ -157,16 +161,17 @@ class EmailToWiki {
 
 	/**
 	 * Apply filtering rules to the email and return whether allowed or not
-	 * - currently just checks if from address exists in wiki (if there's a filter paramater provided in the message)
+	 * - if the filter option is set for this message, check the given DB table and field for existence of the From address
 	 */
 	function filter( $message ) {
+		global $wgEmailToWikiFilterTable, $wgEmailToWikiFilterField;
 		if( preg_match( "/^\s*\|\s*filter\s*=/m", $message ) ) {
 			if( preg_match( "/^\s*\|\s*from\s*=\s*(.+?)\s*$/m", $message, $m ) ) {
 				$from = $m[1];
 				if( preg_match( "/<(.+?)>$/", $from, $m ) ) $from = $m[1];
 				$dbr = &wfGetDB( DB_SLAVE );
-				$tbl = $dbr->tableName( 'user' );
-				if( $dbr->selectRow( $tbl, '1', "user_email = '$from'" ) === false ) return false;
+				$tbl = $dbr->tableName( $wgEmailToWikiFilterTable );
+				if( $dbr->selectRow( $tbl, '1', "$wgEmailToWikiFilterField REGEXP ':?$from$'" ) === false ) return false;
 			}
 		}
 		return true;
