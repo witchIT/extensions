@@ -145,7 +145,7 @@ class ArticleProperties extends Article {
 				foreach( $class::$columns as $prop => $type ) $rev[$prop] = self::getColumnName( $prop, $prefix );
 				$rev = array_flip( $rev );
 				foreach( $row as $k => $v ) {
-					if( array_key_exists( $k, $rev ) ) $props[$rev[$k]] = $v;
+					if( array_key_exists( $k, $rev ) ) $props[$rev[$k]] = $this->dbGetValue( $rev[$k], $v );
 				}
 			}
 
@@ -156,7 +156,7 @@ class ArticleProperties extends Article {
 					$col = self::getColumnName( $k, $prefix );
 
 					// Read the current value of this property
-					$v0 = array_key_exists( $col, $row ) ? $row->$col : false;
+					$v0 = array_key_exists( $col, $row ) ? $this->dbGetValue( $k, $row->$col ) : false;
 
 					// If a key has a null value, then set to the read value
 					if( $v1 === null ) $props[$k] = $v0;
@@ -164,7 +164,7 @@ class ArticleProperties extends Article {
 					// Otherwise add to the change and update arrays if changed
 					elseif( $v0 !== $v1 ) {
 						$change[$k] = array( $v0, $v1 );
-						$update[$col] = $v1;
+						$update[$col] = $this->dbSetValue( $k, $v1 );
 					}
 				}
 			}
@@ -184,6 +184,21 @@ class ArticleProperties extends Article {
 		return $props;
 	}
 
+	/**
+	 * Check if values read from the database have a processing function and call if so
+	 */
+	function dbGetValue( $k, $v ) {
+		$method = "get$k";
+		return in_array( $method, get_class_methods( $this ) ) ? $this->$method( $v ) : $v;
+	}
+
+	/**
+	 * Check if values being written to the database have a processing function and call if so
+	 */
+	function dbSetValue( $k, $v ) {
+		$method = "set$k";
+		return in_array( $method, get_class_methods( $this ) ) ? $this->$method( $v ) : $v;
+	}
 
 	/**
 	 * Simple wrapper to Database::select to abstract caller from table and column names, returns array of title results
