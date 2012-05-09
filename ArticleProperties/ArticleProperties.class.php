@@ -203,11 +203,11 @@ class ArticleProperties extends Article {
 	/**
 	 * Simple wrapper to Database::select to abstract caller from table and column names, returns array of title results
 	 */
-	public static function query( $class, $conds ) {
+	public static function query( $class, $conds, $options = array() ) {
 		$dbr = wfGetDB( DB_SLAVE );
 		$table = $dbr->tableName( $class::$table );
 		$prefix = $class::$prefix;
-		$res = $dbr->select( $table, $prefix . 'page', $conds );
+		$res = $dbr->select( $table, $prefix . 'page', $conds, __METHOD__, $options );
 		$titles = array();
 		while( $row = $dbr->fetchRow( $res ) ) $titles[] = Title::newFromID( $row[0] );
 		$dbr->freeResult( $res );
