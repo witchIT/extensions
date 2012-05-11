@@ -49,12 +49,13 @@ class LinkTree {
 		array_shift( $args );
 		foreach( $args as $arg ) {
 			$title = Title::newFromText( $arg );
+			$exclusions[$title->getPrefixedText()] = 1;
 			if( $title->getNamespace() == NS_CATEGORY ) {
 				$cat  = $dbr->addQuotes( $title->getDBkey() );
 				$res  = $dbr->select( $cl, 'cl_from', "cl_to = $cat" );
 				while( $row = $dbr->fetchRow( $res ) ) $exclusions[Title::newFromID( $row[0] )->getPrefixedText()] = 1;
 				$dbr->freeResult( $res );
-			} else $exclusions[$title->getText()] = 1;
+			}
 		}
 		$this->exclusions = array_keys( $exclusions );
 
