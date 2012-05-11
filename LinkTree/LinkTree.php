@@ -11,7 +11,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'LINKTREE_VERSION','1.0.1, 2012-03-06' );
+define( 'LINKTREE_VERSION','1.0.2, 2012-05-11' );
 
 $wgLinkTreeMaxChr = false;
 $wgExtensionFunctions[] = 'wfSetupLinkTree';
@@ -39,9 +39,25 @@ class LinkTree {
 
 	public function expandLinkTree( &$parser, $limit ) {
 		$parser->disableCache();
-		$this->exclusions = func_get_args();
-		array_shift( $this->exclusions );
-		array_shift( $this->exclusions );
+
+		// Build exclusions list (if category, add all members to list)
+		$exclusions = array();
+		$dbr  = &wfGetDB( DB_SLAVE );
+		$cl   = $dbr->tableName( 'categorylinks' );
+		$args = func_get_args();
+		array_shift( $args );
+		array_shift( $args );
+		foreach( $args as $arg ) {
+			$title = Title::newFromText( $arg );
+			if( $title->getNamespace() == NS_CATEGORY ) {
+				$cat  = $dbr->addQuotes( $title->getDBkey() );
+				$res  = $dbr->select( $cl, 'cl_from', "cl_to = $cat" );
+				while( $row = $dbr->fetchRow( $res ) ) $exclusions[Title::newFromID( $row[0] )->getPrefixedText()] = 1;
+				$dbr->freeResult( $res );
+			} else $exclusions[$title->getText()] = 1;
+		}
+		$this->exclusions = array_keys( $exclusions );
+
 		$tree = $this->linkTree( $parser->getTitle(), $limit );
 		return array(
 			$tree,
