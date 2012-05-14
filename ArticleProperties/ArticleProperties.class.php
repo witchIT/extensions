@@ -126,7 +126,7 @@ class ArticleProperties extends Article {
 	 */
 	public function properties( $props = array() ) {
 		$title = $this->getTitle();
-		if( $id = $title->getArticleId() ) {
+		if( $id = $title->getArticleID() ) {
 			$dbr = wfGetDB( DB_SLAVE );
 			$class = get_class( $this );
 			$table = $dbr->tableName( $class::$table );
@@ -135,6 +135,7 @@ class ArticleProperties extends Article {
 			$update = array();
 			$page = $prefix . 'page';
 
+print "$table, $id<br>";
 			// Get the row if it exists
 			$row = $dbr->selectRow( $table, '*', array( $page => $id ) );
 
