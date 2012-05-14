@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'ARTICLEPROPS_VERSION', "2.1.1, 2012-05-09" );
+define( 'ARTICLEPROPS_VERSION', "2.1.2, 2012-05-14" );
 define( 'AP_VOID', "\x07AP_VOID" );
 
 $wgExtensionCredits['other'][] = array(
