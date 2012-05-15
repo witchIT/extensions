@@ -168,10 +168,8 @@ class EmailToWiki {
 		if( preg_match( "/^\s*\|\s*filter\s*=/m", $message ) ) {
 			$dbr = &wfGetDB( DB_SLAVE );
 			$tbl = $dbr->tableName( $wgEmailToWikiFilterTable );
-			$emails = array();
-			if( preg_match( "/^\s*\|\s*from\s*=\s*(.+?)\s*$/m", $message, $m ) ) $emails[] = $m[1];
-			if( preg_match( "/^\s*\|\s*forward\s*=\s*(.+?)\s*$/m", $message, $m ) ) $emails = explode( ',', $m[1] );
-			foreach( $emails as $email ) {
+			if( preg_match( "/^\s*\|\s*forward\s*=\s*(.+?)\s*$/m", $message, $m ) ) {
+			foreach( explode( ',', $m[1] ) as $email ) {
 				if( preg_match( "/<(.+?)>$/", $email, $m ) ) $email = $m[1];
 				if( $dbr->selectRow( $tbl, '1', "$wgEmailToWikiFilterField REGEXP ':?$email$'" ) ) return true;
 			}
