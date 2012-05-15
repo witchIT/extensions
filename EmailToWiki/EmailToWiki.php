@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.2.7, 2012-05-14' );
+define( 'EMAILTOWIKI_VERSION', '2.2.8, 2012-05-15' );
 
 // Set this if you want the attachments to be passed to a template
 $wgAttachmentTemplate = false;
@@ -166,14 +166,14 @@ class EmailToWiki {
 	function filter( $message ) {
 		global $wgEmailToWikiFilterTable, $wgEmailToWikiFilterField;
 		if( preg_match( "/^\s*\|\s*filter\s*=/m", $message ) ) {
-			foreach( array( 'from', 'forward' ) as $k ) {
-				if( preg_match( "/^\s*\|\s*$k\s*=\s*(.+?)\s*$/m", $message, $m ) ) {
-					$email = $m[1];
-					if( preg_match( "/<(.+?)>$/", $email, $m ) ) $email = $m[1];
-					$dbr = &wfGetDB( DB_SLAVE );
-					$tbl = $dbr->tableName( $wgEmailToWikiFilterTable );
-					if( $dbr->selectRow( $tbl, '1', "$wgEmailToWikiFilterField REGEXP ':?$email$'" ) ) return true;
-				}
+			$dbr = &wfGetDB( DB_SLAVE );
+			$tbl = $dbr->tableName( $wgEmailToWikiFilterTable );
+			$emails = array();
+			if( preg_match( "/^\s*\|\s*from\s*=\s*(.+?)\s*$/m", $message, $m ) ) $emails[] = $m[1];
+			if( preg_match( "/^\s*\|\s*forward\s*=\s*(.+?)\s*$/m", $message, $m ) ) $emails = explode( ',', $m[1] );
+			foreach( $emails as $email ) {
+				if( preg_match( "/<(.+?)>$/", $email, $m ) ) $email = $m[1];
+				if( $dbr->selectRow( $tbl, '1', "$wgEmailToWikiFilterField REGEXP ':?$email$'" ) ) return true;
 			}
 			return false;
 		}
