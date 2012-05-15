@@ -209,7 +209,7 @@ sub processEmail {
 	# Add original address if this is a forwarded message
 	my $forward = '';
 	if( $subject =~ /^\s*fwd?:/i ) {
-		my @addrs = $body =~ /^\s*from:\s*(.+?)$/im;
+		my @addrs = $body =~ /[>:]([-a-z0-9_.]+@[-a-z0-9_.]["<]/gi;
 		if( $#addrs >= 0 ) {
 			if( $::emailonly ) {
 				for( @addrs ) {
