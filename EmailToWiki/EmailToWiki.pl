@@ -32,7 +32,7 @@ use LWP::UserAgent;
 use utf8;
 use Encode;
 use strict;
-$::ver   =  '2.2.8, 2012-05-15';
+$::ver   =  '2.2.9, 2012-05-16';
 
 # Determine log file, tmp file and program directory
 $0 =~ /^(.+)\..+?$/;
@@ -209,7 +209,7 @@ sub processEmail {
 	# Add original address if this is a forwarded message
 	my $forward = '';
 	if( $subject =~ /^\s*fwd?:/i ) {
-		my @addrs = $body =~ /[>:]([-a-z0-9_.]+@[-a-z0-9_.])["<]/gi;
+		my @addrs = $body =~ /[>:]([-a-z0-9_.]+\@[-a-z0-9_.]+)["<]/gi;
 		if( $#addrs >= 0 ) {
 			if( $::emailonly ) {
 				for( @addrs ) {

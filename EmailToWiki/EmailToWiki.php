@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.2.8, 2012-05-15' );
+define( 'EMAILTOWIKI_VERSION', '2.2.9, 2012-05-16' );
 
 // Set this if you want the attachments to be passed to a template
 $wgAttachmentTemplate = false;
