@@ -13,7 +13,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'USER_LOGIN_LOG_VERSION', '1.0.1, 2011-15-17' );
+define( 'USER_LOGIN_LOG_VERSION', '1.0.1, 2012-15-17' );
 
 $wgServerUser = 1; # User ID to use for logging if no user exists
 
