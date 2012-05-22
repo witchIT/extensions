@@ -204,7 +204,7 @@ class ArticleProperties extends Article {
 	/**
 	 * Simple wrapper to Database::select to abstract caller from table and column names, returns array of title results
 	 */
-	public static function query( $class, $conds, $options = array() ) {
+	public static function query( $class, $conds = array(), $options = array() ) {
 		$dbr = wfGetDB( DB_SLAVE );
 		$table = $dbr->tableName( $class::$table );
 		$prefix = $class::$prefix;
