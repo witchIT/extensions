@@ -130,7 +130,7 @@ class ArticleProperties extends Article {
 	function onArticleDeleteComplete( &$article, &$user, $reason, $id ) {
 		$dbw = wfGetDB( DB_MASTER );
 		$class = get_class( $this );
-		$table = $dbr->tableName( $class::$table );
+		$table = $dbw->tableName( $class::$table );
 		$prefix = $class::$prefix;
 		$page = $prefix . 'page';
 		$dbw->delete( $table, array( $page => $id ) );
