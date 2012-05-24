@@ -155,49 +155,48 @@ class ArticleProperties extends Article {
 			$page = $prefix . 'page';
 
 			// Get the row if it exists
-			if( $row = $dbr->selectRow( $table, '*', array( $page => $id ) ) ) {
+			if( !$row = $dbr->selectRow( $table, '*', array( $page => $id ) ) ) $row = array();
 
-				// If the input array is empty, fill in all values from the row
-				// (a reverse lookup array is needed to find a property name from a database column name)
-				if( count( $props ) == 0 ) {
-					$rev = array();
-					foreach( $class::$columns as $prop => $type ) $rev[$prop] = self::getColumnName( $prop, $prefix );
-					$rev = array_flip( $rev );
-					foreach( $row as $k => $v ) {
-						if( array_key_exists( $k, $rev ) ) $props[$rev[$k]] = $this->dbGetValue( $rev[$k], $v );
+			// If the input array is empty, fill in all values from the row
+			// (a reverse lookup array is needed to find a property name from a database column name)
+			if( count( $props ) == 0 ) {
+				$rev = array();
+				foreach( $class::$columns as $prop => $type ) $rev[$prop] = self::getColumnName( $prop, $prefix );
+				$rev = array_flip( $rev );
+				foreach( $row as $k => $v ) {
+					if( array_key_exists( $k, $rev ) ) $props[$rev[$k]] = $this->dbGetValue( $rev[$k], $v );
+				}
+			}
+
+			// Otherwise return only those specified
+			else {
+				$ns = $title->getNamespace();
+				foreach( $props as $k => $v1 ) {
+					$col = self::getColumnName( $k, $prefix );
+
+					// Read the current value of this property
+					$v0 = array_key_exists( $col, $row ) ? $this->dbGetValue( $k, $row->$col ) : false;
+
+					// If a key has a null value, then set to the read value
+					if( $v1 === null ) $props[$k] = $v0;
+
+					// Otherwise add to the change and update arrays if changed
+					elseif( $v0 !== $v1 ) {
+						$change[$k] = array( $v0, $v1 );
+						$update[$col] = $this->dbSetValue( $k, $v1 );
 					}
 				}
+			}
 
-				// Otherwise return only those specified
+			// If anything changed, update the row and execute the change hook
+			if( count( $change ) > 0 ) {
+				$dbw = wfGetDB( DB_MASTER );
+				if( $row ) $dbw->update( $table, $update, array( $page => $id ) );
 				else {
-					$ns = $title->getNamespace();
-					foreach( $props as $k => $v1 ) {
-						$col = self::getColumnName( $k, $prefix );
-
-						// Read the current value of this property
-						$v0 = array_key_exists( $col, $row ) ? $this->dbGetValue( $k, $row->$col ) : false;
-
-						// If a key has a null value, then set to the read value
-						if( $v1 === null ) $props[$k] = $v0;
-
-						// Otherwise add to the change and update arrays if changed
-						elseif( $v0 !== $v1 ) {
-							$change[$k] = array( $v0, $v1 );
-							$update[$col] = $this->dbSetValue( $k, $v1 );
-						}
-					}
+					$update[$page] = $id;
+					$dbw->insert( $table, $update );
 				}
-
-				// If anything changed, update the row and execute the change hook
-				if( count( $change ) > 0 ) {
-					$dbw = wfGetDB( DB_MASTER );
-					if( $row ) $dbw->update( $table, $update, array( $page => $id ) );
-					else {
-						$update[$page] = $id;
-						$dbw->insert( $table, $update );
-					}
-					wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$change ) );
-				}
+				wfRunHooks( 'ArticlePropertiesChanged', array( &$this, &$change ) );
 			}
 		}
 
