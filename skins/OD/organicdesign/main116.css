@@ -135,7 +135,7 @@ h6 { font-size: 80%;  }
 h6 .editsection { font-size: 125%; font-weight: normal; }
 
 #column-one h2 {
-	padding: 0;
+	padding: 0 0 0 8px;
 	color: #3B5998;
 	font-size: 14px;
 }
@@ -1328,6 +1328,7 @@ div.mw-lag-warn-high {
 	text-decoration: underline;
 }
 #recent-activity ul {
+	padding-left: 10px;
 	line-height: 1.2em;
 }
 #recent-activity li {
