@@ -7,7 +7,7 @@ class ArticleProperties extends Article {
 	public static $prefix = '';
 
 	// If set this includes member properties that should be available from the JavaScript side
-	public $js = false;
+	var $js = false;
 
 	// Some methods can benefit from caching their results
 	private static  $cache = array();
@@ -70,13 +70,12 @@ class ArticleProperties extends Article {
 		$page = new $classname( $title, false );
 
 		// Add a JS object for this class if any fields are required from the client side
-		print_r($title);
-		if( $title->js ) {
+		if( $page->js ) {
 			global $wgOut, $wgJsMimeType;
 			$script = '';
 			$c = '';
-			foreach( $this->js as $k ) {
-				$v = $title->$k;
+			foreach( $page->js as $k ) {
+				$v = $page->$k;
 				if( $v === true ) $v = 'true';
 				elseif( $v === false ) $v = 'false';
 				elseif( !is_numeric( $v ) ) $v = "\"$v\"";
