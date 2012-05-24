@@ -129,7 +129,10 @@ class ArticleProperties extends Article {
 	 */
 	function onArticleDeleteComplete( &$article, &$user, $reason, $id ) {
 		$dbw = wfGetDB( DB_MASTER );
-		$dbw->delete( 'article_properties', array( 'ap_page' => $id ) );
+		$class = get_class( $this );
+		$table = $dbr->tableName( $class::$table );
+		$page = $prefix . 'page';
+		$dbw->delete( $table, array( $page => $id ) );
 		return true;
 	}
 
@@ -149,10 +152,10 @@ class ArticleProperties extends Article {
 			$dbr = wfGetDB( DB_SLAVE );
 			$class = get_class( $this );
 			$table = $dbr->tableName( $class::$table );
+			$page = $prefix . 'page';
 			$prefix = $class::$prefix;
 			$change = array();
 			$update = array();
-			$page = $prefix . 'page';
 
 			// Get the row if it exists
 			if( !$row = $dbr->selectRow( $table, '*', array( $page => $id ) ) ) $row = array();
