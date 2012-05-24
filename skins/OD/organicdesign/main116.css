@@ -1298,3 +1298,20 @@ div.mw-lag-warn-high {
 .no-text-transform {
 	text-transform: none;
 }
+
+/* Recent activity */
+#recent-activity h2 {
+	padding-top: 0;
+	color: #ccc;
+	font-size: 90%;
+}
+#recent-activity a {
+	color: black;
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 11px;
+	white-space: nowrap;
+	text-decoration: none;
+}
+#recent-activity li {
+	list-style-type: none;
+}
