@@ -1304,9 +1304,8 @@ div.mw-lag-warn-high {
 	padding-bottom: 10px;
 }
 #recent-activity h2 {
-	padding-top: 0 0 0 5px;
+	padding-top: 0 0 0 10px;
 	color: #ccc;
-	font-size: 95%;
 }
 #recent-activity a {
 	color: black;
