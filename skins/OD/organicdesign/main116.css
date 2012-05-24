@@ -1312,6 +1312,9 @@ div.mw-lag-warn-high {
 	white-space: nowrap;
 	text-decoration: none;
 }
+#recent-activity ul {
+	line-height: 1em;
+}
 #recent-activity li {
 	list-style-type: none;
 }
