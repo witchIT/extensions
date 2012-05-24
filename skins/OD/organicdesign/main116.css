@@ -1300,10 +1300,13 @@ div.mw-lag-warn-high {
 }
 
 /* Recent activity */
+#recent-activity {
+	padding-bottom: 10px;
+}
 #recent-activity h2 {
-	padding-top: 0;
+	padding-top: 0 0 0 5px;
 	color: #ccc;
-	font-size: 90%;
+	font-size: 95%;
 }
 #recent-activity a {
 	color: black;
@@ -1317,7 +1320,7 @@ div.mw-lag-warn-high {
 }
 #recent-activity ul {
 	line-height: 1.2em;
-	margin-left: 10px;
+	margin-left: 7px;
 }
 #recent-activity li {
 	list-style-type: none;
