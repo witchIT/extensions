@@ -134,6 +134,12 @@ h5 .editsection { font-weight: normal; }
 h6 { font-size: 80%;  }
 h6 .editsection { font-size: 125%; font-weight: normal; }
 
+#column-one h2 {
+	padding: 0 0 0 8px;
+	color: #3B5998;
+	font-size: 14px;
+}
+
 ul {
 	line-height: 1.5em;
 	list-style-type: square;
@@ -1303,11 +1309,6 @@ div.mw-lag-warn-high {
 #recent-activity {
 	padding-bottom: 10px;
 }
-#recent-activity h2 {
-	padding: 0 0 0 8px;
-	color: #3B5998;
-	font-size: 14px;
-}
 #recent-activity a {
 	color: black;
 	font-family: Arial,Helvetica,sans-serif;
@@ -1320,7 +1321,7 @@ div.mw-lag-warn-high {
 }
 #recent-activity ul {
 	line-height: 1.2em;
-	margin-left: 8px;
+	margin-left: 10px;
 }
 #recent-activity li {
 	list-style-type: none;
