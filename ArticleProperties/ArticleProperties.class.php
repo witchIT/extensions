@@ -70,6 +70,7 @@ class ArticleProperties extends Article {
 		$page = new $classname( $title, false );
 
 		// Add a JS object for this class if any fields are required from the client side
+		print_r($title);
 		if( $title->js ) {
 			global $wgOut, $wgJsMimeType;
 			$script = '';
