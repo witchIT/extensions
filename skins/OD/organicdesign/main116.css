@@ -1312,8 +1312,12 @@ div.mw-lag-warn-high {
 	white-space: nowrap;
 	text-decoration: none;
 }
+#recent-activity a:hover {
+	text-decoration: underline;
+}
 #recent-activity ul {
-	line-height: 1em;
+	line-height: 1.2em;
+	margin-left: 10px;
 }
 #recent-activity li {
 	list-style-type: none;
