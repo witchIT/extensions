@@ -1310,11 +1310,12 @@ div.mw-lag-warn-high {
 	display: none;
 }
 #sidebartree .dTreeNode h2 {
+	font-family: verdana,sans-serif;
 	padding-left: 0;
 	font-size: 14px;
 }
 #recent-activity {
-	padding-bottom: 10px;
+	padding-bottom: 0 0 10px 5px;
 }
 #recent-activity a {
 	color: black;
@@ -1328,7 +1329,6 @@ div.mw-lag-warn-high {
 }
 #recent-activity ul {
 	line-height: 1.2em;
-	margin-left: 10px;
 }
 #recent-activity li {
 	/* list-style-type: none; */
