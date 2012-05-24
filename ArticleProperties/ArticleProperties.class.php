@@ -6,6 +6,9 @@ class ArticleProperties extends Article {
 	public static $columns = false;
 	public static $prefix = '';
 
+	// If set this includes member properties that should be available from the JavaScript side
+	var $js = false;
+
 	// Some methods can benefit from caching their results
 	private static  $cache = array();
 
@@ -65,6 +68,22 @@ class ArticleProperties extends Article {
 
 		// Set the page to an instance of the class specifying it to be non-passive (i.e. a full page render)
 		$page = new $classname( $title, false );
+
+		// Add a JS object for this class if any fields are required from the client side
+		if( $title->js ) {
+			global $wgOut, $wgJsMimeType;
+			$script = '';
+			$c = '';
+			foreach( $this->js as $k ) {
+				$v = $title->$k;
+				if( $v === true ) $v = 'true';
+				elseif( $v === false ) $v = 'false';
+				elseif( !is_numeric( $v ) ) $v = "\"$v\"";
+				$script .= "$c\n\t$k: $v";
+				$c = ',';
+			}
+			$wgOut->addScript( "<script type=\"$wgJsMimeType\">window.$classname = {" . $script . "\n};</script>" );
+		}
 
 		return true;
 	}
