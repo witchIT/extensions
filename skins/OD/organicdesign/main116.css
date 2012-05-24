@@ -1309,6 +1309,10 @@ div.mw-lag-warn-high {
 #sidebartree #itamsidebartree0 {
 	display: none;
 }
+#sidebartree .dTreeNode h2 {
+	padding-left: 0;
+	font-size: 14px;
+}
 #recent-activity {
 	padding-bottom: 10px;
 }
