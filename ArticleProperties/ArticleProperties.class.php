@@ -131,6 +131,7 @@ class ArticleProperties extends Article {
 		$dbw = wfGetDB( DB_MASTER );
 		$class = get_class( $this );
 		$table = $dbr->tableName( $class::$table );
+		$prefix = $class::$prefix;
 		$page = $prefix . 'page';
 		$dbw->delete( $table, array( $page => $id ) );
 		return true;
@@ -152,8 +153,8 @@ class ArticleProperties extends Article {
 			$dbr = wfGetDB( DB_SLAVE );
 			$class = get_class( $this );
 			$table = $dbr->tableName( $class::$table );
-			$page = $prefix . 'page';
 			$prefix = $class::$prefix;
+			$page = $prefix . 'page';
 			$change = array();
 			$update = array();
 
