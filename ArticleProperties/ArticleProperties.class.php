@@ -7,7 +7,7 @@ class ArticleProperties extends Article {
 	public static $prefix = '';
 
 	// If set this includes member properties that should be available from the JavaScript side
-	public var $js = false;
+	public $js = false;
 
 	// Some methods can benefit from caching their results
 	private static  $cache = array();
