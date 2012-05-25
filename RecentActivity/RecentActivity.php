@@ -1,7 +1,7 @@
 <?php
 /**
  * RecentActivity extension - Adds parser functions for listing recently created and edited articles
- *{{Category:Extensions|RecentActivity}}{{php}}{{Category:Extensions created with Template:Extension}}
+ *
  * See http://www.mediawiki.org/wiki/Extension:RecentActivity for installation and usage details
  *
  * @package MediaWiki
