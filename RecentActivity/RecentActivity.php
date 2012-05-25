@@ -43,7 +43,7 @@ class RecentActivity {
 		// Populate $argv with both named and numeric parameters
 		$argv = array();
 		foreach( func_get_args() as $arg) if( !is_object( $arg ) ) {
-			if( preg_match( '/^(.+?)\\s*=\\s*(.*)$/', $arg, $match ) ) $argv[$match[1]] = $match[2]; else $argv[] = $arg;
+			if( preg_match( '/^(.+?)\\s*=\\s*(.+)$/', $arg, $match ) ) $argv[$match[1]] = $match[2]; else $argv[] = $arg;
 		}
 		$type   = isset( $argv['type'] )   ? strtolower( $argv['type'] ) : '';
 		$user   = isset( $argv['user'] )   ? $argv['user']   : false;
