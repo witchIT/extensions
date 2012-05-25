@@ -14,7 +14,8 @@ if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'RECENTACTIVITY_VERSION', '1.1.0, 2012-05-25' );
 
-$egRecentActivityMagic         = "RecentActivity";
+$wgRecentActivityMagic         = 'RecentActivity';
+$wgRecentActivityExclusionsCat = 'Excluded from RecentActivity'
 $wgExtensionFunctions[]        = 'efSetupRecentActivity';
 $wgHooks['LanguageGetMagic'][] = 'efRecentActivityLanguageGetMagic';
  
@@ -29,11 +30,15 @@ $wgExtensionCredits['parserhook'][] = array(
 class RecentActivity {
 
 	function __construct() {
-		global $wgParser, $egRecentActivityMagic;
- 		$wgParser->setFunctionHook( $egRecentActivityMagic, array( $this, 'expandMagic' ), SFH_NO_HASH );
+		global $wgParser, $wgRecentActivityMagic;
+ 		$wgParser->setFunctionHook( $wgRecentActivityMagic, array( $this, 'expandMagic' ), SFH_NO_HASH );
 	}
 
-	function expandMagic(&$parser) {
+	function expandMagic( &$parser ) {
+		global $wgRecentActivityExclusionsCat;
+		$dbr = wfGetDB( DB_SLAVE );
+		$rev = $dbr->tableName( 'revision' );
+		$cl  = $dbr->tableName( 'categorylinks' );
 
 		// Populate $argv with both named and numeric parameters
 		$argv = array();
@@ -45,18 +50,22 @@ class RecentActivity {
 		$count  = isset( $argv['count'] )  ? $argv['count']  : 5;
 		$format = isset( $argv['format'] ) ? $argv['format'] : '*';
 
+		// Build an SQL condition for the exclusions category
+		$conds = array();
+		$cat = $dbr->addQuotes( Title::newFromText( $wgRecentActivityExclusionsCat, NS_CATEGORY )->getDBkey() );
+		$res = $dbr->select( $cl, 'cl_from', "cl_to = $cat", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
+		while( $row = $dbr->fetchRow( $res ) ) $conds[] = "rev_page != $row[0]";
+
 		// Build the list
 		$items = array();
 		switch( $type ) {
 
 			case 'edits':
-				$dbr  = wfGetDB( DB_SLAVE );
-				$tbl  = $dbr->tableName( 'revision' );
-				$user = $user ? 'rev_user_text = '.$dbr->addQuotes( $user ) : '';
-				$res  = $dbr->select(
-					$tbl,
+				if( $user ) $conds[] = 'rev_user_text = ' . $dbr->addQuotes( $user );
+				$res = $dbr->select(
+					$rev,
 					'distinct rev_page',
-					$user,
+					$conds,
 					__METHOD__,
 					array( 'ORDER BY' => 'rev_timestamp DESC', 'LIMIT' => $count )
 				);
@@ -71,13 +80,12 @@ class RecentActivity {
 			break;
 
 			case 'new':
-				$dbr  = wfGetDB( DB_SLAVE );
-				$tbl  = $dbr->tableName( 'revision' );
-				$user = $user ? 'rev_user_text = ' . $dbr->addQuotes( $user ) : '';
-				$res  = $dbr->select(
-					$tbl,
+				$tbl = $dbr->tableName( 'revision' );
+				if( $user ) $conds[] = 'rev_user_text = ' . $dbr->addQuotes( $user );
+				$res = $dbr->select(
+					$rev,
 					'rev_page, MIN(rev_id) as minid',
-					$user,
+					$conds,
 					__METHOD__,
 					array( 'GROUP BY' => 'rev_page', 'ORDER BY' => 'minid DESC', 'LIMIT' => $count )
 				);
@@ -102,16 +110,16 @@ class RecentActivity {
  * Called from $wgExtensionFunctions array when initialising extensions
  */
 function efSetupRecentActivity() {
-	global $egRecentActivity;
-	$egRecentActivity = new RecentActivity();
+	global $wgRecentActivity;
+	$wgRecentActivity = new RecentActivity();
 }
 
 /**
  * Register magic words
  */
 function efRecentActivityLanguageGetMagic(&$magicWords, $langCode = 0) {
-	global $egRecentActivityMagic;
-	$magicWords[$egRecentActivityMagic]   = array( 0, $egRecentActivityMagic );
+	global $wgRecentActivityMagic;
+	$magicWords[$wgRecentActivityMagic]   = array( 0, $wgRecentActivityMagic );
 	return true;
 }
 
