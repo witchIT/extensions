@@ -72,8 +72,9 @@ class RecentActivity {
 				while( $row = $dbr->fetchRow( $res ) ) {
 					$title = Title::newFromId( $row['rev_page'] );
 					if( is_object( $title ) ) {
-						$page = $title->getText();
-						$items[] = $format . "[[:$page|$page]]";
+						$page = $title->getPrefixedText();
+						$anchor = $title->getText();
+						$items[] = $format . "[[:$page|$anchor]]";
 					}
 				}
 				$dbr->freeResult( $res );
@@ -92,8 +93,9 @@ class RecentActivity {
 				while( $row = $dbr->fetchRow( $res ) ) {
 					$title = Title::newFromId( $row['rev_page'] );
 					if( is_object( $title ) ) {
-						$page = $title->getText();
-						$items[] = $format . "[[:$page|$page]]";
+						$page = $title->getPrefixedText();
+						$anchor = $title->getText();
+						$items[] = $format . "[[:$page|$anchor]]";
 					}
 				}
 				$dbr->freeResult( $res );
