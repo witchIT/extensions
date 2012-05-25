@@ -10,9 +10,9 @@
  * @copyright © 2007 [http://www.mediawiki.org/wiki/User:Nad User:Nad]
  * @licence GNU General Public Licence 2.0 or later
  */
-if (!defined('MEDIAWIKI')) die('Not an entry point.');
+if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define('RECENTACTIVITY_VERSION', '1.0.4, 2009-03-29');
+define( 'RECENTACTIVITY_VERSION', '1.1.0, 2012-05-25' );
 
 $egRecentActivityMagic         = "RecentActivity";
 $wgExtensionFunctions[]        = 'efSetupRecentActivity';
@@ -30,24 +30,24 @@ class RecentActivity {
 
 	function __construct() {
 		global $wgParser, $egRecentActivityMagic;
- 		$wgParser->setFunctionHook($egRecentActivityMagic, array($this, 'expandMagic'), SFH_NO_HASH);
+ 		$wgParser->setFunctionHook( $egRecentActivityMagic, array( $this, 'expandMagic' ), SFH_NO_HASH );
 	}
 
 	function expandMagic(&$parser) {
 
-		# Populate $argv with both named and numeric parameters
+		// Populate $argv with both named and numeric parameters
 		$argv = array();
-		foreach (func_get_args() as $arg) if (!is_object($arg)) {
-			if (preg_match('/^(.+?)\\s*=\\s*(.+)$/',$arg,$match)) $argv[$match[1]] = $match[2]; else $argv[] = $arg;
+		foreach( func_get_args() as $arg) if( !is_object( $arg ) ) {
+			if( preg_match( '/^(.+?)\\s*=\\s*(.*)$/', $arg, $match ) ) $argv[$match[1]] = $match[2]; else $argv[] = $arg;
 		}
-		$type   = isset($argv['type'])   ? strtolower($argv['type']) : '';
-		$user   = isset($argv['user'])   ? $argv['user']   : false;
-		$count  = isset($argv['count'])  ? $argv['count']  : 5;
-		$format = isset($argv['format']) ? $argv['format'] : '*';
+		$type   = isset( $argv['type'] )   ? strtolower( $argv['type'] ) : '';
+		$user   = isset( $argv['user'] )   ? $argv['user']   : false;
+		$count  = isset( $argv['count'] )  ? $argv['count']  : 5;
+		$format = isset( $argv['format'] ) ? $argv['format'] : '*';
 
-		# Build the list
+		// Build the list
 		$items = array();
-		switch ($type) {
+		switch( $type ) {
 
 			case 'edits':
 				$dbr  = wfGetDB( DB_SLAVE );
@@ -60,11 +60,11 @@ class RecentActivity {
 					__METHOD__,
 					array( 'ORDER BY' => 'rev_timestamp DESC', 'LIMIT' => $count )
 				);
-				while ( $row = $dbr->fetchRow( $res ) ) {
+				while( $row = $dbr->fetchRow( $res ) ) {
 					$title = Title::newFromId( $row['rev_page'] );
-					if ( is_object( $title ) ) {
+					if( is_object( $title ) ) {
 						$page = $title->getPrefixedText();
-						$items[] = $format."[[:$page|$page]]";
+						$items[] = $format . "[[:$page|$page]]";
 					}
 				}
 				$dbr->freeResult( $res );
@@ -73,7 +73,7 @@ class RecentActivity {
 			case 'new':
 				$dbr  = wfGetDB( DB_SLAVE );
 				$tbl  = $dbr->tableName( 'revision' );
-				$user = $user ? 'rev_user_text = '.$dbr->addQuotes( $user ) : '';
+				$user = $user ? 'rev_user_text = ' . $dbr->addQuotes( $user ) : '';
 				$res  = $dbr->select(
 					$tbl,
 					'rev_page, MIN(rev_id) as minid',
@@ -81,11 +81,11 @@ class RecentActivity {
 					__METHOD__,
 					array( 'GROUP BY' => 'rev_page', 'ORDER BY' => 'minid DESC', 'LIMIT' => $count )
 				);
-				while ( $row = $dbr->fetchRow( $res ) ) {
+				while( $row = $dbr->fetchRow( $res ) ) {
 					$title = Title::newFromId( $row['rev_page'] );
-					if ( is_object( $title ) ) {
+					if( is_object( $title ) ) {
 						$page = $title->getPrefixedText();
-						$items[] = $format."[[:$page|$page]]";
+						$items[] = $format . "[[:$page|$page]]";
 					}
 				}
 				$dbr->freeResult( $res );
@@ -94,7 +94,7 @@ class RecentActivity {
 			default: $items[] = 'Bad activity type specified!';
 		}
 
-		return join("\n", $items);
+		return join( "\n", $items );
 	}
 }
 
@@ -111,7 +111,7 @@ function efSetupRecentActivity() {
  */
 function efRecentActivityLanguageGetMagic(&$magicWords, $langCode = 0) {
 	global $egRecentActivityMagic;
-	$magicWords[$egRecentActivityMagic]   = array($langCode, $egRecentActivityMagic);
+	$magicWords[$egRecentActivityMagic]   = array( 0, $egRecentActivityMagic );
 	return true;
 }
 
