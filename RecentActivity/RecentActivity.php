@@ -15,7 +15,7 @@ if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 define( 'RECENTACTIVITY_VERSION', '1.1.0, 2012-05-25' );
 
 $wgRecentActivityMagic         = 'RecentActivity';
-$wgRecentActivityExclusionsCat = 'Excluded from RecentActivity'
+$wgRecentActivityExclusionsCat = 'Excluded from RecentActivity';
 $wgExtensionFunctions[]        = 'efSetupRecentActivity';
 $wgHooks['LanguageGetMagic'][] = 'efRecentActivityLanguageGetMagic';
  
