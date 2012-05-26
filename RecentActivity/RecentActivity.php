@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'RECENTACTIVITY_VERSION', '1.1.0, 2012-05-25' );
+define( 'RECENTACTIVITY_VERSION', '1.1.1, 2012-05-25' );
 
 $wgRecentActivityMagic         = 'RecentActivity';
 $wgRecentActivityExclusionsCat = 'Excluded from RecentActivity';
@@ -51,7 +51,7 @@ class RecentActivity {
 		$format = isset( $argv['format'] ) ? $argv['format'] : '*';
 
 		// Build an SQL condition for the exclusions category
-		$conds = array();
+		$conds = array( "rev_minor_edit = 0" );
 		$cat = $dbr->addQuotes( Title::newFromText( $wgRecentActivityExclusionsCat, NS_CATEGORY )->getDBkey() );
 		$res = $dbr->select( $cl, 'cl_from', "cl_to = $cat", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 		while( $row = $dbr->fetchRow( $res ) ) $conds[] = "rev_page != $row[0]";
