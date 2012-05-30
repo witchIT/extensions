@@ -1,5 +1,5 @@
 <?php
-class ArticleProperties extends Article {
+abstract class ArticleProperties extends Article {
 
 	// These are set by a sub-class if it should use its own database table
 	public static $table = false;
