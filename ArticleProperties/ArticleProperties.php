@@ -9,13 +9,13 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'ARTICLEPROPS_VERSION', "2.1.3, 2012-05-24" );
+define( 'ARTICLEPROPS_VERSION', "2.1.4, 2012-05-31" );
 define( 'AP_VOID', "\x07AP_VOID" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'        => "ArticleProperties",
 	'author'      => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
-	'description' => "Creates a flexible interface to the page_props table which stores per-article named-properties",
+	'description' => "Creates a flexible programming interface for dealing with specialised page classes having defined sets of properties in their own database tables",
 	'url'         => "http://www.mediawiki.org/wiki/ArticleProperties",
 	'version'     => ARTICLEPROPS_VERSION
 );
