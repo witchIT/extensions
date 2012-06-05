@@ -68,8 +68,7 @@ abstract class ArticleProperties extends Article {
 
 		// Set the page to an instance of the class specifying it to be non-passive (i.e. a full page render)
 		$page = new $classname( $title, false );
-print_r($page);
-die;
+
 		// Add a JS object for this class if any fields are required from the client side
 		if( $page->js ) {
 			global $wgOut, $wgJsMimeType;
@@ -85,6 +84,8 @@ die;
 			}
 			$wgOut->addScript( "<script type=\"$wgJsMimeType\">window.$classname = {" . $script . "\n};</script>" );
 		}
+print_r($page);
+die;
 
 		return true;
 	}
