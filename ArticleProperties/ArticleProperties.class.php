@@ -84,9 +84,6 @@ abstract class ArticleProperties extends Article {
 			}
 			$wgOut->addScript( "<script type=\"$wgJsMimeType\">window.$classname = {" . $script . "\n};</script>" );
 		}
-print_r($page);
-die;
-
 		return true;
 	}
 
