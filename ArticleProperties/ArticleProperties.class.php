@@ -22,6 +22,7 @@ abstract class ArticleProperties extends Article {
 		self::$cache = array();
 
 		// The text for newly created ArticleProperties articles should be preloaded with a default message
+		// NOTE: this is not called for page previews
 		$wgHooks['EditFormPreloadText'][] = $this;
 
 		// Allow sub-classes to have an edit method that can add its own fields
