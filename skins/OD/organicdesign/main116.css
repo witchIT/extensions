@@ -648,6 +648,9 @@ special external link styling */
 #donations {
 	overflow: visible;
 }
+#btcbest {
+	margin-top: 5px;
+}
 
 /*
 ** Logo properties

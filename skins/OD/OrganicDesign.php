@@ -155,7 +155,7 @@ if ( $wgOrganicDesignDonations ) {?>
 				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
 			</form>
 		</div>
-		<h5>We also accept <a href="/Bitcoin">Bitcoins</a> :-)</h5>
+		<h5 id="btcbest">But <a href="/Bitcoin">Bitcoins</a> are best :-)</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:135px;margin-left:23px" readonly="1" value="1MRV99zytxZpUk29DDaQWqDnE87KrPPbJk" onmouseover="this.select()" />
 		</div>
