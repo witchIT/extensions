@@ -319,17 +319,23 @@ abstract class ArticleProperties extends Article {
 	/**
 	 * Render an input element with current value if the article already exists
 	 */
-	function input( $name, $default = '' ) {
+	function input( $name, $default = '', $atts = false ) {
+		if( !is_array( $atts ) ) $atts = array();
+		if( !array_key_exists( 'id', $atts ) ) $atts['id'] = "wp$name";
+		if( !array_key_exists( 'name', $atts ) ) $atts['name'] = "wp$name";
+		if( !array_key_exists( 'type', $atts ) ) $atts['type'] = "text";
+		$attstxt = '';
+		foreach( $atts as $k => $v ) $attstxt .= " $k=\"$v\"";
 		$value = $this->getValue( $name, $default );
-		return "<input type=\"text\" value=\"$value\" name=\"wp$name\" id=\"wp$name\" />";
+		return "<input value=\"$value\"$atts />";
 	}
 
 	/**
 	 * Render combined label and input as a table row
 	 */
-	function inputRow( $label, $name = false, $default = '', $extra = '' ) {
+	function inputRow( $label, $name = false, $default = '', $extra = '', $atts = false ) {
 		$label = $this->label( $label, $name );
-		$input = $this->input( $name, $default );
+		$input = $this->input( $name, $default, $atts );
 		return "<tr><th>$label</th><td>$input$extra</td></tr>";
 	}
 
