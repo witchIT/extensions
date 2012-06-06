@@ -145,7 +145,7 @@ global $wgOrganicDesignDonations;
 if ( $wgOrganicDesignDonations ) {?>
 	<div class="portlet" id="donations" >
 		<h2>Tips are welcome</h2>
-		<h5>Paypal or credit card</h5>
+		<h5>We accept paypal or credit card</h5>
 		<div class="pBody">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_xclick">
@@ -155,7 +155,6 @@ if ( $wgOrganicDesignDonations ) {?>
 				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
 			</form>
 		</div>
-		<br />
 		<h5>We also accept <a href="/Bitcoin">Bitcoins</a> :-)</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:135px;margin-left:23px" readonly="1" value="1MRV99zytxZpUk29DDaQWqDnE87KrPPbJk" onmouseover="this.select()" />
