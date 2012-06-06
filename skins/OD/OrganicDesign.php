@@ -144,18 +144,19 @@ if ($wgUser->isLoggedIn()) {
 global $wgOrganicDesignDonations;
 if ( $wgOrganicDesignDonations ) {?>
 	<div class="portlet" id="donations" >
-		<h5>Donate with Paypal or credit card</h5>
+		<h2>Tips are welcome</h2>
+		<h5>Paypal or credit card</h5>
 		<div class="pBody">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_xclick">
 				<input type="hidden" name="business" value="<?php echo $wgOrganicDesignDonations ?>" />
 				<input type="hidden" name="item_name" value="Donation">
 				<input type="hidden" name="currency_code" value="USD">
-				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Donate" />
+				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
 			</form>
 		</div>
 		<br />
-		<h5>We accept <a href="/Bitcoin">Bitcoins</a> :-)</h5>
+		<h5>We also accept <a href="/Bitcoin">Bitcoins</a> :-)</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:135px;margin-left:23px" readonly="1" value="1MRV99zytxZpUk29DDaQWqDnE87KrPPbJk" onmouseover="this.select()" />
 		</div>
