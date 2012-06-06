@@ -327,7 +327,7 @@ abstract class ArticleProperties extends Article {
 		$attstxt = '';
 		foreach( $atts as $k => $v ) $attstxt .= " $k=\"$v\"";
 		$value = $this->getValue( $name, $default );
-		return "<input value=\"$value\"$atts />";
+		return "<input value=\"$value\"$attstxt />";
 	}
 
 	/**
