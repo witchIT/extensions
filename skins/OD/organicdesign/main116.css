@@ -644,6 +644,9 @@ special external link styling */
 	margin: 0;
 }
 .portlet .pBody li a { color: black; text-decoration: none; }
+.portlet #donations {
+	overflow: visible;
+}
 
 /*
 ** Logo properties
