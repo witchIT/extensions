@@ -152,6 +152,7 @@ abstract class ArticleProperties extends Article {
 		if( $id = $title->getArticleID() ) {
 			$dbr = wfGetDB( DB_SLAVE );
 			$class = get_class( $this );
+			if( $class::$table === false ) return array();
 			$table = $dbr->tableName( $class::$table );
 			$prefix = $class::$prefix;
 			$page = $prefix . 'page';
