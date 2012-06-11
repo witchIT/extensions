@@ -73,7 +73,7 @@ abstract class ArticleProperties extends Article {
 		$page = new $classname( $title, false );
 
 		// Add any required properties and i18n messages to mw.config on the JavaScript side
-		foreach( $page->jsProp as $prop ) $wgOut->addJsConfigVars( $prop, $this->$prop );
+		foreach( $page->jsProp as $prop ) $wgOut->addJsConfigVars( $prop, $page->$prop );
 		foreach( $page->jsI18n as $msg ) $wgOut->addJsConfigVars( $msg, wfMsg( $msg ) );
 
 		return true;
