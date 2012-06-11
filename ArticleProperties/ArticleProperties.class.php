@@ -53,6 +53,7 @@ abstract class ArticleProperties extends Article {
 	 * - this is called from Article::newFromTitle() which in a normal page render is called from MediaWiki::initializeArticle()
 	 */
 	public static function onArticleFromTitle( $title, &$page ) {
+		global $wgOut;
 
 		// ArticleProperties sub-classes can use this to select a new class for the page Article
 		// - a new class name is returned for pre-defined classes
