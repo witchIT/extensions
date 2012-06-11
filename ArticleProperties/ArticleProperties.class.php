@@ -7,6 +7,7 @@ abstract class ArticleProperties extends Article {
 	public static $prefix = '';
 
 	// If set this includes member properties and i18n messages that should be available from the JavaScript side from mw.config()
+	var $jsObj = false;
 	var $jsProp = array();
 	var $jsI18n = array();
 
@@ -53,7 +54,7 @@ abstract class ArticleProperties extends Article {
 	 * - this is called from Article::newFromTitle() which in a normal page render is called from MediaWiki::initializeArticle()
 	 */
 	public static function onArticleFromTitle( $title, &$page ) {
-		global $wgOut;
+		global $wgOut, $wgJsMimeType;
 
 		// ArticleProperties sub-classes can use this to select a new class for the page Article
 		// - a new class name is returned for pre-defined classes
@@ -72,8 +73,27 @@ abstract class ArticleProperties extends Article {
 		// Set the page to an instance of the class specifying it to be non-passive (i.e. a full page render)
 		$page = new $classname( $title, false );
 
-		// Add any required properties and i18n messages to mw.config on the JavaScript side
-		foreach( $page->jsProp as $prop ) $wgOut->addJsConfigVars( $prop, $page->$prop );
+		// Add any required properties to mw.config or specified object
+		if( $obj = $page->jsObj ) {
+			$script = '';
+			$c = '';
+			foreach( $page->jsProp as $k ) {
+				$v = $page->$k;
+				if( $v === true ) $v = 'true';
+				elseif( $v === false ) $v = 'false';
+				elseif( !is_numeric( $v ) ) $v = "\"$v\"";
+				$script .= "$c\n\t$k: $v";
+				$c = ',';
+			}
+			$wgOut->addScript( "<script type=\"$wgJsMimeType\">window.$obj = {" . $script . "\n};</script>" );
+		}
+
+		// No object specified, add props to mw.config
+		else {
+			foreach( $page->jsProp as $prop ) $wgOut->addJsConfigVars( $prop, $page->$prop );
+		}
+
+		// Add required i18n messages to mw.config
 		foreach( $page->jsI18n as $msg ) $wgOut->addJsConfigVars( $msg, wfMsg( $msg ) );
 
 		return true;
