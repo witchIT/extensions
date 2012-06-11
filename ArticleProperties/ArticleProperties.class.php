@@ -6,8 +6,9 @@ abstract class ArticleProperties extends Article {
 	public static $columns = false;
 	public static $prefix = '';
 
-	// If set this includes member properties that should be available from the JavaScript side
-	var $js = false;
+	// If set this includes member properties and i18n messages that should be available from the JavaScript side from mw.config()
+	var $jsProp = array();
+	var $jsI18n = array();
 
 	// Some methods can benefit from caching their results
 	private static  $cache = array();
@@ -70,21 +71,10 @@ abstract class ArticleProperties extends Article {
 		// Set the page to an instance of the class specifying it to be non-passive (i.e. a full page render)
 		$page = new $classname( $title, false );
 
-		// Add a JS object for this class if any fields are required from the client side
-		if( $page->js ) {
-			global $wgOut, $wgJsMimeType;
-			$script = '';
-			$c = '';
-			foreach( $page->js as $k ) {
-				$v = $page->$k;
-				if( $v === true ) $v = 'true';
-				elseif( $v === false ) $v = 'false';
-				elseif( !is_numeric( $v ) ) $v = "\"$v\"";
-				$script .= "$c\n\t$k: $v";
-				$c = ',';
-			}
-			$wgOut->addScript( "<script type=\"$wgJsMimeType\">window.$classname = {" . $script . "\n};</script>" );
-		}
+		// Add any required properties and i18n messages to mw.config on the JavaScript side
+		foreach( $page->jsProp as $k => $v ) $wgOut->addJsConfigVars( $k, $v );
+		foreach( $page->jsI18n as $k ) $wgOut->addJsConfigVars( $k, wfMsg( $k ) );
+
 		return true;
 	}
 
