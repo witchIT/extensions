@@ -14,6 +14,9 @@ abstract class ArticleProperties extends Article {
 	// Some methods can benefit from caching their results
 	private static  $cache = array();
 
+	// Record whether or not this request is passive here so we only call save() for non-passive edits
+	var $mPassive = true;
+
 	/**
 	 * Contstruct as a normal article with no differences
 	 */
@@ -72,6 +75,7 @@ abstract class ArticleProperties extends Article {
 
 		// Set the page to an instance of the class specifying it to be non-passive (i.e. a full page render)
 		$page = new $classname( $title, false );
+		$page->mPassive = false;
 
 		// Add any required properties to mw.config or specified object
 		if( $obj = $page->jsObj ) {
@@ -119,13 +123,14 @@ abstract class ArticleProperties extends Article {
 	/**
 	 * Executed for ArticleSave hook of our article types and calls the sub-class save function if exists
 	 * - only call sub-classes save() once incase they in turn do article-edits
+	 * - and only call it for non-passive requests, not for programatic edits as they deal with properties themselves
 	 */
 	function onArticleSaveComplete( &$article, &$user, $text, $summary, $minor, $watch, $section, &$flags, $rev, &$status, $baseRevId ) {
 		global $wgRequest;
 		static $done = false;
 		if( $done ) return true;
 		$done = true;
-		$this->save( $wgRequest );
+		if( !$this->mPassive) $this->save( $wgRequest );
 		return true;
 	}
 
@@ -163,7 +168,7 @@ abstract class ArticleProperties extends Article {
 		if( $id = $title->getArticleID() ) {
 			$dbr = wfGetDB( DB_SLAVE );
 			$class = get_class( $this );
-			if( $class::$table === false ) return array();
+			//if( $class::$table === false ) return array();
 			$table = $dbr->tableName( $class::$table );
 			$prefix = $class::$prefix;
 			$page = $prefix . 'page';
