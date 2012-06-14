@@ -10,7 +10,9 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'ADDLINKCLASSES_VERSION', '2.0.0, 2011-05-31' );
+define( 'ADDLINKCLASSES_VERSION', '2.1.0, 2012-06-14' );
+
+$wgAddLinkClassesPattern = false;
 
 $wgExtensionFunctions[] = 'efSetupAddLinkClasses';
 $wgExtensionCredits['other'][] = array(
@@ -29,22 +31,27 @@ class AddLinkClasses {
 	}
 
 	function onLinkEnd( $skin, $target, $options, &$text, &$attribs, &$ret ) {
-
+		global $wgAddLinkClassesPattern;
 		if( $target->exists() ) {
 
-			# Get cats
+			// Get cats
 			$cats = array();
 			$dbr  = &wfGetDB( DB_SLAVE );
 			$cl   = $dbr->tableName( 'categorylinks' );
-			$id   = $target->getArticleID();
+	 )		$id   = $target->getArticleID();
 			$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 			while( $row = $dbr->fetchRow( $res ) ) $cats[] = 'cat-' . preg_replace( '|\W|', '', strtolower( $row[0] ) );
 			$dbr->freeResult( $res );
 
-			# Add cat classes if any
+			// Add cat classes if any
 			if( count( $cats ) > 0 ) {
 				$classes = join( ' ', $cats );
 				$attribs['class'] = array_key_exists( 'class', $attribs ) ? $attribs['class'] . " $classes" : $classes;
+			}
+
+			// If a pattern has been set apply it to the text
+			if( is_array( $wgAddLinkClassesPattern ) ) {
+				$text = preg_replace( $wgAddLinkClassesPattern[0], $wgAddLinkClassesPattern[1], $text );
 			}
 		}
 
