@@ -255,16 +255,6 @@ abstract class ArticleProperties extends Article {
 	}
 
 	/**
-	 * Simple wrapper to Database::delete to abstract caller from table and column names, returns array of title results
-	 */
-	public static function delete( $class, $conds = array() ) {
-		$dbw = wfGetDB( DB_MASTER );
-		$table = $dbr->tableName( $class::$table );
-		$prefix = $class::$prefix;
-		return $dbr->delete( $table, $prefix . 'page', $conds );
-	}
-
-	/**
 	 * Add a static method to render results in a table format
 	 */
 	public static function table( &$titles, $atts = array(), $fields = false ) {
