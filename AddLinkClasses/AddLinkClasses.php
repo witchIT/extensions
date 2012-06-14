@@ -38,7 +38,7 @@ class AddLinkClasses {
 			$cats = array();
 			$dbr  = &wfGetDB( DB_SLAVE );
 			$cl   = $dbr->tableName( 'categorylinks' );
-	 )		$id   = $target->getArticleID();
+			$id   = $target->getArticleID();
 			$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 			while( $row = $dbr->fetchRow( $res ) ) $cats[] = 'cat-' . preg_replace( '|\W|', '', strtolower( $row[0] ) );
 			$dbr->freeResult( $res );
