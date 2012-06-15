@@ -303,6 +303,7 @@ abstract class ArticleProperties extends Article {
 		global $wgRequest;
 		$cur = $this->properties();
 
+		// Update the named properties
 		$props = array();
 		foreach( $names as $k ) {
 			$v = $wgRequest->getText( "wp$k", false );
@@ -310,10 +311,8 @@ abstract class ArticleProperties extends Article {
 		}
 		$this->properties( $props );
 
+		// Check how many changed
 		$new = $this->properties();
-print_r($cur);
-print_r($new);
-die;
 		$changed = 0;
 		foreach( $names as $k ) if( array_key_exists( $k, $cur ) && $cur[$k] != $new[$k] ) $changed++;
 
