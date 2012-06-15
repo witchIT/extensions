@@ -316,7 +316,7 @@ abstract class ArticleProperties extends Article {
 		$changed = 0;
 		foreach( $names as $k ) if( array_key_exists( $k, $cur ) && $cur[$k] != $new[$k] ) {
 			$changed++;
-			print "$k\n";
+			print "$k \n'" . $cur[$k] . "'\n '" . $new[$k] . "'\n";
 		}
 die;
 		return $changed;
