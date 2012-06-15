@@ -313,6 +313,9 @@ abstract class ArticleProperties extends Article {
 		}
 		$new = $this->properties( $props );
 
+print_r($cur);
+print_r($new);
+
 		$changed = 0;
 		foreach( $names as $k ) if( array_key_exists( $k, $cur ) && $cur[$k] != $new[$k] ) $changed++;
 
