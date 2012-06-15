@@ -297,15 +297,22 @@ abstract class ArticleProperties extends Article {
 
 	/**
 	 * Set an array of values from the global request
+	 * - return the number of items changed
 	 */
 	function updatePropertiesFromRequest( $names ) {
 		global $wgRequest;
 		$props = array();
+		$cur = $this->properties();
+		$changed = 0;
 		foreach( $names as $k ) {
 			$v = $wgRequest->getText( "wp$k", false );
-			if( $v !== false ) $props[$k] = $v;
+			if( $v !== false ) {
+				if( array_key_exists( $k, $cur ) && $cur[$k] != $v ) $changed++;
+				$props[$k] = $v;
+			}
 		}
 		$this->properties( $props );
+		return $changed;
 	}
 
 	/**
