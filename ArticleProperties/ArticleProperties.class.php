@@ -408,7 +408,7 @@ abstract class ArticleProperties extends Article {
 		$html = '';
 		foreach( $options as $i => $opt ) {
 			$text = wfMsg( $opt );
-			$checked = $value == $opt ? ' checked="yes"' : '';
+			$checked = $value == $i ? ' checked="yes"' : '';
 			$html .= "<input type=\"radio\" name=\"wp$name\" value=\"$i\"$checked /><label>$text</label>";
 		}
 		return $html;
