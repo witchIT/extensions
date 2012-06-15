@@ -306,17 +306,14 @@ abstract class ArticleProperties extends Article {
 		$props = array();
 		foreach( $names as $k ) {
 			$v = $wgRequest->getText( "wp$k", false );
-			if( $v !== false ) {
-				if( array_key_exists( $k, $cur ) && $cur[$k] != $v ) $changed++;
-				$props[$k] = $v;
-			}
+			if( $v !== false ) $props[$k] = $v;
 		}
-		$new = $this->properties( $props );
+		$this->properties( $props );
 
+		$new = $this->properties();
 print_r($cur);
 print_r($new);
 die;
-
 		$changed = 0;
 		foreach( $names as $k ) if( array_key_exists( $k, $cur ) && $cur[$k] != $new[$k] ) $changed++;
 
