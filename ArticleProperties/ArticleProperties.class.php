@@ -318,6 +318,8 @@ abstract class ArticleProperties extends Article {
 			$changed++;
 			print "$k \n'" . $cur[$k] . "'\n '" . $new[$k] . "'\n";
 		}
+		print $changed;
+		
 die;
 		return $changed;
 	}
