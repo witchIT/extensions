@@ -409,10 +409,10 @@ abstract class ArticleProperties extends Article {
 	function options( $name, $options, $default = '' ) {
 		$value = $this->getValue( $name, $options[0] );
 		$html = '';
-		foreach( $options as $opt ) {
+		foreach( $options as $i => $opt ) {
 			$text = wfMsg( $opt );
 			$checked = $value == $opt ? ' checked="yes"' : '';
-			$html .= "<input type=\"radio\" name=\"wp$name\" value=\"$opt\"$checked /><label>$text</label>";
+			$html .= "<input type=\"radio\" name=\"wp$name\" value=\"$i\"$checked /><label>$text</label>";
 		}
 		return $html;
 	}
