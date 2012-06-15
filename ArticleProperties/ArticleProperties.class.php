@@ -314,8 +314,11 @@ abstract class ArticleProperties extends Article {
 		// Check how many changed
 		$new = $this->properties();
 		$changed = 0;
-		foreach( $names as $k ) if( array_key_exists( $k, $cur ) && $cur[$k] != $new[$k] ) $changed++;
-
+		foreach( $names as $k ) if( array_key_exists( $k, $cur ) && $cur[$k] != $new[$k] ) {
+			$changed++;
+			print "$k\n";
+		}
+die;
 		return $changed;
 	}
 
