@@ -22,10 +22,13 @@ $wgExtensionCredits['other'][] = array(
 	'version'     => AJAXCOMMENTS_VERSION
 );
 
+$dir = dirname( __FILE__ );
+$wgExtensionMessagesFiles['AjaxComments'] = "$dir/AjaxComments.i18n.php";
+
 class AjaxComments {
 
-	var $mapid = 1;
-	var $opts = array();
+	var $comments = array();
+	var $changed = false;
 
 	function __construct() {
 
@@ -52,7 +55,15 @@ class AjaxComments {
 				$wgOut->disable();
 				$id = $wgRequest->getText( 'id', false );
 				$text = $wgRequest->getText( 'text', false );
-				switch( $wgRequest->getText( 'command' ) ) {
+
+				// Get the talk page content
+				if( $talk = $article->getTitle()->getTalkPage() && $talk->exists() ) {
+					$article = new Article( $talk );
+					$content = $talk->fetchContent();
+					$this->comments = self::textToData( $content );
+				}
+
+				switch( $command = $wgRequest->getText( 'command' ) ) {
 
 					case 'add':
 						print $this->add( $text );
@@ -73,6 +84,11 @@ class AjaxComments {
 					default: print $this->renderComments();
 			}
 
+			// If any comment data has been changed write it back to the talk article
+			if( $this->changed ) {
+				$article->doEdit( $self::dataToText( $this->comments ), wfMsg( "ajaxcomments-$command-summary" ), EDIT_UPDATE );
+			}
+
 		return true;
 	}
 
@@ -89,27 +105,45 @@ class AjaxComments {
 	}
 
 	/**
-	 * Get the data from the talk page and render as HTML
-	 * - in the context of the current title and user
-	 * - nested as a hierarchy of div elements
+	 * Render the comment data structure as HTML
 	 */
 	function renderComments() {
-		global $wgTitle;
-
-		// Get the talk page content
-		$talk = $wgTitle->getTalkPage();
-
-		// Scan through each section
-		
-
+		$html = '';
+		foreach( $this->comments as $comment ) {
+			$html .= $this->renderComment( $comment );
+		}
+		return $html;
 	}
 
 	/**
-	 * Render a single comment (this could be nested within a parent comment)
+	 * Render a single comment and any of it's replies
+	 * - this is recursive - it will render any replies which could in turn contain replies etc
 	 * - renders edit/delete link if ysop, or noreplies and current user is owner
 	 */
-	function renderComment( $user, $date, $text, $replies = false ) {
-		global $wgUser;
+	function renderComment( $comment ) {
+		if( array_key_exists( 'replies', $comment ) ) $replies = $this->renderComment( $comment['replies'] );
+		return "<div class=\"ajaxcomment\" id=\"" . $comment['id'] . "\">\n" .
+			"<div class=\"ajaxcomment-sig\">" . wfMsg( 'ajaxcomments-sig', $comment['user'], wfTimestamp( TS_MW, $comment['time'] ) ) . "</div>\n" .
+			"<div class=\"ajaxcomment-text\">" . $wgParser->parse( $comment['text'], $talk, new ParserOptions(), true, true )->getText() . "</div>\n" .
+			"<ul class=\"ajaxcomment-links\">" .
+				"<li id=\"ajaxcomment-reply\"><a href=\"javascript:ajaxcomment_reply(this)\">" .wfMsg( 'ajaxcomments-reply' ) . "</a></li>\n" .
+				"<li id=\"ajaxcomment-edit\"><a href=\"javascript:ajaxcomment_edit(this)\">" .wfMsg( 'ajaxcomments-edit' ) . "</a></li>\n" .
+				"<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del(this)\">" .wfMsg( 'ajaxcomments-del' ) . "</a></li>\n" .
+			"</ul>$replies</div>\n";
+	}
+
+	/**
+	 * Return the passed talk text as a data structure of comments
+	 */
+	static function textToData( $text ) {
+		return unserialize( $text );
+	}
+
+	/**
+	 * Return the passed data structure of comments as text for a talk page
+	 */
+	static function textToData( $data ) {
+		return serialize( $data );
 	}
 
 }
