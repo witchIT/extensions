@@ -32,7 +32,7 @@ window.ajaxcomment_add = function() {
 window.ajaxcomment_edit = function(id) {
 	var e = $('#ajaxcomments-' + id + ' .ajaxcomment-text').first();
 	ajaxcomment_textinput(e, 'edit');
-	$('textarea', e.parent()).first().val(e.html());
+	ajaxcomment_source( id, $('textarea', e.parent()).first() );
 	e.hide();
 };
 
@@ -69,11 +69,34 @@ window.ajaxcomment_del = function(id) {
 };
 
 /**
+ * Disable the passed input box, retrieve the wikitext source via ajax, then populate and enable the input
+ */
+window.ajaxcomment_source = function(id, target) {
+	target.attr('disabled',true);
+	$.ajax({
+		type: 'GET',
+		url: mw.util.wikiScript(),
+		data: {
+			action: 'ajaxcomments',
+			title: mw.config.get('wgTitle'),
+			cmd: 'src',
+			id: id,
+		},
+		context: target,
+		dataType: 'json',
+		success: function(json) {
+			this.val(json.text);
+			this.attr('disabled',false);
+		}
+	});
+};
+
+/**
  * Open a comment input box at the passed element location
  */
 window.ajaxcomment_textinput = function(e, cmd) {
 	ajaxcomment_cancel();
-	var html = '<div id="ajaxcomment-input"><textarea></textarea><br />';
+	var html = '<div id="ajaxcomment-input" class="ajaxcomment-input-' + cmd + '"><textarea></textarea><br />';
 	html += '<input type="button" onclick="ajaxcomment_submit(this,\'' + cmd + '\')" value="Post" />';
 	html += '<input type="button" onclick="ajaxcomment_cancel()" value="Cancel" />';
 	html += '</div>';
@@ -101,7 +124,7 @@ window.ajaxcomment_submit = function(e, cmd) {
 
 	// If it's an add, create the target at the end
 	if( cmd == 'add' ) {
-		$('#ajaxcomment-add').parent().before('<div id="ajaxcomments-new"></div>');
+		$('#ajaxcomment-add').parent().after('<div id="ajaxcomments-new"></div>');
 		target = $('#ajaxcomments-new');
 		text = $('#ajaxcomment-input textarea').val();
 	}

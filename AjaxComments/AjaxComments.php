@@ -68,9 +68,6 @@ class AjaxComments {
 
 				// Get the talk page content
 				if( $talk->exists() ) $this->comments = self::textToData( $article->fetchContent() );
-//print '<pre>';
-//print_r($this->comments);
-//print '</pre>';
 
 				// Perform the command on the talk content
 				switch( $command = $wgRequest->getText( 'cmd' ) ) {
@@ -90,6 +87,16 @@ class AjaxComments {
 					case 'del':
 						print $this->delete( $id );
 						print count( $this->comments ) > 0 ? '' : "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-none' ) . "</i>";
+					break;
+
+					case 'src':
+						header( 'Content-Type: application/json' );
+						$comment = $this->comments[$id];
+						print '{';
+						print '"user":' . json_encode( $comment[AJAXCOMMENTS_USER] );
+						print ',"date":' . json_encode( $comment[AJAXCOMMENTS_DATE] );
+						print ',"text":' . json_encode( $comment[AJAXCOMMENTS_TEXT] );
+						print '}';
 					break;
 
 					default:
@@ -140,7 +147,7 @@ class AjaxComments {
 	function reply( $parent, $text ) {
 		global $wgUser;
 		$id = uniqid();
-		$this->comments[$parent][AJAXCOMMENTS_REPLIES][] = $id;
+		array_unshift( $this->comments[$parent][AJAXCOMMENTS_REPLIES], $id );
 		$this->comments[$id] = array(
 			AJAXCOMMENTS_PARENT => $parent,
 			AJAXCOMMENTS_USER => $wgUser->getName(),
@@ -176,41 +183,60 @@ class AjaxComments {
 
 	/**
 	 * Render the comment data structure as HTML
+	 * - also render a no comments message if none
+	 * - and an add comments link at the top
 	 */
 	function renderComments() {
+		global $wgUser;
 		$html = '';
 		foreach( $this->comments as $id => $comment ) {
-			if( $comment[AJAXCOMMENTS_PARENT] === false ) $html .= $this->renderComment( $id );
+			if( $comment[AJAXCOMMENTS_PARENT] === false ) $html = $this->renderComment( $id ) . $html;
 		}
-		if( $html == '' ) $html = "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-none' ) . "</i>";
-		$html .= "<ul class=\"ajaxcomment-links\">" .
-			"<li id=\"ajaxcomment-add\"><a href=\"javascript:ajaxcomment_add()\">" . wfMsg( 'ajaxcomments-add' ) . "</a></li>\n" .
-			"</ul>\n";
+		if( $html == '' ) $html = "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-none' ) . "</i><br />";
+
+		// If logged in, allow replies and editing etc
+		if( $wgUser->isLoggedIn() ) {
+			$html = "<ul class=\"ajaxcomment-links\">" .
+				"<li id=\"ajaxcomment-add\"><a href=\"javascript:ajaxcomment_add()\">" . wfMsg( 'ajaxcomments-add' ) . "</a></li>\n" .
+				"</ul>\n$html";
+		} else $html = "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-anon' ) . "</i><br />$html";
 		return $html;
 	}
 
 	/**
 	 * Render a single comment and any of it's replies
 	 * - this is recursive - it will render any replies which could in turn contain replies etc
-	 * - renders edit/delete link if ysop, or noreplies and current user is owner
+	 * - renders edit/delete link if sysop, or no replies and current user is owner
 	 */
 	function renderComment( $id ) {
-		global $wgParser;
+		global $wgParser, $wgUser;
 		$c = $this->comments[$id];
 		$r = '';
 		foreach( $c[AJAXCOMMENTS_REPLIES] as $child ) $r .= $this->renderComment( $child );
-		return "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
+		$html = "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
 			"<div class=\"ajaxcomment-sig\">" .
 				wfMsg( 'ajaxcomments-sig', $c[AJAXCOMMENTS_USER], wfTimestamp( TS_DB, $c[AJAXCOMMENTS_DATE] ) ) .
 			"</div>\n" .
 			"<div class=\"ajaxcomment-text\">" .
 				$wgParser->parse( $c[AJAXCOMMENTS_TEXT], $this->talk, new ParserOptions(), true, true )->getText() .
 			"</div>\n" .
-			"<ul class=\"ajaxcomment-links\">" .
-				"<li id=\"ajaxcomment-reply\"><a href=\"javascript:ajaxcomment_reply('$id')\">" . wfMsg( 'ajaxcomments-reply' ) . "</a></li>\n" .
-				"<li id=\"ajaxcomment-edit\"><a href=\"javascript:ajaxcomment_edit('$id')\">" . wfMsg( 'ajaxcomments-edit' ) . "</a></li>\n" .
-				"<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMsg( 'ajaxcomments-del' ) . "</a></li>\n" .
-			"</ul>$r</div>\n";
+			"<ul class=\"ajaxcomment-links\">";
+
+		// If logged in, allow replies and editing etc
+		if( $wgUser->isLoggedIn() ) {
+
+			// Reply link
+			$html .= "<li id=\"ajaxcomment-reply\"><a href=\"javascript:ajaxcomment_reply('$id')\">" . wfMsg( 'ajaxcomments-reply' ) . "</a></li>\n";
+
+			// If sysop, or no replies and current user is owner, add edit/del links
+			if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) || ( $wgUser->getName() == $c[AJAXCOMMENTS_USER] && $r == '' ) ) {
+				$html .= "<li id=\"ajaxcomment-edit\"><a href=\"javascript:ajaxcomment_edit('$id')\">" . wfMsg( 'ajaxcomments-edit' ) . "</a></li>\n";
+				$html .= "<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMsg( 'ajaxcomments-del' ) . "</a></li>\n";
+			}
+
+			$html .= "</ul>$r</div>\n";
+		}
+		return $html;
 	}
 
 	/**
