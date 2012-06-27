@@ -216,9 +216,12 @@ class AjaxComments {
 		$c = $this->comments[$id];
 		$r = '';
 		foreach( $c[AJAXCOMMENTS_REPLIES] as $child ) $r .= $this->renderComment( $child );
+		$user = $c[AJAXCOMMENTS_USER];
+		$url = User::newFromName( $user )->getUserPage()->getLocalUrl();
+		$ulink = "<a href=\"$url\">$user</a>";
 		$html = "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
 			"<div class=\"ajaxcomment-sig\">" .
-				wfMsg( 'ajaxcomments-sig', $c[AJAXCOMMENTS_USER], $wgLang->timeanddate( $c[AJAXCOMMENTS_DATE], true ) ) .
+				wfMsg( 'ajaxcomments-sig', $ulink, $wgLang->timeanddate( $c[AJAXCOMMENTS_DATE], true ) ) .
 			"</div>\n" .
 			"<div class=\"ajaxcomment-text\">" .
 				$wgParser->parse( $c[AJAXCOMMENTS_TEXT], $this->talk, new ParserOptions(), true, true )->getText() .
