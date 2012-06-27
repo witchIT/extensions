@@ -65,9 +65,10 @@ class AjaxComments {
 			if( is_object( $talk ) ) {
 				$this->talk = $talk;
 				$article = new Article( $talk );
+				$content = $article->fetchContent();
 
 				// Get the talk page content
-				if( $talk->exists() ) $this->comments = self::textToData( $article->fetchContent() );
+				if( $talk->exists() ) $this->comments = self::textToData( $content );
 
 				// Perform the command on the talk content
 				switch( $command = $wgRequest->getText( 'cmd' ) ) {
@@ -107,7 +108,7 @@ class AjaxComments {
 				// If any comment data has been changed write it back to the talk article
 				if( $this->changed ) {
 					$flag = $talk->exists() ? EDIT_UPDATE : EDIT_NEW;
-					$article->doEdit( self::dataToText( $this->comments ), wfMsg( "ajaxcomments-$command-summary" ), $flag );
+					$article->doEdit( self::dataToText( $this->comments, $content ), wfMsg( "ajaxcomments-$command-summary" ), $flag );
 				}
 			}
 		}
@@ -243,14 +244,20 @@ class AjaxComments {
 	 * Return the passed talk text as a data structure of comments
 	 */
 	static function textToData( $text ) {
-		return $text ? unserialize( $text ) : array();
+		if( preg_match( "|== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $m ) ) return unserialize( $m[1] );
+		return array();
 	}
 
 	/**
 	 * Return the passed data structure of comments as text for a talk page
+	 * - $content is the current talk page text to integrate with
 	 */
-	static function dataToText( $data ) {
-		return count( $data ) ? serialize( $data ) : '';
+	static function dataToText( $data, $content ) {
+		$text = serialize( $data );
+		$text = "\n== AjaxComments:DataStart ==\n$text\n== AjaxComments:DataEnd ==";
+		$content = preg_replace( "|== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $content, 1, $count );
+		if( $count == 0 ) $content .= $text;
+		return $content;
 	}
 
 }
