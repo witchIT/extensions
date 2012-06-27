@@ -42,13 +42,15 @@ class AjaxComments {
 		$wgHooks['UnknownAction'][] = $this;
 
 		// Set up JavaScript and CSS resources
-		$wgResourceModules['ext.ajaxcomments'] = array(
-			'scripts'       => array( 'ajaxcomments.js' ),
-			'styles'        => array( 'ajaxcomments.css' ),
-			'localBasePath' => dirname( __FILE__ ),
-			'remoteExtPath' => basename( dirname( __FILE__ ) ),
-		);
-		$wgOut->addModules( 'ext.ajaxcomments' );
+		if( is_callable( 'OutputPage::addModules' ) ) {
+			$wgResourceModules['ext.ajaxcomments'] = array(
+				'scripts'       => array( 'ajaxcomments.js' ),
+				'styles'        => array( 'ajaxcomments.css' ),
+				'localBasePath' => dirname( __FILE__ ),
+				'remoteExtPath' => basename( dirname( __FILE__ ) ),
+			);
+			$wgOut->addModules( 'ext.ajaxcomments' );
+		}
 	}
 
 	/**
