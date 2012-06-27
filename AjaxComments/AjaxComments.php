@@ -110,7 +110,7 @@ class AjaxComments {
 				// If any comment data has been changed write it back to the talk article
 				if( $this->changed ) {
 					$flag = $talk->exists() ? EDIT_UPDATE : EDIT_NEW;
-					$article->doEdit( self::dataToText( $this->comments, $content ), wfMsg( "ajaxcomments-$command-summary" ), $flag );
+					$article->doEdit( self::dataToText( $this->comments, $content ), wfMsg( "ajaxcomments-$command-summary" ), $flag|EDIT_MINOR );
 				}
 			}
 		}
