@@ -3,7 +3,7 @@ $(document).ready( function() {
 	$('#ca-talk').hide();
 
 	// If there's a discussion tab, normal view action and not on talk page, render the discussion below the article
-	if( $('#ca-talk').length > 0 && mw.config.get('wgAction') == 'view' && !mw.config.get('wgNamespaceNumber')&1 ) {
+	if( $('#ca-talk').length > 0 && mw.config.get('wgAction') == 'view' && !(mw.config.get('wgNamespaceNumber')&1) ) {
 		$('.printfooter').after('<div id="ajaxcomments"><div class="ajaxcomments-loader"></div></div>');
 		$.ajax({
 			type: 'GET',
