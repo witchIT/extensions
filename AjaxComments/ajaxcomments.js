@@ -8,7 +8,7 @@ $(document).ready( function() {
 		$.ajax({
 			type: 'GET',
 			url: mw.util.wikiScript(),
-			data: { action: 'ajaxcomments', title: mw.config.get('wgTitle') },
+			data: { action: 'ajaxcomments', title: mw.config.get('wgPageName') },
 			dataType: 'html',
 			success: function(html) {
 				$('#ajaxcomments').html(html);
@@ -55,7 +55,7 @@ window.ajaxcomment_del = function(id) {
 			url: mw.util.wikiScript(),
 			data: {
 				action: 'ajaxcomments',
-				title: mw.config.get('wgTitle'),
+				title: mw.config.get('wgPageName'),
 				cmd: 'del',
 				id: id,
 			},
@@ -78,7 +78,7 @@ window.ajaxcomment_source = function(id, target) {
 		url: mw.util.wikiScript(),
 		data: {
 			action: 'ajaxcomments',
-			title: mw.config.get('wgTitle'),
+			title: mw.config.get('wgPageName'),
 			cmd: 'src',
 			id: id,
 		},
@@ -154,7 +154,7 @@ window.ajaxcomment_submit = function(e, cmd) {
 		url: mw.util.wikiScript(),
 		data: {
 			action: 'ajaxcomments',
-			title: mw.config.get('wgTitle'),
+			title: mw.config.get('wgPageName'),
 			cmd: cmd,
 			id: id,
 			text: text
