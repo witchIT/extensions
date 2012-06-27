@@ -209,13 +209,13 @@ class AjaxComments {
 	 * - renders edit/delete link if sysop, or no replies and current user is owner
 	 */
 	function renderComment( $id ) {
-		global $wgParser, $wgUser;
+		global $wgParser, $wgUser, $wgLang;
 		$c = $this->comments[$id];
 		$r = '';
 		foreach( $c[AJAXCOMMENTS_REPLIES] as $child ) $r .= $this->renderComment( $child );
 		$html = "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
 			"<div class=\"ajaxcomment-sig\">" .
-				wfMsg( 'ajaxcomments-sig', $c[AJAXCOMMENTS_USER], wfTimestamp( TS_DB, $c[AJAXCOMMENTS_DATE] ) ) .
+				wfMsg( 'ajaxcomments-sig', $c[AJAXCOMMENTS_USER], $wgLang->timeanddate( $c[AJAXCOMMENTS_DATE], true ) ) .
 			"</div>\n" .
 			"<div class=\"ajaxcomment-text\">" .
 				$wgParser->parse( $c[AJAXCOMMENTS_TEXT], $this->talk, new ParserOptions(), true, true )->getText() .
