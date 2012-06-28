@@ -104,8 +104,9 @@ class AjaxComments {
 
 					default:
 						$n = count( $this->comments );
-						if( $n < 2 ) $n = '';
-						print "<h2>" . wfMsg( 'ajaxcomments-heading', $n ) . "</h2>\n";
+						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2>\n";
+						if( $n == 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
+						else if( $n > 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
 						print $this->renderComments();
 				}
 

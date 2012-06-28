@@ -13,7 +13,9 @@ $messages = array();
  * @author Dunkley
  */
 $messages['en'] = array(
-	'ajaxcomments-heading' => "$1 Comments",
+	'ajaxcomments-heading' => "Comments",
+	'ajaxcomments-comment' => "$1 comment",
+	'ajaxcomments-comments' => "$1 comments",
 	'ajaxcomments-none' => "There are no comments about this page",
 	'ajaxcomments-anon' => "Sign up or log in to post comments",
 	'ajaxcomments-sig' => "Posted by $1 at $2",
