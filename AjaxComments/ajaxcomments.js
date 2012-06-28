@@ -92,6 +92,35 @@ window.ajaxcomment_source = function(id, target) {
 };
 
 /**
+ * Send a request to like/dislike an item
+ * - the returned response is the new like/dislike links
+ */
+window.ajaxcomment_like = function(id, val) {
+	var target = $('#ajaxcomments-' + id);
+	$.ajax({
+		type: 'GET',
+		url: mw.util.wikiScript(),
+		data: {
+			action: 'ajaxcomments',
+			title: mw.config.get('wgPageName'),
+			cmd: 'like',
+			id: id,
+			text: val
+		},
+		context: target,
+		dataType: 'html',
+		success: function(html) {
+
+			// If something is returned, replace the like/dislike links with it
+			if(html) {
+				$('#ajaxcomment-like',this).remove();
+				$('#ajaxcomment-dislike',this).replaceWith(html);
+			}
+		}
+	});
+};
+
+/**
  * Open a comment input box at the passed element location
  */
 window.ajaxcomment_textinput = function(e, cmd) {

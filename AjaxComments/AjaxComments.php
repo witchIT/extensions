@@ -69,12 +69,14 @@ class AjaxComments {
 				$this->talk = $talk;
 				$article = new Article( $talk );
 				$content = $article->fetchContent();
+				$command = $wgRequest->getText( 'cmd' );
+				$summary = wfMsg( "ajaxcomments-$command-summary" );
 
 				// Get the talk page content
 				if( $talk->exists() ) $this->comments = self::textToData( $content );
 
 				// Perform the command on the talk content
-				switch( $command = $wgRequest->getText( 'cmd' ) ) {
+				switch( $command ) {
 
 					case 'add':
 						print $this->add( $text );
@@ -91,6 +93,12 @@ class AjaxComments {
 					case 'del':
 						print $this->delete( $id );
 						print count( $this->comments ) > 0 ? '' : "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-none' ) . "</i>";
+					break;
+
+					case 'like':
+						if( $summary = $this->like( $id, $text ) ) {
+							print $this->renderComment( $id, true );
+						}
 					break;
 
 					case 'src':
@@ -114,7 +122,7 @@ class AjaxComments {
 				// If any comment data has been changed write it back to the talk article
 				if( $this->changed ) {
 					$flag = $talk->exists() ? EDIT_UPDATE : EDIT_NEW;
-					$article->doEdit( self::dataToText( $this->comments, $content ), wfMsg( "ajaxcomments-$command-summary" ), $flag|EDIT_MINOR );
+					$article->doEdit( self::dataToText( $this->comments, $content ), $summary, $flag|EDIT_MINOR );
 				}
 			}
 		}
@@ -201,9 +209,10 @@ class AjaxComments {
 
 		// If a +1/-1 values was passed, update the like state now returing a description message
 		if( $val ) {
+			$this->changed = true;
 
 			// Remove the user if they now nolonger like or dislike, otherwise update their value
-			if( $likes + $val == 0 ) unset( $this->comments[$id][AJAXCOMMENTS_LIKE][$name] );
+			if( $like + $val == 0 ) unset( $this->comments[$id][AJAXCOMMENTS_LIKE][$name] );
 			else $this->comments[$id][AJAXCOMMENTS_LIKE][$name] = $like + $val;
 
 			if( $val > 0 ) {
@@ -248,16 +257,20 @@ class AjaxComments {
 	 * Render a single comment and any of it's replies
 	 * - this is recursive - it will render any replies which could in turn contain replies etc
 	 * - renders edit/delete link if sysop, or no replies and current user is owner
+	 * - if likeonly is set, return only the like/dislike links
 	 */
-	function renderComment( $id ) {
+	function renderComment( $id, $likeonly = false ) {
 		global $wgParser, $wgUser, $wgLang;
+		$curName = $wgUser->getName();
 		$c = $this->comments[$id];
+		$html = '';
 
 		// Render replies
 		$r = '';
 		foreach( $c[AJAXCOMMENTS_REPLIES] as $child ) $r .= $this->renderComment( $child );
 
 		// Get total likes and unlikes
+		$likelink = $dislikelink = '';
 		list( $like, $likes, $dislikes ) = $this->like( $id );
 
 		// Render user name as link
@@ -273,7 +286,7 @@ class AjaxComments {
 			$grav = "<img src=\"$grav\" alt=\"$name\" />";
 		} else $grav = '';
 
-		$html = "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
+		if( !$likeonly ) $html .= "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
 			"<div class=\"ajaxcomment-sig\">" .
 				wfMsg( 'ajaxcomments-sig', $ulink, $wgLang->timeanddate( $c[AJAXCOMMENTS_DATE], true ) ) .
 			"</div>\n<div class=\"ajaxcomment-icon\">$grav</div><div class=\"ajaxcomment-text\">" .
@@ -283,26 +296,31 @@ class AjaxComments {
 		// If logged in, allow replies and editing etc
 		if( $wgUser->isLoggedIn() ) {
 
-			// Reply link
-			$html .= "<li id=\"ajaxcomment-reply\"><a href=\"javascript:ajaxcomment_reply('$id')\">" . wfMsg( 'ajaxcomments-reply' ) . "</a></li>\n";
+			if( !$likeonly ) {
 
-			// If sysop, or no replies and current user is owner, add edit/del links
-			if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) || ( $wgUser->getName() == $c[AJAXCOMMENTS_USER] && $r == '' ) ) {
-				$html .= "<li id=\"ajaxcomment-edit\"><a href=\"javascript:ajaxcomment_edit('$id')\">" . wfMsg( 'ajaxcomments-edit' ) . "</a></li>\n";
-				$html .= "<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMsg( 'ajaxcomments-del' ) . "</a></li>\n";
+				// Reply link
+				$html .= "<li id=\"ajaxcomment-reply\"><a href=\"javascript:ajaxcomment_reply('$id')\">" . wfMsg( 'ajaxcomments-reply' ) . "</a></li>\n";
+
+				// If sysop, or no replies and current user is owner, add edit/del links
+				if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) || ( $curName == $c[AJAXCOMMENTS_USER] && $r == '' ) ) {
+					$html .= "<li id=\"ajaxcomment-edit\"><a href=\"javascript:ajaxcomment_edit('$id')\">" . wfMsg( 'ajaxcomments-edit' ) . "</a></li>\n";
+					$html .= "<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMsg( 'ajaxcomments-del' ) . "</a></li>\n";
+				}
 			}
 
 			// Make the like/dislike links
-			if( $like <= 0 ) $likelink = " onclick=\"javascript:ajaxcomment_like('$id',1)\" class=\"ajaxcomment-active\"";
-			if( $like >= 0 ) $dislikelink = " onclick=\"javascript:ajaxcomment_like('$id',-1)\" class=\"ajaxcomment-active\"";
+			if( $curName != $name ) {
+				if( $like <= 0 ) $likelink = " onclick=\"javascript:ajaxcomment_like('$id',1)\" class=\"ajaxcomment-active\"";
+				if( $like >= 0 ) $dislikelink = " onclick=\"javascript:ajaxcomment_like('$id',-1)\" class=\"ajaxcomment-active\"";
+			}
 
-		} else $likelink = $dislikelink = '';
+		}
 
 		// Add the likes and dislikes links
 		$html .= "<li id=\"ajaxcomment-like\"$likelink>$likes</li>\n";
 		$html .= "<li id=\"ajaxcomment-dislike\"$dislikelink>$dislikes</li>\n";
 
-		$html .= "</ul>$r</div>\n";
+		if( !$likeonly ) $html .= "</ul>$r</div>\n";
 		return $html;
 	}
 
