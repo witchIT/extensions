@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','0.0.1, 2012-06-26' );
+define( 'AJAXCOMMENTS_VERSION','1.0.1, 2012-06-27' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -214,19 +214,30 @@ class AjaxComments {
 	function renderComment( $id ) {
 		global $wgParser, $wgUser, $wgLang;
 		$c = $this->comments[$id];
+
+		// Render replies
 		$r = '';
 		foreach( $c[AJAXCOMMENTS_REPLIES] as $child ) $r .= $this->renderComment( $child );
-		$user = $c[AJAXCOMMENTS_USER];
-		$url = User::newFromName( $user )->getUserPage()->getLocalUrl();
-		$ulink = "<a href=\"$url\">$user</a>";
+
+		// Render user name as link
+		$name = $c[AJAXCOMMENTS_USER];
+		$user = User::newFromName( $name );
+		$url = $user->getUserPage()->getLocalUrl();
+		$ulink = "<a href=\"$url\">$name</a>";
+
+		// Get the user's gravitar url
+		if( $user->isEmailConfirmed() ) {
+			$email = $user->getEmail();
+			$grav = "http://www.gravatar.com/avatar/" . md5( strtolower( $email ) ) . "?s=50";
+			$grav = "<img src=\"$grav\" alt=\"$name\" />";
+		} else $grav = '';
+
 		$html = "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
 			"<div class=\"ajaxcomment-sig\">" .
 				wfMsg( 'ajaxcomments-sig', $ulink, $wgLang->timeanddate( $c[AJAXCOMMENTS_DATE], true ) ) .
-			"</div>\n" .
-			"<div class=\"ajaxcomment-text\">" .
+			"</div>\n<div class=\"ajaxcomment-icon\">$grav</div><div class=\"ajaxcomment-text\">" .
 				$wgParser->parse( $c[AJAXCOMMENTS_TEXT], $this->talk, new ParserOptions(), true, true )->getText() .
-			"</div>\n" .
-			"<ul class=\"ajaxcomment-links\">";
+			"</div>\n<ul class=\"ajaxcomment-links\">";
 
 		// If logged in, allow replies and editing etc
 		if( $wgUser->isLoggedIn() ) {
