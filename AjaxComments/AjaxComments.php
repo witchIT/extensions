@@ -16,6 +16,7 @@ define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
 define( 'AJAXCOMMENTS_PARENT', 4 );
 define( 'AJAXCOMMENTS_REPLIES', 5 );
+define( 'AJAXCOMMENTS_LIKE', 6 );
 
 $wgExtensionFunctions[] = 'wfSetupAjaxComments';
 $wgExtensionCredits['other'][] = array(
@@ -186,6 +187,27 @@ class AjaxComments {
 			$this->changed = true;
 		}
 	}
+
+	/**
+	 * Like/unlike a comment returning a message describing the change
+	 */
+	function like( $id, $val ) {
+		global $wgUser;
+		$name = $wgUser->getName();
+		$cname = $this->comments[$id][AJAXCOMMENTS_USER];
+		if( !array_key_exists( AJAXCOMMENTS_LIKE, $this->comments[$id] ) ) $this->comments[$id][AJAXCOMMENTS_LIKE] = array();
+		$like = array_key_exists( $name, $this->comments[$id][AJAXCOMMENTS_LIKE] ) ? $this->comments[$id][AJAXCOMMENTS_LIKE][$name] : 0;
+		$this->comments[$id][AJAXCOMMENTS_LIKE][$name] = $like + $val;
+		if( $val > 0 ) {
+			if( $like < 0 ) return wfMsg( 'ajaxcomments-undislike', $name, $cname );
+			else return wfMsg( 'ajaxcomments-like', $name, $cname );
+		}
+		else {
+			if( $like > 0 ) return wfMsg( 'ajaxcomments-unlike', $name, $cname );
+			else return wfMsg( 'ajaxcomments-dislike', $name, $cname );
+		}
+	}
+
 
 	/**
 	 * Render the comment data structure as HTML
