@@ -228,7 +228,7 @@ class AjaxComments {
 		// Get the user's gravitar url
 		if( $user->isEmailConfirmed() ) {
 			$email = $user->getEmail();
-			$grav = "http://www.gravatar.com/avatar/" . md5( strtolower( $email ) ) . "?s=50&d=wavitar";
+			$grav = "http://www.gravatar.com/avatar/" . md5( strtolower( $email ) ) . "?s=50&d=wavatar";
 			$grav = "<img src=\"$grav\" alt=\"$name\" />";
 		} else $grav = '';
 
