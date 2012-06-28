@@ -276,8 +276,8 @@ class AjaxComments {
 				$html .= "<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMsg( 'ajaxcomments-del' ) . "</a></li>\n";
 			}
 
-			$html .= "</ul>$r</div>\n";
 		}
+		$html .= "</ul>$r</div>\n";
 		return $html;
 	}
 
