@@ -190,24 +190,37 @@ class AjaxComments {
 
 	/**
 	 * Like/unlike a comment returning a message describing the change
+	 * - if val isn't passed, then the current like state of the current user and the total likes/dislikes are returned
 	 */
-	function like( $id, $val ) {
+	function like( $id, $val = false ) {
 		global $wgUser;
 		$name = $wgUser->getName();
 		$cname = $this->comments[$id][AJAXCOMMENTS_USER];
 		if( !array_key_exists( AJAXCOMMENTS_LIKE, $this->comments[$id] ) ) $this->comments[$id][AJAXCOMMENTS_LIKE] = array();
 		$like = array_key_exists( $name, $this->comments[$id][AJAXCOMMENTS_LIKE] ) ? $this->comments[$id][AJAXCOMMENTS_LIKE][$name] : 0;
-		$this->comments[$id][AJAXCOMMENTS_LIKE][$name] = $like + $val;
-		if( $val > 0 ) {
-			if( $like < 0 ) return wfMsg( 'ajaxcomments-undislike', $name, $cname );
-			else return wfMsg( 'ajaxcomments-like', $name, $cname );
-		}
-		else {
-			if( $like > 0 ) return wfMsg( 'ajaxcomments-unlike', $name, $cname );
-			else return wfMsg( 'ajaxcomments-dislike', $name, $cname );
-		}
-	}
 
+		// If a +1/-1 values was passed, update the like state now returing a description message
+		if( $val ) {
+
+			// Remove the user if they now nolonger like or dislike, otherwise update their value
+			if( $likes + $val == 0 ) unset( $this->comments[$id][AJAXCOMMENTS_LIKE][$name] );
+			else $this->comments[$id][AJAXCOMMENTS_LIKE][$name] = $like + $val;
+
+			if( $val > 0 ) {
+				if( $like < 0 ) return wfMsg( 'ajaxcomments-undislike', $name, $cname );
+				else return wfMsg( 'ajaxcomments-like', $name, $cname );
+			}
+			else {
+				if( $like > 0 ) return wfMsg( 'ajaxcomments-unlike', $name, $cname );
+				else return wfMsg( 'ajaxcomments-dislike', $name, $cname );
+			}
+		}
+
+		// No value was passed, add up the likes and dislikes
+		$likes = $dislikes = 0;
+		foreach( $this->comments[$id][AJAXCOMMENTS_LIKE] as $k => $v ) if( $v > 0 ) $likes++; else $dislikes++;
+		return array( $like, $likes, $dislikes );
+	}
 
 	/**
 	 * Render the comment data structure as HTML
@@ -244,6 +257,9 @@ class AjaxComments {
 		$r = '';
 		foreach( $c[AJAXCOMMENTS_REPLIES] as $child ) $r .= $this->renderComment( $child );
 
+		// Get total likes and unlikes
+		list( $like, $likes, $dislikes ) = $this->like( $id );
+
 		// Render user name as link
 		$name = $c[AJAXCOMMENTS_USER];
 		$user = User::newFromName( $name );
@@ -276,7 +292,16 @@ class AjaxComments {
 				$html .= "<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMsg( 'ajaxcomments-del' ) . "</a></li>\n";
 			}
 
-		}
+			// Make the like/dislike links
+			if( $like <= 0 ) $likelink = " onclick=\"javascript:ajaxcomment_like('$id',1)\" class=\"ajaxcomment-active\"";
+			if( $like >= 0 ) $dislikelink = " onclick=\"javascript:ajaxcomment_like('$id',-1)\" class=\"ajaxcomment-active\"";
+
+		} else $likelink = $dislikelink = '';
+
+		// Add the likes and dislikes links
+		$html .= "<li id=\"ajaxcomment-like\"$likelink>$likes</li>\n";
+		$html .= "<li id=\"ajaxcomment-dislike\"$dislikelink>$dislikes</li>\n";
+
 		$html .= "</ul>$r</div>\n";
 		return $html;
 	}

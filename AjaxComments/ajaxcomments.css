@@ -33,3 +33,19 @@
 .ajaxcomment-links li a {
 	color: white;
 }
+#ajaxcomment-like,
+#ajaxcomment-dislike {
+	font-weight: bold;
+	color: white;
+	padding-right: 20px;
+	cursor:
+}
+#ajaxcomment-like {
+	background: #999 url( http://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Farm-Fresh_thumb_up.png/16px-Farm-Fresh_thumb_up.png ) no-repeat 15px 0;
+}
+#ajaxcomment-dislike {
+	background: #999 url( http://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Farm-Fresh_thumb_down.png/16px-Farm-Fresh_thumb_down.png ) no-repeat 15px 3px;
+}
+.ajaxcomment-active {
+	cursor: pointer;
+}
