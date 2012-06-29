@@ -157,7 +157,7 @@ if ( $wgOrganicDesignDonations ) {?>
 		</div>
 		<h5 id="btcbest">But <a href="/Bitcoin">Bitcoins</a> are best :-)</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
-			<input style="width:135px;margin-left:23px" readonly="1" value="1MRV99zytxZpUk29DDaQWqDnE87KrPPbJk" onmouseover="this.select()" />
+			<input style="width:135px;margin-left:23px" readonly="1" value="1ADB7fMcciUxmXsUrQnt6Se2x2Xdvvhv9m" onmouseover="this.select()" />
 		</div>
 	</div>
 <?php }?>
