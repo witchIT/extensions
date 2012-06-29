@@ -226,8 +226,8 @@ class AjaxComments {
 		}
 
 		// No value was passed, add up the likes and dislikes
-		$likes = $dislikes = 0;
-		foreach( $this->comments[$id][AJAXCOMMENTS_LIKE] as $k => $v ) if( $v > 0 ) $likes++; else $dislikes++;
+		$likes = $dislikes = array();
+		foreach( $this->comments[$id][AJAXCOMMENTS_LIKE] as $k => $v ) if( $v > 0 ) $likes[] = $k; else $dislikes[] = $k;
 		return array( $like, $likes, $dislikes );
 	}
 
@@ -317,11 +317,26 @@ class AjaxComments {
 		}
 
 		// Add the likes and dislikes links
-		$html .= "<li id=\"ajaxcomment-like\"$likelink>$likes</li>\n";
-		$html .= "<li id=\"ajaxcomment-dislike\"$dislikelink>$dislikes</li>\n";
+		$clikes = count( $likes );
+		$cdislikes = count( $dislikes );
+		$likes = $this->formatNameList( $likes, 'like' );
+		$dislikes = $this->formatNameList( $dislikes, 'dislike' );
+		$html .= "<li title=\"$likes\" id=\"ajaxcomment-like\"$likelink>$clikes</li>\n";
+		$html .= "<li title=\"$dislikes\" id=\"ajaxcomment-dislike\"$dislikelink>$cdislikes</li>\n";
 
 		if( !$likeonly ) $html .= "</ul>$r</div>\n";
 		return $html;
+	}
+
+	/**
+	 * Return the passed list of names as a list of "a,b,c and d"
+	 */
+	function formatNameList( $list, $msg ) {
+		$len = count( $list );
+		if( $len < 1 ) return wfMsg( "ajaxcomments-no$msg" );
+		if( $len == 1 ) return wfMsg( "ajaxcomments-one$msg", $list[0] );
+		$last = array_pop( $list );
+		return wfMsg( "ajaxcomments-many$msg", join( ', ', $list ), $last );
 	}
 
 	/**

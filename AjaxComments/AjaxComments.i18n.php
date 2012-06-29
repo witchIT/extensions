@@ -31,4 +31,10 @@ $messages['en'] = array(
 	'ajaxcomments-dislike' => "$1 dislikes $2's comment",
 	'ajaxcomments-unlike' => "$1 no longer likes $2's comment",
 	'ajaxcomments-undislike' => "$1 no longer dislikes $2's comment",
+	'ajaxcomments-nolike' => "Nobody likes this comment",
+	'ajaxcomments-onelike' => "$1 likes this comment",
+	'ajaxcomments-manylike' => "$1 and $2 like this comment",
+	'ajaxcomments-nodislike' => "Nobody dislikes this comment",
+	'ajaxcomments-onedislike' => "$1 dislikes this comment",
+	'ajaxcomments-manydislike' => "$1 and $2 dislike this comment",
 );
