@@ -151,6 +151,7 @@ class AjaxComments {
 	 * Edit an existing comment in the data structure
 	 */
 	function edit( $id, $text ) {
+		global $wgParser;
 		$this->comments[$id][AJAXCOMMENTS_TEXT] = $text;
 		$html = $wgParser->parse( $text, $this->talk, new ParserOptions(), true, true )->getText();
 		$this->changed = true;
