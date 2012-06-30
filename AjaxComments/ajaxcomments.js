@@ -162,7 +162,6 @@ window.ajaxcomment_submit = function(e, cmd) {
 	if( cmd == 'edit' ) {
 		var c = e.parent().parent();
 		target = $('.ajaxcomment-text', c).first();
-		target.css('background','red');
 		text = $('#ajaxcomment-input textarea').val();
 		id = c.attr('id').substr(13);
 	}
