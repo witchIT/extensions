@@ -160,9 +160,10 @@ window.ajaxcomment_submit = function(e, cmd) {
 
 	// If it's an edit, create the target as the current comment
 	if( cmd == 'edit' ) {
-		target = $('.ajaxcomment-text', e.parent().parent()).first();
+		var c = e.parent().parent();
+		target = $('.ajaxcomment-text', c).first();
 		text = $('#ajaxcomment-input textarea').val();
-		id = target.attr('id').substr(13);
+		id = c.attr('id').substr(13);
 	}
 
 	// If it's a reply, create the target within the current comment
