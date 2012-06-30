@@ -158,20 +158,19 @@ window.ajaxcomment_submit = function(e, cmd) {
 		text = $('#ajaxcomment-input textarea').val();
 	}
 
+	// If it's an edit, create the target as the current comment
+	if( cmd == 'edit' ) {
+		target = $('.ajaxcomment-text', e.parent().parent());
+		text = $('#ajaxcomment-input textarea').val();
+		id = target.attr('id').substr(13);
+	}
+
 	// If it's a reply, create the target within the current comment
 	if( cmd == 'reply' ) {
 		e.parent().before('<div id="ajaxcomments-new"></div>');
 		target = $('#ajaxcomments-new');
 		text = $('#ajaxcomment-input textarea').val();
 		id = target.parent().attr('id').substr(13);
-	}
-
-	// If it's an edit, create the target as the current comment
-	if( cmd == 'edit' ) {
-		text = $('#ajaxcomment-input textarea').val();
-		target = e.parent().parent();
-		target.html('<div id="ajaxcomments-new"></div>');
-		id = target.attr('id').substr(13);
 	}
 
 	// Put a loader into the target

@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.2, 2012-06-28' );
+define( 'AJAXCOMMENTS_VERSION','1.0.3, 2012-06-30' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -152,8 +152,9 @@ class AjaxComments {
 	 */
 	function edit( $id, $text ) {
 		$this->comments[$id][AJAXCOMMENTS_TEXT] = $text;
+		$html = $wgParser->parse( $text, $this->talk, new ParserOptions(), true, true )->getText();
 		$this->changed = true;
-		return $this->renderComment( $id );
+		return "<div class=\"ajaxcomment-text\">$html</div>";
 	}
 
 	/**
