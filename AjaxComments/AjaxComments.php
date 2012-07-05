@@ -68,6 +68,7 @@ class AjaxComments {
 			$output->disable();
 			wfResetOutputBuffers();
 			header( "Location: $wgServer$wgScript?title=$page#ajaxcomments" );
+			exit;
 		}
 		return true;
 	}
