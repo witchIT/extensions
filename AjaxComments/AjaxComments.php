@@ -59,8 +59,10 @@ class AjaxComments {
 	 * If the page is viewing a talk page, go to the comments instead
 	 */
 	function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
+		global $wgRequest;
+		$action = $wgRequest->getVal( 'action', 'view' );
 		$ns = $title->getNamespace();
-		if( is_object( $title ) && $wiki->getAction() == 'view' && $ns > 0 && $ns & 1 ) {
+		if( is_object( $title ) && $action == 'view' && $ns > 0 && $ns & 1 ) {
 			$title = Title::newFromText( $title->getText(), $ns - 1 );
 			$output->disable();
 			wfResetOutputBuffers();
