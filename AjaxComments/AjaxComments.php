@@ -63,7 +63,7 @@ class AjaxComments {
 		$action = $wgRequest->getVal( 'action', 'view' );
 		$ns = $title->getNamespace();
 		if( is_object( $title ) && $action == 'view' && $ns > 0 && $ns & 1 ) {
-			global $wgServer, $wgScript
+			global $wgServer, $wgScript;
 			$page = Title::newFromText( $title->getText(), $ns - 1 )->getPrefixedText();
 			$output->disable();
 			wfResetOutputBuffers();
