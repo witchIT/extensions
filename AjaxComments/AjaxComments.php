@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.3, 2012-06-30' );
+define( 'AJAXCOMMENTS_VERSION','1.0.4, 2012-07-04' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -40,6 +40,7 @@ class AjaxComments {
 	function __construct() {
 		global $wgHooks, $wgOut, $wgResourceModules;
 
+		$wgHooks['MediaWikiPerformAction'][] = $this;
 		$wgHooks['UnknownAction'][] = $this;
 
 		// Set up JavaScript and CSS resources
@@ -52,6 +53,21 @@ class AjaxComments {
 			);
 			$wgOut->addModules( 'ext.ajaxcomments' );
 		}
+	}
+
+	/**
+	 * If the page is viewing a talk page, go to the comments instead
+	 */
+	function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
+		$ns = $title->getNamespace();
+		if( is_object( $title ) && $wiki->getAction() == 'view' && $ns > 0 && $ns & 1 ) {
+			$title = Title::newFromText( $title->getText(), $ns - 1 );
+			$output->disable();
+			wfResetOutputBuffers();
+			$url = $title->getFullUrl();
+			header( "Location: $url" );
+		}
+		return true;
 	}
 
 	/**
@@ -113,7 +129,7 @@ class AjaxComments {
 
 					default:
 						$n = count( $this->comments );
-						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2>\n";
+						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>\n";
 						if( $n == 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
 						print $this->renderComments();

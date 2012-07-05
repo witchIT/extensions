@@ -1,10 +1,15 @@
 $(document).ready( function() {
 
-	$('#ca-talk').hide();
-
 	// If there's a discussion tab, normal view action and not on talk page, render the discussion below the article
 	if( $('#ca-talk').length > 0 && mw.config.get('wgArticleId') > 0 && mw.config.get('wgAction') == 'view' && !(mw.config.get('wgNamespaceNumber')&1) ) {
+
+		// Change the talk page tab to a local link to the comments at the end of the page
+		$('#ca-talk a').attr('href','#ajaxcomments');
+
+		// Create a target for the comments and put a loader in it
 		$('.printfooter').after('<div id="ajaxcomments"><div class="ajaxcomments-loader"></div></div>');
+
+		// Ask the server for the rendered comments
 		$.ajax({
 			type: 'GET',
 			url: mw.util.wikiScript(),
