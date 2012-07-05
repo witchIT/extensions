@@ -5,6 +5,7 @@ $(document).ready( function() {
 
 		// Change the talk page tab to a local link to the comments at the end of the page
 		$('#ca-talk a').attr('href','#ajaxcomments');
+		$('#ca-talk').removeClass('new');
 
 		// Create a target for the comments and put a loader in it
 		$('.printfooter').after('<div id="ajaxcomments"><div class="ajaxcomments-loader"></div></div>');
