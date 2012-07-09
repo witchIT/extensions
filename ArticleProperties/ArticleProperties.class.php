@@ -268,7 +268,7 @@ abstract class ArticleProperties extends Article {
 
 		// Get fields from the first title if none specified
 		if( !is_array( $fields ) ) {
-			$ap = new ArticleProperties( $titles[0] );
+			$ap = Article::newFromTitle( $titles[0] );
 			$fields = array_keys( $ap->properties() );
 		}
 
@@ -280,7 +280,7 @@ abstract class ArticleProperties extends Article {
 		// Render the rows
 		$html .= "<tr>";
 		foreach( $titles as $title ) {
-			$ap = new ArticleProperties( $title );
+			$ap = Article::newFromTitle( $title );
 			foreach( $fields as $field ) {
 				$prop = array( $field => null );
 				$ap->properties( $prop );
