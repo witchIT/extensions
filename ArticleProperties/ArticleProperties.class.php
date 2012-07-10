@@ -161,6 +161,26 @@ abstract class ArticleProperties extends Article {
 	}
 
 	/**
+	 * Return the classname for the given title
+	 * - declares the class if required
+	 */
+	public static function getClass( $title ) {
+		$class = null;
+		wfRunHooks( 'ArticlePropertiesClassFromTitle', array( &$title, &$class ) );
+		if( !$class ) return false;
+		if( !is_array( $class ) ) $class = array( $class, false );
+		list( $classname, $classfile ) = $class;
+
+		// If a file was specified, declare the class now
+		if( $classfile ) {
+			require_once( $classfile );
+		}
+
+		return $classname;
+	}
+
+
+	/**
 	 * Add a properties method to interface with the article's DB data in either page_props or its own table
 	 */
 	public function properties( $props = array() ) {
@@ -259,6 +279,9 @@ abstract class ArticleProperties extends Article {
 	 */
 	public static function table( &$titles, $atts = array(), $fields = false ) {
 
+		// If no titles, or no class bail
+		if( count( $titles ) < 1 || !$class = ArticleProperties::getClass( $titles[0] ) ) return false;
+
 		// Open the table
 		$html = "<table";
 		if( array_key_exists( 'class', $atts ) ) $atts['class'] .= ' ap_results';
@@ -266,9 +289,10 @@ abstract class ArticleProperties extends Article {
 		foreach( $atts as $k => $v ) $html .= " $k=\"$v\"";
 		$html .= ">\n";
 
+
 		// Get fields from the first title if none specified
 		if( !is_array( $fields ) ) {
-			$ap = Article::newFromTitle( $titles[0] );
+			$ap = new $class( $titles[0] );
 			$fields = array_keys( $ap->properties() );
 		}
 
@@ -280,7 +304,7 @@ abstract class ArticleProperties extends Article {
 		// Render the rows
 		$html .= "<tr>";
 		foreach( $titles as $title ) {
-			$ap = Article::newFromTitle( $title );
+			$ap = new $class( $title );
 			foreach( $fields as $field ) {
 				$prop = array( $field => null );
 				$ap->properties( $prop );
