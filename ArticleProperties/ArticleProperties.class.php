@@ -302,8 +302,8 @@ abstract class ArticleProperties extends Article {
 		$html .= "</tr>\n";
 
 		// Render the rows
-		$html .= "<tr>";
 		foreach( $titles as $title ) {
+			$html .= "<tr>";
 			$ap = new $class( $title );
 			foreach( $fields as $field ) {
 				$prop = array( $field => null );
@@ -311,8 +311,8 @@ abstract class ArticleProperties extends Article {
 				$val = $prop[$field];
 				$html .= "<td>$val</td>";
 			}
+			$html .= "</tr>\n";
 		}
-		$html .= "</tr>\n";
 
 		// Close the table and return content
 		$html .= "</table>\n";
