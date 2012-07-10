@@ -305,13 +305,7 @@ abstract class ArticleProperties extends Article {
 		foreach( $titles as $title ) {
 			$html .= "<tr>";
 			$ap = new $class( $title );
-			foreach( $fields as $field ) {
-				//$prop = array( $field => null );
-				//$ap->properties( $prop );
-				//$val = $prop[$field];
-				$val = $ap->getValue($field);
-				$html .= "<td>$val</td>";
-			}
+			foreach( $fields as $field ) $html .= "<td>" . $ap->getValue($field) . "</td>";
 			$html .= "</tr>\n";
 		}
 
