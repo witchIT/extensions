@@ -55,6 +55,7 @@ class EmailToWiki {
 				print $this->logAdd( "Emails can only be added by the EmailToWiki.pl script running on the local host!" );
 			} else $this->processEmails( $wgRequest->getText( 'prefix', false ) );
 		}
+		return true;
 	}
 
 	/**
