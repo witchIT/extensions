@@ -46,7 +46,7 @@ abstract class ArticleProperties extends Article {
 	 * Cache for expensive methods with small inputs and deterministic results
 	 * - we use AP_VOID so that storing false or null doesn't confuse the cache logic
 	 */
-	static function cache( $func, $key, $val = AP_VOID ) {
+	static function cache( $func, $key = '', $val = AP_VOID ) {
 		$key = "$func\x07$key";
 		if( $val === AP_VOID ) return array_key_exists( $key, self::$cache ) ? self::$cache[$key] : AP_VOID;
 		return self::$cache[$key] = $val;
