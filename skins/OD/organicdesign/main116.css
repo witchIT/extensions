@@ -25,6 +25,9 @@ p {
 	margin: 10px 0;
 	text-align: justify;
 }
+fieldset p {
+	text-align: left;
+}
 
 #globalWrapper {
 	text-align: left;
