@@ -159,6 +159,10 @@ if ( $wgOrganicDesignDonations ) {?>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:135px;margin-left:23px" readonly="1" value="1ADB7fMcciUxmXsUrQnt6Se2x2Xdvvhv9m" onmouseover="this.select()" />
 		</div>
+		<h5 id="nmccool">And <a href="/Bitcoin">Namecoins</a> are cool!</h5>
+		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/c/c6/Namecoin-icon.png) no-repeat 5px 2px;">
+			<input style="width:135px;margin-left:23px" readonly="1" value="NB6GUnq7DTPFPyh8Zq6tdFyW4VyRv2HNWD" onmouseover="this.select()" />
+		</div>
 	</div>
 <?php }?>
 <div class="fb-like-box" data-href="http://www.facebook.com/organicdesign.co.nz" data-width="200" data-show-faces="false" data-stream="false" data-header="false"></div>
