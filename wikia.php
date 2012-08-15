@@ -22,7 +22,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '64M' );
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.8, 2012-01-19' );
+define( 'WIKIA_VERSION', '1.2.9, 2012-08-15' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -154,8 +154,9 @@ if( $wgSiteDown && !$wgCommandLineMode ) {
 }
 
 // Post LocalSettings globals
-$wgUploadDirectory  = $_SERVER['DOCUMENT_ROOT'] . "$wgUploadPath"; // allows wiki's settings to change images location
-$wgLocalInterwiki   = $wgSitename;
+$wgUploadDirectory = $_SERVER['DOCUMENT_ROOT'] . "$wgUploadPath"; // allows wiki's settings to change images location
+$wgLocalInterwiki  = $wgSitename;
+$wgMetaNamespace   = $wgSitename;
 if( $wgEmergencyContact === false ) $wgEmergencyContact = $wgPasswordSender = 'admin@' . str_replace( 'www.', '', $domain );
 
 $wgNoReplyAddress = "";
