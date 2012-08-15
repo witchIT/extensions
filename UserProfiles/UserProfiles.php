@@ -27,6 +27,7 @@ $wgExtensionCredits['other'][] = array(
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['UserProfiles'] = "$dir/UserProfiles.i18n.php";
 require_once( "$dir/UserProfiles.class.php" );
+require_once( "$dir/UserProfile.class.php" );
 
 // And styles for the forms
 $wgResourceModules['skins.userprofiles'] = array(
