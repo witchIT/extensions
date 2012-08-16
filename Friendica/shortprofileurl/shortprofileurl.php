@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Name: Short Profile URL
@@ -7,12 +6,9 @@
  * Author: Aran Dunkley <http://www.organicdesign.co.nz/nad>
  *
  */
-
-
 function shortprofileurl_install() {
 	register_hook('init_1', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl');
 }
-
 
 function shortprofileurl_uninstall() {
 	unregister_hook('init_1', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl');
