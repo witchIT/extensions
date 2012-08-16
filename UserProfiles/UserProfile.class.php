@@ -16,10 +16,9 @@ class UserProfile extends ArticleProperties {
 	public static $columns = array(
 		'FirstName' => 'VARCHAR(32) NOT NULL',
 		'LastName'  => 'VARCHAR(32) NOT NULL',
-		'Country'   => 'VARCHAR(2) NOT NULL',
+		'Country'   => 'VARCHAR(2)',
 		'Language'  => 'VARCHAR(16)',
-		'Mobile'    => 'VARCHAR(32)',
-		'RegType'   => 'VARCHAR(16) NOT NULL'
+		'Phone'     => 'VARCHAR(32)',
 	);
 
 	var $uid = 0;
