@@ -14,12 +14,16 @@ function shortprofileurl_uninstall() {
 	unregister_hook('init_1', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl');
 }
 
-function shortprofileurl($a) {
+function shortprofileurl(&$a) {
 	if(!file_exists("mod/{$a->module}.php")) {
 		if(q("select 1 from `user` where `nickname`='{$a->module}'")) {
-			$url = $a->get_baseurl() . "/profile/{$a->module}/?tab=profile";
-			header("Location: $url");
-			exit;
+			$nick = $a->module;
+			$a->argv = array( 'profile', $nick );
+			$a->argc = 2;
+			$a->query_string = "/profile/$nick/&tab=profile";
+			$a->cmd = "/profile/$nick";
+			$a->module = 'profile';
+			$_GET['tab'] = 'profile';
 		}
 	}
 }
