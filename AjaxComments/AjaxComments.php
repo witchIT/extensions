@@ -100,20 +100,22 @@ class AjaxComments {
 			if( is_object( $talk ) ) {
 				$id = $wgRequest->getText( 'id', false );
 				$text = $wgRequest->getText( 'text', false );
+				$ts = $wgRequest->getText( 'ts', -1 );
 				$command = $wgRequest->getText( 'cmd' );
 				$this->talk = $talk;
 				$article = new Article( $talk );
 				$summary = wfMsg( "ajaxcomments-$command-summary" );
 
 				// If the talk page exists, get its content and the timestamp of the latest revision
+				$content = '';
 				if( $talk->exists() ) {
 					$content = $article->fetchContent();
 					$this->comments = self::textToData( $content );
-					$ts = $article->getPage()->getLatest()->getTimestamp();
-				} else $content = $ts = '';
+					$latest = $article->getPage()->getLatest()->getTimestamp();
+				} else $latest = 0;
 
 				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
-				if( $wgRequest->getText( 'ts', -1 ) == $ts ) return '';
+				if( $ts && ( $ts == $latest || $latest == 0 ) ) return '';
 
 				// Perform the command on the talk content
 				switch( $command ) {
@@ -154,7 +156,7 @@ class AjaxComments {
 					// By default return the whole rendered comments area
 					default:
 						$n = count( $this->comments );
-						$tsdiv = "<div style=\"display:none\">$ts</div>";
+						$tsdiv = "<div style=\"display:none\">$latest</div>";
 						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
 						if( $n == 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
