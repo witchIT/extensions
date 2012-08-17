@@ -111,6 +111,7 @@ class AjaxComments {
 				if( $talk->exists() ) {
 					$content = $article->fetchContent();
 					$this->comments = self::textToData( $content );
+					print_r($article);
 					$latest = $article->getPage()->getLatest()->getTimestamp();
 				} else $latest = 0;
 
