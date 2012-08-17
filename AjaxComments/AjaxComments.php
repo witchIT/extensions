@@ -110,7 +110,6 @@ class AjaxComments {
 					$content = $article->fetchContent();
 					$this->comments = self::textToData( $content );
 					$ts = $article->getPage()->getLatest()->getTimestamp();
-					$tsdiv = "<div style=\"display:none\">$ts</div>";
 				} else $content = $ts = '';
 
 				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
@@ -155,6 +154,7 @@ class AjaxComments {
 					// By default return the whole rendered comments area
 					default:
 						$n = count( $this->comments );
+						$tsdiv = "<div style=\"display:none\">$ts</div>";
 						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
 						if( $n == 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
