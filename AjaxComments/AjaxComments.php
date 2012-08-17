@@ -98,26 +98,23 @@ class AjaxComments {
 			$wgOut->disable();
 			$talk = $article->getTitle()->getTalkPage();
 			if( is_object( $talk ) ) {
-				$this->talk = $talk;
-				$article = new Article( $talk );
-				$content = $article->fetchContent();
-				$summary = wfMsg( "ajaxcomments-$command-summary" );
-				if( $talk->exists() ) {
-					$this->comments = self::textToData( $content );
-
-					// Get the timestamp of the latest revision of the talk page
-					$ts = $article->getPage()->getLatest()->getTimestamp();
-					$tsdiv = "<div style=\"display:none\">$ts</div>";
-				} else $ts = 0;
-
-				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
-				if( $wgRequest->getText( 'ts', -1 ) == $ts ) return '';
-
-				// Get the rest of the request parameters
 				$id = $wgRequest->getText( 'id', false );
 				$text = $wgRequest->getText( 'text', false );
 				$command = $wgRequest->getText( 'cmd' );
+				$this->talk = $talk;
+				$article = new Article( $talk );
+				$summary = wfMsg( "ajaxcomments-$command-summary" );
 
+				// If the talk page exists, get its content and the timestamp of the latest revision
+				if( $talk->exists() ) {
+					$content = $article->fetchContent();
+					$this->comments = self::textToData( $content );
+					$ts = $article->getPage()->getLatest()->getTimestamp();
+					$tsdiv = "<div style=\"display:none\">$ts</div>";
+				} else $content = $ts = '';
+
+				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
+				if( $wgRequest->getText( 'ts', -1 ) == $ts ) return '';
 
 				// Perform the command on the talk content
 				switch( $command ) {
