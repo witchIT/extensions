@@ -100,7 +100,7 @@ class AjaxComments {
 			if( is_object( $talk ) ) {
 				$id = $wgRequest->getText( 'id', false );
 				$text = $wgRequest->getText( 'text', false );
-				$ts = $wgRequest->getText( 'ts', -1 );
+				$ts = $wgRequest->getText( 'ts', 0 );
 				$command = $wgRequest->getText( 'cmd' );
 				$this->talk = $talk;
 				$article = new Article( $talk );
