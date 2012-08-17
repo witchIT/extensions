@@ -4,7 +4,7 @@
 $(document).ready( function() {
 
 	function shortprofileurl(url) {
-		url = url.replace( /\/profile(\/[^\/\?]+)$/, '$1/?tab=status' );
+		url = url.replace( /(\/profile\/[^\/\?]+)$/, '$1/?tab=status' );
 		return url.replace( /\/profile(\/[^\/\?]+)(\/\?tab=profile)?/, '$1' );
 	}
 
