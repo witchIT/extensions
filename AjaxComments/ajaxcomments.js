@@ -22,6 +22,10 @@ $(document).ready( function() {
 		});
 	}
 
+	// If server polling is enabled, set up a regular ajax request
+	if( mw.config.get('wgAjaxCommentsPollServer') ) {
+	}
+
 });
 
 /**
@@ -119,8 +123,8 @@ window.ajaxcomment_like = function(id, val) {
 
 			// If something is returned, replace the like/dislike links with it
 			if(html) {
-				$('#ajaxcomment-like',this).remove();
-				$('#ajaxcomment-dislike',this).replaceWith(html);
+				$('#ajaxcomment-like',this).first().remove();
+				$('#ajaxcomment-dislike',this).first().replaceWith(html);
 			}
 		}
 	});

@@ -10,13 +10,17 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.4, 2012-07-04' );
+define( 'AJAXCOMMENTS_VERSION','1.0.5, 2012-08-17' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
 define( 'AJAXCOMMENTS_PARENT', 4 );
 define( 'AJAXCOMMENTS_REPLIES', 5 );
 define( 'AJAXCOMMENTS_LIKE', 6 );
+
+$wgAjaxCommentsLikeDislike = true;
+$wgAjaxCommentsAvatars = true;
+$wgAjaxCommentsPollServer = true;
 
 $wgExtensionFunctions[] = 'wfSetupAjaxComments';
 $wgExtensionCredits['other'][] = array(
@@ -38,7 +42,7 @@ class AjaxComments {
 	var $talk = false;
 
 	function __construct() {
-		global $wgHooks, $wgOut, $wgResourceModules;
+		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer;
 
 		$wgHooks['MediaWikiPerformAction'][] = $this;
 		$wgHooks['UnknownAction'][] = $this;
@@ -54,6 +58,8 @@ class AjaxComments {
 			);
 			$wgOut->addModules( 'ext.ajaxcomments' );
 		}
+
+		$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 	}
 
 	/**
@@ -290,7 +296,7 @@ class AjaxComments {
 	 * - if likeonly is set, return only the like/dislike links
 	 */
 	function renderComment( $id, $likeonly = false ) {
-		global $wgParser, $wgUser, $wgLang;
+		global $wgParser, $wgUser, $wgLang, $wgAjaxCommentsAvatars, $wgAjaxCommentsLikeDislike;
 		$curName = $wgUser->getName();
 		$c = $this->comments[$id];
 		$html = '';
@@ -310,7 +316,7 @@ class AjaxComments {
 		$ulink = "<a href=\"$url\">$name</a>";
 
 		// Get the user's gravitar url
-		if( $user->isEmailConfirmed() ) {
+		if( $wgAjaxCommentsAvatars && $user->isEmailConfirmed() ) {
 			$email = $user->getEmail();
 			$grav = "http://www.gravatar.com/avatar/" . md5( strtolower( $email ) ) . "?s=50&d=wavatar";
 			$grav = "<img src=\"$grav\" alt=\"$name\" />";
@@ -339,20 +345,21 @@ class AjaxComments {
 			}
 
 			// Make the like/dislike links
-			if( $curName != $name ) {
-				if( $like <= 0 ) $likelink = " onclick=\"javascript:ajaxcomment_like('$id',1)\" class=\"ajaxcomment-active\"";
-				if( $like >= 0 ) $dislikelink = " onclick=\"javascript:ajaxcomment_like('$id',-1)\" class=\"ajaxcomment-active\"";
+			if( $wgAjaxCommentsLikeDislike ) {
+				if( $curName != $name ) {
+					if( $like <= 0 ) $likelink = " onclick=\"javascript:ajaxcomment_like('$id',1)\" class=\"ajaxcomment-active\"";
+					if( $like >= 0 ) $dislikelink = " onclick=\"javascript:ajaxcomment_like('$id',-1)\" class=\"ajaxcomment-active\"";
+				}
+
+				// Add the likes and dislikes links
+				$clikes = count( $likes );
+				$cdislikes = count( $dislikes );
+				$likes = $this->formatNameList( $likes, 'like' );
+				$dislikes = $this->formatNameList( $dislikes, 'dislike' );
+				$html .= "<li title=\"$likes\" id=\"ajaxcomment-like\"$likelink>$clikes</li>\n";
+				$html .= "<li title=\"$dislikes\" id=\"ajaxcomment-dislike\"$dislikelink>$cdislikes</li>\n";
 			}
-
 		}
-
-		// Add the likes and dislikes links
-		$clikes = count( $likes );
-		$cdislikes = count( $dislikes );
-		$likes = $this->formatNameList( $likes, 'like' );
-		$dislikes = $this->formatNameList( $dislikes, 'dislike' );
-		$html .= "<li title=\"$likes\" id=\"ajaxcomment-like\"$likelink>$clikes</li>\n";
-		$html .= "<li title=\"$dislikes\" id=\"ajaxcomment-dislike\"$dislikelink>$cdislikes</li>\n";
 
 		if( !$likeonly ) $html .= "</ul>$r</div>\n";
 		return $html;
