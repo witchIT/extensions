@@ -156,7 +156,7 @@ class AjaxComments {
 					// By default return the whole rendered comments area
 					default:
 						$n = count( $this->comments );
-						$tsdiv = "<div style=\"display:none\">$latest</div>";
+						$tsdiv = "<div id=\"ajaxcomment-timestamp\" style=\"display:none\">$latest</div>";
 						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
 						if( $n == 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
