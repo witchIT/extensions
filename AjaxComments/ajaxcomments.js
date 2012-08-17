@@ -23,7 +23,24 @@ $(document).ready( function() {
 	}
 
 	// If server polling is enabled, set up a regular ajax request
-	if( mw.config.get('wgAjaxCommentsPollServer') ) {
+	var poll = mw.config.get('wgAjaxCommentsPollServer');
+	if(poll > 0) {
+		setInterval( function() {
+
+			// Ask the server for the rendered comments if they've changed
+			$.ajax({
+				type: 'GET',
+				url: mw.util.wikiScript(),
+				data: { action: 'ajaxcomments', title: mw.config.get('wgPageName'), ts: $('#ajaxcomment-timestamp').html() },
+				dataType: 'html',
+				success: function(html) {
+					if(html) {
+						$('#ajaxcomments').html(html);
+					}
+				}
+			});
+
+		}, poll);
 	}
 
 });

@@ -18,9 +18,9 @@ define( 'AJAXCOMMENTS_PARENT', 4 );
 define( 'AJAXCOMMENTS_REPLIES', 5 );
 define( 'AJAXCOMMENTS_LIKE', 6 );
 
-$wgAjaxCommentsLikeDislike = true;
-$wgAjaxCommentsAvatars = true;
-$wgAjaxCommentsPollServer = true;
+$wgAjaxCommentsLikeDislike = true; // add a like/dislike link to each comment
+$wgAjaxCommentsAvatars = true;     // use the gravatar service for users icons
+$wgAjaxCommentsPollServer = 0;     // poll the server to see if any changes to comments have been made and update if so
 
 $wgExtensionFunctions[] = 'wfSetupAjaxComments';
 $wgExtensionCredits['other'][] = array(
@@ -96,17 +96,26 @@ class AjaxComments {
 		if( $action == 'ajaxcomments' ) {
 			global $wgOut, $wgRequest;
 			$wgOut->disable();
-			$id = $wgRequest->getText( 'id', false );
-			$text = $wgRequest->getText( 'text', false );
 			$talk = $article->getTitle()->getTalkPage();
 			if( is_object( $talk ) ) {
+
+				// Get the timestamp of the latest revision of the talk page
+				$ts = $talk->getPage()->getLatest()->getTimestamp();
+				$tsdiv = "<div style=\"display:none\">$ts</div>";
+
+				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
+				if( $wgRequest->getText( 'ts', -1 ) == $ts ) return '';
+
+				// Get the rest of the request parameters
+				$id = $wgRequest->getText( 'id', false );
+				$text = $wgRequest->getText( 'text', false );
+				$command = $wgRequest->getText( 'cmd' );
+
+				// Get the talk page info and content if it exists
 				$this->talk = $talk;
 				$article = new Article( $talk );
 				$content = $article->fetchContent();
-				$command = $wgRequest->getText( 'cmd' );
 				$summary = wfMsg( "ajaxcomments-$command-summary" );
-
-				// Get the talk page content
 				if( $talk->exists() ) $this->comments = self::textToData( $content );
 
 				// Perform the command on the talk content
@@ -145,9 +154,10 @@ class AjaxComments {
 						print '}';
 					break;
 
+					// By default return the whole rendered comments area
 					default:
 						$n = count( $this->comments );
-						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>\n";
+						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
 						if( $n == 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) print "<h3>" . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
 						print $this->renderComments();
