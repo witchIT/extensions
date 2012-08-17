@@ -111,8 +111,7 @@ class AjaxComments {
 				if( $talk->exists() ) {
 					$content = $article->fetchContent();
 					$this->comments = self::textToData( $content );
-					print_r($article->getPage()->getLatest());
-					$latest = $article->getPage()->getLatest()->getTimestamp();
+					$latest = $article->getPage()->getRevision()->getTimestamp();
 				} else $latest = 0;
 
 				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
