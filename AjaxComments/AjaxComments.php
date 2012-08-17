@@ -98,9 +98,11 @@ class AjaxComments {
 			$wgOut->disable();
 			$talk = $article->getTitle()->getTalkPage();
 			if( is_object( $talk ) ) {
+				$this->talk = $talk;
+				$article = new Article( $talk );
 
 				// Get the timestamp of the latest revision of the talk page
-				$ts = $talk->getPage()->getLatest()->getTimestamp();
+				$ts = $article->getPage()->getLatest()->getTimestamp();
 				$tsdiv = "<div style=\"display:none\">$ts</div>";
 
 				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
@@ -112,8 +114,6 @@ class AjaxComments {
 				$command = $wgRequest->getText( 'cmd' );
 
 				// Get the talk page info and content if it exists
-				$this->talk = $talk;
-				$article = new Article( $talk );
 				$content = $article->fetchContent();
 				$summary = wfMsg( "ajaxcomments-$command-summary" );
 				if( $talk->exists() ) $this->comments = self::textToData( $content );
