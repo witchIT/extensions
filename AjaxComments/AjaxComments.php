@@ -59,7 +59,7 @@ class AjaxComments {
 			$wgOut->addModules( 'ext.ajaxcomments' );
 		}
 
-		$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
+		if( method_exists( $wgOut, 'addJsConfigVars' ) ) $wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 	}
 
 	/**
