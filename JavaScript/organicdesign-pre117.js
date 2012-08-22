@@ -2,6 +2,16 @@
  * Various patches and JS additions needed by wikis in the OD wikia
  */
 
+// Add some of the MW117/118 functions that are required by some extensions now
+window.mw = {
+	config: {
+		get: function(param) { return window[param]; }
+	},
+	util: {
+		wikiScript: function() { return '/wiki/index.php' }
+	}
+};
+
 // Cookie set/get functions from W3C
 function setCookie(c_name,value,exdays) {
 	var exdate=new Date();
