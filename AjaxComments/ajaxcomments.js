@@ -1,4 +1,8 @@
 $(document).ready( function() {
+	var poll = mw.config.get('wgAjaxCommentsPollServer');
+
+	// If a value of -1 has been supplied for this, then comments are disabled for this page
+	if( poll < 0 ) return;
 
 	// If there's a discussion tab, normal view action and not on talk page, render the discussion below the article
 	if( $('#ca-talk').length > 0 && mw.config.get('wgArticleId') > 0 && mw.config.get('wgAction') == 'view' && !(mw.config.get('wgNamespaceNumber')&1) ) {
@@ -23,7 +27,6 @@ $(document).ready( function() {
 	}
 
 	// If server polling is enabled, set up a regular ajax request
-	var poll = mw.config.get('wgAjaxCommentsPollServer');
 	if(poll > 0) {
 		setInterval( function() {
 

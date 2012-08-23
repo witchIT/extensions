@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.7, 2012-08-23' );
+define( 'AJAXCOMMENTS_VERSION','1.0.8, 2012-08-23' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -49,7 +49,7 @@ class AjaxComments {
 		$wgHooks['OutputPageBeforeHTML'][] = $this;
 
 		// Set up JavaScript and CSS resources
-		if( is_callable( 'OutputPage::addModules' ) && $this->checkTitle() ) {
+		if( is_callable( 'OutputPage::addModules' ) ) {
 			$wgResourceModules['ext.ajaxcomments'] = array(
 				'scripts'       => array( 'ajaxcomments.js' ),
 				'styles'        => array( 'ajaxcomments.css' ),
@@ -57,7 +57,11 @@ class AjaxComments {
 				'remoteExtPath' => basename( dirname( __FILE__ ) ),
 			);
 			$wgOut->addModules( 'ext.ajaxcomments' );
-			if( method_exists( $wgOut, 'addJsConfigVars' ) ) $wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
+
+			// Set polling to -1 if checkTitle says comments are disabled
+			if( method_exists( $wgOut, 'addJsConfigVars' ) ) {
+				$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $this->checkTitle() ? $wgAjaxCommentsPollServer : -1 );
+			}
 		}
 
 	}
