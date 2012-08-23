@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.6, 2012-08-22' );
+define( 'AJAXCOMMENTS_VERSION','1.0.7, 2012-08-23' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -408,8 +408,9 @@ class AjaxComments {
 
 }
 
+// $wgAjaxComments can be set to false prior to extension setup to disable comments on this page
 function wfSetupAjaxComments() {
 	global $wgAjaxComments;
-	$wgAjaxComments = new AjaxComments();
+	if( !isset( $wgAjaxComments ) $wgAjaxComments = new AjaxComments();
 }
 
