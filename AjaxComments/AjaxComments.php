@@ -57,9 +57,9 @@ class AjaxComments {
 				'remoteExtPath' => basename( dirname( __FILE__ ) ),
 			);
 			$wgOut->addModules( 'ext.ajaxcomments' );
+			if( method_exists( $wgOut, 'addJsConfigVars' ) ) $wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 		}
 
-		if( method_exists( $wgOut, 'addJsConfigVars' ) ) $wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 	}
 
 	/**
@@ -69,6 +69,8 @@ class AjaxComments {
 	function checkTitle( $title = false ) {
 		$ret = true;
 		wfRunHooks( 'AjaxCommentsCheckTitle', array( &$ret ) );
+		global $wgSitenotice;
+		$wgSitenotce .= $ret ? 'yes' : 'no';
 		return $ret;
 	}
 
