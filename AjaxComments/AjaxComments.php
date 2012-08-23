@@ -70,7 +70,7 @@ class AjaxComments {
 		$ret = true;
 		wfRunHooks( 'AjaxCommentsCheckTitle', array( &$ret ) );
 		global $wgSitenotice;
-		$wgSitenotce .= $ret ? 'yes' : 'no';
+		$wgSitenotice .= $ret ? 'yes' : 'no';
 		return $ret;
 	}
 
