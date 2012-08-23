@@ -49,7 +49,7 @@ class AjaxComments {
 		$wgHooks['OutputPageBeforeHTML'][] = $this;
 
 		// Set up JavaScript and CSS resources
-		if( is_callable( 'OutputPage::addModules' ) $this->checkTitle() ) {
+		if( is_callable( 'OutputPage::addModules' ) && $this->checkTitle() ) {
 			$wgResourceModules['ext.ajaxcomments'] = array(
 				'scripts'       => array( 'ajaxcomments.js' ),
 				'styles'        => array( 'ajaxcomments.css' ),
