@@ -411,6 +411,6 @@ class AjaxComments {
 // $wgAjaxComments can be set to false prior to extension setup to disable comments on this page
 function wfSetupAjaxComments() {
 	global $wgAjaxComments;
-	if( !isset( $wgAjaxComments ) $wgAjaxComments = new AjaxComments();
+	if( !isset( $wgAjaxComments ) ) $wgAjaxComments = new AjaxComments();
 }
 
