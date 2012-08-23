@@ -42,14 +42,14 @@ class AjaxComments {
 	var $talk = false;
 
 	function __construct() {
-		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer;
+		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle;
 
 		$wgHooks['MediaWikiPerformAction'][] = $this;
 		$wgHooks['UnknownAction'][] = $this;
 		$wgHooks['OutputPageBeforeHTML'][] = $this;
 
 		// Set up JavaScript and CSS resources
-		if( is_callable( 'OutputPage::addModules' ) ) {
+		if( is_callable( 'OutputPage::addModules' ) $this->checkTitle() ) {
 			$wgResourceModules['ext.ajaxcomments'] = array(
 				'scripts'       => array( 'ajaxcomments.js' ),
 				'styles'        => array( 'ajaxcomments.css' ),
@@ -63,13 +63,23 @@ class AjaxComments {
 	}
 
 	/**
+	 * Return true if the AjaxComments should be active for the passed title (current page if none supplied)
+	 * - this always returns true, but provides a hook for other extensions to make it conditional
+	 */
+	function checkTitle( $title = false ) {
+		$ret = true;
+		wfRunHooks( 'AjaxCommentsCheckTitle', &$ret );
+		return $ret;
+	}
+
+	/**
 	 * If the page is viewing a talk page, go to the comments instead
 	 */
 	function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
 		global $wgRequest;
 		$action = $wgRequest->getVal( 'action', 'view' );
 		$ns = $title->getNamespace();
-		if( is_object( $title ) && $action == 'view' && $ns > 0 && $ns & 1 ) {
+		if( is_object( $title ) && $action == 'view' && $ns > 0 && $ns & 1 && $this->checkTitle( $title ) ) {
 			$output->disable();
 			wfResetOutputBuffers();
 			$url = Title::newFromText( $title->getText(), $ns - 1 )->getLocalUrl();
@@ -411,6 +421,6 @@ class AjaxComments {
 // $wgAjaxComments can be set to false prior to extension setup to disable comments on this page
 function wfSetupAjaxComments() {
 	global $wgAjaxComments;
-	if( !isset( $wgAjaxComments ) ) $wgAjaxComments = new AjaxComments();
+	$wgAjaxComments = new AjaxComments();
 }
 
