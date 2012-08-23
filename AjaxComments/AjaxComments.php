@@ -68,7 +68,7 @@ class AjaxComments {
 	 */
 	function checkTitle( $title = false ) {
 		$ret = true;
-		wfRunHooks( 'AjaxCommentsCheckTitle', &$ret );
+		wfRunHooks( 'AjaxCommentsCheckTitle', array( &$ret ) );
 		return $ret;
 	}
 
