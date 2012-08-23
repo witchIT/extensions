@@ -69,8 +69,7 @@ class AjaxComments {
 	function checkTitle( $title = false ) {
 		$ret = true;
 		wfRunHooks( 'AjaxCommentsCheckTitle', array( &$ret ) );
-		global $wgSitenotice;
-		$wgSitenotice .= $ret ? 'yes' : 'no';
+		print $ret ? 'yes' : 'no';
 		return $ret;
 	}
 
