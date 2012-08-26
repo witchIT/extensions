@@ -944,4 +944,8 @@ form.person-record td.EmailList p {
 	margin-bottom: 20px;
 	margin-top: 10px 
 }
-
+/* code sections */
+.od-code pre {
+	margin: 0;
+	padding: 0;
+}
