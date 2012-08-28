@@ -9,7 +9,6 @@
 function homeredirect_install() {
 	register_hook('page_header', 'addon/homeredirect/homeredirect.php', 'homeredirect');
 }
-
 function homeredirect_uninstall() {
 	unregister_hook('page_header', 'addon/homeredirect/homeredirect.php', 'homeredirect');
 }
