@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.8, 2012-08-23' );
+define( 'AJAXCOMMENTS_VERSION','1.0.9, 2012-09-06' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -18,9 +18,10 @@ define( 'AJAXCOMMENTS_PARENT', 4 );
 define( 'AJAXCOMMENTS_REPLIES', 5 );
 define( 'AJAXCOMMENTS_LIKE', 6 );
 
-$wgAjaxCommentsLikeDislike = true; // add a like/dislike link to each comment
-$wgAjaxCommentsAvatars = true;     // use the gravatar service for users icons
-$wgAjaxCommentsPollServer = 0;     // poll the server to see if any changes to comments have been made and update if so
+$wgAjaxCommentsLikeDislike = true;        // add a like/dislike link to each comment
+$wgAjaxCommentsAvatars = true;            // use the gravatar service for users icons
+$wgAjaxCommentsPollServer = 0;            // poll the server to see if any changes to comments have been made and update if so
+$wgAjaxCommentsLocation = '.printfooter'; // element selector to put the rendered comments before
 
 $wgExtensionFunctions[] = 'wfSetupAjaxComments';
 $wgExtensionCredits['other'][] = array(

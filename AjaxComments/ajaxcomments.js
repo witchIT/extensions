@@ -2,17 +2,17 @@ $(document).ready( function() {
 	var poll = mw.config.get('wgAjaxCommentsPollServer');
 
 	// If a value of -1 has been supplied for this, then comments are disabled for this page
-	if( poll < 0 ) return;
+	if(poll < 0) return;
 
 	// If there's a discussion tab, normal view action and not on talk page, render the discussion below the article
-	if( $('#ca-talk').length > 0 && mw.config.get('wgArticleId') > 0 && mw.config.get('wgAction') == 'view' && !(mw.config.get('wgNamespaceNumber')&1) ) {
+	if($('#ca-talk').length > 0 && mw.config.get('wgArticleId') > 0 && mw.config.get('wgAction') == 'view' && !(mw.config.get('wgNamespaceNumber')&1)) {
 
 		// Change the talk page tab to a local link to the comments at the end of the page
 		$('#ca-talk a').attr('href','#ajaxcomments');
 		$('#ca-talk').removeClass('new');
 
 		// Create a target for the comments and put a loader in it
-		$('.printfooter').after('<div id="ajaxcomments"><div class="ajaxcomments-loader"></div></div>');
+		$(mw.config.get('wgAjaxCommentsLocation')).before('<div id="ajaxcomments"><div class="ajaxcomments-loader"></div></div>');
 
 		// Ask the server for the rendered comments
 		$.ajax({
@@ -37,9 +37,7 @@ $(document).ready( function() {
 				data: { action: 'ajaxcomments', title: mw.config.get('wgPageName'), ts: $('#ajaxcomment-timestamp').html() },
 				dataType: 'html',
 				success: function(html) {
-					if(html) {
-						$('#ajaxcomments').html(html);
-					}
+					if(html) $('#ajaxcomments').html(html);
 				}
 			});
 
