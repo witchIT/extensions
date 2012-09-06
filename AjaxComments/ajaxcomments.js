@@ -12,7 +12,7 @@ $(document).ready( function() {
 		$('#ca-talk').removeClass('new');
 
 		// Create a target for the comments and put a loader in it
-		$(mw.config.get('wgAjaxCommentsLocation')).before('<div id="ajaxcomments"><div class="ajaxcomments-loader"></div></div>');
+		$('#ajaxcomments-name').after('<div id="ajaxcomments"><div class="ajaxcomments-loader"></div></div>');
 
 		// Ask the server for the rendered comments
 		$.ajax({

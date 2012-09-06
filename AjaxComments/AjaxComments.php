@@ -21,7 +21,6 @@ define( 'AJAXCOMMENTS_LIKE', 6 );
 $wgAjaxCommentsLikeDislike = true;        // add a like/dislike link to each comment
 $wgAjaxCommentsAvatars = true;            // use the gravatar service for users icons
 $wgAjaxCommentsPollServer = 0;            // poll the server to see if any changes to comments have been made and update if so
-$wgAjaxCommentsLocation = '.printfooter'; // element selector to put the rendered comments before
 
 $wgExtensionFunctions[] = 'wfSetupAjaxComments';
 $wgExtensionCredits['other'][] = array(
@@ -98,7 +97,7 @@ class AjaxComments {
 	 * Render a name at the end of the page so redirected talk pages can go there before ajax loads the content
 	 */
 	function onOutputPageBeforeHTML( &$out, &$text ) {
-		$text .= "<a name=\"ajaxcomments\"></a>";
+		$text .= "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>";
 		return true;
 	}
 
