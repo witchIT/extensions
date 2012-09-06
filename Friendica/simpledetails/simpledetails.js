@@ -10,4 +10,9 @@ $(document).ready( function() {
 		if( id == 'profile-edit-marital-wrapper' || id == 'dislikes-jot-end' || id == 'music-jot-wrapper' || id == 'profile-edit-submit-end' ) j++;
 		if( j == 1 || j == 3 ) e.hide();
 	}
+	gender = '<option selected="selected" value=""></option>';
+	gender += '<option value="Male">Male</option>';
+	gender += '<option value="Female">Female</option>';
+	gender += '<option value="Private">Prefer not to say</option>';
+	$('#gender-select').html(gender);
 });
