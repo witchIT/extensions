@@ -173,8 +173,8 @@ class AjaxComments {
 						$tsdiv = "<div id=\"ajaxcomment-timestamp\" style=\"display:none\">$latest</div>";
 						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
 						$cc = "<h3 id=\"ajaxcomments-count\">";
-						if( $n == 1 ) $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
-						else if( $n > 1 ) $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
+						if( $n == 1 ) print $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
+						else if( $n > 1 ) print $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
 						print $this->renderComments();
 				}
 
