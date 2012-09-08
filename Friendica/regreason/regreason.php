@@ -19,19 +19,41 @@ function regreason_uninstall() {
 /**
  * Add the new textbox to the form
  */
-function register_form( $a, $form ) {
+function regreason_form( &$a, &$arr ) {
+
+	$label = t('Please describe your association with the Mathaba Community or the reason you wish to become a member :');
+
+	$textbox = "<div id=\"register-reason-wrapper\">
+		<p><br />$label</p>
+		<textarea name=\"reason\" id=\"register-reason\" style=\"width:580px;height:75px\"></textarea>
+		<br /><br />
+	</div>";
+
+	$arr['template'] = str_replace( '$publish', "$textbox\n\n\t\$publish\n\n", $arr['template'] );
 }
 
 /**
  * Send an email to admins with the textbox content
  */
-function regreason_register( $a, $uid ) {
-
-	// Send email to admin
-	$res = mail($a->config['admin_email'], sprintf(t('Registration request at %s'), $a->config['sitename']),
-		$email_tpl,
-			'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] . "\n"
-			. 'Content-type: text/plain; charset=UTF-8' . "\n"
-			. 'Content-transfer-encoding: 8bit' );
-
+function regreason_register( &$a, $uid ) {
+	if( array_key_exists( 'reason', $_POST ) ) {
+		$reason = $_POST['reason'];
+		$r = q("SELECT * FROM `contact` WHERE uid=%d",$uid);
+		$name = $r[0]['name'];
+		$nick = $r[0]['nick'];
+		$subject = sprintf(t('Registration reason provided by %s'), $name);
+		$body = sprintf(
+			t("%s (nickname \"%s\") has provided the following reason for their registration:\n\n%s"),
+			$name,
+			$nick,
+			$reason
+		);
+		$res = mail(
+			$a->config['admin_email'],
+			$subject,
+			$body,
+			'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] .
+				"\nContent-type: text/plain; charset=UTF-8\nContent-transfer-encoding: 8bit"
+		);
+	}
 }
