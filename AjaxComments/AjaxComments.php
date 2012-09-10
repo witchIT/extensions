@@ -114,7 +114,7 @@ class AjaxComments {
 			if( is_object( $talk ) ) {
 				$id = $wgRequest->getText( 'id', false );
 				$text = $wgRequest->getText( 'text', false );
-				$ts = $wgRequest->getText( 'ts', 0 );
+				$ts = $wgRequest->getText( 'ts', false );
 				$command = $wgRequest->getText( 'cmd' );
 				$this->talk = $talk;
 				$article = new Article( $talk );
@@ -129,7 +129,7 @@ class AjaxComments {
 				} else $latest = 0;
 
 				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
-				if( $ts && ( $ts == $latest || $latest == 0 ) ) return '';
+				if( $ts !== false && ( $ts == $latest || $latest == 0 ) ) return '';
 
 				// Perform the command on the talk content
 				switch( $command ) {
