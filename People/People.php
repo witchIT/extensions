@@ -43,7 +43,7 @@ class People {
 			$img = "$user.jpg";
 			if( wfLocalFile( $img )->exists() ) $text .= "[[Image:$user.jpg|48px|left|link=User:$user]]";
 			else {
-				$url = Title::newFromText( 'Upload', NS_SPECIAL )->getLocalUrl( "wpDestFile=$img" );
+				$url = Title::newFromText( 'Upload', NS_SPECIAL )->getFullUrl( "wpDestFile=$img" );
 				$text .= "[[Image:Anon.png|48px|left|link=$url]]";
 			}
 			$title = Title::newFromText( $user, NS_USER );
@@ -51,7 +51,7 @@ class People {
 				$article = new Article( $title );
 				$text .= $article->getContent();
 			}
-			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n<div style=\"clear:both\"></div>";
+			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n<div style=\"clear:both\"></div>\n";
 		}
 		$dbr->freeResult( $res );
 		return $text;
