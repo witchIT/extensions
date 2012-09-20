@@ -46,14 +46,14 @@ class EximMailList {
 			$res = $dbr->select( $dbr->tableName( 'user' ), 'user_email' );
 			while( $row = $dbr->fetchRow( $res ) ) $list[] = $row[0];
 			$dbr->freeResult( $res );
-			print "# Exim filter\n";
-				. "\tseen mail\n";
-				. "\tfrom \$reply_address\n";
+			print "# Exim filter\n"
+				. "\tseen mail\n"
+				. "\tfrom \$reply_address\n"
 				. "\treply_to \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
-				. "\tsubject \$h_subject\n";
-				. "\ttext \$message_body\n";
+				. "\tsubject \$h_subject\n"
+				. "\ttext \$message_body\n"
 				. "\tto \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
-				. "\tbcc \"" . join( ',', $list ) . "\n"
+				. "\tbcc \"" . join( ',', $list ) . "\n";
 		}
 		return true;
 	}
