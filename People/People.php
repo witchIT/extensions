@@ -40,7 +40,14 @@ class People {
 			$text .= "[[Image:$row[0].jpg|48px|left]]{{User:$row[0]}}\n";
 		}
 		$dbr->freeResult( $res );
-		return $text;
+        return array(
+		$text,
+		'found'   => true,
+		'nowiki'  => false,
+		'noparse' => false,
+		'noargs'  => false,
+		'isHTML'  => false
+	);
 	}
 
 }
