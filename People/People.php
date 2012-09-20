@@ -15,7 +15,7 @@ define( 'PEOPLE_VERSION', '0.0.1, 2012-09-20' );
 $wgPeopleMagic                 = "people";
 $wgExtensionFunctions[]        = 'wfSetupPeople';
 $wgHooks['LanguageGetMagic'][] = 'wfPeopleLanguageGetMagic';
-
+$wgExtensionMessagesFiles['People'] = dirname( __FILE__ ) . '/People.i18n.php';
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'People',
 	'author'      => '[http://www.organicdesign.co.nz/nad Nad]',
