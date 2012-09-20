@@ -34,10 +34,10 @@ class EximMailList {
 
 			// Bail if not called from local host
 			if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches )
-				&& !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
-					header( 'Forbidden', true, 403 );
-					die;
-				}
+			&& !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
+				header( 'Forbidden', true, 403 );
+				die;
+			}
 				
     		global $wgOut, $wgEximMailListName, $wgEximMailListAddress;
 			$wgOut->disable();
