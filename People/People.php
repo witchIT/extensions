@@ -32,6 +32,7 @@ class People {
 	}
 
 	function expandPeople( &$parser ) {
+		$parser->disableCache();
 		$text = '';
 		$dbr = &wfGetDB(DB_SLAVE);
 		$res = $dbr->select( $dbr->tableName( 'user' ), 'user_name,user_real_name' );
@@ -50,7 +51,7 @@ class People {
 				$article = new Article( $title );
 				$text .= $article->getContent();
 			}
-			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]";
+			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n<div style=\"clear:both\"></div>";
 		}
 		$dbr->freeResult( $res );
 		return $text;
