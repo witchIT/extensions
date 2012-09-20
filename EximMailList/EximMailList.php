@@ -30,7 +30,7 @@ class EximMailList {
 	}
 
 	function onUnknownAction( $action, $article ) {
-		if( $action == 'ajaxcomments' ) {
+		if( $action == 'eximfilter' ) {
 
 			// Bail if not called from local host
 			if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches )
