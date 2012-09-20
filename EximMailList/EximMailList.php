@@ -31,7 +31,7 @@ class EximMailList {
 
 	function onUnknownAction( $action, $article ) {
 		if( $action == 'eximfilter' ) {
-die;
+
 			// Bail if not called from local host
 			if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches )
 			&& !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
@@ -60,7 +60,7 @@ die;
 
 }
 
-function wfSetupEximFilter() {
+function wfSetupEximMailList() {
 	global $wgEximMailList;
 	$wgEximMailList = new EximMailList();
 }
