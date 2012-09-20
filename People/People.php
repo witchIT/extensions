@@ -32,6 +32,8 @@ class People {
 	}
 
 	function expandPeople( &$parser ) {
+		global $wgUser;
+		$cur = $wgUser->getName();
 		$parser->disableCache();
 		$text = '';
 		$dbr = &wfGetDB(DB_SLAVE);
@@ -45,14 +47,14 @@ class People {
 			else {
 				$url = Title::newFromText( 'Upload', NS_SPECIAL )->getFullUrl( "wpDestFile=$img" );
 				$text .= "[[Image:Anon.png|48px|left|link=$url]]";
-				$text .= "<div class=\"plainlinks\">[$url " . wfMsg( 'people-upload-image' ) . "]</div>\n\n";
+				if( $cur == $user ) $text .= "<div class=\"plainlinks\">[$url " . wfMsg( 'people-upload-image' ) . "]</div>\n\n";
 			}
 			$title = Title::newFromText( $user, NS_USER );
 			if( $title->exists() ) {
 				$article = new Article( $title );
 				$text .= $article->getContent();
 			}
-			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n";
+			elseif( $cur == $user ) $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n";
 			$text .= "<div style=\"clear:both\"></div>\n";
 		}
 		$dbr->freeResult( $res );
