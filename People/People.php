@@ -41,8 +41,7 @@ class People {
 			$name = $row[1] ? $row [1] : $user;
 			$text .= "== $name ==\n";
 			$img = "$user.jpg";
-			print_r(wfLocalFile( $img ) );
-			if( wfLocalFile( $img ) ) $text .= "[[Image:$user.jpg|48px|left|link=User:$user]]";
+			if( wfLocalFile( $img )->exists() ) $text .= "[[Image:$user.jpg|48px|left|link=User:$user]]";
 			else {
 				$url = Title::newFromText( 'Upload', NS_SPECIAL )->getLocalUrl( "wpDestFile=$img" );
 				$text .= "[[Image:Anon.png|48px|left|link=$url]]";
