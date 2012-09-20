@@ -52,7 +52,8 @@ class People {
 				$article = new Article( $title );
 				$text .= $article->getContent();
 			}
-			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n<div style=\"clear:both\"></div>\n";
+			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n";
+			$text .= "<div style=\"clear:both\"></div>\n";
 		}
 		$dbr->freeResult( $res );
 		return $text;
