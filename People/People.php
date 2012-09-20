@@ -45,7 +45,7 @@ class People {
 			else {
 				$url = Title::newFromText( 'Upload', NS_SPECIAL )->getFullUrl( "wpDestFile=$img" );
 				$text .= "[[Image:Anon.png|48px|left|link=$url]]";
-				$text .= "[$url " . wfMsg( 'people-upload-image' ) . "]\n\n";
+				$text .= "<div class=\"plainlinks\">[$url " . wfMsg( 'people-upload-image' ) . "]</div>\n\n";
 			}
 			$title = Title::newFromText( $user, NS_USER );
 			if( $title->exists() ) {
