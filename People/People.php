@@ -32,12 +32,15 @@ class People {
 	}
 
 	function expandPeople( &$parser ) {
+		$text = '';
 		$dbr = &wfGetDB(DB_SLAVE);
-		$list = array();
 		$res = $dbr->select( $dbr->tableName( 'user' ), 'user_name,user_real_name' );
-		while( $row = $dbr->fetchRow( $res ) ) $list[] = $row[0];
+		while( $row = $dbr->fetchRow( $res ) ) {
+			$text .= "== $row[1] ==\n"
+			$text .= "[[Image:$row[0].jpg|48px|left]]{{User:$row[0]}}\n";
+		}
 		$dbr->freeResult( $res );
-		return array( $html, 'isHTML' => true );
+		return $text;
 	}
 
 }
