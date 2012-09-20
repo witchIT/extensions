@@ -36,7 +36,7 @@ class People {
 		$dbr = &wfGetDB(DB_SLAVE);
 		$res = $dbr->select( $dbr->tableName( 'user' ), 'user_name,user_real_name' );
 		while( $row = $dbr->fetchRow( $res ) ) {
-			$user = $row[0]
+			$user = $row[0];
 			$name = $row[1] ? $row [1] : $user;
 			$text .= "== $name ==\n";
 			$img = "$user.jpg";
