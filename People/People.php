@@ -27,7 +27,7 @@ $wgExtensionCredits['parserhook'][] = array(
 class People {
 
 	function __construct() {
-		global $wgHooks, $wgParser, $wgPeopleMagic;
+		global $wgParser, $wgPeopleMagic;
  		$wgParser->setFunctionHook( $wgPeopleMagic, array( $this, 'expandPeople' ) ); 
 	}
 
@@ -40,7 +40,7 @@ class People {
 			$text .= "[[Image:$row[0].jpg|48px|left]]{{User:$row[0]}}\n";
 		}
 		$dbr->freeResult( $res );
-		return 'text';
+		return $text;
         return array(
 		$text,
 		'found'   => true,
