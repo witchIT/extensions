@@ -53,7 +53,7 @@ class EximMailList {
 				. "\tsubject \$h_subject\n"
 				. "\ttext \$message_body\n"
 				. "\tto \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
-				. "\tbcc \"" . join( ',', $list ) . "\n";
+				. "\tbcc \"" . join( ',', $list ) . "\"\n";
 		}
 		return true;
 	}
