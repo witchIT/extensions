@@ -36,8 +36,21 @@ class People {
 		$dbr = &wfGetDB(DB_SLAVE);
 		$res = $dbr->select( $dbr->tableName( 'user' ), 'user_name,user_real_name' );
 		while( $row = $dbr->fetchRow( $res ) ) {
-			$text .= "== $row[1] ==\n";
-			$text .= "[[Image:$row[0].jpg|48px|left]]{{User:$row[0]}}\n";
+			$user = $row[0]
+			$name = $row[1] ? $row [1] : $user;
+			$text .= "== $name ==\n";
+			$img = "$user.jpg";
+			if( wfLocalFile( $img ) ) $text .= "[[Image:$user.jpg|48px|left|link=User:$user]]";
+			else {
+				$url = Title::newFromText( 'Upload', NS_SPECIAL )->getLocalUrl( "wpDestFile=$img" );
+				$text .= "[[Image:Anon.png|48px|left|link=$url]]";
+			}
+			$title = Title::newFromText( $user, NS_USER );
+			if( $title->exists() ) {
+				$article = new Article( $title );
+				$text .= $article->getContent();
+			}
+			else $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]";
 		}
 		$dbr->freeResult( $res );
 		return $text;
