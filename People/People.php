@@ -58,7 +58,7 @@ class People {
 			$text .= "<div style=\"clear:both\"></div>\n";
 		}
 		$dbr->freeResult( $res );
-		return "<div id=\"people\">$text</div>";
+		return "<div id=\"people\">\n$text</div>";
 	}
 
 }
