@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EXIMLIST_VERSION', '0.0.1, 2012-09-20' );
+define( 'EXIMLIST_VERSION', '1.0.1, 2012-09-20' );
 
 $wgEximMailListName            = 'WikiMailList';
 $wgEximMailListAddress         = 'wiki@' . $_SERVER['HTTP_HOST'];
@@ -53,7 +53,8 @@ class EximMailList {
 				. "\tsubject \$h_subject\n"
 				. "\ttext \$message_body\n"
 				. "\tto \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
-				. "\tbcc \"" . join( ',', $list ) . "\"\n";
+				. "\tbcc \"" . join( ',', $list ) . "\"\n"
+				. "\textra_headers \"Content-type: \$h_content-type\\nContent-transfer-encoding: \$h_Content-transfer-encoding\"\n"
 		}
 		return true;
 	}
