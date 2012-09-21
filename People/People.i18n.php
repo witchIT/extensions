@@ -15,7 +15,7 @@ $messages = array();
 $messages['en'] = array(
 	'people-create-intro' => "Click here to create a short introduction to yourself",
 	'people-upload-image' => "Click here to upload your photo",
-	'people-username' => "Username: [[User:$1|$1]]",
+	'people-username' => "User name: [[User:$1|$1]]",
 );
 
 $messages['pt'] = array(
