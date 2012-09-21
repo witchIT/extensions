@@ -35,7 +35,6 @@ class People {
 		global $wgUser;
 		$cur = $wgUser->getName();
 		$parser->disableCache();
-		$text = '';
 		$dbr = &wfGetDB(DB_SLAVE);
 		$res = $dbr->select( $dbr->tableName( 'user' ), 'user_name,user_real_name' );
 		while( $row = $dbr->fetchRow( $res ) ) {
@@ -59,15 +58,7 @@ class People {
 			$text .= "<div style=\"clear:both\"></div>\n";
 		}
 		$dbr->freeResult( $res );
-		return $text;
-        return array(
-		$text,
-		'found'   => true,
-		'nowiki'  => false,
-		'noparse' => false,
-		'noargs'  => false,
-		'isHTML'  => false
-	);
+		return "<div id=\"people\">$text</div>";
 	}
 
 }
