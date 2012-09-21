@@ -38,8 +38,8 @@ class EximMailList {
 				header( 'Forbidden', true, 403 );
 				die;
 			}
-				
-    		global $wgOut, $wgEximMailListName, $wgEximMailListAddress;
+
+			global $wgOut, $wgEximMailListName, $wgEximMailListAddress;
 			$wgOut->disable();
 			$dbr = &wfGetDB(DB_SLAVE);
 			$list = array();
