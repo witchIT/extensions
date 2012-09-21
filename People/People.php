@@ -43,15 +43,13 @@ class People {
 			$name = $row[1] ? $row [1] : $user;
 			$text .= "== $name ==\n";
 			$img = "$user.jpg";
-			$text .= "<div style=\"float:left\">";
-			if( $exists = wfLocalFile( $img )->exists() ) $text .= "[[Image:$user.jpg|48px|link=User:$user]]";
+			$text .= "<small>([[User:$user|$user]])</small>";
+			if( wfLocalFile( $img )->exists() ) $text .= "[[Image:$user.jpg|48px|left|link=User:$user]]";
 			else {
 				$url = Title::newFromText( 'Upload', NS_SPECIAL )->getFullUrl( "wpDestFile=$img" );
-				$text .= "[[Image:Anon.png|48px|link=$url]]";
+				$text .= "[[Image:Anon.png|48px|left|link=$url]]";
+				if( $cur == $user ) $text .= "<div class=\"plainlinks\">[$url " . wfMsg( 'people-upload-image' ) . "]</div>\n\n";
 			}
-			$text .= "<br />[[User:$user|$user]]";
-			$text .= "</div>";
-			if( $cur == $user && !$exists ) $text .= "<div class=\"plainlinks\">[$url " . wfMsg( 'people-upload-image' ) . "]</div>\n\n";
 			$title = Title::newFromText( $user, NS_USER );
 			if( $title->exists() ) {
 				$article = new Article( $title );
