@@ -54,7 +54,7 @@ class EximMailList {
 				. "\ttext \$message_body\n"
 				. "\tto \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
 				. "\tbcc \"" . join( ',', $list ) . "\"\n"
-				. "\textra_headers \"Content-type: \$h_content-type\\nContent-transfer-encoding: \$h_Content-transfer-encoding\"\n"
+				. "\textra_headers \"Content-type: \$h_content-type\\nContent-transfer-encoding: \$h_Content-transfer-encoding\"\n";
 		}
 		return true;
 	}
