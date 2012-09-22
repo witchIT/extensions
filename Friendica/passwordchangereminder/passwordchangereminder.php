@@ -6,21 +6,21 @@
  * Author: Aran Dunkley <http://www.organicdesign.co.nz/nad>
  *
  */
-function regreason_install() {
+function passwordchangereminder_install() {
 	register_hook('settings_post', 'addon/passwordchangereminder/passwordchangereminder.php', 'passwordchangereminder_timestamp');
 }
 
-function regreason_uninstall() {
+function passwordchangereminder_uninstall() {
 	unregister_hook('settings_post', 'addon/passwordchangereminder/passwordchangereminder.php', 'passwordchangereminder_timestamp');
 }
 
 /**
  * Record the password change in the pwd_change_time columns, create column if necessary
  */
-function passwordchangereminder_timestamp( &$a, &$arr ) {
-	if((x($_POST,'npassword')) || (x($_POST,'confirm'))) {
-		$newpass = $_POST['npassword'];
-		$confirm = $_POST['confirm'];
+function passwordchangereminder_timestamp( &$a, $post ) {
+	if((x($post,'npassword')) || (x($post,'confirm'))) {
+		$newpass = $post['npassword'];
+		$confirm = $post['confirm'];
 		if($newpass == $confirm && x($newpass)) {
 			$password = hash('whirlpool',$newpass);
 			$r = q("SELECT `password` FROM `user` WHERE `uid` = %d", intval(local_user()));
@@ -29,12 +29,13 @@ function passwordchangereminder_timestamp( &$a, &$arr ) {
 				// Check if the columns exists and create if not
 				$r = q("DESCRIBE `user`");
 				if($r[count($r)-1]['Field'] != 'pwd_change_time') {
-					q("ALTER TABLE `user` ADD `pwd_change_time` BIGINT");
+					q("ALTER TABLE `user` ADD `pwd_change_time` DATETIME");
 				}
 
 				// Store the timestamp
-				$r = q("UPDATE `user` SET `pwd_change_time` = '%d' WHERE `uid` = %d",time(),intval(local_user()));
+				$r = q("UPDATE `user` SET `pwd_change_time` = '%s' WHERE `uid` = %d",dbesc(datetime_convert()),intval(local_user()));
 			}
 		}
 	}
 }
+
