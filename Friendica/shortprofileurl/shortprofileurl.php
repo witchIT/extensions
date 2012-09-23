@@ -30,10 +30,10 @@ function shortprofileurl(&$a) {
 			$nick = $a->module;
 			$a->argv = array( 'profile', $nick );
 			$a->argc = 2;
-			$a->query_string = "/profile/$nick/&tab=profile";
+			//$a->query_string = "/profile/$nick/&tab=profile";
 			$a->cmd = "/profile/$nick";
 			$a->module = 'profile';
-			$_GET['tab'] = 'profile';
+			//$_GET['tab'] = 'profile';
 		}
 	}
 }
