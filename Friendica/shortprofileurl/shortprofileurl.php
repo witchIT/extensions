@@ -8,12 +8,12 @@
  */
 function shortprofileurl_install() {
 	register_hook('init_1', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl');
-	register_hook('app_menu', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl_js');
+	//register_hook('app_menu', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl_js');
 }
 
 function shortprofileurl_uninstall() {
 	unregister_hook('init_1', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl');
-	unregister_hook('app_menu', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl_js');
+	//unregister_hook('app_menu', 'addon/shortprofileurl/shortprofileurl.php', 'shortprofileurl_js');
 }
 
 function shortprofileurl(&$a) {
