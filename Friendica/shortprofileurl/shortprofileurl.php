@@ -19,10 +19,10 @@ function shortprofileurl_uninstall() {
 function shortprofileurl(&$a) {
 
 	// If this is a profile/nick request, redirect it to short form
-	if( preg_match( "|^profile/([^\/\?]+)(\/[\?&]tab=profile)?$|", $a->query_string, $m ) ) {
-		header( "Location: " . $a->get_baseurl() . "/$m[1]" );
-		exit;
-	}
+	//if( preg_match( "|^profile/([^\/\?]+)(\/[\?&]tab=profile)?$|", $a->query_string, $m ) ) {
+	//	header( "Location: " . $a->get_baseurl() . "/$m[1]" );
+	//	exit;
+	//}
 
 	// If this is no such module and it matches a nickname, change environment to profile/nick
 	if(!file_exists("mod/{$a->module}.php")) {
