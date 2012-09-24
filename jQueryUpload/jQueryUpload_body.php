@@ -321,25 +321,26 @@ class jQueryUpload extends SpecialPage {
 }
 
 /**
- * We need to modify the UploadHandler because it doesn't check if the script already has a query-string and doesn't do file icons
+ * A modified version of the UploadHandler class
  */
 class MWUploadHandler extends UploadHandler {
 
+	/**
+	 * The delete URL needs to be adjusted because it doesn't check if the script URL already has a query-string
+	 */
 	protected function set_file_delete_url( $file ) {
 		$file->delete_url = $this->options['script_url'] . '&file=' . rawurlencode($file->name);
 		$file->delete_type = $this->options['delete_type'];
 		if ($file->delete_type !== 'DELETE') $file->delete_url .= '&_method=DELETE';
 	}
 
-	protected function create_scaled_image( $file_name, $options ) {
-		if( $result = parent::create_scaled_image( $file_name, $options ) ) return $result;
-		
-		// File couldn't be scaled as an image, check if it has an icon
-		if( $icon = jQueryUpload::icon( $file_name ) ) {
-			return symlink( $icon , $options['upload_dir'] . $file_name );
-		}
-
-		return false;
+	/**
+	 * We override the thumbnail creation to return a filetype icon when files can't be scaled as an image
+	 */
+	protected function create_scaled_image( $file, $options ) {
+		if( $result = parent::create_scaled_image( $file, $options ) ) return $result;
+		$icon = jQueryUpload::icon( $file );
+		return symlink( $icon , $options['upload_dir'] . $file );
 	}
 
 }
