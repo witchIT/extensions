@@ -11,6 +11,8 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  */
 define( 'JQU_VERSION', "0.0.1, 2012-09-24" );
 
+$wgJQUploadIconPrefix = dirname(__FILE__) . '/icons/Farm-Fresh_file_extension_';
+
 $wgAjaxExportList[] = 'jQueryUpload::server';
 
 $wgSpecialPages['jQueryUpload'] = 'jQueryUpload';

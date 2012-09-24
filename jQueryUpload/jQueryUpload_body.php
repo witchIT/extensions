@@ -27,11 +27,12 @@ class jQueryUpload extends SpecialPage {
 	 * Return a file icon for the passed filename
 	 */
 	public static function icon( $file ) {
-		global $IP;
+		global $IP, $wgJQUploadIconPrefix;
 		$ext = strtolower( pathinfo( $file, PATHINFO_EXTENSION ) );
-		$icons = "$IP/skins/common/images/icons";
-		$icon = "$icons/fileicon-$ext.png";
-		return file_exists( $icon ) ? $icon : "$icons/fileicon.png";
+		$prefix = $wgJQUploadIconPrefix ? $wgJQUploadIconPrefix : "$IP/skins/common/images/icons/fileicon-";
+		$icon = "$prefix$ext.png";
+		if( !file_exists( $icon ) ) $icon = preg_replace( '|[-_]$|', '', $prefix ) . '.png';
+		return $icon;
 	}
 
 	/**
