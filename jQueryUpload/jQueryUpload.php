@@ -25,17 +25,10 @@ $wgExtensionCredits['specialpage'][] = array(
 );
 
 // If the query-string arg mwaction is supplied, rename action and change mwaction to action
+// - this hack was required because the jQueryUpload module uses the name "action" too
 if( array_key_exists( 'mwaction', $_REQUEST ) ) {
 	$wgJQUploadAction = array_key_exists( 'action', $_REQUEST ) ? $_REQUEST['action'] : false;
 	$_REQUEST['action'] = $_GET['action'] = $_POST['action'] = $_REQUEST['mwaction'];
-}
-
-if( preg_match( '|/action=ajax|', $_SERVER['REQUEST_URI'] ) ) {
-	$_SERVER['QUERY_STRING'] = 'action=ajax&rs=jQueryUpload::server&' . $_SERVER['QUERY_STRING'];
-	$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . '?' . $_SERVER['QUERY_STRING'];
-	$_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'];
-	unset( $_SERVER['PATH_INFO'] );
-    unset( $_SERVER['PATH_TRANSLATED'] );
 }
 
 $dir = dirname(__FILE__);
