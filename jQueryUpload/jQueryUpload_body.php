@@ -18,13 +18,9 @@ class jQueryUpload extends SpecialPage {
 	function execute( $param ) {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath;
 		$this->setHeaders();
-
-		$wgOut->addWikiText( "== Upload files ==\n" );
-
 		$wgOut->addHtml( $this->form() );
 		$wgOut->addHtml( $this->templates() );
 		$wgOut->addHtml( $this->scripts() );
-
 	}
 
 	/**
