@@ -1,8 +1,9 @@
 <?php
 /**
- * Special page class for the User Merge and Delete extension
- * allows sysops to merge references from one user to another user.
- * It also supports deleting users following merge.
+ * Main class for the jQueryUpload MediaWiki extension
+ * 
+ * The ajax handler, head items, form and templates are based on
+ * the jQueryUpload demo by Sebastian Tschan (https://blueimp.net)
  *
  * @ingroup Extensions
  * @author Aran Dunkley (http://www.organicdesign.co.nz/nad)
@@ -11,17 +12,59 @@
 class jQueryUpload extends SpecialPage {
 
 	function __construct() {
+		global $wgTitle, $wgHooks;
+
+		// Initialise the special page
 		parent::__construct( 'jQueryUpload', 'upload' );
-		$this->head();
+
+		// Check if this page should be able to have files attached (by default allow attachments for all existing article)
+		$attach = is_object( $wgTitle ) && $wgTitle->getArticleID();
+		wfRunHooks( 'jQueryUploadAddAttachLink', array( &$wgTitle, &$attach ) );
+
+		// If attachments allowed in this page, add the module into the page
+		if( $attach ) {
+			$this->head();
+			//$wgHooks['SkinTemplateNavigation'][] = $this;
+			//$wgHooks['SkinTemplateTabs'][] = $this;
+		}
+
 	}
 
+	/**
+	 * Render the special page
+	 */
 	function execute( $param ) {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath;
 		$this->setHeaders();
+		$this->head();
 		$wgOut->addHtml( $this->form() );
 		$wgOut->addHtml( $this->templates() );
 		$wgOut->addHtml( $this->scripts() );
 	}
+
+	/**
+	 * Add an attach files tab for vector
+	 */
+	function onSkinTemplateNavigation( $template, &$actions ) {
+		$actions['views']['attach'] = array(
+			'text'  => wfMsg( 'jqueryupload-attach' ),
+			'class' => false,
+			'href'  => 'javascript:jquery_upload_attach()'
+		);
+		return true;
+	}
+
+	/**
+	 * Add an attach files tab for monobook
+	 */
+ 	function onSkinTemplateTabs( $skin, &$actions ) {
+		$actions['attach'] = array(
+			'text'  => wfMsg( 'jqueryupload-attach' ),
+			'class' => false,
+			'href'  => 'javascript:jquery_upload_attach()'
+		);
+		return true;
+ 	}
 
 	/**
 	 * Return a file icon for the passed filename
@@ -38,35 +81,32 @@ class jQueryUpload extends SpecialPage {
 	/**
 	 * Ajax handler encapsulate jQueryUpload server-side functionality
 	 */
-	public static function server( $arg0 = false, $arg1 = false ) {
-		global $wgScript, $wgUploadDirectory, $wgJQUploadAction;
+	public static function server() {
+		global $wgScript, $wgUploadDirectory, $wgJQUploadAction, $wgRequest;
 		if( $wgJQUploadAction ) $_REQUEST['action'] = $wgJQUploadAction;
 
 		header( 'Pragma: no-cache' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 
 		// If there are args, then this is a file or thumbnail request
-		if( $arg0 ) {
+		if( $n = func_num_args() ) {
 			global $wgUser;
+			$a = func_get_args();
 
 			// Only return the file if the user is logged in
 			if( !$wgUser->isLoggedIn() ) return false;
 
 			// Get the file or thumb location
-			if( $arg0 == 'thumb' ) {
-				
-				
-				$name = $arg1;
-				$file = "$wgUploadDirectory/jquery_upload_thumb/$name";
-				
-				// If not thumb exists, return an icon
-				if( !file_exists( $file ) ) {
-					if( $icon = self::icon( $file ) ) $file = $icon;
-				}
+			if( $a[0] == 'thumb' ) {
+				array_shift( $a );
+				$path = $n == 3 ? array_shift( $a ) . '/' : '';
+				$name = "thumb/$a[0]";
+				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
 			}
 			else {
-				$name = $arg0;
-				$file = "$wgUploadDirectory/jquery_upload_files/$name";
+				$path = $n == 2 ? array_shift( $a ) . '/' : '';
+				$name = $a[0];
+				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
 			}
 
 			// Set the headers, output the file and bail
@@ -97,18 +137,31 @@ class jQueryUpload extends SpecialPage {
 		// So that meaningful errors can be sent back to the client
 		error_reporting( E_ALL | E_STRICT );
 
+		// Get the file locations
+		$path = $wgRequest->getText( 'path', '' );
+		$dir = "$wgUploadDirectory/jquery_upload_files/$path";
+		if( $path ) $dir .= '/';
+		$thm = $dir . 'thumb/';
+
+		// Create the directories if they don't exist
+		if( !is_dir( $dir ) ) {
+			mkdir( $dir );
+			mkdir( $thm );
+		}
+
 		// Set the initial options for the upload file object
 		$url = "$wgScript?action=ajax&rs=jQueryUpload::server";
+		if( $path ) $path = "&rsargs[]=$path";
 		$upload_options = array(
 			'script_url' => $url,
-			'upload_dir' => "$wgUploadDirectory/jquery_upload_files/",
-			'upload_url' => "$url&rsargs[]=",
+			'upload_dir' => $dir,
+			'upload_url' => "$url$path&rsargs[]=",
 			'delete_type' => 'POST',
 			'max_file_size' => 50000000,
 			'image_versions' => array(
 				'thumbnail' => array(
-					'upload_dir' => "$wgUploadDirectory/jquery_upload_thumb/",
-					'upload_url' => "$url&rsargs[]=thumb&rsargs[]=",
+					'upload_dir' => $thm,
+					'upload_url' => "$url&rsargs[]=thumb$path&rsargs[]=",
 					'max_width' => 80,
 					'max_height' => 80
 				)
@@ -208,7 +261,8 @@ class jQueryUpload extends SpecialPage {
 	}
 
 	function form() {
-		global $wgScript;
+		global $wgScript, $wgTitle;
+		$path = ( is_object( $wgTitle ) && $id = $wgTitle->getArticleID() ) ? "<input type=\"hidden\" name=\"path\" value=\"$id\" />" : '';
 		return '<form id="fileupload" action="' . $wgScript . '" method="POST" enctype="multipart/form-data">
 			<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
 			<div class="row fileupload-buttonbar">
@@ -249,7 +303,7 @@ class jQueryUpload extends SpecialPage {
 			<!-- The table listing the files available for upload/download -->
 			<table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
 			<input type="hidden" name="mwaction" value="ajax" />
-			<input type="hidden" name="rs" value="jQueryUpload::server" />
+			<input type="hidden" name="rs" value="jQueryUpload::server" />' . $path . '
 		</form>';
 	}
 
@@ -324,10 +378,11 @@ class jQueryUpload extends SpecialPage {
 class MWUploadHandler extends UploadHandler {
 
 	/**
-	 * The delete URL needs to be adjusted because it doesn't check if the script URL already has a query-string
+	 * The delete URL needs to be adjusted because it doesn't check if the script URL already has a query-string and to add path info
 	 */
 	protected function set_file_delete_url( $file ) {
-		$file->delete_url = $this->options['script_url'] . '&file=' . rawurlencode($file->name);
+		$path = preg_match( '|jquery_upload_files/(.+)/|', $this->options['upload_dir'], $m ) ? "&path=$m[1]" : '';
+		$file->delete_url = $this->options['script_url'] . "$path&file=" . rawurlencode($file->name);
 		$file->delete_type = $this->options['delete_type'];
 		if ($file->delete_type !== 'DELETE') $file->delete_url .= '&_method=DELETE';
 	}

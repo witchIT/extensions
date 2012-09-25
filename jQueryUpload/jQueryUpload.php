@@ -15,14 +15,15 @@ $wgJQUploadIconPrefix = dirname(__FILE__) . '/icons/Farm-Fresh_file_extension_';
 
 $wgAjaxExportList[] = 'jQueryUpload::server';
 
+$wgExtensionFunctions[] = 'wfJQueryUploadSetup';
 $wgSpecialPages['jQueryUpload'] = 'jQueryUpload';
 $wgSpecialPageGroups['jQueryUpload'] = 'media';
-$wgExtensionCredits['specialpage'][] = array(
+$wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => "jQueryUpload",
 	'descriptionmsg' => "jqueryupload-desc",
 	'url'            => "http://www.organicdesign.co.nz/jQueryUpload",
-	'author'         => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
+	'author'         => array( "[http://www.organicdesign.co.nz/nad Aran Dunkley]", "[http://blueimp.net Sebastian Tschan]" ),
 	'version'        => JQU_VERSION
 );
 
@@ -38,3 +39,8 @@ $wgExtensionMessagesFiles['jQueryUpload'] = "$dir/jQueryUpload.i18n.php";
 $wgExtensionMessagesFiles['jQueryUploadAlias'] = "$dir/jQueryUpload.alias.php";
 require( "$dir/upload/server/php/upload.class.php" );
 require( "$dir/jQueryUpload_body.php" );
+
+function wfJQueryUploadSetup() {
+	global $wgJQueryUpload;
+	$wgJQueryUpload = new jQueryUpload();
+}
