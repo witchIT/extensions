@@ -24,8 +24,6 @@ class jQueryUpload extends SpecialPage {
 		// If attachments allowed in this page, add the module into the page
 		if( $attach ) {
 			$this->head();
-			//$wgHooks['SkinTemplateNavigation'][] = $this;
-			//$wgHooks['SkinTemplateTabs'][] = $this;
 		}
 
 	}
@@ -41,30 +39,6 @@ class jQueryUpload extends SpecialPage {
 		$wgOut->addHtml( $this->templates() );
 		$wgOut->addHtml( $this->scripts() );
 	}
-
-	/**
-	 * Add an attach files tab for vector
-	 */
-	function onSkinTemplateNavigation( $template, &$actions ) {
-		$actions['views']['attach'] = array(
-			'text'  => wfMsg( 'jqueryupload-attach' ),
-			'class' => false,
-			'href'  => 'javascript:jquery_upload_attach()'
-		);
-		return true;
-	}
-
-	/**
-	 * Add an attach files tab for monobook
-	 */
- 	function onSkinTemplateTabs( $skin, &$actions ) {
-		$actions['attach'] = array(
-			'text'  => wfMsg( 'jqueryupload-attach' ),
-			'class' => false,
-			'href'  => 'javascript:jquery_upload_attach()'
-		);
-		return true;
- 	}
 
 	/**
 	 * Return a file icon for the passed filename
