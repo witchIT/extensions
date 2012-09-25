@@ -145,16 +145,17 @@ class jQueryUpload extends SpecialPage {
 
 	function head() {
 		global $wgOut, $wgExtensionAssetsPath;
-		$css = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ) . '/upload/css';
+		$base = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) );
+		$css = "$base/upload/css";
 
 		// Bootstrap CSS Toolkit styles
-		$wgOut->addStyle( 'http://blueimp.github.com/cdn/css/bootstrap.min.css', 'screen' );
+		$wgOut->addStyle( "$base/jqueryupload.css", 'screen' );
 
 		// Bootstrap styles for responsive website layout, supporting different screen sizes
-		$wgOut->addStyle( 'http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css', 'screen' );
+		//$wgOut->addStyle( 'http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css', 'screen' );
 
 		// CSS to style the file input field as button and adjust the Bootstrap progress bars
-		$wgOut->addStyle( $css . '/jquery.fileupload-ui.css', 'screen' );
+		$wgOut->addStyle( "$css/jquery.fileupload-ui.css", 'screen' );
 
 		// Bootstrap CSS fixes for IE6
 		$wgOut->addHeadItem( 'IE6', "<!--[if lt IE 7]><link rel=\"stylesheet\" href=\"http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css\"><![endif]-->\n" );
