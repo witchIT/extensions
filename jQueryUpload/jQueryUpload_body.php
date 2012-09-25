@@ -12,18 +12,20 @@
 class jQueryUpload extends SpecialPage {
 
 	function __construct() {
-		global $wgTitle, $wgHooks;
+		global $wgHooks;
 
 		// Initialise the special page
 		parent::__construct( 'jQueryUpload', 'upload' );
 
 		// Check if this page should be able to have files attached (by default allow attachments for all existing article)
-		$attach = is_object( $wgTitle ) && $wgTitle->getArticleID();
-		wfRunHooks( 'jQueryUploadAddAttachLink', array( &$wgTitle, &$attach ) );
+		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
+		$attach = is_object( $title ) && $title->getArticleID();
+		wfRunHooks( 'jQueryUploadAddAttachLink', array( &$title, &$attach ) );
 
 		// If attachments allowed in this page, add the module into the page
 		if( $attach ) {
 			$this->head();
+			$wgHooks['BeforePageDisplay'][] = $this;
 		}
 
 	}
@@ -38,6 +40,17 @@ class jQueryUpload extends SpecialPage {
 		$wgOut->addHtml( $this->form() );
 		$wgOut->addHtml( $this->templates() );
 		$wgOut->addHtml( $this->scripts() );
+	}
+
+	/**
+	 * Render scripts and form into an article
+	 */
+	function onBeforePageDisplay( $out, $skin ) {
+		$out->addHtml( '<h2>' . wfMsg( 'jqueryupload-attachments' ) . '</h2>' );
+		$out->addHtml( $this->form() );
+		$out->addHtml( $this->templates() );
+		$out->addHtml( $this->scripts() );
+		return true;
 	}
 
 	/**
