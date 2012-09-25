@@ -131,6 +131,7 @@ class jQueryUpload extends SpecialPage {
 		$thm = $dir . 'thumb/';
 
 		// Create the directories if they don't exist
+		if( !is_dir( "$wgUploadDirectory/jquery_upload_files" ) ) mkdir( "$wgUploadDirectory/jquery_upload_files" );
 		if( !is_dir( $dir ) ) {
 			mkdir( $dir );
 			mkdir( $thm );
