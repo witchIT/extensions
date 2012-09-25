@@ -19,7 +19,7 @@ class jQueryUpload extends SpecialPage {
 
 		// Check if this page should be able to have files attached (by default allow attachments for all existing article)
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
-		$attach = is_object( $title ) && $title->getArticleID();
+		$attach = is_object( $title ) && $title->getArticleID() && !in_array( 'action', $_REQUEST );
 		wfRunHooks( 'jQueryUploadAddAttachLink', array( &$title, &$attach ) );
 
 		// If attachments allowed in this page, add the module into the page
