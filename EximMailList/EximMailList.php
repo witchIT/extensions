@@ -9,11 +9,12 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EXIMLIST_VERSION', '1.0.1, 2012-09-20' );
+define( 'EXIMLIST_VERSION', '1.0.2, 2012-09-25' );
 
-$wgEximMailListName            = 'WikiMailList';
-$wgEximMailListAddress         = 'wiki@' . $_SERVER['HTTP_HOST'];
-$wgExtensionFunctions[]        = 'wfSetupEximMailList';
+$wgEximMailListName     = 'WikiMailListName';
+$wgEximMailListSubject  = '';
+$wgEximMailListAddress  = 'wiki@' . $_SERVER['HTTP_HOST'];
+$wgExtensionFunctions[] = 'wfSetupEximMailList';
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'People',
 	'author'      => '[http://www.organicdesign.co.nz/nad Nad]',
@@ -39,26 +40,38 @@ class EximMailList {
 				die;
 			}
 
-			global $wgOut, $wgEximMailListName, $wgEximMailListAddress;
+			global $wgOut, $wgEximMailListName, $wgEximMailListSubject, $wgEximMailListAddress;
+			if( $wgEximMailListSubject == '' ) $wgEximMailListSubject = $wgEximMailListName;
 			$wgOut->disable();
 			$dbr = &wfGetDB(DB_SLAVE);
 			$list = array();
 			$res = $dbr->select( $dbr->tableName( 'user' ), 'user_email' );
 			while( $row = $dbr->fetchRow( $res ) ) $list[] = $row[0];
 			$dbr->freeResult( $res );
+			$list = join( ',', $list );
 			print "# Exim filter\n"
+				. "if \$h_subject contains \"[$wgEximMailListSubject]\" then\n"
 				. "\tseen mail\n"
 				. "\tfrom \$reply_address\n"
 				. "\treply_to \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
 				. "\tsubject \$h_subject\n"
 				. "\ttext \$message_body\n"
 				. "\tto \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
-				. "\tbcc \"" . join( ',', $list ) . "\"\n"
-				. "\textra_headers \"Content-type: \$h_content-type\\nContent-transfer-encoding: \$h_Content-transfer-encoding\"\n";
+				. "\tbcc \"$list\"\n"
+				. "\textra_headers \"Content-type: \$h_content-type\\nContent-transfer-encoding: \$h_Content-transfer-encoding\"\n"
+				. "else\n"
+				. "\tseen mail\n"
+				. "\tfrom \$reply_address\n"
+				. "\treply_to \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
+				. "\tsubject \"[$wgEximMailListSubject] \$h_subject\"\n"
+				. "\ttext \$message_body\n"
+				. "\tto \"$wgEximMailListName<$wgEximMailListAddress>\"\n"
+				. "\tbcc \"$list\"\n"
+				. "\textra_headers \"Content-type: \$h_content-type\\nContent-transfer-encoding: \$h_Content-transfer-encoding\"\n"
+				. "endif\n";
 		}
 		return true;
 	}
-
 }
 
 function wfSetupEximMailList() {
