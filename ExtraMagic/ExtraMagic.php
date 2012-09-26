@@ -30,9 +30,7 @@ $wgExtraMagicVariables = array(
 	'ARTICLEID',
 	'IPADDRESS',
 	'DOMAIN',
-	'NUMBERINGOFF',
-	'GUID',
-	'THIS'
+	'GUID'
 );
 
 
@@ -80,7 +78,7 @@ class ExtraMagic {
 
 	function onParserGetVariableValueVarCache( &$parser, &$varCache ) {
 
-		$varCache['uuid'] = $v4String ? $v4String : 'NULL';
+		$varCache['currentuser'] = 'foo';
 		return true;
 	}
 
@@ -134,20 +132,11 @@ class ExtraMagic {
 				$ret = str_replace( 'www.', '', $_SERVER['SERVER_NAME'] );
 			break;
 
-			case MAG_NUMBERINGOFF:
-				global $wgUser;
-				$wgUser->setOption( 'numberheadings', false );
-				$ret = '';
-			break;
-
 			case MAG_GUID:
 				$parser->disableCache();
 				$ret = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
 			break;
 
-			case MAG_THIS:
-				global $wgThisTemplateName;
-				$ret = $wgThisTemplateName;
 
 		}
 		return true;
