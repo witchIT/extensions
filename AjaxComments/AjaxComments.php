@@ -46,7 +46,7 @@ class AjaxComments {
 
 		$wgHooks['MediaWikiPerformAction'][] = $this;
 		$wgHooks['UnknownAction'][] = $this;
-		$wgHooks['OutputPageBeforeHTML'][] = $this;
+		$wgHooks['BeforePageDisplay'][] = $this;
 
 		// Set up JavaScript and CSS resources
 		if( is_callable( 'OutputPage::addModules' ) ) {
@@ -96,8 +96,8 @@ class AjaxComments {
 	/**
 	 * Render a name at the end of the page so redirected talk pages can go there before ajax loads the content
 	 */
-	function onOutputPageBeforeHTML( &$out, &$text ) {
-		$text .= "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>";
+	function onBeforePageDisplay( $out, $skin ) {
+		$out->addHtml( "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>" );
 		return true;
 	}
 
