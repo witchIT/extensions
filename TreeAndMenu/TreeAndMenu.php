@@ -192,8 +192,10 @@ class TreeAndMenu {
 		//  it's just based on the fact that all sub-tree's have a minus preceding their row data
 		if( !preg_match_all( "/~x7f~x7f1$u~x7f(.+?)~x7f/", $text, $subs ) ) $subs = array( 1 => array() );
 
+	print_r( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) );
+
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
-		if( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/s", $text, $matches, PREG_SET_ORDER ) ) {
+		if( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
 			// PASS-1: build $rows array containing depth, and tree start/end information
 			$rows   = array();
