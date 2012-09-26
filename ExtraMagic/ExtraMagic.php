@@ -22,7 +22,7 @@ $wgExtensionCredits['parserhook'][] = array(
 	'version'     => EXTRAMAGIC_VERSION
 );
 
-$wgCustomVariables = array(
+$wgExtraMagicVariables = array(
 	'CURRENTUSER',
 	'CURRENTPERSON',
 	'CURRENTLANG',
@@ -57,10 +57,10 @@ class ExtraMagic {
 	}
 
 	function onLanguageGetMagic( &$magicWords, $langCode = null ) {
-		global $wgCustomVariables;
+		global $wgExtraMagicVariables;
  
  		// Magic words
-		foreach( $wgCustomVariables as $var ) $magicWords[strtolower( $var )] = array( 1, $var );
+		foreach( $wgExtraMagicVariables as $var ) $magicWords[strtolower( $var )] = array( 1, $var );
 
 		// Parser functions
 		$magicWords['request'] = array( 0, 'REQUEST' );
@@ -73,8 +73,8 @@ class ExtraMagic {
 	}
 
 	function onMagicWordwgVariableIDs( &$variableIDs ) {
-		global $wgCustomVariables;
-		foreach( $wgCustomVariables as $var ) $variableIDs[] = strtolower( $var );
+		global $wgExtraMagicVariables;
+		foreach( $wgExtraMagicVariables as $var ) $variableIDs[] = strtolower( $var );
 		return true;
 	}
 
