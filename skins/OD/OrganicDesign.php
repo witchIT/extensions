@@ -125,14 +125,14 @@ if ( $wgOrganicDesignDonations ) {?>
 </div><?php
 
 // Sidebar
-global $wgUser,$wgTitle,$wgParser;
+global $wgUser, $wgTitle, $wgParser;
 $title = 'od-sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
 if( empty( $text ) ) $text = wfMsg( $title );
-$psr = new Parser;
+//$psr = new Parser;
 $opt = ParserOptions::newFromUser( $wgUser );
-echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
+echo $wgParser->parse( $text, $wgTitle, $opt, true, false )->getText();
 ?></div></td>
 
 <!-- Main content area -->
