@@ -77,38 +77,30 @@ class ExtraMagic {
 
 	function onParserGetVariableValueVarCache( &$parser, &$varCache ) {
 		global $wgUser, $wgTitle;
-		
-		print_r($varCache);
-		
-		//$parser->disableCache();
-
-		$varCache['currentuser'] = 'foo';
 
 		// CURRENTUSER
-		$ret = $wgUser->mName;
+		$varCache['currentuser'] = $wgUser->mName;
 
 		// CURRENTPERSON:
-		$ret = $wgUser->getRealName();
+		$varCache['currentperson'] = $wgUser->getRealName();
 
 		// CURRENTLANG:
-		$ret = $wgUser->getOption( 'language' );
+		$varCache['currentlang'] = $wgUser->getOption( 'language' );
 
 		// CURRENTSKIN:
-		$ret = $wgUser->getOption( 'skin' );
+		$varCache['currentlang'] = $wgUser->getOption( 'skin' );
 
 		// ARTICLEID:
-		if ( is_object( $wgTitle ) ) {
-			$ret = $wgTitle->getArticleID();
-		} else $ret = 'No revision ID!';
+		$varCache['articleid'] = is_object( $wgTitle ) ? $ret = $wgTitle->getArticleID() : 'NULL';
 
 		// IPADDRESS:
-		$ret = $_SERVER['REMOTE_ADDR'];
+		$varCache['ipaddress'] = $_SERVER['REMOTE_ADDR'];
 
 		// DOMAIN:
-		$ret = str_replace( 'www.', '', $_SERVER['SERVER_NAME'] );
+		$varCache['domain'] = str_replace( 'www.', '', $_SERVER['SERVER_NAME'] );
 
 		// GUID:
-		$ret = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
+		$varCache['guid'] = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
 
 		return true;
 	}
