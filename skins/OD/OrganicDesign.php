@@ -1,33 +1,43 @@
 <?php
-if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 /**
- * OrganicDesign skin (for MW1.14+)
+ * OrganicDesign MediaWiki skin
  *
- * Translated from gwicke's previous TAL template version to remove
- * dependency on PHPTAL.
- *
- * @todo document
- * @addtogroup Skins
+ * @file
+ * @ingroup Skins
  */
 
+if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 
 /**
- * Inherit main code from SkinTemplate, set the CSS and template filter.
- * @todo document
- * @addtogroup Skins
+ * SkinTemplate class for OrganicDesign skin
+ * @ingroup Skins
  */
 class SkinOrganicDesign extends SkinTemplate {
-	function initPage( &$out ) {
-		SkinTemplate::initPage( $out );
-		$this->skinname  = 'organicdesign';
-		$this->stylename = 'organicdesign';
-		$this->template  = 'OrganicDesignTemplate';
+
+	var $skinname = 'organicdesign', $stylename = 'organicdesign',
+		$template = 'OrganicDesignTemplate', $useHeadElement = true,
+		$znazzaPage = false, $showTitle = true;
+
+	/**
+	 * Initializes output page and sets up skin-specific parameters
+	 * @param $out OutputPage object to initialize
+	 */
+	public function initPage( OutputPage $out ) {
+		global $wgLocalStylePath, $wgRequest;
+		parent::initPage( $out );
 	}
-	function setupSkinUserCss( $out ) {
+
+	/**
+	 * Load skin and user CSS files in the correct order
+	 * fixes bug 22916
+	 * @param $out OutputPage object
+	 */
+	function setupSkinUserCss( OutputPage $out ){
 		parent::setupSkinUserCss( $out );
-		$out->addStyle( 'organicdesign/main.css', 'screen' );
+		$out->addModuleStyles( "skins.organicdesign" );
 	}
 }
+
 /**
  * @todo document
  * @addtogroup Skins
