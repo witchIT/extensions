@@ -190,10 +190,10 @@ class TreeAndMenu {
 		// Determine which trees are sub trees
 		// - there should be a more robust way to do this,
 		//  it's just based on the fact that all sub-tree's have a minus preceding their row data
-		if( !preg_match_all( "/\x7f\x7f1$u\x7f(.+?)\x7f/", $text, $subs ) ) $subs = array( 1 => array() );
+		if( !preg_match_all( "/x7fx7f1$ux7f(.+?)x7f/", $text, $subs ) ) $subs = array( 1 => array() );
 
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
-		if( preg_match_all( "/\x7f1$u\x7f(.+?)\x7f([0-9]+)\x7f({$u}3(.+?){$u}4)?(.*?)(?=\x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
+		if( preg_match_all( "/x7f1$ux7f(.+?)x7f([0-9]+)x7f({$u}3(.+?){$u}4)?(.*?)(?=x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
 			// PASS-1: build $rows array containing depth, and tree start/end information
 			$rows   = array();
@@ -301,13 +301,13 @@ class TreeAndMenu {
 						$wgOut->addScript( "<script type=\"$wgJsMimeType\">$(function(){\n$script\n});</script>" );
 					}
 
-					$text  = preg_replace( "/\x7f1$u\x7f$id\x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
+					$text  = preg_replace( "/x7f1$ux7f$idx7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
 					$last  = -1;
 				}
 			}
 		}
-		$text = preg_replace( "/\x7f1$u\x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
+		$text = preg_replace( "/x7f1$ux7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
 		$oyt->mBodytext = $text;
 		return true;
 	}
