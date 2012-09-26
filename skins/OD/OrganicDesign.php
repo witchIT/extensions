@@ -70,7 +70,8 @@ global $wgUser,$wgUploadDirectory,$wgUploadPath;
 if ($wgUser->isLoggedIn()) {
 	?><div id="p-avatar"><?php
 	$name  = $wgUser->getName();
-	if( $img = wfLocalFile( "$name.png" ) && $img->exists() ) {
+	$img = wfLocalFile( "$name.png" );
+	if( is_object( $img  ) && $img->exists() ) {
 		$url = $img->transform( array( 'width' => 50 ) )->getUrl();
 		echo "<a href=\"" . $wgUser->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>";
 	} else {
