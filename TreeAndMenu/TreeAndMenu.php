@@ -77,7 +77,7 @@ class TreeAndMenu {
 		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
 		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
 		$wgParser->setFunctionHook( 'star', array( $this, 'expandStar' ) );
-		$wgHooks['OutputPageBeforeHTML'][] = array( $this, 'renderTreeAndMenu' );
+		$wgHooks['OutputPageParserOutput'][] = array( $this, 'renderTreeAndMenu' );
 
 		// Update general tree paths and properties
 		$this->baseDir  = dirname( __FILE__ );
