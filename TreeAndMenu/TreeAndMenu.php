@@ -164,6 +164,8 @@ class TreeAndMenu {
 		global $wgJsMimeType, $wgOut;
 		$u = $this->uniq;
 
+		$subs = array( 0, array() );
+
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
 		if( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
