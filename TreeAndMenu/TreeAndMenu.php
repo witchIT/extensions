@@ -308,6 +308,7 @@ class TreeAndMenu {
 			}
 		}
 		$text = preg_replace( "/\x7f1$u\x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
+		$wgOut->mBodytext = $text;
 		return true;
 	}
 }
