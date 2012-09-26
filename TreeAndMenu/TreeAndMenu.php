@@ -77,7 +77,7 @@ class TreeAndMenu {
 		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
 		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
 		$wgParser->setFunctionHook( 'star', array( $this, 'expandStar' ) );
-		$wgHooks['OutputPageBeforeHTML'][] = array( $this, 'renderTreeAndMenu' );
+		$wgHooks['ParserAfterTidy'][] = array( $this, 'renderTreeAndMenu' );
 
 		// Update general tree paths and properties
 		$this->baseDir  = dirname( __FILE__ );
@@ -191,9 +191,6 @@ class TreeAndMenu {
 		//  it's just based on the fact that all sub-tree's have a minus preceding their row data
 		if( !preg_match_all( "/\x7f\x7f1$u\x7f(.+?)\x7f/", $text, $subs ) ) $subs = array( 1 => array() );
 
-
-if( preg_match( "/\x7f1(.+?)\x7f/", $text, $m ) ) print "match($m[1]) (\x7f1$u\x7f(.+?)\x7f([0-9]+)\x7f({$u}3(.+?){$u}4)?(.*?)(?=\x7f[12]$u))<br>";
-
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
 		if( preg_match_all( "/\x7f1$u\x7f(.+?)\x7f([0-9]+)\x7f({$u}3(.+?){$u}4)?(.*?)(?=\x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
@@ -284,7 +281,7 @@ if( preg_match( "/\x7f1(.+?)\x7f/", $text, $m ) ) print "match($m[1]) (\x7f1$u\x
 							document.getElementById('$id').innerHTML = $objid.toString();
 							$opennodesjs
 							for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-						$wgOut->addInlineScript( $script );
+						$wgOut->addScript( "<script type=\"$wgJsMimeType\">$script</script>" );
 						$html = "$top<div class='$class' id='$id'></div>$bottom";
 						$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
 					} else {
@@ -308,7 +305,7 @@ if( preg_match( "/\x7f1(.+?)\x7f/", $text, $m ) ) print "match($m[1]) (\x7f1$u\x
 					$last  = -1;
 				}
 			}
-		} else print 'no match';
+		}
 		$text = preg_replace( "/\x7f1$u\x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
 		return true;
 	}
