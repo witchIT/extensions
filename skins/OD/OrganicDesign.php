@@ -120,16 +120,24 @@ if ( $wgOrganicDesignDonations ) {?>
 	</div>
 <?php }?>
 <div class="fb-like-box" data-href="http://www.facebook.com/organicdesign.co.nz" data-width="200" data-show-faces="false" data-stream="false" data-header="false"></div>
+
+<!-- search -->
 <div id="p-search" class="portlet">
 	<h5><label for="searchInput"><?php $this->msg('search') ?></label></h5>
 	<div id="searchBody" class="pBody">
-		<form action="<?php $this->text('searchaction') ?>" id="searchform"><div>
-			<input id="searchInput" name="search" type="text"<?php echo $skin->tooltipAndAccesskey('search');
-				if( isset( $this->data['search'] ) ) {
-					?> value="<?php $this->text('search') ?>"<?php } ?> />
-			<input type='submit' name="go" class="searchButton" id="searchGoButton"	value="<?php $this->msg('searcharticle') ?>" />&nbsp;
-			<input type='submit' name="fulltext" class="searchButton" id="mw-searchButton" value="<?php $this->msg('searchbutton') ?>" />
-		</div></form>
+		<form action="<?php $this->text('wgScript') ?>" id="searchform">
+			<input type='hidden' name="title" value="<?php $this->text('searchtitle') ?>"/>
+			<?php echo $this->makeSearchInput(array( "id" => "searchInput" )); ?>
+
+			<?php echo $this->makeSearchButton("go", array( "id" => "searchGoButton", "class" => "searchButton" ));
+			if ($wgUseTwoButtonsSearchForm): ?>&#160;
+			<?php echo $this->makeSearchButton("fulltext", array( "id" => "mw-searchButton", "class" => "searchButton" ));
+			else: ?>
+
+			<div><a href="<?php $this->text('searchaction') ?>" rel="search"><?php $this->msg('powersearch-legend') ?></a></div><?php
+			endif; ?>
+
+		</form>
 	</div>
 </div>
 
@@ -144,8 +152,8 @@ if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
 if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
-?>
-	</div></td><!-- end of the left (by default at least) column -->
+?></div></td><!-- end of the left (by default at least) column -->
+
 	<td id="contentWrapper">
 		<table cellpadding="0" cellspacing="0" width="100%"><tr>
 		<tr>
@@ -155,7 +163,17 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 		</tr>
 		<td id="shadow-l">
 		<td width="100%" id="content">
-			<?php $this->cactions(); ?>
+			<div id="p-cactions" class="portlet">
+				<h5><?php $this->msg('views') ?></h5>
+				<div class="pBody">
+					<ul><?php
+						foreach($this->data['content_actions'] as $key => $tab) {
+							echo $this->makeListItem( $key, $tab );
+						} ?>
+
+					</ul>
+				</div>
+			</div>
 	<a id="top"></a>
 	<?php if($this->data['sitenotice']) { ?><div id="siteNotice"><?php $this->html('sitenotice') ?></div><?php } ?>
 
@@ -192,7 +210,7 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	<tr><td colspan="2">
 	
 <?php
-# MediaWiki:Footer
+// MediaWiki:Footer
 global $wgUser,$wgTitle,$wgParser;
 $title = 'footer';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
