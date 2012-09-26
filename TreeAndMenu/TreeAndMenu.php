@@ -77,13 +77,12 @@ class TreeAndMenu {
 		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
 		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
 		$wgParser->setFunctionHook( 'star', array( $this, 'expandStar' ) );
-		$wgHooks['BeforePageDisplay'][] = array( $this, 'renderTreeAndMenu' );
 
 		// Update general tree paths and properties
 		$this->baseDir  = dirname( __FILE__ );
 		$this->baseUrl  = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) );
 		$this->useLines = $wgTreeViewShowLines ? 'true' : 'false';
-		$this->uniq     = 'foo'; //uniqid( $this->uniqname );
+		$this->uniq     = uniqid( $this->uniqname );
 
 		// Convert image titles to file paths and store as JS to update dTree
 		foreach( $wgTreeViewImages as $k => $v ) {
@@ -159,9 +158,12 @@ class TreeAndMenu {
 		$args['type'] = $magic;
 		$this->args[$this->id] = $args;
 
-		// Reformat tree rows for matching in ParserAfterStrip
+		// Reformat tree rows
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
+
+		// Render into html
+		$text = $this->renderTreeAndMenu( $text );
 
 		return $text;
 	}
@@ -182,17 +184,9 @@ class TreeAndMenu {
 	/**
 	 * Called after parser has finished (ParserAfterTidy) so all transcluded parts can be assembled into final trees
 	 */
-	public function renderTreeAndMenu( &$out, &$skin ) {
+	public function renderTreeAndMenu( $text ) {
 		global $wgJsMimeType, $wgOut;
 		$u = $this->uniq;
-		$text = $out->mBodytext;
-
-		// Determine which trees are sub trees
-		// - there should be a more robust way to do this,
-		//  it's just based on the fact that all sub-tree's have a minus preceding their row data
-		if( !preg_match_all( "/~x7f~x7f1$u~x7f(.+?)~x7f/", $text, $subs ) ) $subs = array( 1 => array() );
-
-	print_r( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) );
 
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
 		if( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
@@ -310,8 +304,7 @@ class TreeAndMenu {
 			}
 		}
 		$text = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
-		$oyt->mBodytext = $text;
-		return true;
+		return $text;
 	}
 }
 
