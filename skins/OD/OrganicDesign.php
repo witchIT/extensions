@@ -76,6 +76,7 @@ class OrganicDesignTemplate extends BaseTemplate {
 
 <?php
 // Get avatar image
+/*
 global $wgUser,$wgUploadDirectory,$wgUploadPath;
 if ($wgUser->isLoggedIn()) {
 	?><div id="p-avatar"><?php
@@ -91,6 +92,7 @@ if ($wgUser->isLoggedIn()) {
 	}
 	?></div><?php
 }
+*/
 ?>
 
 <?php
