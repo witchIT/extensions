@@ -42,7 +42,7 @@ class SkinOrganicDesign extends SkinTemplate {
  * @todo document
  * @addtogroup Skins
  */
-class OrganicDesignTemplate extends QuickTemplate {
+class OrganicDesignTemplate extends BaseTemplate {
 	var $skin;
 	/**
 	 * Template filter callback for MonoBook skin.
