@@ -84,6 +84,7 @@ class TreeAndMenu {
 	 * Expand either kind of parser-function (reformats tree rows for matching later) and store args
 	 */
 	public function expandTreeAndMenu( &$parser ) {
+		global $wgUser;
 		$args = func_get_args();
 		array_shift( $args );
 	
@@ -108,11 +109,12 @@ class TreeAndMenu {
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
-		global $wgUser;
+		// Parse the structure
 		$psr = new Parser;
 		$opt = ParserOptions::newFromUser( $wgUser );
 		$html = $psr->parse( $text, $parser->mTitle, $opt, true, true )->getText();
 
+		// Do the final rendering
 		$html = $this->renderTreeAndMenu( $html );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
@@ -139,6 +141,8 @@ class TreeAndMenu {
 		$u = $this->uniq;
 
 		$subs = array( 0, array() );
+
+		print_r("/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER );
 
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
 		if( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
