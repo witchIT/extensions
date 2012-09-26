@@ -16,16 +16,6 @@ class SkinOrganicDesign extends SkinTemplate {
 
 	var $skinname = 'organicdesign', $stylename = 'organicdesign',
 		$template = 'OrganicDesignTemplate', $useHeadElement = true,
-		$znazzaPage = false, $showTitle = true;
-
-	/**
-	 * Initializes output page and sets up skin-specific parameters
-	 * @param $out OutputPage object to initialize
-	 */
-	public function initPage( OutputPage $out ) {
-		global $wgLocalStylePath, $wgRequest;
-		parent::initPage( $out );
-	}
 
 	/**
 	 * Load skin and user CSS files in the correct order
