@@ -216,18 +216,3 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	} // end of execute() method
 } // end of class
 
-global $wgHooks;
-$wgHooks['PageBeforeDisplay'][] = 'wfSidebarTree';
-function wfSidebarTree( $out, $skin ) {
-	global $wgUser, $wgParser;
-	static $done = false;
-	if( $done ) return true;
-	$done = true;
-	$opt = ParserOptions::newFromUser( $wgUser );
-	$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
-	$article = new Article( $title );
-	$html = $this->searchBox();
-	$html .= $wgParser->parse( $article->fetchContent(), $title, $opt, true, true )->getText();
-	$out->addHTML( "<div id=\"sidebar-tree\">$html</div>" );
-	return true;
-}
