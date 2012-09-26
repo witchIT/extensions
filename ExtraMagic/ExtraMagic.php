@@ -42,7 +42,6 @@ class ExtraMagic {
 		$wgHooks['LanguageGetMagic'][] = $this;
 		$wgHooks['MagicWordwgVariableIDs'][] = $this;
 		$wgHooks['ParserGetVariableValueVarCache'][] = $this;
-		//$wgHooks['ParserGetVariableValueSwitch'][] = $this;
 	}
 
 	function setup() {
@@ -77,68 +76,40 @@ class ExtraMagic {
 	}
 
 	function onParserGetVariableValueVarCache( &$parser, &$varCache ) {
+		global $wgUser, $wgTitle;
+		
+		print_r($varCache);
+		
+		//$parser->disableCache();
 
 		$varCache['currentuser'] = 'foo';
-		return true;
-	}
 
+		// CURRENTUSER
+		$ret = $wgUser->mName;
 
-	/**
-	 * Process variable values
-	 */
-	function onParserGetVariableValueSwitch( &$parser, &$cache, &$index, &$ret ) {
-		print "$index<br>";
-		return true;
-		switch( $index ) {
+		// CURRENTPERSON:
+		$ret = $wgUser->getRealName();
 
-			case MAG_CURRENTUSER:
-				global $wgUser;
-				$parser->disableCache();
-				$ret = $wgUser->mName;
-			break;
+		// CURRENTLANG:
+		$ret = $wgUser->getOption( 'language' );
 
-			case MAG_CURRENTPERSON:
-				global $wgUser;
-				$parser->disableCache();
-				$ret = $wgUser->getRealName();
-			break;
+		// CURRENTSKIN:
+		$ret = $wgUser->getOption( 'skin' );
 
-			case MAG_CURRENTLANG:
-				global $wgUser;
-				$parser->disableCache();
-			break;
-				$ret = $wgUser->getOption( 'language' );
+		// ARTICLEID:
+		if ( is_object( $wgTitle ) ) {
+			$ret = $wgTitle->getArticleID();
+		} else $ret = 'No revision ID!';
 
-			case MAG_CURRENTSKIN:
-				global $wgUser;
-				$parser->disableCache();
-				$ret = $wgUser->getOption( 'skin' );
-			break;
+		// IPADDRESS:
+		$ret = $_SERVER['REMOTE_ADDR'];
 
-			case MAG_ARTICLEID:
-				global $wgTitle;
-				if ( is_object( $wgTitle ) ) {
-					$ret = $wgTitle->getArticleID();
-				} else $ret = 'No revision ID!';
-			break;
+		// DOMAIN:
+		$ret = str_replace( 'www.', '', $_SERVER['SERVER_NAME'] );
 
-			case MAG_IPADDRESS:
-				$parser->disableCache();
-				$ret = $_SERVER['REMOTE_ADDR'];
-			break;
+		// GUID:
+		$ret = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
 
-			case MAG_DOMAIN:
-				$parser->disableCache();
-				$ret = str_replace( 'www.', '', $_SERVER['SERVER_NAME'] );
-			break;
-
-			case MAG_GUID:
-				$parser->disableCache();
-				$ret = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
-			break;
-
-
-		}
 		return true;
 	}
 
