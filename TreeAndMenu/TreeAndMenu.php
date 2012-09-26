@@ -182,7 +182,7 @@ class TreeAndMenu {
 	/**
 	 * Called after parser has finished (ParserAfterTidy) so all transcluded parts can be assembled into final trees
 	 */
-	public function renderTreeAndMenu( &$parser, &$text ) {
+	public function renderTreeAndMenu( &$parser, $text ) {
 		global $wgJsMimeType, $wgOut;
 		$u = $this->uniq;
 
