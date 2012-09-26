@@ -41,8 +41,8 @@ class ExtraMagic {
 		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['LanguageGetMagic'][] = $this;
 		$wgHooks['MagicWordwgVariableIDs'][] = $this;
-		//$wgHooks['ParserGetVariableValueVarCache'][] = $this;
-		$wgHooks['ParserGetVariableValueSwitch'][] = $this;
+		$wgHooks['ParserGetVariableValueVarCache'][] = $this;
+		//$wgHooks['ParserGetVariableValueSwitch'][] = $this;
 	}
 
 	function setup() {
