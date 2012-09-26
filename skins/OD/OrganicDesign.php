@@ -9,13 +9,14 @@
 if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 
 // OD skin CSS
-global $wgResourceModules, $wgStylePath, $IP;
+global $wgResourceModules, $wgStylePath, $wgStyleDirectory;
 $wgResourceModules['skins.organicdesign'] = array(
-	'styles' => 'organicdesign.css',
-	'remoteBasePath' => "$wgStylePath/organicdesign",
-	'localBasePath' => "$IP/skins/organicdesign"
+	'styles' => array(
+		'organicdesign/organicdesign.css' => array( 'media' => 'screen' ),
+	),
+	'remoteBasePath' => $wgStylePath,
+	'localBasePath' => $wgStyleDirectory,
 );
-
 
 /**
  * SkinTemplate class for OrganicDesign skin
@@ -33,7 +34,6 @@ class SkinOrganicDesign extends SkinTemplate {
 	 */
 	function setupSkinUserCss( OutputPage $out ){
 		parent::setupSkinUserCss( $out );
-		print_r($out->mModuleStyles);
 		$out->addModuleStyles( "skins.organicdesign" );
 	}
 }
