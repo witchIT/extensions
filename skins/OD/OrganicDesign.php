@@ -205,8 +205,7 @@ if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
 	</td></tr>
-	</table>
-</div>
+</table>
 <?php
 		$this->printTrail();
 		echo Html::closeElement( 'body' );
