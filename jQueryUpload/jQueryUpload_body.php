@@ -161,22 +161,15 @@ class jQueryUpload extends SpecialPage {
 				$upload_handler->get();
 				break;
 			case 'POST':
-				if( isset( $_REQUEST['_method'] ) && $_REQUEST['_method'] === 'DELETE' ) {
-					$upload_handler->delete();
-				} else {
 
-					// Create the directories if they don't exist (we do it here so they're not created for every dir read)
-					if( !is_dir( "$wgUploadDirectory/jquery_upload_files" ) ) mkdir( "$wgUploadDirectory/jquery_upload_files" );
-					if( !is_dir( $dir ) ) {
-						mkdir( $dir );
-						mkdir( $thm );
-					}
-
-					$upload_handler->post();
+				// Create the directories if they don't exist (we do it here so they're not created for every dir read)
+				if( !is_dir( "$wgUploadDirectory/jquery_upload_files" ) ) mkdir( "$wgUploadDirectory/jquery_upload_files" );
+				if( !is_dir( $dir ) ) {
+					mkdir( $dir );
+					mkdir( $thm );
 				}
-				break;
-			case 'DELETE':
-				$upload_handler->delete();
+
+				$upload_handler->post();
 				break;
 			default:
 				header( 'HTTP/1.1 405 Method Not Allowed' );
