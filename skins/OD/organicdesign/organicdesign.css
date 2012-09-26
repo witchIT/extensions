@@ -1315,6 +1315,17 @@ div.mw-lag-warn-high {
 	text-transform: none;
 }
 
+/* Sidebar tree */
+#sidebar-tree {
+	position: absolute;
+	top: 50px;
+	left: -250px;
+}
+#sidebar-tree {
+	margin-left: 5px;
+}
+
+
 /* Recent activity */
 #sidebartree #itamsidebartree0 {
 	display: none;
