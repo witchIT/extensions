@@ -208,7 +208,7 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 </table>
 <?php
 		$this->printTrail();
-		echo Html::closeElement( 'body' );
+		echo "\n" . Html::closeElement( 'body' );
 		echo Html::closeElement( 'html' );
 		wfRestoreWarnings();
 	} // end of execute() method
