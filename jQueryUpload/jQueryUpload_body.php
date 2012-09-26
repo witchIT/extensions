@@ -111,7 +111,7 @@ class jQueryUpload extends SpecialPage {
 		header( 'Access-Control-Allow-Methods: OPTIONS, HEAD, GET, POST, PUT, DELETE' );
 		header( 'Access-Control-Allow-Headers: X-File-Name, X-File-Type, X-File-Size' );
 
-		// Process the rename text inputs adde to the upload form rows
+		// Process the rename text inputs added to the upload form rows
 		if( array_key_exists( 'upload_rename_from', $_REQUEST ) && array_key_exists( 'files', $_FILES ) ) {
 			foreach( $_REQUEST['upload_rename_from'] as $i => $from ) {
 				if( false !== $j = array_search( $from, $_FILES['files']['name'] ) ) {
@@ -129,13 +129,6 @@ class jQueryUpload extends SpecialPage {
 		$dir = "$wgUploadDirectory/jquery_upload_files/$path";
 		if( $path ) $dir .= '/';
 		$thm = $dir . 'thumb/';
-
-		// Create the directories if they don't exist
-		if( !is_dir( "$wgUploadDirectory/jquery_upload_files" ) ) mkdir( "$wgUploadDirectory/jquery_upload_files" );
-		if( !is_dir( $dir ) ) {
-			mkdir( $dir );
-			mkdir( $thm );
-		}
 
 		// Set the initial options for the upload file object
 		$url = "$wgScript?action=ajax&rs=jQueryUpload::server";
@@ -171,6 +164,14 @@ class jQueryUpload extends SpecialPage {
 				if( isset( $_REQUEST['_method'] ) && $_REQUEST['_method'] === 'DELETE' ) {
 					$upload_handler->delete();
 				} else {
+
+					// Create the directories if they don't exist (we do it here so they're not created for every dir read)
+					if( !is_dir( "$wgUploadDirectory/jquery_upload_files" ) ) mkdir( "$wgUploadDirectory/jquery_upload_files" );
+					if( !is_dir( $dir ) ) {
+						mkdir( $dir );
+						mkdir( $thm );
+					}
+
 					$upload_handler->post();
 				}
 				break;
