@@ -83,7 +83,7 @@ class TreeAndMenu {
 	/**
 	 * Expand either kind of parser-function (reformats tree rows for matching later) and store args
 	 */
-	private function expandTreeAndMenu( &$parser, $args ) {
+	public function expandTreeAndMenu( &$parser, $args ) {
 	
 		// Store args for this tree for later use
 		$text = '';
