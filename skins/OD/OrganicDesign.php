@@ -8,15 +8,6 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 
-global $wgResourceModules, $wgStylePath, $wgStyleDirectory;
-$wgResourceModules['skins.organicdesign'] = array(
-	'styles' => array(
-		'organicdesign/organicdesign.css' => array( 'media' => 'screen' ),
-	),
-	'remoteBasePath' => $wgStylePath,
-	'localBasePath' => $wgStyleDirectory,
-);
-
 /**
  * SkinTemplate class for OrganicDesign skin
  * @ingroup Skins
@@ -72,29 +63,24 @@ class OrganicDesignTemplate extends BaseTemplate {
 			</ul>
 		</div>
 	</div>
-
 <?php
+
 // Get avatar image
-/*
 global $wgUser,$wgUploadDirectory,$wgUploadPath;
 if ($wgUser->isLoggedIn()) {
 	?><div id="p-avatar"><?php
-	$user  = $wgUser->getName();
-	$title = Title::newFromText("$user.png",NS_IMAGE);
-	$image = Image::newFromTitle($title);
-	if ($image && $image->exists()) {
-		echo "<a href=\"".$title->getLocalUrl()."\"><img src=\"".$image->getThumbnail(50,50)->getUrl()."\" alt=\"$user\"></a>";
+	$name  = $wgUser->getName();
+	if( $img = wfLocalFile( "$name.png" ) && $img->exists() ) {
+		$url = $img->transform( array( 'width' => 50 ) )->getUrl();
+		echo "<a href=\"" . $wgUser->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>";
 	} else {
-		$upload = Title::newFromText('Upload',NS_SPECIAL);
-		$url = $upload->getLocalUrl("wpDestFile=$user.png");
+		$upload = Title::newFromText( 'Upload', NS_SPECIAL );
+		$url = $upload->getLocalUrl( "wpDestFile=$name.png" );
 		echo "<a href=\"$url\" class=\"new\"><br>user<br>icon</a>";
 	}
 	?></div><?php
 }
-*/
-?>
 
-<?php
 // Donations
 global $wgOrganicDesignDonations;
 if ( $wgOrganicDesignDonations ) {?>
@@ -140,21 +126,21 @@ if ( $wgOrganicDesignDonations ) {?>
 
 		</form>
 	</div>
-</div>
+</div><?php
 
-<?php
-// MediaWiki:Sidebar
+// Sidebar
 global $wgUser,$wgTitle,$wgParser;
 $title = 'od-sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
-if ( empty( $text ) ) $text = wfMsg( $title );
-if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+if( empty( $text ) ) $text = wfMsg( $title );
+if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
-if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
-?></div></td><!-- end of the left (by default at least) column -->
+?></div></td>
 
+<!-- Main content area -->
 	<td id="contentWrapper">
 		<table cellpadding="0" cellspacing="0" width="100%"><tr>
 		<tr>
@@ -209,8 +195,8 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	</table>
 	</td></tr>
 	<tr><td colspan="2">
-	
 <?php
+
 // MediaWiki:Footer
 global $wgUser,$wgTitle,$wgParser;
 $title = 'footer';
@@ -222,7 +208,6 @@ else { $psr = new Parser; $opt = NULL; }
 if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
-	
 	</td></tr>
 	</table>
 	<?php $this->html('bottomscripts'); /* JS call to runBodyOnloadHook */ ?>
@@ -231,7 +216,6 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 <?php if ( $this->data['debug'] ): ?>
 <!-- Debug output:
 <?php $this->text( 'debug' ); ?>
-
 -->
 <?php endif; ?>
 </body></html>
