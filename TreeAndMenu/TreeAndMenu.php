@@ -155,7 +155,7 @@ class TreeAndMenu {
 		}
 
 		// Create a unique id for this tree or use id supplied in args and store args wrt id
-		$this->id = isset($args['id']) ? $args['id'] : uniqid( '' ) . 't';
+		$this->id = isset($args['id']) ? $args['id'] : uniqid( '' ) .'t';
 		$args['type'] = $magic;
 		$this->args[$this->id] = $args;
 
@@ -281,7 +281,7 @@ class TreeAndMenu {
 							document.getElementById('$id').innerHTML = $objid.toString();
 							$opennodesjs
 							for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-						$wgOut->addScript( "<script type=\"$wgJsMimeType\">$script</script>" );
+						$wgOut->addInlineScript( $script );
 						$html = "$top<div class='$class' id='$id'></div>$bottom";
 						$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
 					} else {
