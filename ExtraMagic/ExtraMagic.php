@@ -49,7 +49,6 @@ class ExtraMagic {
 		$wgParser->setFunctionHook( 'REQUEST', array( $this, 'expandRequest' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'COOKIE',  array( $this, 'expandCookie' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'USERID',  array( $this, 'expandUserID' ), SFH_NO_HASH );
-		$wgParser->setFunctionHook( 'AVATAR',  array( $this, 'expandAvatar' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'IFGROUP', array( $this, 'expandIfGroup' ) );
 	}
 
@@ -61,10 +60,9 @@ class ExtraMagic {
 
 		// Parser functions
 		$magicWords['REQUEST'] = array( 0, 'REQUEST' );
-		$magicWords['cookie']  = array( 0, 'COOKIE' );
-		$magicWords['userid']  = array( 0, 'USERID' );
-		$magicWords['avatar']  = array( 0, 'AVATAR' );
-		$magicWords['ifgroup'] = array( 0, 'IFGROUP' );
+		$magicWords['COOKIE']  = array( 0, 'COOKIE' );
+		$magicWords['USERID']  = array( 0, 'USERID' );
+		$magicWords['IFGROUP'] = array( 0, 'IFGROUP' );
 
 		return true;
 	}
@@ -130,17 +128,6 @@ class ExtraMagic {
 		} else {
 			global $wgUser;
 			return $wgUser->getID();
-		}
-		return '';
-	}
-
-	function expandAvatar( &$parser, $param ) {
-		if( $id = efExtraMagicExpandUserID( $parser, $param ) ) {
-			global $wgSitename, $wgUploadDirectory, $wgUploadPath;
-			$files = glob( "$wgUploadDirectory/avatar-$wgSitename-$id.*" );
-			if( count( $files ) > 0 ) {
-				return "$wgUploadPath/" . basename( $files[0] );
-			}
 		}
 		return '';
 	}
