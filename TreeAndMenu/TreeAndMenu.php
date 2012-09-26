@@ -220,7 +220,7 @@ class TreeAndMenu {
 						document.getElementById('$id').innerHTML = $objid.toString();
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-					$wgOut->addScript( "<script type=\"$wgJsMimeType\">$script</script>" );
+					$wgOut->addInlineScript( "<script type=\"$wgJsMimeType\">$script</script>" );
 					$html = "$top<div class='$class' id='$id'></div>$bottom";
 					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
 
