@@ -8,6 +8,15 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 
+global $wgResourceModules, $wgStylePath, $wgStyleDirectory;
+$wgResourceModules['skins.organicdesign'] = array(
+	'styles' => array(
+		'organicdesign/organicdesign.css' => array( 'media' => 'screen' ),
+	),
+	'remoteBasePath' => $wgStylePath,
+	'localBasePath' => $wgStyleDirectory,
+);
+
 /**
  * SkinTemplate class for OrganicDesign skin
  * @ingroup Skins
