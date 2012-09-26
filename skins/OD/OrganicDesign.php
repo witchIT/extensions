@@ -206,16 +206,11 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?>
 	</td></tr>
 	</table>
-	<?php $this->html('bottomscripts'); /* JS call to runBodyOnloadHook */ ?>
 </div>
-<?php $this->html('reporttime') ?>
-<?php if ( $this->data['debug'] ): ?>
-<!-- Debug output:
-<?php $this->text( 'debug' ); ?>
--->
-<?php endif; ?>
-</body></html>
 <?php
-	wfRestoreWarnings();
+		$this->printTrail();
+		echo Html::closeElement( 'body' );
+		echo Html::closeElement( 'html' );
+		wfRestoreWarnings();
 	} // end of execute() method
 } // end of class
