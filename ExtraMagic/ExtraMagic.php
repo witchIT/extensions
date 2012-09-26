@@ -60,7 +60,7 @@ class ExtraMagic {
 		foreach( $wgExtraMagicVariables as $var ) $magicWords[strtolower( $var )] = array( 1, $var );
 
 		// Parser functions
-		$magicWords['request'] = array( 0, 'REQUEST' );
+		$magicWords['REQUEST'] = array( 0, 'REQUEST' );
 		$magicWords['cookie']  = array( 0, 'COOKIE' );
 		$magicWords['userid']  = array( 0, 'USERID' );
 		$magicWords['avatar']  = array( 0, 'AVATAR' );
@@ -150,13 +150,6 @@ class ExtraMagic {
 		$intersection = array_intersect( array_map( 'strtolower', explode( ',', $groups ) ), $wgUser->getEffectiveGroups() );
 		return count( $intersection ) > 0 ? $then : $else;
 	}
-
-
-
-
-
-
-
-
 }
+
 new ExtraMagic();
