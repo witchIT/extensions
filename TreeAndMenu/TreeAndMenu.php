@@ -185,7 +185,7 @@ class TreeAndMenu {
 	public function renderTreeAndMenu( &$out, &$skin ) {
 		global $wgJsMimeType, $wgOut;
 		$u = $this->uniq;
-		$text = $out->mBodyText;
+		$text = $out->mBodytext;
 
 		// Determine which trees are sub trees
 		// - there should be a more robust way to do this,
