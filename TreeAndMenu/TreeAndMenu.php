@@ -77,7 +77,7 @@ class TreeAndMenu {
 		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
 		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
 		$wgParser->setFunctionHook( 'star', array( $this, 'expandStar' ) );
-		$wgHooks['OutputPageParserOutput'][] = array( $this, 'renderTreeAndMenu' );
+		$wgHooks['OutputPageBeforeHTML'][] = array( $this, 'renderTreeAndMenu' );
 
 		// Update general tree paths and properties
 		$this->baseDir  = dirname( __FILE__ );
@@ -182,9 +182,8 @@ class TreeAndMenu {
 	/**
 	 * Called after parser has finished (ParserAfterTidy) so all transcluded parts can be assembled into final trees
 	 */
-	public function renderTreeAndMenu( &$parser, $text ) {
+	public function renderTreeAndMenu( &$parser, &$text ) {
 		global $wgJsMimeType, $wgOut;
-		$text = $wgOut->mBodytext;
 		$u = $this->uniq;
 
 		// Determine which trees are sub trees
@@ -306,9 +305,8 @@ class TreeAndMenu {
 					$last  = -1;
 				}
 			}
-		}
+		} else print 'no match';
 		$text = preg_replace( "/\x7f1$u\x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
-		$wgOut->mBodytext = $text;
 		return true;
 	}
 }
