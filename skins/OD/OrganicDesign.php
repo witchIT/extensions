@@ -131,8 +131,8 @@ $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
 if( empty( $text ) ) $text = wfMsg( $title );
 //$psr = new Parser;
-$opt = ParserOptions::newFromUser( $wgUser );
-echo $wgParser->parse( $text, $wgTitle, $opt, true, false )->getText();
+//$opt = ParserOptions::newFromUser( $wgUser );
+echo $wgParser->parse( $text, $wgTitle, $wgParser->mOptions, true, false )->getText();
 ?></div></td>
 
 <!-- Main content area -->
