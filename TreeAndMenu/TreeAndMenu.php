@@ -141,8 +141,6 @@ class TreeAndMenu {
 		$u = $this->uniq;
 
 
-		print 'matches: ' . preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER );
-
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
 		if( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
@@ -164,6 +162,8 @@ class TreeAndMenu {
 				$lastId    = $id;
 				$lastDepth = $depth;
 			}
+		print 'rows: ' . count( $rows );
+
 
 			// PASS-2: build the JavaScript and replace into $text
 			$parents   = array(); // parent node for each depth
