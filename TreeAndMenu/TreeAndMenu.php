@@ -83,7 +83,7 @@ class TreeAndMenu {
 		$this->baseDir  = dirname( __FILE__ );
 		$this->baseUrl  = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) );
 		$this->useLines = $wgTreeViewShowLines ? 'true' : 'false';
-		$this->uniq     = uniqid( $this->uniqname );
+		$this->uniq     = 'foo'; //uniqid( $this->uniqname );
 
 		// Convert image titles to file paths and store as JS to update dTree
 		foreach( $wgTreeViewImages as $k => $v ) {
