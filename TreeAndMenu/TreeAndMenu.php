@@ -20,25 +20,6 @@ define( 'TREEANDMENU_VERSION','2.0.7, 2012-09-01' );
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
 $wgTreeViewShowLines = false;  // whether to render the dotted lines joining nodes
 
-// Star defaults
-$wgTreeViewStarConfig = array(
-	'root' => 'Current article',
-	'img_node' => '/img/star-node-plus.gif',
-	'img_leaf' => '/img/star-node-empty.gif',
-	'img_open' => '/img/star-node-minus.gif',
-	'radius' => 20,
-	'duration' => 500,
-	'easing' => 'swing',
-	'out_spin' => 2,
-	'in_spin' => 2,
-	'width' => '100%',
-	'height' => 600,
-	'spokes' => true,
-	'spokev' => 30,
-	'crumbsx' => 50,
-	'crumbsy' => 50
-);
-
 $wgExtensionFunctions[] = 'wfSetupTreeAndMenu';
 $wgExtensionCredits['parserhook'][] = array(
 	'path'           => __FILE__,
@@ -77,7 +58,6 @@ class TreeAndMenu {
 		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
 		$wgParser->setFunctionHook( '_tree', array( $this, 'renderTreeAndMenu' ) );
 		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
-		$wgParser->setFunctionHook( 'star', array( $this, 'expandStar' ) );
 
 		// Update general tree paths and properties
 		$this->baseDir  = dirname( __FILE__ );
@@ -94,7 +74,6 @@ class TreeAndMenu {
 
 		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.treeandmenu'] = array(
-			'scripts'       => array( 'star.js' ),
 			'styles'        => array( 'treeandmenu.css' ),
 			'localBasePath' => dirname( __FILE__ ),
 			'remoteExtPath' => basename( dirname( __FILE__ ) ),
@@ -117,22 +96,6 @@ class TreeAndMenu {
 	public function expandMenu() {
 		$args = func_get_args();
 		return $this->expandTreeAndMenu( 'menu', $args );
-	}
-
-	/**
-	 * Expand #star parser-functions
-	 */
-	public function expandStar( &$parser, $text ) {
-		global $wgOut, $wgJsMimeType, $wgTreeViewStarConfig;
-		$script = "window.star_config = {";
-		$c = '';
-		foreach( $wgTreeViewStarConfig as $k => $v ) {
-			$script .= "$c\n\t$k: " . ( is_numeric( $v ) ? $v : "'$v'" );
-			$c = ',';
-		}
-		$script .= "\n};";
-		$wgOut->addScript( "<script type=\"$wgJsMimeType\">$script</script>" );
-		return "<div class=\"tam-star\">\n$text\n</div>";
 	}
 
 	/**
@@ -163,7 +126,15 @@ class TreeAndMenu {
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
-		return '{{#_tree:' . $text . '}}';
+		//return '{{#_tree:' . $text . '}}';
+        return array(
+			'{{#_tree:' . $text . '}}',
+			'found'   => false,
+			'nowiki'  => false,
+			'noparse' => false,
+			'noargs'  => false,
+			'isHTML'  => false
+		);
 	}
 
 
