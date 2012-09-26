@@ -69,7 +69,7 @@ class jQueryUpload extends SpecialPage {
 	 * Ajax handler encapsulate jQueryUpload server-side functionality
 	 */
 	public static function server() {
-		global $wgScript, $wgUploadDirectory, $wgJQUploadAction, $wgRequest;
+		global $wgScript, $wgUploadDirectory, $wgJQUploadAction, $wgRequest, $wgFileExtensions;
 		if( $wgJQUploadAction ) $_REQUEST['action'] = $wgJQUploadAction;
 
 		header( 'Pragma: no-cache' );
@@ -137,6 +137,7 @@ class jQueryUpload extends SpecialPage {
 			'script_url' => $url,
 			'upload_dir' => $dir,
 			'upload_url' => "$url$path&rsargs[]=",
+			'accept_file_types' => '/(' . implode( '|', $wgFileExtensions ) . ')/i',
 			'delete_type' => 'POST',
 			'max_file_size' => 50000000,
 			'image_versions' => array(
