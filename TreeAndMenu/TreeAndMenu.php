@@ -75,6 +75,7 @@ class TreeAndMenu {
 
 		// Add hooks
 		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
+		$wgParser->setFunctionHook( '_tree', array( $this, 'renderTreeAndMenu' ) );
 		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
 		$wgParser->setFunctionHook( 'star', array( $this, 'expandStar' ) );
 
@@ -162,7 +163,7 @@ class TreeAndMenu {
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
-		return $text;
+		return '{{#_tree:' . $text . '}}';
 	}
 
 
@@ -300,8 +301,8 @@ class TreeAndMenu {
 				}
 			}
 		}
-		$text = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
-		return $text;
+		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
+		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 }
 

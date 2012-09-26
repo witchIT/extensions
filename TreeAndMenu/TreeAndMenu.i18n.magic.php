@@ -8,5 +8,6 @@ $magicWords = array();
 $magicWords['en'] = array(
 	'menu' => array( 0, 'menu' ),
 	'tree' => array( 0, 'tree' ),
+	'_tree' => array( 0, '_tree' ),
 	'star' => array( 0, 'star' ),
 );
