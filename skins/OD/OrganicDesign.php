@@ -15,7 +15,7 @@ if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 class SkinOrganicDesign extends SkinTemplate {
 
 	var $skinname = 'organicdesign', $stylename = 'organicdesign',
-		$template = 'OrganicDesignTemplate', $useHeadElement = true,
+		$template = 'OrganicDesignTemplate', $useHeadElement = true;
 
 	/**
 	 * Load skin and user CSS files in the correct order
