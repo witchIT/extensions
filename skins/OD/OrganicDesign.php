@@ -33,8 +33,7 @@ class SkinOrganicDesign extends SkinTemplate {
 	 */
 	function setupSkinUserCss( OutputPage $out ){
 		parent::setupSkinUserCss( $out );
-		global $wgResourceModules;
-		print_r($wgResourceModules);
+		print_r($out->mModuleStyles);
 		$out->addModuleStyles( "skins.organicdesign" );
 	}
 }
