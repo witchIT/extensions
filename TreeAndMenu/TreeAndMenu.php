@@ -84,6 +84,7 @@ class TreeAndMenu {
 	 * Expand either kind of parser-function (reformats tree rows for matching later) and store args
 	 */
 	public function expandTreeAndMenu( &$parser, $args ) {
+		array_shift( $args );
 	
 		// Store args for this tree for later use
 		$text = '';
@@ -100,7 +101,6 @@ class TreeAndMenu {
 
 		// Create a unique id for this tree or use id supplied in args and store args wrt id
 		$this->id = isset($args['id']) ? $args['id'] : uniqid( '' ) .'t';
-		$args['type'] = $magic;
 		$this->args[$this->id] = $args;
 
 		// Reformat tree rows
@@ -172,7 +172,6 @@ class TreeAndMenu {
 				list( $id, $depth, $icon, $item, $start ) = $info;
 				$objid = $this->uniqname . preg_replace( '/\W/', '', $id );
 				$args  = $this->args[$id];
-				$type  = $args['type'];
 				$end   = $i == count( $rows )-1 || $rows[$i+1][4];
 				if( !isset( $args['root'] ) ) $args['root'] = ''; // tmp - need to handle rootless trees
 				$openlevels = isset( $args['openlevels'] ) ? $args['openlevels']+1 : 0;
@@ -187,7 +186,7 @@ class TreeAndMenu {
 
 				// Last row of current root, surround nodes dtree or menu script and div etc
 				if( $end ) {
-					$class = isset( $args['class'] ) ? $args['class'] : "d$type";
+					$class = isset( $args['class'] ) ? $args['class'] : "dtree";
 
 					// Load the dTree script if not loaded already
 					static $dtree = false;
