@@ -46,7 +46,7 @@ class jQueryUpload extends SpecialPage {
 	 * Render scripts and form into an article
 	 */
 	function onBeforePageDisplay( $out, $skin ) {
-		$out->addHtml( '<h2>' . wfMsg( 'jqueryupload-attachments' ) . '</h2>' );
+		$out->addHtml( '<h2 class="jqueryupload">' . wfMsg( 'jqueryupload-attachments' ) . '</h2>' );
 		$out->addHtml( $this->form() );
 		$out->addHtml( $this->templates() );
 		$out->addHtml( $this->scripts() );
