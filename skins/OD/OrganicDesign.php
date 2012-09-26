@@ -11,7 +11,7 @@ if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 // OD skin CSS
 $wgResourceModules['skins.organicdesign'] = array(
 	'styles' => array( 'organicdesign.css' => array( 'media' => 'all' ) ),
-	'remoteBasePath' => "$wgStylePath/organicdesign",
+	'remoteBasePath' => "$wgScriptPath/skins/organicdesign",
 	'localBasePath' => "$IP/skins/organicdesign"
 );
 
