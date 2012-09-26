@@ -175,7 +175,7 @@ class TreeAndMenu {
 	 *         may be used (even if parser-cache disabled) this also means that tree id's may be repeated
 	 */
 	private function formatRow( $m ) {
-		return "x7f1{$this->uniq}\x7f{$this->id}x7f" . ( strlen( $m[1] )-1 ) . "x7f$m[2]x7f2{$this->uniq}";
+		return "x7f1{$this->uniq}x7f{$this->id}x7f" . ( strlen( $m[1] )-1 ) . "x7f$m[2]x7f2{$this->uniq}";
 	}
 
 
