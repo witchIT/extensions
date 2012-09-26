@@ -55,8 +55,7 @@ class TreeAndMenu {
 		global $wgOut, $wgHooks, $wgParser, $wgJsMimeType, $wgExtensionAssetsPath, $wgResourceModules, $wgTreeViewImages, $wgTreeViewShowLines;
 
 		// Add hooks
-		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
-		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
+		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTreeAndMenu' ) );
 
 		// Update general tree paths and properties
 		$this->baseDir  = dirname( __FILE__ );
@@ -82,27 +81,10 @@ class TreeAndMenu {
 	}
 
 	/**
-	 * Expand #tree parser-functions
-	 */
-	public function expandTree() {
-		$args = func_get_args();
-		return $this->expandTreeAndMenu( 'tree', $args );
-	}
-
-	/**
-	 * Expand #menu parser-functions
-	 */
-	public function expandMenu() {
-		$args = func_get_args();
-		return $this->expandTreeAndMenu( 'menu', $args );
-	}
-
-	/**
 	 * Expand either kind of parser-function (reformats tree rows for matching later) and store args
 	 */
-	private function expandTreeAndMenu( $magic, $args ) {
-		$parser = array_shift( $args );
-
+	private function expandTreeAndMenu( &$parser, $args ) {
+	
 		// Store args for this tree for later use
 		$text = '';
 		foreach( $args as $arg ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $arg, $m ) ) $args[$m[1]] = $m[2]; else $text = $arg;
@@ -133,15 +115,6 @@ class TreeAndMenu {
 		$html = $this->renderTreeAndMenu( $html );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
-		return '{{#_tree:' . $text . '}}';
-        return array(
-			'{{#_tree:' . $text . '}}',
-			'found'   => false,
-			'nowiki'  => false,
-			'noparse' => false,
-			'noargs'  => false,
-			'isHTML'  => false
-		);
 	}
 
 
@@ -208,72 +181,44 @@ class TreeAndMenu {
 				// Append node script for this row
 				if( $depth > $last ) $parents[$depth] = $node-1;
 				$parent = $parents[$depth];
-				if( $type == 'tree' ) {
-					$nodes .= "$objid.add($node, $parent, '$item');\n";
-					if( $depth > 0 && $openlevels > $depth ) $opennodes[$parent] = true;
-				}
-				else {
-					if( !$start ) {
-						if( $depth < $last ) $nodes .= str_repeat( '</ul></li>', $last - $depth );
-						elseif( $depth > $last ) $nodes .= "\n<ul>";
-					}
-					$parity[$depth] = isset( $parity[$depth] ) ? $parity[$depth]^1 : 0;
-					$class = $parity[$depth] ? 'odd' : 'even';
-					$nodes .= "<li class=\"$class\">$item";
-					if( $depth >= $rows[$node][1] ) $nodes .= "</li>\n";
-				}
+				$nodes .= "$objid.add($node, $parent, '$item');\n";
+				if( $depth > 0 && $openlevels > $depth ) $opennodes[$parent] = true;
 				$last = $depth;
 
 				// Last row of current root, surround nodes dtree or menu script and div etc
 				if( $end ) {
 					$class = isset( $args['class'] ) ? $args['class'] : "d$type";
-					if( $type == 'tree' ) {
 
-						// Load the dTree script if not loaded already
-						static $dtree = false;
-						if( !$dtree ) {
-							$wgOut->addScriptFile( $this->baseUrl . '/dtree.js' );
-							$dtree = true;
-						}
-
-						// Finalise a tree
-						$add = isset( $args['root'] ) ? "tree.add(0,-1,'".$args['root']."');" : '';
-						$top = $bottom = $root = $opennodesjs = '';
-						foreach( array_keys( $opennodes ) as $i ) $opennodesjs .= "$objid.o($i);";
-						foreach( $args as $arg => $pos )
-							if( ( $pos == 'top' || $pos == 'bottom' || $pos == 'root' ) && ( $arg == 'open' || $arg == 'close' ) )
-								$$pos .= "<a href=\"javascript: $objid.{$arg}All();\">&#160;{$arg} all</a>&#160;";
-						if( $top ) $top = "<p>&#160;$top</p>";
-						if( $bottom ) $bottom = "<p>&#160;$bottom</p>";
-
-						// Define the script to build this tree
-						$script = "// TreeAndMenu-{$this->version}\ntree = new dTree('$objid');
-							for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
-							tree.config.useLines = {$this->useLines};
-							$add
-							$objid = tree;
-							$nodes
-							document.getElementById('$id').innerHTML = $objid.toString();
-							$opennodesjs
-							for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-						$wgOut->addScript( "<script type=\"$wgJsMimeType\">$script</script>" );
-						$html = "$top<div class='$class' id='$id'></div>$bottom";
-						$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
-					} else {
-
-						// Finalise a menu
-						if( $depth > 0 ) $nodes .= str_repeat( '</ul></li>', $depth );
-						$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); // IE has problems with title attribute in suckerfish menus
-						$html = "<ul class='$class' id='$id'>\n$nodes</ul><div style=\"clear:both\"></div>";
-						$script = "if (window.attachEvent) {
-									var sfEls = document.getElementById('$id').getElementsByTagName('li');
-									for (var i=0; i<sfEls.length; i++) {
-										sfEls[i].onmouseover=function() { this.className+=' sfhover'; }
-										sfEls[i].onmouseout=function()  { this.className=this.className.replace(new RegExp(' sfhover *'),''); }
-									}
-								}";
-						$wgOut->addScript( "<script type=\"$wgJsMimeType\">$(function(){\n$script\n});</script>" );
+					// Load the dTree script if not loaded already
+					static $dtree = false;
+					if( !$dtree ) {
+						$wgOut->addScriptFile( $this->baseUrl . '/dtree.js' );
+						$dtree = true;
 					}
+
+					// Finalise a tree
+					$add = isset( $args['root'] ) ? "tree.add(0,-1,'".$args['root']."');" : '';
+					$top = $bottom = $root = $opennodesjs = '';
+					foreach( array_keys( $opennodes ) as $i ) $opennodesjs .= "$objid.o($i);";
+					foreach( $args as $arg => $pos )
+						if( ( $pos == 'top' || $pos == 'bottom' || $pos == 'root' ) && ( $arg == 'open' || $arg == 'close' ) )
+							$$pos .= "<a href=\"javascript: $objid.{$arg}All();\">&#160;{$arg} all</a>&#160;";
+					if( $top ) $top = "<p>&#160;$top</p>";
+					if( $bottom ) $bottom = "<p>&#160;$bottom</p>";
+
+					// Define the script to build this tree
+					$script = "// TreeAndMenu-{$this->version}\ntree = new dTree('$objid');
+						for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
+						tree.config.useLines = {$this->useLines};
+						$add
+						$objid = tree;
+						$nodes
+						document.getElementById('$id').innerHTML = $objid.toString();
+						$opennodesjs
+						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
+					$wgOut->addScript( "<script type=\"$wgJsMimeType\">$script</script>" );
+					$html = "$top<div class='$class' id='$id'></div>$bottom";
+					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
 
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
