@@ -12,7 +12,7 @@ if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 global $wgResourceModules, $wgStylePath, $IP;
 $wgResourceModules['skins.organicdesign'] = array(
 	'styles' => array( 'organicdesign.css' => array( 'media' => 'all' ) ),
-	'remoteBasePath' => "$wgStylePath/skins/organicdesign",
+	'remoteBasePath' => "$wgStylePath/organicdesign",
 	'localBasePath' => "$IP/skins/organicdesign"
 );
 
