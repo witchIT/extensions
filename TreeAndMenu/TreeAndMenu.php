@@ -140,7 +140,6 @@ class TreeAndMenu {
 		global $wgJsMimeType, $wgOut;
 		$u = $this->uniq;
 
-		$subs = array( 0, array() );
 
 		print 'matches: ' . preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER );
 
@@ -148,6 +147,7 @@ class TreeAndMenu {
 		if( preg_match_all( "/~x7f1$u~x7f(.+?)~x7f([0-9]+)~x7f({$u}3(.+?){$u}4)?(.*?)(?=~x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
 			// PASS-1: build $rows array containing depth, and tree start/end information
+			$subs   = array( 1 => array() );
 			$rows   = array();
 			$depths = array( '' => 0 ); // depth of each tree root
 			$rootId = '';               // the id of the current root-tree (used as tree id in PASS2)
@@ -230,7 +230,6 @@ class TreeAndMenu {
 				}
 			}
 		}
-		print $text;
 		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
 		return $html;
 	}
