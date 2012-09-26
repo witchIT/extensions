@@ -92,7 +92,7 @@ if ( $wgOrganicDesignDonations ) {?>
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_xclick">
 				<input type="hidden" name="business" value="<?php echo $wgOrganicDesignDonations ?>" />
-				<input type="hidden" name="item_name" value="Donation">
+				<input type="hidden" name="item_name" value="Donation to Organic Design">
 				<input type="hidden" name="currency_code" value="USD">
 				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
 			</form>
