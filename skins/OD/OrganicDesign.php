@@ -125,17 +125,14 @@ if ( $wgOrganicDesignDonations ) {?>
 </div><?php
 
 // Sidebar
-/*
 global $wgUser,$wgTitle,$wgParser;
 $title = 'od-sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
 if( empty( $text ) ) $text = wfMsg( $title );
-if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
-else { $psr = new Parser; $opt = NULL; }
-if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+$psr = new Parser;
+$opt = ParserOptions::newFromUser( $wgUser );
 echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
-*/
 ?></div></td>
 
 <!-- Main content area -->
@@ -216,3 +213,18 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	} // end of execute() method
 } // end of class
 
+global $wgHooks;
+$wgHooks['PageBeforeDisplay'][] = 'wfSidebarTree';
+function wfSidebarTree( $out, $skin ) {
+	global $wgUser, $wgParser;
+	static $done = false;
+	if( $done ) return true;
+	$done = true;
+	$opt = ParserOptions::newFromUser( $wgUser );
+	$title = Title::newFromText( 'SidebarTree', NS_MEDIAWIKI );
+	$article = new Article( $title );
+	$html = $this->searchBox();
+	$html .= $wgParser->parse( $article->fetchContent(), $title, $opt, true, true )->getText();
+	$out->addHTML( "<div id=\"sidebar-tree\">$html</div>" );
+	return true;
+}
