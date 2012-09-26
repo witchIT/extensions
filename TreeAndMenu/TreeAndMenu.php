@@ -162,9 +162,6 @@ class TreeAndMenu {
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
-		// Render into html
-		$text = $this->renderTreeAndMenu( $text );
-
 		return $text;
 	}
 
