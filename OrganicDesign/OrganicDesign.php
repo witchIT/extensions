@@ -92,5 +92,5 @@ class OrganicDesign {
 	}
 
 }
-new OrganicnDesign();
+new OrganicDesign();
 
