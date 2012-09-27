@@ -32,15 +32,17 @@ class OrganicDesign {
 
 	function __construct() {
 		global $wgExtensionFunctions, $wgHooks;
-print substr( $_SERVER['PATH_INFO'], 2 );
-		if( !self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false )
-			self::$title = Title::newFromText( substr( $_SERVER['PATH_INFO'], 2 ) );
+
 		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 	}
 
 	function setup() {
 		global $wgUser;
+
+print_r($_GET);
+		if( !self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false )
+			self::$title = Title::newFromText( substr( $_SERVER['PATH_INFO'], 1 ) );
 
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
         $host = $_SERVER['HTTP_HOST'];
