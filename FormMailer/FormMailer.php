@@ -71,12 +71,12 @@ function wfSetupFormMailer() {
 		// Send to recipients using the MediaWiki mailer
 		$err  = '';
 		$user = new User();
-		$from = "\"$wgSitename\"<$wgFormMailerFrom>";
+		$site = "\"$wgSitename\"<$wgFormMailerFrom>";
 		foreach( $wgFormMailerRecipients as $recipient ) {
 			if( User::isValidEmailAddr( $recipient ) ) {
-				$user->setName( $recipient );
-				$user->setEmail( $recipient );
-				if( $user->sendMail( $subject, $body, $from ) !== true ) $err = 'Failed to send!';
+				$from = new MailAddress( $recipient, $site );
+				$to = new MailAddress( $recipient );
+				if( UserMailer::send( $to, $from, $subject, $body ) !== true ) $err = 'Failed to send!';
 			}
 		}
 		$wgSiteNotice .= "<div class='usermessage'>" . ( $err ? $err : $message ) . "</div>";
