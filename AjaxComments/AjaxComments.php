@@ -55,19 +55,19 @@ class AjaxComments {
 		if( $ret ) {
 			$wgHooks['MediaWikiPerformAction'][] = $this;
 			$wgHooks['BeforePageDisplay'][] = $this;
-
-			// Set up JavaScript and CSS resources
-			$wgResourceModules['ext.ajaxcomments'] = array(
-				'scripts'       => array( 'ajaxcomments.js' ),
-				'styles'        => array( 'ajaxcomments.css' ),
-				'localBasePath' => dirname( __FILE__ ),
-				'remoteExtPath' => basename( dirname( __FILE__ ) ),
-			);
-			$wgOut->addModules( 'ext.ajaxcomments' );
-
-			// Set polling to -1 if checkTitle says comments are disabled
-			$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 		}
+
+		// Set up JavaScript and CSS resources
+		$wgResourceModules['ext.ajaxcomments'] = array(
+			'scripts'       => array( 'ajaxcomments.js' ),
+			'styles'        => array( 'ajaxcomments.css' ),
+			'localBasePath' => dirname( __FILE__ ),
+			'remoteExtPath' => basename( dirname( __FILE__ ) ),
+		);
+		$wgOut->addModules( 'ext.ajaxcomments' );
+
+		// Set polling to -1 if checkTitle says comments are disabled
+		$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 	}
 
 	/**
