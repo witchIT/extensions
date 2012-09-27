@@ -42,7 +42,7 @@ class AjaxComments {
 	var $talk = false;
 
 	function __construct() {
-		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle;
+		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle, $wgExtensionAssetsPath;
 
 		$wgHooks['UnknownAction'][] = $this;
 
@@ -61,7 +61,7 @@ class AjaxComments {
 				'scripts'       => array( 'ajaxcomments.js' ),
 				'styles'        => array( 'ajaxcomments.css' ),
 				'localBasePath' => dirname( __FILE__ ),
-				'remoteExtPath' => basename( dirname( __FILE__ ) ),
+				'remoteExtPath' => $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ),
 			);
 			$wgOut->addModules( 'ext.ajaxcomments' );
 
