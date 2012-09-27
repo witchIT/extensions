@@ -27,10 +27,6 @@ $wgResourceModules['skins.organicdesign'] = array(
         'localBasePath' => "$IP/skins/organicdesign",
 );
 
-}
-
-
-
 class OrganicDesign {
 
 	function __construct() {
