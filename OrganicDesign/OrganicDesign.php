@@ -29,7 +29,13 @@ $wgResourceModules['skins.organicdesign'] = array(
 class OrganicDesign {
 
 	function __construct() {
-		global $wgUser, $wgExtensionFunctions, $wgHooks;
+		global $wgExtensionFunctions, $wgHooks;
+		$wgExtensionFunctions[] = array( $this, 'setup' );
+		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
+	}
+
+	function setup() {
+		global $wgUser;
 
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
         $host = $_SERVER['HTTP_HOST'];
@@ -51,13 +57,6 @@ class OrganicDesign {
                         exit;
                 }
         }
-
-		$wgExtensionFunctions[] = array( $this, 'setup' );
-		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
-	}
-
-	function setup() {
-
 	}
 
 	/**
