@@ -1316,7 +1316,7 @@ div.mw-lag-warn-high {
 }
 
 /* Sidebar */
-#columns-one h2 {
+#columns-one #c1-div h2 {
 	font-size: 12px;
 	margin-left: 5px;
 }
