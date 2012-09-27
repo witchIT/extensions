@@ -111,7 +111,7 @@ class TreeAndMenu {
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
 		// Remove leading whitespace to avoid <p>'s
-		$text = preg_replace( "|^\s*|m", "", $text );
+		//$text = preg_replace( "|^\s*|m", "", $text );
 
 		// Parse the structure
 		$psr = new Parser;
@@ -120,6 +120,8 @@ class TreeAndMenu {
 
 		// Do the final rendering
 		$html = $this->renderTreeAndMenu( $html );
+
+		$html = preg_replace( "|^\s*|m", "", $html );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
