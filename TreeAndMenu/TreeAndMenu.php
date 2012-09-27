@@ -228,7 +228,7 @@ class TreeAndMenu {
 
 		// Remove all unreplaced row information
 		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text );
-		
+file_put_contents( '/var/www/wikis/od/files/test.txt', $html );		
 		$html = preg_replace( "/^\s*/sm", "", $html );
 		$html = preg_replace( "/^$/sm", "", $html );
 
