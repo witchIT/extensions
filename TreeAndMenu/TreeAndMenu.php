@@ -111,6 +111,7 @@ class TreeAndMenu {
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
 		// Remove leading whitespace to avoid <p>'s
+		$text = preg_replace( "/^$/sm", "", $text );
 		$text = preg_replace( "/^\s*/sm", "", $text );
 
 		// Parse the structure
@@ -229,6 +230,7 @@ class TreeAndMenu {
 		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text );
 		
 		$html = preg_replace( "/^\s*/sm", "", $html );
+		$html = preg_replace( "/^$/sm", "", $html );
 
 		return $html;
 	}
