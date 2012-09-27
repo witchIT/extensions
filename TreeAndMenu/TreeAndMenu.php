@@ -209,8 +209,7 @@ class TreeAndMenu {
 					$script = "// TreeAndMenu-{$this->version}\ntree = new dTree('$objid');
 						for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
 						tree.config.useLines = {$this->useLines};
-						$add$objid = tree;
-						$nodes
+						$add$objid = tree;$nodes
 						document.getElementById('$id').innerHTML = $objid.toString();
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
