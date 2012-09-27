@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','2.0.7, 2012-09-01' );
+define( 'TREEANDMENU_VERSION','3.0.0, 2012-09-27' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -120,6 +120,8 @@ class TreeAndMenu {
 
 		// Parser adds <p>'s all over the place :-(
 		$html = preg_replace( "|<[/]?p>|m", "", $html );
+
+file_put_contents( '/var/www/wikis/od/files/test.txt', $html );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
