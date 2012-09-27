@@ -58,20 +58,16 @@ class AjaxComments {
 		}
 
 		// Set up JavaScript and CSS resources
-		if( is_callable( 'OutputPage::addModules' ) ) {
-			$wgResourceModules['ext.ajaxcomments'] = array(
-				'scripts'       => array( 'ajaxcomments.js' ),
-				'styles'        => array( 'ajaxcomments.css' ),
-				'localBasePath' => dirname( __FILE__ ),
-				'remoteExtPath' => basename( dirname( __FILE__ ) ),
-			);
-			$wgOut->addModules( 'ext.ajaxcomments' );
+		$wgResourceModules['ext.ajaxcomments'] = array(
+			'scripts'       => array( 'ajaxcomments.js' ),
+			'styles'        => array( 'ajaxcomments.css' ),
+			'localBasePath' => dirname( __FILE__ ),
+			'remoteExtPath' => basename( dirname( __FILE__ ) ),
+		);
+		$wgOut->addModules( 'ext.ajaxcomments' );
 
-			// Set polling to -1 if checkTitle says comments are disabled
-			if( method_exists( $wgOut, 'addJsConfigVars' ) ) {
-				$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
-			}
-		}
+		// Set polling to -1 if checkTitle says comments are disabled
+		$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 	}
 
 	/**
