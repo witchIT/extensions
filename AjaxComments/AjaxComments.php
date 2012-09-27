@@ -44,16 +44,17 @@ class AjaxComments {
 	function __construct() {
 		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle;
 
+			$wgHooks['UnknownAction'][] = $this;
+
 		// Create a hook to allow external condition for whether there should be comments
 		$ret = true;
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
-		if( !is_object( $title ) || $title->getArticleID() == 0 || $title->isRedirect() || ($title->getNamespace()&1) || array_key_exists( 'action', $_REQUEST ))
+		if( !is_object( $title ) || $title->getArticleID() == 0 || $title->isRedirect() || ($title->getNamespace()&1) || array_key_exists( 'action', $_REQUEST ) )
 			$ret = false;
 		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 		if( $ret ) {
 
 			$wgHooks['MediaWikiPerformAction'][] = $this;
-			$wgHooks['UnknownAction'][] = $this;
 			$wgHooks['BeforePageDisplay'][] = $this;
 
 			// Set up JavaScript and CSS resources
