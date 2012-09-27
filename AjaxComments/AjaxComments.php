@@ -53,6 +53,7 @@ class AjaxComments {
 			$ret = false;
 		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 		if( $ret ) {
+print'ccc';
 			$wgHooks['MediaWikiPerformAction'][] = $this;
 			$wgHooks['BeforePageDisplay'][] = $this;
 		}
