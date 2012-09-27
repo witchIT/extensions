@@ -79,7 +79,7 @@ class TreeAndMenu {
 		);
 		$wgOut->addModules( 'ext.treeandmenu' );
 		$wgOut->addScript( "<script type=\"$wgJsMimeType\">window.tamBaseUrl='{$this->baseUrl}';</script>" );
-		$wgOut->addScript( "<script type=\"$wgJsMimeType\" src=\"$baseUrl/dtree.js\"></script>' );
+		$wgOut->addScript( "<script type=\"$wgJsMimeType\" src=\"$baseUrl/dtree.js\"></script>" );
 	}
 
 	/**
