@@ -110,6 +110,9 @@ class TreeAndMenu {
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
+		// Remove leading whitespace to avoid <p>'s
+		$text = preg_replace( "|^\s*|m", "", $text );
+
 		// Parse the structure
 		$psr = new Parser;
 		$opt = ParserOptions::newFromUser( $wgUser );
@@ -219,7 +222,10 @@ class TreeAndMenu {
 				}
 			}
 		}
-		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
+
+		// Remove all unreplaced row information
+		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text );
+
 		return $html;
 	}
 }
