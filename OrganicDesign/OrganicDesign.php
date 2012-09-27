@@ -11,7 +11,6 @@
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 define( 'OD_VERSION', "0.0.0, 2012-09-27" );
 
-$wgExtensionFunctions[] = 'wfSetupOrganicDesign';
 $wgExtensionCredits['other'][] = array(
 	'name'        => "OrganicDesign",
 	'author'      => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
@@ -30,7 +29,7 @@ $wgResourceModules['skins.organicdesign'] = array(
 class OrganicDesign {
 
 	function __construct() {
-        global $wgHooks, $wgUser, $wgTitle;
+		global $wgExtensionFunctions, $wgHooks;
 
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
         $host = $_SERVER['HTTP_HOST'];
@@ -53,7 +52,11 @@ class OrganicDesign {
                 }
         }
 
+		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
+	}
+
+	function setup() {
 
 	}
 
@@ -89,9 +92,5 @@ class OrganicDesign {
 	}
 
 }
-
-function wfSetupOrganicDesign() {
-	global $wgOrganicDesign;
-	$wgOrganicDesign = new OrganicDesign();
-}
+new OrganicnDesign();
 
