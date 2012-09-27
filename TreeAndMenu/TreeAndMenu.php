@@ -218,8 +218,8 @@ class TreeAndMenu {
 						document.getElementById('$id').innerHTML = $objid.toString();
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-					$wgOut->addHTML( "<script type=\"$wgJsMimeType\">$script</script>" );
-					$html = "$top<div class='$class' id='$id'></div>$bottom";
+					$html = "<script type=\"$wgJsMimeType\">$script</script>" );
+					$html .= "$top<div class='$class' id='$id'></div>$bottom";
 					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
 
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
