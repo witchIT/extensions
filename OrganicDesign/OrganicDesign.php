@@ -29,7 +29,7 @@ $wgResourceModules['skins.organicdesign'] = array(
 class OrganicDesign {
 
 	function __construct() {
-		global $wgExtensionFunctions, $wgHooks;
+		global $wgUser, $wgExtensionFunctions, $wgHooks;
 
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
         $host = $_SERVER['HTTP_HOST'];
