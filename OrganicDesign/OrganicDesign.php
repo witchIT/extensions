@@ -69,6 +69,7 @@ class OrganicDesign {
 	 * Only use AjaxComments if the title's not in the "No files or comments" category
 	 */
 	function onAjaxCommentsCheckTitle( $title, &$ret ) {
+		if( $title->getNamespace() == 8 || $title->getNamespace() == 10 ) $ret = false;
 		$ret = !self::inCat( 'No files or comments', $title );
 		return true;
 	}
@@ -77,6 +78,7 @@ class OrganicDesign {
 	 * Only use jQuery uploads if it's a loan page and the current user can edit the talk page
 	 */
 	function onjQueryUploadAddAttachLink( $title, &$ret ) {
+		if( $title->getNamespace() == 8 || $title->getNamespace() == 10 ) $ret = false;
 		$ret = !self::inCat( 'No files or comments', $title );
 		return true;
 	}
