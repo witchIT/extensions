@@ -32,6 +32,7 @@ class OrganicDesign {
 	function __construct() {
         global $wgUser, $wgTitle;
 
+		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
         $host = $_SERVER['HTTP_HOST'];
         $uri = $_SERVER['REQUEST_URI'];
         $ssl = isset( $_SERVER['HTTPS'] );
@@ -52,6 +53,32 @@ class OrganicDesign {
                 }
         }
 
+	}
+
+	/**
+	 * Only use AjaxComments if the title's not in the "No files or comments" category
+	 */
+	function onAjaxCommentsCheckTitle( &$ret ) {
+		return OrganicDesign::inCat( 'No files or comments' );
+	}
+
+	/**
+	 * Only use jQuery uploads if it's a loan page and the current user can edit the talk page
+	 */
+	function onjQueryUploadAddAttachLink( $title, &$attach ) {
+		return OrganicDesign::inCat( 'No files or comments' );
+	}
+
+	/**
+	 * Return whether or not the passed title is a member of the passed cat
+	 */
+	public static function inCat( $title, $cat ) {
+		if( !is_object( $title ) ) $title = Title::newFromText( $title, NS_CATEGORY );
+		$id   = $title->getArticleID();
+		$dbr  = &wfGetDB( DB_SLAVE );
+		$cat  = $dbr->addQuotes( Title::newFromText( $cat )->getDBkey() );
+		$cl   = $dbr->tableName( 'categorylinks' );
+		return $dbr->selectRow( $cl, '0', "cl_from = $id AND cl_to = $cat", __METHOD__ );
 	}
 
 }

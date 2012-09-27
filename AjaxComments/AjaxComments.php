@@ -44,33 +44,36 @@ class AjaxComments {
 	function __construct() {
 		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle;
 
-		$wgHooks['MediaWikiPerformAction'][] = $this;
-		$wgHooks['UnknownAction'][] = $this;
-		$wgHooks['BeforePageDisplay'][] = $this;
+		// Create a hook to allow external condition for whether there should be comments
+		if( wfRunHooks( 'AjaxCommentsCheckTitle' ) ) {
 
-		// Set up JavaScript and CSS resources
-		if( is_callable( 'OutputPage::addModules' ) ) {
-			$wgResourceModules['ext.ajaxcomments'] = array(
-				'scripts'       => array( 'ajaxcomments.js' ),
-				'styles'        => array( 'ajaxcomments.css' ),
-				'localBasePath' => dirname( __FILE__ ),
-				'remoteExtPath' => basename( dirname( __FILE__ ) ),
-			);
-			$wgOut->addModules( 'ext.ajaxcomments' );
+			$wgHooks['MediaWikiPerformAction'][] = $this;
+			$wgHooks['UnknownAction'][] = $this;
+			$wgHooks['BeforePageDisplay'][] = $this;
 
-			// Set polling to -1 if checkTitle says comments are disabled
-			if( method_exists( $wgOut, 'addJsConfigVars' ) ) {
-				$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $this->checkTitle() ? $wgAjaxCommentsPollServer : -1 );
+			// Set up JavaScript and CSS resources
+			if( is_callable( 'OutputPage::addModules' ) ) {
+				$wgResourceModules['ext.ajaxcomments'] = array(
+					'scripts'       => array( 'ajaxcomments.js' ),
+					'styles'        => array( 'ajaxcomments.css' ),
+					'localBasePath' => dirname( __FILE__ ),
+					'remoteExtPath' => basename( dirname( __FILE__ ) ),
+				);
+				$wgOut->addModules( 'ext.ajaxcomments' );
+
+				// Set polling to -1 if checkTitle says comments are disabled
+				if( method_exists( $wgOut, 'addJsConfigVars' ) ) {
+					$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
+				}
 			}
 		}
-
 	}
 
 	/**
 	 * Return true if the AjaxComments should be active for the passed title (current page if none supplied)
 	 * - this always returns true, but provides a hook for other extensions to make it conditional
 	 */
-	function checkTitle( $title = false ) {
+	function checkTitle() {
 		$ret = true;
 		wfRunHooks( 'AjaxCommentsCheckTitle', array( &$ret ) );
 		return $ret;
