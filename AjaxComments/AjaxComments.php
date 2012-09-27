@@ -73,16 +73,6 @@ class AjaxComments {
 	}
 
 	/**
-	 * Return true if the AjaxComments should be active for the passed title (current page if none supplied)
-	 * - this always returns true, but provides a hook for other extensions to make it conditional
-	 */
-	function checkTitle() {
-		$ret = true;
-		wfRunHooks( 'AjaxCommentsCheckTitle', array( &$ret ) );
-		return $ret;
-	}
-
-	/**
 	 * If the page is viewing a talk page, go to the comments instead
 	 */
 	function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
