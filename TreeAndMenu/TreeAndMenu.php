@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.0.0, 2012-09-27' );
+define( 'TREEANDMENU_VERSION','3.0.1, 2012-09-27' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -109,8 +109,7 @@ class TreeAndMenu {
 		// Reformat tree rows
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
-global $wgUseTidy, $wgAlwaysUseTidy;
-$wgUseTidy = $wgAlwaysUseTidy = false;
+
 		// Parse the structure
 		$psr = new Parser;
 		$opt = ParserOptions::newFromUser( $wgUser );
@@ -119,18 +118,6 @@ $wgUseTidy = $wgAlwaysUseTidy = false;
 		// Do the final rendering
 		$html = $this->renderTreeAndMenu( $html );
 
-		// Parser adds <p>'s all over the place :-(
-		$html = preg_replace( "|\s*<[/]?p>\s*|s", "", $html );
-		$html = preg_replace( "|^\s*|sm", "", $html );
-
-		return array(
-			$html,
-			'found'   => true,
-			'nowiki'  => true,
-			'noparse' => true,
-			'noargs'  => true,
-			'isHTML'  => true
-		);
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 
@@ -223,9 +210,9 @@ $wgUseTidy = $wgAlwaysUseTidy = false;
 						document.getElementById('$id').innerHTML = $objid.toString();
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-					$html = "<script type=\"$wgJsMimeType\">$script</script>";
-					$html .= "$top<div class='$class' id='$id'></div>$bottom";
+					$html = "$top<div class='$class' id='$id'></div>$bottom";
 					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
+					$html .= "<script type=\"$wgJsMimeType\">$script</script>";
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
 					$last  = -1;
