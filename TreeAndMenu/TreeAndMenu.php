@@ -120,13 +120,14 @@ class TreeAndMenu {
 
 		// Parser adds <p>'s all over the place :-(
 		$html = preg_replace( "|\s*<[/]?p>\s*|s", "", $html );
+		$html = preg_replace( "|^\s*|sm", "", $html );
 
 		return array(
 			$html,
 			'found'   => true,
 			'nowiki'  => true,
 			'noparse' => true,
-			'noargs'  => false,
+			'noargs'  => true,
 			'isHTML'  => true
 		);
 		return array( $html, 'isHTML' => true, 'noparse' => true );
