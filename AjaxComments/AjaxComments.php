@@ -52,10 +52,10 @@ class AjaxComments {
 		if( (!is_object( $title )) || ($title->getArticleID() == 0) || $title->isRedirect() || ($title->getNamespace()&1) || array_key_exists( 'action', $_REQUEST ) )
 			$ret = false;
 		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
-		if( $ret ) {
+		//if( $ret ) {
 			$wgHooks['MediaWikiPerformAction'][] = $this;
 			$wgHooks['BeforePageDisplay'][] = $this;
-		}
+		//}
 
 		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.ajaxcomments'] = array(
