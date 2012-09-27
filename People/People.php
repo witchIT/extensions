@@ -10,7 +10,7 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'PEOPLE_VERSION', '1.0.1, 2012-09-21' );
+define( 'PEOPLE_VERSION', '1.0.2, 2012-09-27' );
 
 $wgPeopleMagic                 = "people";
 $wgExtensionFunctions[]        = 'wfSetupPeople';
@@ -53,6 +53,10 @@ class People {
 			if( $title->exists() ) {
 				$article = new Article( $title );
 				$text .= $article->getContent();
+				if( $cur == $user ) {
+					$url = $title->getLocalUrl( 'action=edit' );
+					$text .= "<span class=\"plainlinks\"><a href=\"$url\">[" . wfMsg( 'edit' ) . "]</a></span>";
+				}
 			}
 			elseif( $cur == $user ) $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n";
 			$text .= "<div style=\"clear:both\"></div>\n";
