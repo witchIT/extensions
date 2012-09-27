@@ -109,7 +109,8 @@ class TreeAndMenu {
 		// Reformat tree rows
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
-
+global $wgUseTidy, $wgAlwaysUseTidy
+$wgUseTidy = $wgAlwaysUseTidy = false;
 		// Parse the structure
 		$psr = new Parser;
 		$opt = ParserOptions::newFromUser( $wgUser );
