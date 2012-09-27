@@ -189,7 +189,7 @@ class TreeAndMenu {
 
 				// Last row of current root, surround nodes dtree or menu script and div etc
 				if( $end ) {
-					$class = isset( $args['class'] ) ? $args['class'] : "dtree";
+					$class = isset( $args['class'] ) ? $args['class'] : "dTree";
 
 					// Load the dTree script if not loaded already
 					static $dtree = false;
