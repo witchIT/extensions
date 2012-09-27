@@ -133,7 +133,9 @@ if( empty( $text ) ) $text = wfMsg( $title );
 if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
 if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
-echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
+$html = $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
+$html = preg_replace( "|\s*<[/]?p>\s*|s", "", $html );
+$html = preg_replace( "|^\s*|sm", "", $html );
 ?></div></td>
 
 <!-- Main content area -->
