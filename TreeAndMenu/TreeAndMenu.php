@@ -73,6 +73,7 @@ class TreeAndMenu {
 		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.treeandmenu'] = array(
 			'styles'        => array( 'treeandmenu.css' ),
+			'scripts'       => array( 'dtree.js' ),
 			'localBasePath' => dirname( __FILE__ ),
 			'remoteExtPath' => basename( dirname( __FILE__ ) ),
 		);
@@ -189,16 +190,7 @@ class TreeAndMenu {
 
 				// Last row of current root, surround nodes dtree or menu script and div etc
 				if( $end ) {
-					$class = isset( $args['class'] ) ? $args['class'] : "dTree";
-
-					// Load the dTree script if not loaded already
-					static $dtree = false;
-					if( !$dtree ) {
-						$wgOut->addScriptFile( $this->baseUrl . '/dtree.js' );
-						$dtree = true;
-					}
-
-					// Finalise a tree
+					$class = isset( $args['class'] ) ? $args['class'] : "dtree";
 					$add = isset( $args['root'] ) ? "tree.add(0,-1,'".$args['root']."');" : '';
 					$top = $bottom = $root = $opennodesjs = '';
 					foreach( array_keys( $opennodes ) as $i ) $opennodesjs .= "$objid.o($i);";
