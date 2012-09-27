@@ -189,7 +189,7 @@ class TreeAndMenu {
 				// Append node script for this row
 				if( $depth > $last ) $parents[$depth] = $node-1;
 				$parent = $parents[$depth];
-				$nodes .= "$objid.add($node, $parent, '$item');\n";
+				$nodes .= "$objid.add($node, $parent, '$item');";
 				if( $depth > 0 && $openlevels > $depth ) $opennodes[$parent] = true;
 				$last = $depth;
 
