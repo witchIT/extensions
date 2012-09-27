@@ -12,7 +12,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'FORMMAILER_VERSION', '1.0.3, 2011-01-02' );
+define( 'FORMMAILER_VERSION', '1.0.4, 2012-09-27' );
 
 # A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
@@ -86,13 +86,12 @@ function wfSetupFormMailer() {
 	# - adds the MD5 of the IP address to the formmailer input name after page load
 	if( $wgFormMailerAntiSpam ) {
 		$wgOut->addScript( "<script type='$wgJsMimeType'>
-		function formMailerOnLoad() {
+		$(document).ready(function formMailerOnLoad() {
 			e = document.getElementsByTagName( 'input' );
 			for( i = 0; i < e.length; i++ ) {
 				if( e[i].name == 'formmailer' ) e[i].name += '$ap';
 			}
-		}
-		addOnloadHook(formMailerOnLoad);
+		});
 		</script>" );
 	}
 
