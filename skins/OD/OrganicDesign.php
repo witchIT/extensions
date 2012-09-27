@@ -136,6 +136,7 @@ if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 $html = $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 $html = preg_replace( "|\s*<[/]?p>\s*|s", "", $html );
 $html = preg_replace( "|^\s*|sm", "", $html );
+echo $html;
 ?></div></td>
 
 <!-- Main content area -->
