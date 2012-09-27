@@ -17,13 +17,10 @@ class jQueryUpload extends SpecialPage {
 		// Initialise the special page
 		parent::__construct( 'jQueryUpload', 'upload' );
 
-		// Check if this page should be able to have files attached (by default allow attachments for all existing article)
+		// If attachments allowed in this page, add the module into the page
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
 		$attach = is_object( $title ) && $title->getArticleID() && !array_key_exists( 'action', $_REQUEST );
-		wfRunHooks( 'jQueryUploadAddAttachLink', array( $title, &$attach ) );
-print_r($attach);
-
-		// If attachments allowed in this page, add the module into the page
+		if( $attach ) wfRunHooks( 'jQueryUploadAddAttachLink', array( $title, &$attach ) );
 		if( $attach ) {
 			$this->head();
 			$wgHooks['BeforePageDisplay'][] = $this;
