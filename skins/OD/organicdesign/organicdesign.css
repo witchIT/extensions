@@ -1320,7 +1320,9 @@ div.mw-lag-warn-high {
 	font-size: 12px;
 	padding-left: 5px;
 }
-
+#column-one #c1-div li {
+	list-style-type: none;
+}
 #sidebar-tree {
 	position: absolute;
 	top: 50px;
