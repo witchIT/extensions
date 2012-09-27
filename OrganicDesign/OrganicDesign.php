@@ -64,7 +64,6 @@ class OrganicDesign {
 	 */
 	function onAjaxCommentsCheckTitle( &$ret ) {
 		$ret = false; //!self::inCat( 'No files or comments' );
-		die;
 		return true;
 	}
 
