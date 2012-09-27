@@ -189,7 +189,7 @@ class TreeAndMenu {
 				// Append node script for this row
 				if( $depth > $last ) $parents[$depth] = $node-1;
 				$parent = $parents[$depth];
-				$nodes .= "$objid.add($node, $parent, '$item');";
+				$nodes .= "$objid.add($node, $parent, '$item');\n";
 				if( $depth > 0 && $openlevels > $depth ) $opennodes[$parent] = true;
 				$last = $depth;
 
@@ -209,7 +209,9 @@ class TreeAndMenu {
 					$script = "// TreeAndMenu-{$this->version}\ntree = new dTree('$objid');
 						for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
 						tree.config.useLines = {$this->useLines};
-						$add$objid = tree;$nodes
+						$add
+						$objid = tree;
+						$nodes
 						document.getElementById('$id').innerHTML = $objid.toString();
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
@@ -225,6 +227,8 @@ class TreeAndMenu {
 
 		// Remove all unreplaced row information
 		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text );
+		
+		$html = preg_replace( "/^\s*/sm", "", $html );
 
 		return $html;
 	}
