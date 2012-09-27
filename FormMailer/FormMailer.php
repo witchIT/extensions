@@ -14,25 +14,25 @@
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 define( 'FORMMAILER_VERSION', '1.0.4, 2012-09-27' );
 
-# A list of email addresses which should recieve posted forms
+// A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
 
-# If a variable of this name is posted, the data is assumed to be for mailing
+// If a variable of this name is posted, the data is assumed to be for mailing
 $wgFormMailerVarName    = "formmailer";
 
-# Name of sender of forms
+// Name of sender of forms
 $wgFormMailerFrom       = 'wiki@' . preg_replace( '|^.+www\.|', '', $wgServer );
 
-# Don't post the following posted items
+// Don't post the following posted items
 $wgFormMailerDontSend   = array( 'title', 'action' );
 
-# Message to display after sending the form (can also be set in the form by posting formmailer_message
+// Message to display after sending the form (can also be set in the form by posting formmailer_message
 $wgFormMailerMessage    = "Thanks, your enquiry has been submitted!";
 
-# Message to display after sending the form (can also be set in the form by posting formmailer_subject
+// Message to display after sending the form (can also be set in the form by posting formmailer_subject
 $wgFormMailerSubject    = "Form submitted from $wgSitename";
 
-# Add a JavaScript test to protect against spambot posts
+// Add a JavaScript test to protect against spambot posts
 $wgFormMailerAntiSpam   = true;
 
 $wgExtensionFunctions[] = 'wfSetupFormMailer';
@@ -86,7 +86,7 @@ function wfSetupFormMailer() {
 	// - adds the MD5 of the IP address to the formmailer input name after page load
 	if( $wgFormMailerAntiSpam ) {
 		$wgOut->addScript( "<script type='$wgJsMimeType'>
-		$(document).ready(function formMailerOnLoad() {
+		$(document).ready(function() {
 			e = document.getElementsByTagName( 'input' );
 			for( i = 0; i < e.length; i++ ) {
 				if( e[i].name == 'formmailer' ) e[i].name += '$ap';
