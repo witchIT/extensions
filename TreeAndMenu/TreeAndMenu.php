@@ -77,7 +77,7 @@ class TreeAndMenu {
 			'remoteExtPath' => $this->baseUrl,
 		);
 		$wgOut->addModules( 'ext.treeandmenu' );
-		$wgOut->addHeadItem( 'treeBaseUrl', "<script type=\"$wgJsMimeType\">window.tamBaseUrl='{$this->baseUrl}';</script>\n" );
+		$wgOut->addHeadItem( 'treeBaseUrl', "<script type=\"$wgJsMimeType\">window.tamBaseUrl='{$this->baseUrl}'</script>\n" );
 		$wgOut->addHeadItem( 'dTree', "<script type=\"$wgJsMimeType\" src=\"{$this->baseUrl}/dtree.js\"></script>\n" );
 	}
 
@@ -211,7 +211,7 @@ class TreeAndMenu {
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
 					$html = "$top<div class='$class' id='$id'></div>$bottom";
-					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]\n$script</script>";
+					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[];$script</script>";
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
 					$last  = -1;
