@@ -46,7 +46,7 @@ class AjaxComments {
 
 		// Create a hook to allow external condition for whether there should be comments
 		$ret = true;
-		wfRunHooks( 'AjaxCommentsCheckTitle', array( $ret ) );
+		wfRunHooks( 'AjaxCommentsCheckTitle', array( &$ret ) );
 		if( $ret ) {
 
 			$wgHooks['MediaWikiPerformAction'][] = $this;
