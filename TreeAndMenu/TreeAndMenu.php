@@ -221,7 +221,6 @@ class TreeAndMenu {
 					$html = "<script type=\"$wgJsMimeType\">$script</script>";
 					$html .= "$top<div class='$class' id='$id'></div>$bottom";
 					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
-print 'xxx' . $html;
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
 					$last  = -1;
