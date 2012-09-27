@@ -54,8 +54,8 @@ class People {
 				$article = new Article( $title );
 				$text .= $article->getContent();
 				if( $cur == $user ) {
-					$url = $title->getLocalUrl( 'action=edit' );
-					$text .= "<span class=\"plainlinks\"><a href=\"$url\">[" . wfMsg( 'edit' ) . "]</a></span>";
+					$url = $title->getFullUrl( 'action=edit' );
+					$text .= "<span class=\"plainlinks\">[$url &#91;" . wfMsg( 'edit' ) . "&#93;]</span>";
 				}
 			}
 			elseif( $cur == $user ) $text .= "[[User:$user|" . wfMsg( 'people-create-intro' ) . "]]\n";
