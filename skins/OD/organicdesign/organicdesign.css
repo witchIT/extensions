@@ -1318,7 +1318,7 @@ div.mw-lag-warn-high {
 /* Sidebar */
 #column-one #c1-div h2 {
 	font-size: 12px;
-	margin-left: 5px;
+	padding-left: 5px;
 }
 
 #sidebar-tree {
