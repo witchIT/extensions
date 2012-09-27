@@ -201,7 +201,8 @@ class TreeAndMenu {
 					if( $bottom ) $bottom = "<p>&#160;$bottom</p>";
 
 					// Define the script to build this tree
-					$script = "// TreeAndMenu-{$this->version}\ntree = new dTree('$objid');
+					$script = "// TreeAndMenu-{$this->version}
+						tree = new dTree('$objid');
 						for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
 						tree.config.useLines = {$this->useLines};
 						$add
