@@ -201,8 +201,7 @@ class TreeAndMenu {
 					if( $bottom ) $bottom = "<p>&#160;$bottom</p>";
 
 					// Define the script to build this tree
-					$script = "// TreeAndMenu-{$this->version}
-						tree = new dTree('$objid');
+					$script = "tree = new dTree('$objid');
 						for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
 						tree.config.useLines = {$this->useLines};
 						$add
@@ -212,8 +211,7 @@ class TreeAndMenu {
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
 					$html = "$top<div class='$class' id='$id'></div>$bottom";
-					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
-					$html .= "<script type=\"$wgJsMimeType\">$script</script>";
+					$html .= "<script type=\"$wgJsMimeType\">// TreeAndMenu-{$this->version}\nwindow.tamOnload_$objid=[]\n$script</script>";
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
 					$last  = -1;
