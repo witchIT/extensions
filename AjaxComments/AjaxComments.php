@@ -49,7 +49,7 @@ class AjaxComments {
 		// Create a hook to allow external condition for whether there should be comments
 		$ret = true;
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
-		if( !is_object( $title ) || $title->getArticleID() == 0 || $title->isRedirect()  )
+		if( !is_object( $title ) || $title->getArticleID() == 0  )
 			$ret = false;
 		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 		if( $ret ) {
