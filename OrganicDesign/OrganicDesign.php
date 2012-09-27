@@ -34,15 +34,13 @@ class OrganicDesign {
 		global $wgExtensionFunctions, $wgHooks;
 
 		$wgExtensionFunctions[] = array( $this, 'setup' );
-		//$wgHooks['AjaxCommentsCheckTitle'][] = $this;
+		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 	}
 
 	function setup() {
 		global $wgUser;
 
-print_r($_GET);
-		if( !self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false )
-			self::$title = Title::newFromText( substr( $_SERVER['PATH_INFO'], 1 ) );
+		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
         $host = $_SERVER['HTTP_HOST'];
@@ -69,8 +67,8 @@ print_r($_GET);
 	/**
 	 * Only use AjaxComments if the title's not in the "No files or comments" category
 	 */
-	function onAjaxCommentsCheckTitle( &$ret ) {
-		$ret = !self::inCat( 'No files or comments', self::$title );
+	function onAjaxCommentsCheckTitle( $title, &$ret ) {
+		$ret = !self::inCat( 'No files or comments', $title );
 		return true;
 	}
 
