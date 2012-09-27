@@ -71,14 +71,15 @@ class TreeAndMenu {
 		}
 
 		// Set up JavaScript and CSS resources
+		$baseUrl = basename( dirname( __FILE__ ) );
 		$wgResourceModules['ext.treeandmenu'] = array(
 			'styles'        => array( 'treeandmenu.css' ),
-			'scripts'       => array( 'dtree.js' ),
 			'localBasePath' => dirname( __FILE__ ),
-			'remoteExtPath' => basename( dirname( __FILE__ ) ),
+			'remoteExtPath' => $baseUrl,
 		);
 		$wgOut->addModules( 'ext.treeandmenu' );
 		$wgOut->addScript( "<script type=\"$wgJsMimeType\">window.tamBaseUrl='{$this->baseUrl}';</script>" );
+		$wgOut->addScript( "<script type=\"$wgJsMimeType\" src=\"$baseUrl/dtree.js\"></script>' );
 	}
 
 	/**
