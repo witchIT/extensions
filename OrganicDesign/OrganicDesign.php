@@ -59,14 +59,14 @@ class OrganicDesign {
 	 * Only use AjaxComments if the title's not in the "No files or comments" category
 	 */
 	function onAjaxCommentsCheckTitle() {
-		return self::inCat( 'No files or comments' );
+		return !self::inCat( 'No files or comments' );
 	}
 
 	/**
 	 * Only use jQuery uploads if it's a loan page and the current user can edit the talk page
 	 */
 	function onjQueryUploadAddAttachLink( $title ) {
-		return self::inCat( 'No files or comments', $title );
+		return !self::inCat( 'No files or comments', $title );
 	}
 
 	/**
