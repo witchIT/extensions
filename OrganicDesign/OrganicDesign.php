@@ -28,7 +28,7 @@ $wgResourceModules['skins.organicdesign'] = array(
 
 class OrganicDesign {
 
-	var static $title = false;
+	public static $title = false;
 
 	function __construct() {
 		global $wgExtensionFunctions, $wgHooks;
