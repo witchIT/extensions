@@ -55,7 +55,7 @@ function wfSetupFormMailer() {
 
 	if( $wgRequest->getText( $wgFormMailerVarName . $ap ) ) {
 
-		# Construct the message
+		// Construct the message
 		$body    = "Form posted from $ip\n\n";
 		$message = $wgFormMailerMessage;
 		$subject = $wgFormMailerSubject;
@@ -68,7 +68,7 @@ function wfSetupFormMailer() {
 			}
 		}
 
-		# Send to recipients using the MediaWiki mailer
+		// Send to recipients using the MediaWiki mailer
 		$err  = '';
 		$user = new User();
 		$from = "\"$wgSitename\"<$wgFormMailerFrom>";
@@ -82,8 +82,8 @@ function wfSetupFormMailer() {
 		$wgSiteNotice .= "<div class='usermessage'>" . ( $err ? $err : $message ) . "</div>";
 	}
 	
-	# Add the antispam script
-	# - adds the MD5 of the IP address to the formmailer input name after page load
+	// Add the antispam script
+	// - adds the MD5 of the IP address to the formmailer input name after page load
 	if( $wgFormMailerAntiSpam ) {
 		$wgOut->addScript( "<script type='$wgJsMimeType'>
 		$(document).ready(function formMailerOnLoad() {
