@@ -34,7 +34,7 @@ class OrganicDesign {
 		global $wgExtensionFunctions, $wgHooks;
 
 		$wgExtensionFunctions[] = array( $this, 'setup' );
-		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
+		//$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 	}
 
 	function setup() {
