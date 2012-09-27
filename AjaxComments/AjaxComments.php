@@ -44,7 +44,7 @@ class AjaxComments {
 	function __construct() {
 		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle;
 
-			$wgHooks['UnknownAction'][] = $this;
+		$wgHooks['UnknownAction'][] = $this;
 
 		// Create a hook to allow external condition for whether there should be comments
 		$ret = true;
