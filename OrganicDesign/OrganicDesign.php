@@ -28,8 +28,13 @@ $wgResourceModules['skins.organicdesign'] = array(
 
 class OrganicDesign {
 
+	static var $title = false;
+
 	function __construct() {
 		global $wgExtensionFunctions, $wgHooks;
+
+		self::$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
+
 		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 	}
@@ -63,7 +68,7 @@ class OrganicDesign {
 	 * Only use AjaxComments if the title's not in the "No files or comments" category
 	 */
 	function onAjaxCommentsCheckTitle( &$ret ) {
-		$ret = !self::inCat( 'No files or comments' );
+		$ret = !self::inCat( 'No files or comments', self::$title );
 		return true;
 	}
 
