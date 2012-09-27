@@ -162,8 +162,6 @@ class TreeAndMenu {
 				$lastId    = $id;
 				$lastDepth = $depth;
 			}
-		print 'rows: ' . count( $rows );
-
 
 			// PASS-2: build the JavaScript and replace into $text
 			$parents   = array(); // parent node for each depth
@@ -220,7 +218,7 @@ class TreeAndMenu {
 						document.getElementById('$id').innerHTML = $objid.toString();
 						$opennodesjs
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-					$wgOut->addInlineScript( "<script type=\"$wgJsMimeType\">$script</script>" );
+					$wgOut->addHTML( "<script type=\"$wgJsMimeType\">$script</script>" );
 					$html = "$top<div class='$class' id='$id'></div>$bottom";
 					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[]</script>";
 
