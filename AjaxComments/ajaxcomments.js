@@ -5,7 +5,7 @@ $(document).ready( function() {
 	if(poll < 0) return;
 
 	// If there's a discussion tab, normal view action and not on talk page, render the discussion below the article
-	if($('#ca-talk').length > 0 && mw.config.get('wgArticleId') > 0 && mw.config.get('wgAction') == 'view' && !(mw.config.get('wgNamespaceNumber')&1)) {
+	if($('#ca-talk').length > 0) {
 
 		// Change the talk page tab to a local link to the comments at the end of the page
 		$('#ca-talk a').attr('href','#ajaxcomments');
