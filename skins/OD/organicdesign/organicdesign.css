@@ -1315,7 +1315,12 @@ div.mw-lag-warn-high {
 	text-transform: none;
 }
 
-/* Sidebar tree */
+/* Sidebar */
+#columns-one h2 {
+	font-size: 12px;
+	margin-left: 5px;
+}
+
 #sidebar-tree {
 	position: absolute;
 	top: 50px;

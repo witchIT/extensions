@@ -111,7 +111,7 @@ if ( $wgOrganicDesignDonations ) {?>
 
 <!-- search -->
 <div id="p-search" class="portlet">
-	<h5><label for="searchInput"><?php $this->msg('search') ?></label></h5>
+	<h2><label for="searchInput"><?php $this->msg('search') ?></label></h2>
 	<div id="searchBody" class="pBody">
 		<form action="<?php $this->text('wgScript') ?>" id="searchform">
 			<input type='hidden' name="title" value="<?php $this->text('searchtitle') ?>"/>
