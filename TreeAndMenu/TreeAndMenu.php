@@ -117,7 +117,7 @@ class TreeAndMenu {
 		// Parse the structure
 		$psr = new Parser;
 		$opt = ParserOptions::newFromUser( $wgUser );
-		$html = $psr->parse( $text, $parser->mTitle, $opt, true, true )->getText();
+		$html = $psr->parse( $text, $parser->mTitle, $opt, false, true )->getText();
 file_put_contents( '/var/www/wikis/od/files/test.txt', $html );		
 
 		// Do the final rendering
