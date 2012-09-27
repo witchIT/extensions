@@ -119,10 +119,16 @@ class TreeAndMenu {
 		$html = $this->renderTreeAndMenu( $html );
 
 		// Parser adds <p>'s all over the place :-(
-		$html = preg_replace( "|<[/]?p>|m", "", $html );
+		$html = preg_replace( "|\s*<[/]?p>\s*|s", "", $html );
 
-file_put_contents( '/var/www/wikis/od/files/test.txt', $html );
-
+		return array(
+			$html,
+			'found'   => true,
+			'nowiki'  => true,
+			'noparse' => true,
+			'noargs'  => false,
+			'isHTML'  => true
+		);
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 
