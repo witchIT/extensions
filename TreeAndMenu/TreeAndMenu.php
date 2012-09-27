@@ -121,7 +121,7 @@ class TreeAndMenu {
 		// Do the final rendering
 		$html = $this->renderTreeAndMenu( $html );
 
-		$html = preg_replace( "|^\s*|m", "", $html );
+		//$html = preg_replace( "|^\s*|m", "", $html );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
@@ -196,7 +196,7 @@ class TreeAndMenu {
 				// Last row of current root, surround nodes dtree or menu script and div etc
 				if( $end ) {
 					$class = isset( $args['class'] ) ? $args['class'] : "dtree";
-					$add = isset( $args['root'] ) ? "tree.add(0,-1,'".$args['root']."');" : '';
+					$add = isset( $args['root'] ) ? "tree.add(0,-1,'" . $args['root'] . "');" : '';
 					$top = $bottom = $root = $opennodesjs = '';
 					foreach( array_keys( $opennodes ) as $i ) $opennodesjs .= "$objid.o($i);";
 					foreach( $args as $arg => $pos )
@@ -209,8 +209,7 @@ class TreeAndMenu {
 					$script = "// TreeAndMenu-{$this->version}\ntree = new dTree('$objid');
 						for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
 						tree.config.useLines = {$this->useLines};
-						$add
-						$objid = tree;
+						$add$objid = tree;
 						$nodes
 						document.getElementById('$id').innerHTML = $objid.toString();
 						$opennodesjs
