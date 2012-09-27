@@ -70,7 +70,7 @@ class OrganicDesign {
 	 */
 	function onAjaxCommentsCheckTitle( $title, &$ret ) {
 		if( $title->getNamespace() == 8 || $title->getNamespace() == 10 ) $ret = false;
-		$ret = !self::inCat( 'No files or comments', $title );
+		else $ret = !self::inCat( 'No files or comments', $title );
 		return true;
 	}
 
@@ -79,7 +79,7 @@ class OrganicDesign {
 	 */
 	function onjQueryUploadAddAttachLink( $title, &$ret ) {
 		if( $title->getNamespace() == 8 || $title->getNamespace() == 10 ) $ret = false;
-		$ret = !self::inCat( 'No files or comments', $title );
+		else $ret = !self::inCat( 'No files or comments', $title );
 		return true;
 	}
 
