@@ -76,7 +76,10 @@ function wfSetupFormMailer() {
 			if( User::isValidEmailAddr( $recipient ) ) {
 				$from = new MailAddress( $recipient, $site );
 				$to = new MailAddress( $recipient );
-				if( UserMailer::send( $to, $from, $subject, $body ) !== true ) $err = 'Failed to send!';
+				$status = UserMailer::send( $to, $from, $subject, $body );
+				print_r($status);
+				die;
+				// !== true ) $err = 'Failed to send!';
 			}
 		}
 		$wgSiteNotice .= "<div class='usermessage'>" . ( $err ? $err : $message ) . "</div>";
