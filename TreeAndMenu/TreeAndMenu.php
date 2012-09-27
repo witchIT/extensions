@@ -119,7 +119,7 @@ class TreeAndMenu {
 		$html = $this->renderTreeAndMenu( $html );
 
 		// Parser adds <p>'s all over the place :-(
-		$html = preg_replace( "|<[/]p>|m", "", $html );
+		$html = preg_replace( "|<[/]?p>|m", "", $html );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
