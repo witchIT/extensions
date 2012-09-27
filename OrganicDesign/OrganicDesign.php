@@ -59,6 +59,7 @@ class OrganicDesign {
 	 * Only use AjaxComments if the title's not in the "No files or comments" category
 	 */
 	function onAjaxCommentsCheckTitle() {
+		return false;
 		return !self::inCat( 'No files or comments' );
 	}
 
