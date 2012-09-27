@@ -35,6 +35,7 @@ class OrganicDesign {
 
 		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
+		$wgHooks['jQueryUploadAddAttachLink'][] = $this;
 	}
 
 	function setup() {
