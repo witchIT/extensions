@@ -33,8 +33,8 @@ class OrganicDesign {
 	function __construct() {
 		global $wgExtensionFunctions, $wgHooks;
 
-		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
-print_r($_SERVER);
+		if( !self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false )
+			self::$title = Title::newFromText( substr( $_SERVER['PATH_INFO'], 1 ) );
 		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 	}
