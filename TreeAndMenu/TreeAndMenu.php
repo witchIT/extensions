@@ -110,20 +110,16 @@ class TreeAndMenu {
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
-		// Remove leading whitespace to avoid <p>'s
-		$text = preg_replace( "/^$/sm", "", $text );
-		$text = preg_replace( "/^\s*/sm", "", $text );
-
 		// Parse the structure
 		$psr = new Parser;
 		$opt = ParserOptions::newFromUser( $wgUser );
 		$html = $psr->parse( $text, $parser->mTitle, $opt, false, true )->getText();
-file_put_contents( '/var/www/wikis/od/files/test.txt', "$text\n\n$html" );		
 
 		// Do the final rendering
 		$html = $this->renderTreeAndMenu( $html );
 
-		//$html = preg_replace( "|^\s*|m", "", $html );
+		// Parser adds <p>'s all over the place :-(
+		$html = preg_replace( "|<[/]p>|m", "", $html );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
@@ -229,9 +225,6 @@ file_put_contents( '/var/www/wikis/od/files/test.txt', "$text\n\n$html" );
 
 		// Remove all unreplaced row information
 		$html = preg_replace( "/~x7f1$u~x7f.+?[\\r\\n]+/m", '', $text );
-
-		$html = preg_replace( "/^\s*/sm", "", $html );
-		$html = preg_replace( "/^$/sm", "", $html );
 
 		return $html;
 	}
