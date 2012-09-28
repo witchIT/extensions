@@ -55,19 +55,19 @@ class AjaxComments {
 		if( $ret ) {
 			$wgHooks['MediaWikiPerformAction'][] = $this;
 			$wgHooks['BeforePageDisplay'][] = $this;
-
-			// Set up JavaScript and CSS resources
-			$wgResourceModules['ext.ajaxcomments'] = array(
-				'scripts'       => array( 'ajaxcomments.js' ),
-				'styles'        => array( 'ajaxcomments.css' ),
-				'localBasePath' => dirname( __FILE__ ),
-				'remoteExtPath' => $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ),
-			);
-			$wgOut->addModules( 'ext.ajaxcomments' );
-
-			// Set polling to -1 if checkTitle says comments are disabled
-			$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 		}
+
+		// Set up JavaScript and CSS resources
+		$wgResourceModules['ext.ajaxcomments'] = array(
+			'scripts'       => array( 'ajaxcomments.js' ),
+			'styles'        => array( 'ajaxcomments.css' ),
+			'localBasePath' => dirname( __FILE__ ),
+			'remoteExtPath' => $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ),
+		);
+		$wgOut->addModules( 'ext.ajaxcomments' );
+
+		// Set polling to -1 if checkTitle says comments are disabled
+		$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
 	}
 
 	/**
@@ -91,7 +91,11 @@ class AjaxComments {
 	 * Render a name at the end of the page so redirected talk pages can go there before ajax loads the content
 	 */
 	function onBeforePageDisplay( $out, $skin ) {
-		$out->addHtml( "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>" );
+		static $done = false;
+		if( !$done ) {
+			$done = true;
+			$out->addHtml( "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>" );
+		}
 		return true;
 	}
 
