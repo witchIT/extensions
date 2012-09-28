@@ -91,11 +91,7 @@ class AjaxComments {
 	 * Render a name at the end of the page so redirected talk pages can go there before ajax loads the content
 	 */
 	function onBeforePageDisplay( $out, $skin ) {
-		static $done = false;
-		if( !$done ) {
-			$done = true;
-			$out->addHtml( "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>" );
-		}
+		$out->addHtml( "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>" );
 		return true;
 	}
 
