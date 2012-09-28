@@ -55,7 +55,7 @@ class AjaxComments {
 		if( $ret ) {
 			$wgHooks['MediaWikiPerformAction'][] = $this;
 			$wgHooks['BeforePageDisplay'][] = $this;
-		}
+		} else $wgAjaxCommentsPollServer = -1;
 
 		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.ajaxcomments'] = array(
