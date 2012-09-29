@@ -20,7 +20,7 @@ class jQueryUpload extends SpecialPage {
 		// If attachments allowed in this page, add the module into the page
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
 		$attach = is_object( $title ) && $title->getArticleID() && !$title->isRedirect()
-			&& !array_key_exists( 'action', $_REQUEST ) !$title->getNamespace() != 6;
+			&& !array_key_exists( 'action', $_REQUEST ) && $title->getNamespace() != 6;
 		if( $attach ) wfRunHooks( 'jQueryUploadAddAttachLink', array( $title, &$attach ) );
 		if( $attach ) {
 			$this->head();
