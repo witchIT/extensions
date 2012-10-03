@@ -58,7 +58,7 @@ class AjaxComments {
 		if( !is_object( $title ) && ($title->getNamespace()&1) ) {
 			$title = Title::newFromText( $title->getText(), $title->getNamespace() - 1 );
 			$ret = true;
-			wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret );
+			wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 			if( $ret ) {
 				$wgOut->disable();
 				wfResetOutputBuffers();
