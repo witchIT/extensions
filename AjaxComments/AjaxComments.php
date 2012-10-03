@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.9, 2012-09-06' );
+define( 'AJAXCOMMENTS_VERSION','1.0.10, 2012-10-03' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -52,10 +52,21 @@ class AjaxComments {
 		if( (!is_object( $title )) || ($title->getArticleID() == 0) || $title->isRedirect() || ($title->getNamespace()&1) || array_key_exists( 'action', $_REQUEST ) )
 			$ret = false;
 		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
-		if( $ret ) {
-			$wgHooks['MediaWikiPerformAction'][] = $this;
-			$wgHooks['BeforePageDisplay'][] = $this;
-		} else $wgAjaxCommentsPollServer = -1;
+		if( $ret ) $wgHooks['BeforePageDisplay'][] = $this; else $wgAjaxCommentsPollServer = -1;
+
+		// Redirect talk pages with AjaxComments to the comments
+		if( !is_object( $title ) && ($title->getNamespace()&1) ) {
+			$title = Title::newFromText( $title->getText(), $title->getNamespace() - 1 );
+			$ret = true;
+			wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret );
+			if( $ret ) {
+				$wgOut->disable();
+				wfResetOutputBuffers();
+				$url = $title->getLocalUrl();
+				header( "Location: $url#ajaxcomments" );
+				exit;
+			}
+		}
 
 		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.ajaxcomments'] = array(
@@ -68,23 +79,6 @@ class AjaxComments {
 
 		// Set polling to -1 if checkTitle says comments are disabled
 		$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
-	}
-
-	/**
-	 * If the page is viewing a talk page, go to the comments instead
-	 */
-	function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
-		global $wgRequest;
-		$action = $wgRequest->getVal( 'action', 'view' );
-		$ns = $title->getNamespace();
-		if( is_object( $title ) && $action == 'view' && $ns > 0 && $ns & 1 && $this->checkTitle( $title ) ) {
-			$output->disable();
-			wfResetOutputBuffers();
-			$url = Title::newFromText( $title->getText(), $ns - 1 )->getLocalUrl();
-			header( "Location: $url#ajaxcomments" );
-			exit;
-		}
-		return true;
 	}
 
 	/**
