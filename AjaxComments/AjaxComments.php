@@ -55,7 +55,7 @@ class AjaxComments {
 		if( $ret ) $wgHooks['BeforePageDisplay'][] = $this; else $wgAjaxCommentsPollServer = -1;
 
 		// Redirect talk pages with AjaxComments to the comments
-		if( is_object( $title ) && ($title->getNamespace()&1) ) {
+		if( is_object( $title ) && $title->getNamespace() > 0 && ($title->getNamespace()&1) ) {
 			$title = Title::newFromText( $title->getText(), $title->getNamespace() - 1 );
 			$ret = true;
 			wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
