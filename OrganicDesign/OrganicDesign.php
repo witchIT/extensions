@@ -59,7 +59,7 @@ class OrganicDesign {
 						exit;
 				}
 				if( $www && preg_match( '|organicdesign.+[^t]$|', $host ) ) {
-						header( "Location: http://$www$host$uri" );
+						header( "Location: http://www.organicdesign.co.nz$uri" );
 						exit;
 				}
 		}
