@@ -47,10 +47,10 @@ class OrganicDesign {
 		$host = $_SERVER['HTTP_HOST'];
 		$uri = $_SERVER['REQUEST_URI'];
 		$ssl = isset( $_SERVER['HTTPS'] );
-		$www = preg_match( "|^www|", $host ) ? '' : 'www.';
+		$od = preg_match( "|^www\.organicdesign\.co\.nz$|", $host );
 		if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
-				if( $www || !$ssl ) {
-						header( "Location: https://$www$host$uri" );
+				if( !$od || !$ssl ) {
+						header( "Location: https://www.organicdesign.co.nz$uri" );
 						exit;
 				}
 		} else {
@@ -58,7 +58,7 @@ class OrganicDesign {
 						header( "Location: http://www.organicdesign.co.nz$uri" );
 						exit;
 				}
-				if( $www && preg_match( '|organicdesign.+[^t]$|', $host ) ) {
+				if( $ssl || !$od ) {
 						header( "Location: http://www.organicdesign.co.nz$uri" );
 						exit;
 				}
