@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.0.1, 2012-09-27' );
+define( 'TREEANDMENU_VERSION','3.0.2, 2012-10-11' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -53,6 +53,9 @@ class TreeAndMenu {
 	 */
 	function __construct() {
 		global $wgOut, $wgHooks, $wgParser, $wgJsMimeType, $wgExtensionAssetsPath, $wgResourceModules, $wgTreeViewImages, $wgTreeViewShowLines;
+
+global $wgDisableParserCache;
+$wgDisableParserCache = true;
 
 		// Add hooks
 		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTreeAndMenu' ) );
@@ -118,9 +121,28 @@ class TreeAndMenu {
 		// Do the final rendering
 		$html = $this->renderTreeAndMenu( $html );
 
-		return array( $html, 'isHTML' => true, 'noparse' => true );
+		// Hack to undo Parser::doBlockLevels adding <p>'s to the html
+		global $wgHooks;
+		$wgHooks['ParserBeforeTidy'][] = "TreeAndMenu::removeP";
+
+		return array( $html, 'isHTML' => true );
 	}
 
+	/**
+	 * Hack to undo Parser::doBlockLevels adding <p>'s to the html
+	 * - this will be called shortly after it's added in the parsing of the parser-function
+	 * - it removes itself from $wgHooks so it's only called once during the parse that installed it
+	 */
+	static function removeP( $parser, &$text ) {
+		global $wgHooks;
+		$tmp = array();
+		foreach( $wgHooks['ParserBeforeTidy'] as $hook ) {
+			if( $hook !== "TreeAndMenu::removeP" ) $tmp[] = $hook;
+		}
+		$wgHooks['ParserBeforeTidy'] = $tmp;
+		$text = preg_replace( "|</?p>|", "", $text );
+		return true;
+	}
 
 	/**
 	 * Reformat tree bullet structure recording row, depth and id in a format which is not altered by wiki-parsing
