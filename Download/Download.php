@@ -11,10 +11,10 @@
  */
 if( !defined('MEDIAWIKI') ) die( 'Not an entry point.' );
 
-define( 'DOWNLOAD_VERSION', '1.0.4, 2012-11-21' );
+define( 'DOWNLOAD_VERSION', '1.0.5, 2012-11-21' );
 
 $egDownloadTag          = "download";
-$egDownloadImages       = dirname(__FILE__)."/images";
+$egDownloadImages       = dirname( __FILE__ ) . "/images";
 $wgExtensionFunctions[] = 'efSetupDownload';
 
 $wgExtensionCredits['parserhook'][] = array(
@@ -42,7 +42,7 @@ class Download {
 		foreach( $links[3] as $i => $link ) {
 			$page = $links[1][$i];
 			$icon = glob( "$egDownloadImages/default.*" );
-			$img = wfLocalFile( Title::newFromText( $page )->getText() . '.jpg' );
+			$img = wfLocalFile( Title::newFromText( $page )->getText() );
 			if( $src = $img && $img->exists() ? $img->getUrl() : false ) {
 				$ext = preg_match( '|^.+\.(.+?)$|', $src, $m ) ? $m[1] : 'default';
 				if( count( $j = glob( "$egDownloadImages/$ext.*" ) ) > 0 ) $icon = $j; 
