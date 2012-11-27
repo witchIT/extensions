@@ -254,9 +254,10 @@ class jQueryUpload extends SpecialPage {
 		global $wgScript, $wgTitle;
 		$id = false;
 		wfRunHooks( 'jQueryUploadSetId', array( $wgTitle, &$id ) );
-		print $id;
+		print $this->id;
 		$this->id = $id;
 		if( $this->id === false ) $this->id = $wgTitle->getArticleID();
+		print $this->id;
 		$path = ( is_object( $wgTitle ) && $this->id ) ? "<input type=\"hidden\" name=\"path\" value=\"{$this->id}\" />" : '';
 		return '<form id="fileupload" action="' . $wgScript . '" method="POST" enctype="multipart/form-data">
 			<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
