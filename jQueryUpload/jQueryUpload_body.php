@@ -23,6 +23,9 @@ class jQueryUpload extends SpecialPage {
 		if( $title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false )
 			$this->id = $title->getArticleID();
 
+		// Allow overriding of the file ID
+		wfRunHooks( 'jQueryUploadSetId', array( $wgTitle, &$this->id ) );
+
 		// If attachments allowed in this page, add the module into the page
 		$attach = is_object( $title ) && $this->id && !$title->isRedirect()
 			&& !array_key_exists( 'action', $_REQUEST ) && $title->getNamespace() != 6;
@@ -252,12 +255,7 @@ class jQueryUpload extends SpecialPage {
 
 	function form() {
 		global $wgScript, $wgTitle;
-		$id = false;
-		wfRunHooks( 'jQueryUploadSetId', array( $wgTitle, &$id ) );
-		print $this->id;
-		$this->id = $id;
 		if( $this->id === false ) $this->id = $wgTitle->getArticleID();
-		print $this->id;
 		$path = ( is_object( $wgTitle ) && $this->id ) ? "<input type=\"hidden\" name=\"path\" value=\"{$this->id}\" />" : '';
 		return '<form id="fileupload" action="' . $wgScript . '" method="POST" enctype="multipart/form-data">
 			<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
