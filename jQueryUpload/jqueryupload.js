@@ -30,7 +30,7 @@ $(function() {
 	);
 
 	// Load existing files using a path set to the current article ID if non-zero
-	var path = mw.config.get('wgArticleId');
+	var path = mw.config.get('jQueryUploadID');
 	path = path ? '&path=' + path : '';
 	$('#fileupload').each(function () {
 		var that = this;

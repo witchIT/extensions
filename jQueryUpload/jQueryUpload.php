@@ -9,7 +9,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @subpackage Extensions
  * @author Aran Dunkley (http://www.organicdesign.co.nz/nad)
  */
-define( 'JQU_VERSION', "1.0.2, 2012-09-26" );
+define( 'JQU_VERSION', "1.0.3, 2012-11-27" );
 
 $wgJQUploadIconPrefix = dirname(__FILE__) . '/icons/Farm-Fresh_file_extension_';
 

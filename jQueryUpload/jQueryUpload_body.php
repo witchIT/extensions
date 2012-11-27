@@ -11,15 +11,20 @@
  */
 class jQueryUpload extends SpecialPage {
 
+	var $id = 0;
+
 	function __construct() {
 		global $wgHooks;
 
 		// Initialise the special page
 		parent::__construct( 'jQueryUpload', 'upload' );
 
+
 		// If attachments allowed in this page, add the module into the page
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
-		$attach = is_object( $title ) && $title->getArticleID() && !$title->isRedirect()
+		$this->id = $title->getArticleID();
+		wfRunHooks( 'jQueryUploadSetId', array( $title, &$this->id ) )
+		$attach = is_object( $title ) && $this->id && !$title->isRedirect()
 			&& !array_key_exists( 'action', $_REQUEST ) && $title->getNamespace() != 6;
 		if( $attach ) wfRunHooks( 'jQueryUploadAddAttachLink', array( $title, &$attach ) );
 		if( $attach ) {
@@ -198,6 +203,9 @@ class jQueryUpload extends SpecialPage {
 		// Shim to make HTML5 elements usable in older Internet Explorer versions
 		$wgOut->addHeadItem( 'HTML5', "<!--[if lt IE 9]><script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script><![endif]-->\n" );
 
+		// Set the ID to use for images on this page (defaults to article ID)
+		$wgOut->addJsConfigVars( 'jQueryUploadID', $this->id );
+
 	}
 
 	function scripts() {
@@ -244,7 +252,7 @@ class jQueryUpload extends SpecialPage {
 
 	function form() {
 		global $wgScript, $wgTitle;
-		$path = ( is_object( $wgTitle ) && $id = $wgTitle->getArticleID() ) ? "<input type=\"hidden\" name=\"path\" value=\"$id\" />" : '';
+		$path = ( is_object( $wgTitle ) && $this->id ) ? "<input type=\"hidden\" name=\"path\" value=\"{$this->id}\" />" : '';
 		return '<form id="fileupload" action="' . $wgScript . '" method="POST" enctype="multipart/form-data">
 			<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
 			<div class="row fileupload-buttonbar">
