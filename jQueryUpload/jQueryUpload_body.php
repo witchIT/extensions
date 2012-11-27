@@ -252,7 +252,7 @@ class jQueryUpload extends SpecialPage {
 
 	function form() {
 		global $wgScript, $wgTitle;
-		wfRunHooks( 'jQueryUploadSetId', array( $title, &$this->id ) );
+		wfRunHooks( 'jQueryUploadSetId', array( $wgTitle, &$this->id ) );
 		if( $this->id === false ) $this->id = $wgTitle->getArticleID();
 		$path = ( is_object( $wgTitle ) && $this->id ) ? "<input type=\"hidden\" name=\"path\" value=\"{$this->id}\" />" : '';
 		return '<form id="fileupload" action="' . $wgScript . '" method="POST" enctype="multipart/form-data">
