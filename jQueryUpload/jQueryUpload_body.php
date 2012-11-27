@@ -24,7 +24,7 @@ class jQueryUpload extends SpecialPage {
 			$this->id = $title->getArticleID();
 
 		// Allow overriding of the file ID
-		wfRunHooks( 'jQueryUploadSetId', array( $wgTitle, &$this->id ) );
+		wfRunHooks( 'jQueryUploadSetId', array( $title, &$this->id ) );
 
 		// If attachments allowed in this page, add the module into the page
 		$attach = is_object( $title ) && $this->id && !$title->isRedirect()
