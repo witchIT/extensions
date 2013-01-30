@@ -119,7 +119,9 @@ class TreeAndMenu {
 
 		// Reformat tree rows for matching in ParserAfterStrip
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
+		$text = str_replace( '$', '$~', $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
+		$text = str_replace( '$~', '$', $text );
 
 		return $text;
 	}
@@ -133,7 +135,6 @@ class TreeAndMenu {
 	 *         may be used (even if parser-cache disabled) this also means that tree id's may be repeated
 	 */
 	private function formatRow( $m ) {
-		$m[2] = str_replace( '$', '\x24', $m[2] );
 		return "\x7f1{$this->uniq}\x7f{$this->id}\x7f" . ( strlen( $m[1] )-1 ) . "\x7f$m[2]\x7f2{$this->uniq}";
 	}
 
