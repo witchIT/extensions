@@ -14,9 +14,9 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','1.2.3, 2013-01-30' );
+define( 'TREEANDMENU_VERSION','1.2.2, 2011-07-08' );
 
-// Set any unset images to default titles
+# Set any unset images to default titles
 if ( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
 
 $wgTreeMagic                   = "tree"; # the parser-function name for trees
@@ -39,14 +39,14 @@ $wgExtensionCredits['parserhook'][] = array(
 class TreeAndMenu {
 
 	var $version    = TREEANDMENU_VERSION;
-	var $uniq       = '';      // uniq part of all tree id's
-	var $uniqname   = 'tam';   // input name for uniqid
-	var $id         = '';      // id for specific tree
-	var $baseDir    = '';      // internal absolute path to treeview directory
-	var $baseUrl    = '';      // external URL to treeview directory (relative to domain)
-	var $images     = '';      // internal JS to update dTree images
-	var $useLines   = true;    // internal variable determining whether to render connector lines
-	var $args       = array(); // args for each tree
+	var $uniq       = '';      # uniq part of all tree id's
+	var $uniqname   = 'tam';   # input name for uniqid
+	var $id         = '';      # id for specific tree
+	var $baseDir    = '';      # internal absolute path to treeview directory
+	var $baseUrl    = '';      # external URL to treeview directory (relative to domain)
+	var $images     = '';      # internal JS to update dTree images
+	var $useLines   = true;    # internal variable determining whether to render connector lines
+	var $args       = array(); # args for each tree
 	var $js         = 0;
 
 	/**
@@ -56,18 +56,18 @@ class TreeAndMenu {
 		global $wgOut, $wgHooks, $wgParser, $wgScriptPath, $wgJsMimeType, $wgTreeMagic,
 			$wgMenuMagic, $wgTreeViewImages, $wgTreeViewShowLines, $wgTreeViewBaseDir, $wgTreeViewBaseUrl;
 
-		// Add hooks
+		# Add hooks
 		$wgParser->setFunctionHook( $wgTreeMagic, array( $this,'expandTree' ) );
 		$wgParser->setFunctionHook( $wgMenuMagic, array( $this,'expandMenu' ) );
 		$wgHooks['ParserAfterTidy'][] = array( $this, 'renderTreeAndMenu' );
-
-		// Update general tree paths and properties
+		
+		# Update general tree paths and properties
 		$this->baseDir  = isset( $wgTreeViewBaseDir ) ? $wgTreeViewBaseDir : dirname( __FILE__ );
 		$this->baseUrl  = isset( $wgTreeViewBaseUrl ) ? $wgTreeViewBaseUrl : preg_replace( '|^.+(?=/ext)|', $wgScriptPath, $this->baseDir );
 		$this->useLines = $wgTreeViewShowLines ? 'true' : 'false';
 		$this->uniq     = uniqid( $this->uniqname );
 
-		// Convert image titles to file paths and store as JS to update dTree
+		# Convert image titles to file paths and store as JS to update dTree
 		foreach ( $wgTreeViewImages as $k => $v ) {
 			$title = Title::newFromText( $v, NS_IMAGE );
 			$image = wfFindFile( $title );
@@ -98,12 +98,12 @@ class TreeAndMenu {
 	 */
 	private function expandTreeAndMenu( $magic, $args ) {
 		$parser = array_shift( $args );
-
-		// Store args for this tree for later use
+		
+		# Store args for this tree for later use
 		$text = '';
 		foreach ( $args as $arg ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $arg, $m ) ) $args[$m[1]] = $m[2]; else $text = $arg;
 
-		// If root, parse as wikitext
+		# If root, parse as wikitext
 		if ( isset( $args['root'] ) ) {
 			$p = clone $parser;
 			$o = clone $parser->mOptions;
@@ -112,12 +112,12 @@ class TreeAndMenu {
 			$args['root'] = addslashes( $html );
 		}
 
-		// Create a unique id for this tree or use id supplied in args and store args wrt id
+		# Create a unique id for this tree or use id supplied in args and store args wrt id
 		$this->id = isset($args['id']) ? $args['id'] : uniqid( '' );
 		$args['type'] = $magic;
 		$this->args[$this->id] = $args;
 
-		// Reformat tree rows for matching in ParserAfterStrip
+		# Reformat tree rows for matching in ParserAfterStrip
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
@@ -133,7 +133,6 @@ class TreeAndMenu {
 	 *         may be used (even if parser-cache disabled) this also means that tree id's may be repeated
 	 */
 	private function formatRow( $m ) {
-		//$m[2] = str_replace( '$', '\$', $m[2] );
 		return "\x7f1{$this->uniq}\x7f{$this->id}\x7f" . ( strlen( $m[1] )-1 ) . "\x7f$m[2]\x7f2{$this->uniq}";
 	}
 
@@ -145,18 +144,18 @@ class TreeAndMenu {
 		global $wgJsMimeType, $wgOut;
 		$u = $this->uniq;
 
-		// Determine which trees are sub trees
-		// - there should be a more robust way to do this,
-		//   it's just based on the fact that all sub-tree's have a minus preceding their row data
+		# Determine which trees are sub trees
+		# - there should be a more robust way to do this,
+		#   it's just based on the fact that all sub-tree's have a minus preceding their row data
 		if ( !preg_match_all( "/\x7f\x7f1$u\x7f(.+?)\x7f/", $text, $subs ) ) $subs = array( 1 => array() );
 		
-		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
+		# Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
 		if ( preg_match_all( "/\x7f1$u\x7f(.+?)\x7f([0-9]+)\x7f({$u}3(.+?){$u}4)?(.*?)(?=\x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
-			// PASS-1: build $rows array containing depth, and tree start/end information
+			# PASS-1: build $rows array containing depth, and tree start/end information
 			$rows   = array();
-			$depths = array( '' => 0 ); // depth of each tree root
-			$rootId = '';               // the id of the current root-tree (used as tree id in PASS2)
+			$depths = array( '' => 0 ); # depth of each tree root
+			$rootId = '';               # the id of the current root-tree (used as tree id in PASS2)
 			$lastId = '';
 			$lastDepth = 0;
 			foreach ( $matches as $match ) {
@@ -171,9 +170,9 @@ class TreeAndMenu {
 				$lastDepth = $depth;
 			}
 
-			// PASS-2: build the JavaScript and replace into $text
-			$parents   = array(); // parent node for each depth
-			$parity    = array(); // keep track of odd/even rows for each depth
+			# PASS-2: build the JavaScript and replace into $text
+			$parents   = array(); # parent node for each depth
+			$parity    = array(); # keep track of odd/even rows for each depth
 			$node      = 0;
 			$last      = -1;
 			$nodes     = '';
@@ -185,11 +184,11 @@ class TreeAndMenu {
 				$args  = $this->args[$id];
 				$type  = $args['type'];
 				$end   = $i == count( $rows )-1 || $rows[$i+1][4];
-				if ( !isset( $args['root'] ) ) $args['root'] = ''; // tmp - need to handle rootless trees
+				if ( !isset( $args['root'] ) ) $args['root'] = ''; # tmp - need to handle rootless trees
 				$openlevels = isset( $args['openlevels'] ) ? $args['openlevels']+1 : 0;
 				if ( $start ) $node = 1;
 		
-				// Append node script for this row
+				# Append node script for this row
 				if ( $depth > $last ) $parents[$depth] = $node-1;
 				$parent = $parents[$depth];
 				if ( $type == 'tree' ) {
@@ -208,12 +207,12 @@ class TreeAndMenu {
 				}
 				$last = $depth;
 
-				// Last row of current root, surround nodes dtree or menu script and div etc
+				# Last row of current root, surround nodes dtree or menu script and div etc
 				if ( $end ) {
 					$class = isset( $args['class'] ) ? $args['class'] : "d$type";
 					if ( $type == 'tree' ) {
 
-						// Finalise a tree
+						# Finalise a tree
 						$add = isset( $args['root'] ) ? "tree.add(0,-1,'".$args['root']."');" : '';
 						$top = $bottom = $root = $opennodesjs = '';
 						foreach ( array_keys( $opennodes ) as $i ) $opennodesjs .= "$objid.o($i);";
@@ -237,10 +236,10 @@ class TreeAndMenu {
 							</div>$bottom";
 					}
 					else {
-
-						// Finalise a menu
+						
+						# Finalise a menu
 						if ( $depth > 0 ) $nodes .= str_repeat( '</ul></li>', $depth );
-						$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); // IE has problems with title attribute in suckerfish menus
+						$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); # IE has problems with title attribute in suckerfish menus
 						$html = "
 							<ul class='$class' id='$id'>\n$nodes</ul>
 							<script type=\"$wgJsMimeType\">/*<![CDATA[*/
@@ -255,16 +254,16 @@ class TreeAndMenu {
 							";
 					}
 
-					$text  = preg_replace( "/\x7f1$u\x7f$id\x7f.+?$/m", $html, $text, 1 ); // replace first occurence of this trees root-id
+					$text  = preg_replace( "/\x7f1$u\x7f$id\x7f.+?$/m", $html, $text, 1 ); # replace first occurence of this trees root-id
 					$nodes = '';
 					$last  = -1;
 				}
 			}
 		}
 
-		$text = preg_replace( "/\x7f1$u\x7f.+?[\\r\\n]+/m", '', $text ); // Remove all unreplaced row information
+		$text = preg_replace( "/\x7f1$u\x7f.+?[\\r\\n]+/m", '', $text ); # Remove all unreplaced row information
 
-		// Add the dTRee script if not loaded yet
+		# Add the dTRee script if not loaded yet
 		if( !$this->js++ ) {
 			$script = "<script type=\"$wgJsMimeType\" src=\"{$this->baseUrl}/dtree.js\"></script>";
 			if( method_exists( $wgOut, 'addModules' ) ) $wgOut->addHtml( $script );
