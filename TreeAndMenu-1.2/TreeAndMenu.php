@@ -119,9 +119,8 @@ class TreeAndMenu {
 
 		// Reformat tree rows for matching in ParserAfterStrip
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
-		$text = str_replace( '$', '$~', $text );
+		$text = str_replace( '$', '\$', $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
-		$text = str_replace( '$~', '$', $text );
 
 		return $text;
 	}
@@ -150,7 +149,7 @@ class TreeAndMenu {
 		// - there should be a more robust way to do this,
 		//   it's just based on the fact that all sub-tree's have a minus preceding their row data
 		if ( !preg_match_all( "/\x7f\x7f1$u\x7f(.+?)\x7f/", $text, $subs ) ) $subs = array( 1 => array() );
-		
+
 		// Extract all the formatted tree rows in the page and if any, replace with dTree JavaScript
 		if ( preg_match_all( "/\x7f1$u\x7f(.+?)\x7f([0-9]+)\x7f({$u}3(.+?){$u}4)?(.*?)(?=\x7f[12]$u)/", $text, $matches, PREG_SET_ORDER ) ) {
 
@@ -189,7 +188,7 @@ class TreeAndMenu {
 				if ( !isset( $args['root'] ) ) $args['root'] = ''; // tmp - need to handle rootless trees
 				$openlevels = isset( $args['openlevels'] ) ? $args['openlevels']+1 : 0;
 				if ( $start ) $node = 1;
-		
+
 				// Append node script for this row
 				if ( $depth > $last ) $parents[$depth] = $node-1;
 				$parent = $parents[$depth];
@@ -256,6 +255,7 @@ class TreeAndMenu {
 							";
 					}
 
+					$html = str_replace( '$', '\$', $html );
 					$text  = preg_replace( "/\x7f1$u\x7f$id\x7f.+?$/m", $html, $text, 1 ); // replace first occurence of this trees root-id
 					$nodes = '';
 					$last  = -1;
