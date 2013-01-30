@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.0.2, 2012-10-11' );
+define( 'TREEANDMENU_VERSION','3.0.3, 2013-01-30' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -111,6 +111,7 @@ $wgDisableParserCache = true;
 
 		// Reformat tree rows
 		$text = preg_replace( '/(?<=\\*)\\s*\\[\\[Image:(.+?)\\]\\]/', "{$this->uniq}3$1{$this->uniq}4", $text );
+		$text = str_replace( '$', '\$', $text );
 		$text = preg_replace_callback( '/^(\\*+)(.*?)$/m', array( $this, 'formatRow' ), $text );
 
 		// Parse the structure
@@ -234,6 +235,7 @@ $wgDisableParserCache = true;
 						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
 					$html = "$top<div class='$class' id='$id'></div>$bottom";
 					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[];$script</script>";
+					$html = str_replace( '$', '\$', $html );
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
 					$last  = -1;
