@@ -28,13 +28,14 @@ class PdfBookHooks {
 			$right   = self::setProperty( 'RightMargin', '1cm' );
 			$top     = self::setProperty( 'TopMargin',   '1cm' );
 			$bottom  = self::setProperty( 'BottomMargin','1cm' );
-			$font    = self::setProperty( 'Font',	     'Arial' );
+			$font    = self::setProperty( 'Font',        'Arial' );
 			$size    = self::setProperty( 'FontSize',    '8' );
 			$ls      = self::setProperty( 'LineSpacing', 1 );
 			$linkcol = self::setProperty( 'LinkColour',  '217A28' );
 			$levels  = self::setProperty( 'TocLevels',   '2' );
 			$exclude = self::setProperty( 'Exclude',     array() );
 			$width   = self::setProperty( 'Width',       '' );
+			$opt     = self::setProperty( 'Options',     '' );
 			$width   = $width ? "--browserwidth $width" : '';
 			if( !is_array( $exclude ) ) $exclude = split( '\\s*,\\s*', $exclude );
  
@@ -114,7 +115,7 @@ class PdfBookHooks {
 				$cmd .= " --header ... --footer $footer --headfootsize 8 --quiet --jpeg --color";
 				$cmd .= " --bodyfont $font --fontsize $size --fontspacing $ls --linkstyle plain --linkcolor $linkcol";
 				$cmd .= "$toc --no-title --format pdf14 --numbered $layout $width";
-				$cmd  = "htmldoc -t pdf --charset $charset $cmd $file";
+				$cmd  = "htmldoc -t pdf --charset $charset $opt $cmd $file";
 				putenv( "HTMLDOC_NOCGI=1" );
 				passthru( $cmd );
 				@unlink( $file );

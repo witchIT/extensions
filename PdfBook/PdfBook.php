@@ -16,7 +16,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 
-define( 'PDFBOOK_VERSION', "1.0.11, 2011-11-13" );
+define( 'PDFBOOK_VERSION', "1.1.0, 2013-02-06" );
 
 $dir = dirname( __FILE__ );
 $wgAutoloadClasses['PdfBookHooks'] = $dir . '/PdfBook.hooks.php';
@@ -31,16 +31,16 @@ $wgExtensionCredits['parserhook'][] = array(
 	'descriptionmsg' => 'pdfbook-desc',
 );
 
-# Whether or not an action tab is wanted for printing to PDF
+// Whether or not an action tab is wanted for printing to PDF
 $wgPdfBookTab = false;
 
 $wgHooks['UnknownAction'][] = 'PdfBookHooks::onUnknownAction';
 
-# Hooks for pre-Vector and Vector addtabs.
+// Hooks for pre-Vector and Vector addtabs.
 $wgHooks['SkinTemplateTabs'][] = 'PdfBookHooks::onSkinTemplateTabs';
 $wgHooks['SkinTemplateNavigation'][] = 'PdfBookHooks::onSkinTemplateNavigation';
 
-# Add a new pdf log type
+// Add a new pdf log type
 $wgLogTypes[]             = 'pdf';
 $wgLogNames  ['pdf']      = 'pdflogpage';
 $wgLogHeaders['pdf']      = 'pdflogpagetext';
