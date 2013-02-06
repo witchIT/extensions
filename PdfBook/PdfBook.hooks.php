@@ -145,16 +145,10 @@ class PdfBookHooks {
 	public static function onSkinTemplateTabs( $skin, &$actions) {
 		global $wgPdfBookTab;
 		if ( $wgPdfBookTab ) {
-
-			$qs = 'action=pdfbook&format=single';
-
-			// Add all the other items in the request into the book link
-			foreach( $_REQUEST as $k => $v ) $qs .= "&$k=$v";
-
 			$actions['pdfbook'] = array(
 				'class' => false,
 				'text' => wfMsg( 'pdfbook-action' ),
-				'href' => $skin->getTitle()->getLocalURL( $qs ),
+				'href' => self::actionLink( $skin )
 			);
 		}
 		return true;
@@ -171,9 +165,18 @@ class PdfBookHooks {
 			$actions['views']['pdfbook'] = array(
 				'class' => false,
 				'text' => wfMsg( 'pdfbook-action' ),
-				'href' => $skin->getTitle()->getLocalURL( "action=pdfbook&format=single" ),
+				'href' => self::actionLink( $skin )
 			);
 		}
 		return true;
+	}
+	
+	/**
+	 * Get the URL for the action link
+	 */
+	public static function actionLink( $skin ) {
+		$qs = 'action=pdfbook&format=single';
+		foreach( $_REQUEST as $k => $v ) $qs .= "&$k=$v";
+		return $skin->getTitle()->getLocalURL( $qs );
 	}
 }
