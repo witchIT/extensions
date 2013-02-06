@@ -111,7 +111,7 @@ class FileAttach {
 		self::$wgOut = $wgOut;
 		$wgOut = new FileAttachDummyOutput;
 		$filename = $wgRequest->getText( 'wpDestFile' );
-		$replace = str_replace( '$', '\$', "$1\n*[[:File:$filename]]\n" );
+		$replace = str_replace( '$', '\x24', "$1\n*[[:File:$filename]]\n" );
 		$text = preg_replace( "|(\s+==\s*$wgAttachmentHeading\s*==)\s+|s", $replace, self::$attachto->getContent(), 1, $count );
 		if( $count == 0 ) $text .= "\n\n== $wgAttachmentHeading ==\n*[[:File:$filename]]\n";
 		self::$attachto->doEdit( $text, wfMsg( 'fileattach-editcomment', $filename ), EDIT_UPDATE );
