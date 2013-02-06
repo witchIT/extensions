@@ -176,7 +176,7 @@ class PdfBookHooks {
 	 */
 	public static function actionLink( $skin ) {
 		$qs = 'action=pdfbook&format=single';
-		foreach( $_REQUEST as $k => $v ) $qs .= "&$k=$v";
+		foreach( $_REQUEST as $k => $v ) if( $k != 'title' ) $qs .= "&$k=$v";
 		return $skin->getTitle()->getLocalURL( $qs );
 	}
 }
