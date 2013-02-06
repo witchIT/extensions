@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.10, 2012-10-03' );
+define( 'AJAXCOMMENTS_VERSION','1.0.11, 2013-02-06' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -169,7 +169,7 @@ class AjaxComments {
 				// If any comment data has been changed write it back to the talk article
 				if( $this->changed ) {
 					$flag = $talk->exists() ? EDIT_UPDATE : EDIT_NEW;
-					$article->doEdit( self::dataToText( $this->comments, $content ), $summary, $flag|EDIT_MINOR );
+					$article->doEdit( self::dataToText( $this->comments, $content ), $summary, $flag );
 				}
 			}
 		}
