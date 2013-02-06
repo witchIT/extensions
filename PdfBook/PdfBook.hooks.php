@@ -35,7 +35,7 @@ class PdfBookHooks {
 			$levels  = self::setProperty( 'TocLevels',   '2' );
 			$exclude = self::setProperty( 'Exclude',     array() );
 			$width   = self::setProperty( 'Width',       '' );
-			$opt     = self::setProperty( 'Options',     '' );
+			$options = self::setProperty( 'Options',     '' );
 			$width   = $width ? "--browserwidth $width" : '';
 			if( !is_array( $exclude ) ) $exclude = split( '\\s*,\\s*', $exclude );
  
@@ -115,7 +115,7 @@ class PdfBookHooks {
 				$cmd .= " --header ... --footer $footer --headfootsize 8 --quiet --jpeg --color";
 				$cmd .= " --bodyfont $font --fontsize $size --fontspacing $ls --linkstyle plain --linkcolor $linkcol";
 				$cmd .= "$toc --no-title --format pdf14 --numbered $layout $width";
-				$cmd  = "htmldoc -t pdf --charset $charset $opt $cmd $file";
+				$cmd  = "htmldoc -t pdf --charset $charset $options $cmd $file";
 				putenv( "HTMLDOC_NOCGI=1" );
 				passthru( $cmd );
 				@unlink( $file );
