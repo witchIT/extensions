@@ -222,7 +222,7 @@ class SpecialEmailPage extends SpecialPage {
 			list( $wgArticlePath, $wgScriptPath, $wgScript ) = $tmp;
 
 			// If no links allowed in message, change them all to spans
-			if( $wgEmailPageNoLinks ) $message = preg_replace( "|(</?)a([^>]*)|i", "$1u>", $message );
+			if( $wgEmailPageNoLinks ) $message = preg_replace( "|(</?)a([^>]*)|i", "$1u", $message );
 
 			// Get CSS content if any
 			if( $this->css ) {
