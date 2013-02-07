@@ -22,6 +22,7 @@ $wgEmailPageAllowAllUsers   = false;                 // Whether to allow sending
 $wgEmailPageToolboxLink     = true;                  // Add a link to the sidebar toolbox?
 $wgEmailPageActionLink      = true;                  // Add a link to the actions links?
 $wgEmailPageSepPattern      = "|[\\x00-\\x20,;*]+|"; // Regular expression for splitting emails
+$wgEmailPageNoLinks         = false;                 // Change links in message to spans if set
 if( $wgEmailPageGroup ) $wgGroupPermissions['sysop'][$wgEmailPageGroup] = true;
 
 if( isset( $_SERVER['SERVER_ADDR'] ) ) $wgEmailPageAllowRemoteAddr[] = $_SERVER['SERVER_ADDR'];
