@@ -128,10 +128,15 @@ $messages['en'] = array(
 *3 - Medium
 *4 - Low",
 	'od-task-priority-list-info' => "The list of different priorities that a task in the organisation can have. To change the options available in this list click [{{fullurl:MediaWiki:od-task-priority-list|action=edit}} here]",
-	'od-activity-currency-list' => "*NZD
+	'od-activity-currency-list' => "*AUD
+*BRL
+*BTC
+*CHF
+*DKK
 *EUR
-*USD
-*CHF",
+*GBP
+*NZD
+*USD",
 	'od-activity-currency-list-info' => "The list of currencies for the activity\'s budget. To change the options available in this list click [{{fullurl:MediaWiki:od-activity-currency-list|action=edit}} here]",
 	'od-activity-type-list' => "*Work
 *Procedure
