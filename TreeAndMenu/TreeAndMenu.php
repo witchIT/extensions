@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.0.3, 2013-01-30' );
+define( 'TREEANDMENU_VERSION','3.0.4, 2013-02-27' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -75,9 +75,9 @@ $wgDisableParserCache = true;
 
 		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.treeandmenu'] = array(
-			'styles'        => array( 'treeandmenu.css' ),
-			'localBasePath' => dirname( __FILE__ ),
-			'remoteExtPath' => $this->baseUrl,
+			'styles'         => array( 'treeandmenu.css' ),
+			'localBasePath'  => dirname( __FILE__ ),
+			'remoteBasePath' => $this->baseUrl,
 		);
 		$wgOut->addModules( 'ext.treeandmenu' );
 		$wgOut->addHeadItem( 'treeBaseUrl', "<script type=\"$wgJsMimeType\">window.tamBaseUrl='{$this->baseUrl}'</script>\n" );
