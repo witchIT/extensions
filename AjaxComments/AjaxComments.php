@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.11, 2013-02-06' );
+define( 'AJAXCOMMENTS_VERSION','1.0.12, 2013-02-27' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -70,10 +70,10 @@ class AjaxComments {
 
 		// Set up JavaScript and CSS resources
 		$wgResourceModules['ext.ajaxcomments'] = array(
-			'scripts'       => array( 'ajaxcomments.js' ),
-			'styles'        => array( 'ajaxcomments.css' ),
-			'localBasePath' => dirname( __FILE__ ),
-			'remoteExtPath' => $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ),
+			'scripts'        => array( 'ajaxcomments.js' ),
+			'styles'         => array( 'ajaxcomments.css' ),
+			'localBasePath'  => dirname( __FILE__ ),
+			'remoteBasePath' => $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ),
 		);
 		$wgOut->addModules( 'ext.ajaxcomments' );
 
