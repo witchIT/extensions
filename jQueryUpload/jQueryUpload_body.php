@@ -136,6 +136,7 @@ class jQueryUpload extends SpecialPage {
 		$dir = "$wgUploadDirectory/jquery_upload_files/$path";
 		if( $path ) $dir .= '/';
 		$thm = $dir . 'thumb/';
+		$meta = $dir . 'meta/';
 
 		// Set the initial options for the upload file object
 		$url = "$wgScript?action=ajax&rs=jQueryUpload::server";
@@ -175,6 +176,7 @@ class jQueryUpload extends SpecialPage {
 				if( !is_dir( $dir ) ) {
 					mkdir( $dir );
 					mkdir( $thm );
+					mkdir( $meta );
 				}
 
 				$upload_handler->post();
@@ -402,5 +404,21 @@ class MWUploadHandler extends UploadHandler {
 			$file->date = 'date';
 		}
 		return $file;
+	}
+
+	/**
+	 * We should remove the unused directory after deleting a file
+	 */
+	public function delete() {
+		parent::delete();
+		$dir = $this->options['upload_dir'];
+
+		// Check that the upload dir has no files in it
+		$empty = true;
+		foreach( glob( "$dir/*" as $item ) ) if( is_file( $item ) ) $empty = false;
+
+		// There are no uploaded files in this directory, nuke it
+		// - we need to use rm -rf because it still contains sub-dirs and meta data
+		if( $empty ) exec( "rm -rf $dir" );
 	}
 }
