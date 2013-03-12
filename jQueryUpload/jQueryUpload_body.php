@@ -339,11 +339,7 @@ class jQueryUpload extends SpecialPage {
 			<tr class="template-download fade">
 				{% if (file.error) { %}
 					<td></td>
-					<td class="name">
-						<span>{%=file.name%}</span><br />
-						<span class="file-user">{%file.user%}</span><br />
-						<span class="file-date">{%file.date%}</span><br />
-					</td>
+					<td class="name"><span>{%=file.name%}</span></td>
 					<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 					<td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
 				{% } else { %}
@@ -351,7 +347,9 @@ class jQueryUpload extends SpecialPage {
 						<a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
 					{% } %}</td>
 					<td class="name">
-						<a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&\'gallery\'%}" download="{%=file.name%}">{%=file.name%}</a>
+						<a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&\'gallery\'%}" download="{%=file.name%}">{%=file.name%}</a><br />
+						<span class="file-user">{%file.user%}</span><br />
+						<span class="file-date">{%file.date%}</span><br />
 					</td>
 					<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 					<td colspan="2"></td>
