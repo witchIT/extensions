@@ -400,7 +400,7 @@ class MWUploadHandler extends UploadHandler {
 	protected function get_file_object( $file_name ) {
 		$file = parent::get_file_object( $file_name );
 		if( is_object( $file ) ) {
-			$meta = $this->options['upload_dir'] . 'meta/' . $file->name;
+			$meta = $this->options['upload_dir'] . 'meta/' . $file_name;
 			if( file_exists( $meta ) ) {
 				$data = unserialize( file_get_contents( $meta ) );
 				$user = User::newFromID( $data[0] );
