@@ -400,23 +400,16 @@ class MWUploadHandler extends UploadHandler {
 	protected function get_file_object( $file_name ) {
 		$file = parent::get_file_object( $file_name );
 		if( is_object( $file ) ) {
-			$meta = $this->options['upload_dir'] . 'meta';
-
-			// Get user info
-			if( file_exists( "$meta/user" ) ) {
-				$id = file_get_contents( "$meta/user" );
-				$user = User::newFromID( $id );
+			$meta = $this->options['upload_dir'] . 'meta/' . $file->name;
+			if( file_exists( $meta ) ) {
+				$data = unserialize( file_get_contents( $meta ) );
+				$user = User::newFromID( $data[0] );
 				$name = $user->getRealName();
 				if( empty( $name ) ) $name = $user->getName();
 				$file->user = wfMsg( 'jqueryupload-uploadedby', $name );
-			} else $file->user = "";
-
-			// Get date info
-			if( file_exists( "$meta/date" ) ) {
-				$ts = file_get_contents( "$meta/date" );
-				$date = date( "j M Y", $ts );
+				$date = date( "j M Y", $data[1] );
 				$file->date = wfMsg( 'jqueryupload-uploadedon', $date );
-			} else $file->date = "";
+			} else $file->user = $file->date = "";
 		}
 		return $file;
 	}
@@ -446,9 +439,9 @@ class MWUploadHandler extends UploadHandler {
 			$file_path = $this->options['upload_dir'] . $file->name;
 			if( is_file( $file_path ) ) {
 				global $wgUser;
-				$meta = $this->options['upload_dir'] . 'meta';
-				file_put_contents( "$meta/user", $wgUser->getID() );
-				file_put_contents( "$meta/date", time() );
+				$meta = $this->options['upload_dir'] . 'meta/' . $file->name;
+				$data = array( $wgUser->getID(), time() );
+				file_put_contents( $meta, serialize( $data ) );
 			}
 		}
 		return $file;
