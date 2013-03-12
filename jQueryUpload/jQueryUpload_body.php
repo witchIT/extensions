@@ -415,7 +415,7 @@ class MWUploadHandler extends UploadHandler {
 			if( file_exists( "$meta/date" ) ) {
 				global $wgContLang;
 				$ts = file_get_contents( "$meta/date" );
-				$date = $ts; //$wgContLang->date( $ts, true );
+				$date = $wgContLang->date( $ts, true, "j M Y" );
 				$file->date = wfMsg( 'jqueryupload-uploadedon', $date );
 			} else $file->date = "";
 		}
@@ -449,7 +449,7 @@ class MWUploadHandler extends UploadHandler {
 				global $wgUser;
 				$meta = $this->options['upload_dir'] . 'meta';
 				file_put_contents( "$meta/user", $wgUser->getID() );
-				file_put_contents( "$meta/date", localtime() );
+				file_put_contents( "$meta/date", time() );
 			}
 		}
 		return $file;
