@@ -421,4 +421,21 @@ class MWUploadHandler extends UploadHandler {
 		// - we need to use rm -rf because it still contains sub-dirs and meta data
 		if( $empty ) exec( "rm -rf $dir" );
 	}
+
+	/**
+	 * We add a meta-data file for the upload in the meta dir
+	 */
+	protected function handle_file_upload( $uploaded_file, $name, $size, $type, $error, $index = null ) {
+		$file = parent::handle_file_upload( $uploaded_file, $name, $size, $type, $error, $index );
+		if( is_object( $file ) {
+			$file_path = $this->options['upload_dir'] . $file->name;
+			if( is_file( $file_path ) ) {
+				global $wgUser;
+				$meta = $this->options['upload_dir'] . 'meta';
+				file_put_contents( "$meta/user", $wgUser->getID() );
+				file_put_contents( "$meta/date", localtime() );
+			}
+		}
+		return $file;
+	}
 }
