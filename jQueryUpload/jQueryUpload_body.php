@@ -413,9 +413,8 @@ class MWUploadHandler extends UploadHandler {
 
 			// Get date info
 			if( file_exists( "$meta/date" ) ) {
-				global $wgContLang;
 				$ts = file_get_contents( "$meta/date" );
-				$date = $wgContLang->date( $ts, true, "j M Y" );
+				$date = date( "j M Y", $ts );
 				$file->date = wfMsg( 'jqueryupload-uploadedon', $date );
 			} else $file->date = "";
 		}
