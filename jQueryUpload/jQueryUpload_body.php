@@ -350,8 +350,7 @@ class jQueryUpload extends SpecialPage {
 					{% } %}</td>
 					<td class="name">
 						<a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&\'gallery\'%}" download="{%=file.name%}">{%=file.name%}</a><br />
-						<span class="file-user">{%=file.user%}</span><br />
-						<span class="file-date">{%=file.date%}</span><br />
+						<span class="file-info">{%=file.info%}</span><br />
 					</td>
 					<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 					<td colspan="2"></td>
@@ -406,10 +405,9 @@ class MWUploadHandler extends UploadHandler {
 				$user = User::newFromID( $data[0] );
 				$name = $user->getRealName();
 				if( empty( $name ) ) $name = $user->getName();
-				$file->user = wfMsg( 'jqueryupload-uploadedby', $name );
 				$date = date( "j M Y", $data[1] );
-				$file->date = wfMsg( 'jqueryupload-uploadedon', $date );
-			} else $file->user = $file->date = "";
+				$file->info = wfMsg( 'jqueryupload-uploadinfo', $name, $date );
+			} else $file->info = "";
 		}
 		return $file;
 	}
