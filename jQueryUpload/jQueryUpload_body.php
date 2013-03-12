@@ -348,8 +348,8 @@ class jQueryUpload extends SpecialPage {
 					{% } %}</td>
 					<td class="name">
 						<a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&\'gallery\'%}" download="{%=file.name%}">{%=file.name%}</a><br />
-						<span class="file-user">{%file.user%}</span><br />
-						<span class="file-date">{%file.date%}</span><br />
+						<span class="file-user">{%=file.user%}</span><br />
+						<span class="file-date">{%=file.date%}</span><br />
 					</td>
 					<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 					<td colspan="2"></td>
