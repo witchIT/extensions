@@ -415,7 +415,7 @@ class MWUploadHandler extends UploadHandler {
 
 		// Check that the upload dir has no files in it
 		$empty = true;
-		foreach( glob( "$dir/*" as $item ) ) if( is_file( $item ) ) $empty = false;
+		foreach( glob( "$dir/*" ) as $item ) if( is_file( $item ) ) $empty = false;
 
 		// There are no uploaded files in this directory, nuke it
 		// - we need to use rm -rf because it still contains sub-dirs and meta data
