@@ -400,8 +400,24 @@ class MWUploadHandler extends UploadHandler {
 	protected function get_file_object( $file_name ) {
 		$file = parent::get_file_object( $file_name );
 		if( is_object( $file ) ) {
-			$file->user = 'user';
-			$file->date = 'date';
+			$meta = $this->options['upload_dir'] . 'meta';
+
+			// Get user info
+			if( file_exists( "$meta/user" ) ) {
+				$id = file_get_contents( "$meta/user" );
+				$user = User::newFromID( $id );
+				$name = $user->getRealName();
+				if( empty( $name ) ) $name = $user->getName();
+				$file->user = wfMsg( 'jqueryupload-uploadedby', $name );
+			} else $file->user = "";
+
+			// Get date info
+			if( file_exists( "$meta/date" ) ) {
+				global $wgContLang;
+				$ts = file_get_contents( "$meta/date" );
+				$date = $wgContLang->date( $ts, true );
+				$file->date = wfMsg( 'jqueryupload-uploadedon', $date );
+			} else $file->date = "";
 		}
 		return $file;
 	}

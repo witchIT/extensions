@@ -13,4 +13,6 @@ $messages['en'] = array(
 	'jqueryupload-desc' => "Allows files to be uploaded to the wiki or to specific pages using the jQueryFileUpload module",
 	'jqueryupload-attach' => "Attach file",
 	'jqueryupload-attachments' => "File attachments",
+	'jqueryupload-uploadedby' => "Uploaded by $1",
+	'jqueryupload-uploadedon' => "on $1",
 );
