@@ -398,7 +398,8 @@ class MWUploadHandler extends UploadHandler {
 	 * Add info on the user who uploaded the file and the date it was uploaded
 	 */
 	protected function get_file_object( $file_name ) {
-		if( $file = parent::get_file_object( $file_name ) !== null ) {
+		$file = parent::get_file_object( $file_name );
+		if( is_object( $file ) ) {
 			$file->user = 'user';
 			$file->date = 'date';
 		}
