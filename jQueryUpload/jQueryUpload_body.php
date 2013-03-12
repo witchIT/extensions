@@ -339,7 +339,11 @@ class jQueryUpload extends SpecialPage {
 			<tr class="template-download fade">
 				{% if (file.error) { %}
 					<td></td>
-					<td class="name"><span>{%=file.name%}</span></td>
+					<td class="name">
+						<span>{%=file.name%}</span><br />
+						<span class="file-user">{%file.user%}</span><br />
+						<span class="file-date">{%file.date%}</span><br />
+					</td>
 					<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 					<td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
 				{% } else { %}
@@ -390,4 +394,14 @@ class MWUploadHandler extends UploadHandler {
 		return symlink( $icon , $options['upload_dir'] . $file );
 	}
 
+	/**
+	 * Add info on the user who uploaded the file and the date it was uploaded
+	 */
+	protected function get_file_object( $file_name ) {
+		if( $file = parent::get_file_object( $file_name ) !== null ) {
+			$file->user = 'user';
+			$file->date = 'date';
+		}
+		return $file;
+	}
 }
