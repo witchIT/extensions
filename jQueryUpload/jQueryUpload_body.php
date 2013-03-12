@@ -427,7 +427,7 @@ class MWUploadHandler extends UploadHandler {
 	 */
 	protected function handle_file_upload( $uploaded_file, $name, $size, $type, $error, $index = null ) {
 		$file = parent::handle_file_upload( $uploaded_file, $name, $size, $type, $error, $index );
-		if( is_object( $file ) {
+		if( is_object( $file ) ) {
 			$file_path = $this->options['upload_dir'] . $file->name;
 			if( is_file( $file_path ) ) {
 				global $wgUser;
