@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION','1.0.12, 2013-02-27' );
+define( 'AJAXCOMMENTS_VERSION', '1.0.13, 2013-03-13' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -40,19 +40,24 @@ class AjaxComments {
 	var $comments = array();
 	var $changed = false;
 	var $talk = false;
+	var $canComment = false;
 
 	function __construct() {
-		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle, $wgExtensionAssetsPath;
+		global $wgHooks, $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgTitle, $wgExtensionAssetsPath, $wgUser;
 
 		$wgHooks['UnknownAction'][] = $this;
 
-		// Create a hook to allow external condition for whether there should be comments
+		// Create a hook to allow external condition for whether there should be comments shown
 		$ret = true;
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
 		if( (!is_object( $title )) || ($title->getArticleID() == 0) || $title->isRedirect() || ($title->getNamespace()&1) || array_key_exists( 'action', $_REQUEST ) )
 			$ret = false;
 		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 		if( $ret ) $wgHooks['BeforePageDisplay'][] = $this; else $wgAjaxCommentsPollServer = -1;
+
+		// Create a hook to allow external condition for whether comments can be added or replied to (default is just user logged in)
+		$this->canComment = $wgUser->isLoggedIn();
+		wfRunHooks( 'AjaxCommentsCheckWritable', array( $title, &$this->canComment ) );
 
 		// Redirect talk pages with AjaxComments to the comments
 		if( is_object( $title ) && $title->getNamespace() > 0 && ($title->getNamespace()&1) ) {
@@ -294,7 +299,7 @@ class AjaxComments {
 		if( $html == '' ) $html = "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-none' ) . "</i><br />";
 
 		// If logged in, allow replies and editing etc
-		if( $wgUser->isLoggedIn() ) {
+		if( $this->canComment ) {
 			$html = "<ul class=\"ajaxcomment-links\">" .
 				"<li id=\"ajaxcomment-add\"><a href=\"javascript:ajaxcomment_add()\">" . wfMsg( 'ajaxcomments-add' ) . "</a></li>\n" .
 				"</ul>\n$html";
@@ -343,7 +348,7 @@ class AjaxComments {
 			"</div>\n<ul class=\"ajaxcomment-links\">";
 
 		// If logged in, allow replies and editing etc
-		if( $wgUser->isLoggedIn() ) {
+		if( $this->canComment ) {
 
 			if( !$likeonly ) {
 
