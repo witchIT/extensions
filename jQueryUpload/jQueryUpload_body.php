@@ -402,14 +402,21 @@ class MWUploadHandler extends UploadHandler {
 			$meta = $this->options['upload_dir'] . 'meta/' . $file_name;
 			if( file_exists( $meta ) ) {
 				$data = unserialize( file_get_contents( $meta ) );
-				$user = User::newFromID( $data[0] );
-				$name = $user->getRealName();
-				if( empty( $name ) ) $name = $user->getName();
-				$date = date( "j M Y", $data[1] );
-				$file->info = wfMsg( 'jqueryupload-uploadinfo', $name, $date );
+				$file->info = self::renderData( $data );
 			} else $file->info = "";
 		}
 		return $file;
+	}
+
+	/**
+	 * Render file data
+	 */
+	public static function renderData( $data ) {
+		$user = User::newFromID( $data[0] );
+		$name = $user->getRealName();
+		if( empty( $name ) ) $name = $user->getName();
+		$date = date( "j M Y", $data[1] );
+		return wfMsg( 'jqueryupload-uploadinfo', $name, $date );
 	}
 
 	/**
