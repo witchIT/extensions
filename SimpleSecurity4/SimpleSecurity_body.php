@@ -327,7 +327,8 @@ class SimpleSecurity {
 					break;
 
 				case "Namespace":
-					$deny = $data == $title->getNsText();
+					$ns = is_numeric( $data ) ? $title->getNamespace() : $title->getNsText();
+					$deny = $data == $ns
 					break;
 			}
 
@@ -344,9 +345,11 @@ class SimpleSecurity {
 						$this->info['LS'][] = array( $action, $reqgroups, wfMsg( 'security-desc-LS', wfMsg( 'security-type-' . strtolower( $type ) ), $data ) );
 					}
 
-					if ( !in_array( 'sysop', $groups ) && !array_intersect( $groups, $reqgroups ) ) {
-						foreach ( $rights as $i => $right ) if ( $right === $action ) unset( $rights[$i] );
-						# $this->info['CR'][] = array($action, $reqgroups, wfMsg('security-desc-CR'));
+					$allow = in_array( 'sysop', $groups ) || array_intersect( $groups, $reqgroups );
+					if( $i = array_search( $action, $rights ) === false ) {
+						if( $allow ) $rights[] = $action;
+					} else {
+						if( $allow ) $rights[$i] = $action; else unset( $rights[$i] );
 					}
 				}
 			}

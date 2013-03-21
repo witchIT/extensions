@@ -22,7 +22,7 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'SIMPLESECURITY_VERSION', '4.5.3, 2011-06-29' );
+define( 'SIMPLESECURITY_VERSION', '4.6.0, 2013-03-21' );
 
 # Load the SimpleSecurity class and messages
 $dir = dirname( __FILE__ ) . '/';
