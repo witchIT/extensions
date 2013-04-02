@@ -183,6 +183,7 @@ class SimpleSecurity {
 		if ( !is_object( $wgTitle ) ) return true;
 		$title = $wgTitle;
 		$ns = $title->getNamespace();
+/*
 		if ( $ns == NS_SPECIAL ) {
 			list( $name, $par ) = explode( '/', $title->getDBkey() . '/', 2 );
 			if ( $par ) $title = Title::newFromText( $par );
@@ -190,7 +191,7 @@ class SimpleSecurity {
 			elseif ( $wgRequest->getVal( 'oldtitle' ) ) $title = Title::newFromText( $wgRequest->getVal( 'oldtitle' ) );
 		}
 		if ( !is_object( $title ) ) return true;   # If still no usable title bail
-
+*/
 		$groups = $user->getEffectiveGroups();
 
 		# Filter rights according to $wgPageRestrictions
