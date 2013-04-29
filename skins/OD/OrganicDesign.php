@@ -99,17 +99,17 @@ if ( $wgOrganicDesignDonations ) {?>
 		</div>
 		<h5 id="btcbest">But <a href="/Bitcoin">Bitcoins</a> are awesome :-)</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
-			<input style="width:135px;margin-left:23px" readonly="1" value="1ADB7fMcciUxmXsUrQnt6Se2x2Xdvvhv9m" onmouseover="this.select()" />
+			<input style="width:139px;margin-left:23px" readonly="1" value="1ADB7fMcciUxmXsUrQnt6Se2x2Xdvvhv9m" onmouseover="this.select()" />
 		</div>
 		<h5 id="nmccool">So is <a href="/Ripple">XRP</a>, <a href="/Namecoin">NMC</a> & <a href="/Litecoin">LTC</a></h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/2/23/Ripple.png) no-repeat 5px 2px;">
-			<input style="width:135px;margin-left:23px" readonly="1" value="rBSVzXKvPiRVKa4aBpr3SNqSem1RBDdhqy" onmouseover="this.select()" />
+			<input style="width:139px;margin-left:23px" readonly="1" value="rBSVzXKvPiRVKa4aBpr3SNqSem1RBDdhqy" onmouseover="this.select()" />
 		</div>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/c/c6/Namecoin-icon.png) no-repeat 5px 2px;">
-			<input style="width:135px;margin-left:23px" readonly="1" value="NB6GUnq7DTPFPyh8Zq6tdFyW4VyRv2HNWD" onmouseover="this.select()" />
+			<input style="width:139px;margin-left:23px" readonly="1" value="NB6GUnq7DTPFPyh8Zq6tdFyW4VyRv2HNWD" onmouseover="this.select()" />
 		</div>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a4/Litecoin-icon.png) no-repeat 5px 2px;">
-			<input style="width:135px;margin-left:23px" readonly="1" value="LeqKPQyxCvrXkXUf6rSxMkMBUpo1NLKQTY" onmouseover="this.select()" />
+			<input style="width:139px;margin-left:23px" readonly="1" value="LeqKPQyxCvrXkXUf6rSxMkMBUpo1NLKQTY" onmouseover="this.select()" />
 		</div>
 </div>
 <?php }?>
