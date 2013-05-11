@@ -204,6 +204,7 @@ function odLogActivity() {
 	if( $wgRequest->wasPosted() ) {
 		$post = array();
 		foreach( $wgRequest->getValues() as $k => $v ) {
+			if( is_array( $v ) ) $v = implode(',', $v);
 			if( strlen( $v ) > 10 ) $v = substr( $v, 0, 9 ) . '...';
 			$v = urlencode( $v );
 			$post[] = "$k=$v";
