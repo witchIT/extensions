@@ -450,7 +450,7 @@ class MWUploadHandler extends UploadHandler {
 			$file_path = $this->options['upload_dir'] . $file->name;
 			if( is_file( $file_path ) ) {
 				global $wgUser;
-				$desc = self::$desc[$file->name];
+				$desc = jQueryUpload::$desc[$file->name];
 				$meta = $this->options['upload_dir'] . 'meta/' . $file->name;
 				$data = array( $wgUser->getID(), time(), $desc == wfMsg( 'jqueryupload-enterdesc' ) ? '' : $desc );
 				file_put_contents( $meta, serialize( $data ) );
