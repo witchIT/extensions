@@ -12,6 +12,7 @@
 class jQueryUpload extends SpecialPage {
 
 	var $id = 0;
+	var $desc = array();
 
 	function __construct() {
 		global $wgHooks;
@@ -118,12 +119,14 @@ class jQueryUpload extends SpecialPage {
 		header( 'Access-Control-Allow-Methods: OPTIONS, HEAD, GET, POST, PUT, DELETE' );
 		header( 'Access-Control-Allow-Headers: X-File-Name, X-File-Type, X-File-Size' );
 
-		// Process the rename text inputs added to the upload form rows
+		// Process the rename and desc text inputs added to the upload form rows
 		if( array_key_exists( 'upload_rename_from', $_REQUEST ) && array_key_exists( 'files', $_FILES ) ) {
 			foreach( $_REQUEST['upload_rename_from'] as $i => $from ) {
 				if( false !== $j = array_search( $from, $_FILES['files']['name'] ) ) {
 					$ext = pathinfo( $from, PATHINFO_EXTENSION );
-					$_FILES['files']['name'][$j] = $_REQUEST['upload_rename_to'][$i] . ".$ext"; 
+					$name = $_REQUEST['upload_rename_to'][$i] . ".$ext";
+					$_FILES['files']['name'][$j] = $name;
+					$this->desc[$name] = $_REQUEST['upload_desc'][$i];
 				}
 			}
 		}
@@ -310,7 +313,7 @@ class jQueryUpload extends SpecialPage {
 				<td class="name">
 					<input type="hidden" name="upload_rename_from[]" value="{%=file.name%}" />
 					<input type="text" name="upload_rename_to[]" value="{%=uploadRenameBase(file.name)%}" />{%=uploadRenameExt(file.name)%}<br />
-					
+					<input type="text" name="upload_desc[]" value="' . wfMsg( 'jqueryupload-enterdesc' ) . '" style="width:100%" />
 				</td>
 				<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 				{% if (file.error) { %}
@@ -418,7 +421,8 @@ class MWUploadHandler extends UploadHandler {
 		$name = $user->getRealName();
 		if( empty( $name ) ) $name = $user->getName();
 		$date = date( "j M Y", $data[1] );
-		return wfMsg( 'jqueryupload-uploadinfo', $name, $date );
+		$info = $data[2] ? "(<a href=\"javascript:\" title=\"$3\">" . wfMsg( 'jqueryupload-moreinfo' ) . "</a>)" : '';
+		return wfMsg( 'jqueryupload-uploadinfo', $name, $date, $info );
 	}
 
 	/**
@@ -446,8 +450,9 @@ class MWUploadHandler extends UploadHandler {
 			$file_path = $this->options['upload_dir'] . $file->name;
 			if( is_file( $file_path ) ) {
 				global $wgUser;
+				$desc = $this->desc[$file->name];
 				$meta = $this->options['upload_dir'] . 'meta/' . $file->name;
-				$data = array( $wgUser->getID(), time() );
+				$data = array( $wgUser->getID(), time(), $desc == wfMsg( 'jqueryupload-enterdesc' ) ? '' : $desc );
 				file_put_contents( $meta, serialize( $data ) );
 			}
 		}
