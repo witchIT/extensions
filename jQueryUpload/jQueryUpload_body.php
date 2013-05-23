@@ -310,7 +310,7 @@ class jQueryUpload extends SpecialPage {
 				<td class="name">
 					<input type="hidden" name="upload_rename_from[]" value="{%=file.name%}" />
 					<input type="text" name="upload_rename_to[]" value="{%=uploadRenameBase(file.name)%}" />{%=uploadRenameExt(file.name)%}<br />
-					<input type="text" name="upload_desc" value="' . wfMsg( 'jqueryupload-enterdesc' ) . '" style="width:100%" />
+					
 				</td>
 				<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 				{% if (file.error) { %}
