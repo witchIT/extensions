@@ -421,8 +421,7 @@ class MWUploadHandler extends UploadHandler {
 		$name = $user->getRealName();
 		if( empty( $name ) ) $name = $user->getName();
 		$date = date( "j M Y", $data[1] );
-		$info = $data[2] ? "<br />(<a href=\"javascript:\" title=\"$data[2]\">" . wfMsg( 'jqueryupload-moreinfo' ) . "</a>)" : '';
-		return wfMsg( 'jqueryupload-uploadinfo', $name, $date ) . $info;
+		return wfMsg( 'jqueryupload-uploadinfo', $name, $date, $data[2] );
 	}
 
 	/**
