@@ -126,7 +126,7 @@ class jQueryUpload extends SpecialPage {
 					$ext = pathinfo( $from, PATHINFO_EXTENSION );
 					$name = $_REQUEST['upload_rename_to'][$i] . ".$ext";
 					$_FILES['files']['name'][$j] = $name;
-					$this->desc[$name] = $_REQUEST['upload_desc'][$i];
+					self::$desc[$name] = $_REQUEST['upload_desc'][$i];
 				}
 			}
 		}
@@ -450,7 +450,7 @@ class MWUploadHandler extends UploadHandler {
 			$file_path = $this->options['upload_dir'] . $file->name;
 			if( is_file( $file_path ) ) {
 				global $wgUser;
-				$desc = $this->desc[$file->name];
+				$desc = self::$desc[$file->name];
 				$meta = $this->options['upload_dir'] . 'meta/' . $file->name;
 				$data = array( $wgUser->getID(), time(), $desc == wfMsg( 'jqueryupload-enterdesc' ) ? '' : $desc );
 				file_put_contents( $meta, serialize( $data ) );
