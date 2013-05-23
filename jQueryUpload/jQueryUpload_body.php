@@ -12,7 +12,7 @@
 class jQueryUpload extends SpecialPage {
 
 	var $id = 0;
-	var $desc = array();
+	static $desc = array();
 
 	function __construct() {
 		global $wgHooks;
