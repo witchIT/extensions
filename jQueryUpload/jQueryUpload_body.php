@@ -356,6 +356,7 @@ class jQueryUpload extends SpecialPage {
 					<td class="name">
 						<a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&\'gallery\'%}" download="{%=file.name%}">{%=file.name%}</a><br />
 						<span class="file-info">{%=file.info%}</span><br />
+						<span class="file-desc">{%=file.desc%}</span>
 					</td>
 					<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 					<td colspan="2"></td>
@@ -408,7 +409,8 @@ class MWUploadHandler extends UploadHandler {
 			if( file_exists( $meta ) ) {
 				$data = unserialize( file_get_contents( $meta ) );
 				$file->info = self::renderData( $data );
-			} else $file->info = "";
+				$file->desc = $data[2];
+			} else $file->info = $file->desc = "";
 		}
 		return $file;
 	}
@@ -421,7 +423,7 @@ class MWUploadHandler extends UploadHandler {
 		$name = $user->getRealName();
 		if( empty( $name ) ) $name = $user->getName();
 		$date = date( "j M Y", $data[1] );
-		return wfMsg( 'jqueryupload-uploadinfo', $name, $date, $data[2] );
+		return wfMsg( 'jqueryupload-uploadinfo', $name, $date );
 	}
 
 	/**
