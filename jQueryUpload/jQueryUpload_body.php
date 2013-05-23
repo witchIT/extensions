@@ -173,11 +173,9 @@ class jQueryUpload extends SpecialPage {
 
 				// Create the directories if they don't exist (we do it here so they're not created for every dir read)
 				if( !is_dir( "$wgUploadDirectory/jquery_upload_files" ) ) mkdir( "$wgUploadDirectory/jquery_upload_files" );
-				if( !is_dir( $dir ) ) {
-					mkdir( $dir );
-					mkdir( $thm );
-					mkdir( $meta );
-				}
+				if( !is_dir( $dir ) ) mkdir( $dir );
+				if( !is_dir( $thm ) ) mkdir( $thm );
+				if( !is_dir( $meta ) ) mkdir( $meta );
 
 				$upload_handler->post();
 				break;
