@@ -14,4 +14,5 @@ $messages['en'] = array(
 	'jqueryupload-attach' => "Attach file",
 	'jqueryupload-attachments' => "File attachments",
 	'jqueryupload-uploadinfo' => "Uploaded by $1 on $2",
+	'jqueryupload-enterdesc' => "Enter a brief description",
 );
