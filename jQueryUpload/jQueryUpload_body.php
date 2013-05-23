@@ -307,7 +307,11 @@ class jQueryUpload extends SpecialPage {
 		{% for (var i=0, file; file=o.files[i]; i++) { %}
 			<tr class="template-upload fade">
 				<td class="preview"><span class="fade"></span></td>
-				<td class="name"><input type="hidden" name="upload_rename_from[]" value="{%=file.name%}" /><input type="text" name="upload_rename_to[]" value="{%=uploadRenameBase(file.name)%}" />{%=uploadRenameExt(file.name)%}</td>
+				<td class="name">
+					<input type="hidden" name="upload_rename_from[]" value="{%=file.name%}" />
+					<input type="text" name="upload_rename_to[]" value="{%=uploadRenameBase(file.name)%}" />{%=uploadRenameExt(file.name)%}<br />
+					<input type="text" name="upload_desc" value="Enter file description" />
+				</td>
 				<td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
 				{% if (file.error) { %}
 					<td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
