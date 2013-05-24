@@ -90,10 +90,11 @@ class jQueryUpload extends SpecialPage {
 	/**
 	 * Expand the #file parser-function
 	 */
-	function expandFile( $parser, $filename ) {
+	function expandFile( $parser, $filename, $anchor = false ) {
 		$class = '';
 		$href = false;
 		$info = '';
+		if( $anchor === false ) $anchor = $filename;
 
 		// Check if the file is a locally uploaded one
 		$img = wfLocalFile( $filename );
@@ -113,11 +114,10 @@ class jQueryUpload extends SpecialPage {
 		if( $href === false ) {
 			global $wgUploadDirectory, $wgScript;
 			if( $glob = glob( "$wgUploadDirectory/jquery_upload_files/*/$filename" ) ) {
-				if( preg_match( "|jquery_upload_files/(\d+)/(.+?)$|", $glob[0], $m ) ) {
+				if( preg_match( "|jquery_upload_files/(\d+)/|", $glob[0], $m ) ) {
 					$path = $m[1];
-					$file = $m[2];
 					$class = ' jquery-file';
-					$href = "$wgScript?action=ajax&rs=jQueryUpload::server&rsargs[]=$path&rsargs[]=$file";
+					$href = "$wgScript?action=ajax&rs=jQueryUpload::server&rsargs[]=$path&rsargs[]=" . urlencode( $filename );
 					$meta = "$wgUploadDirectory/jquery_upload_files/$path/meta/$filename";
 					if( file_exists( $meta ) ) {
 						$data = unserialize( file_get_contents( $meta ) );
@@ -134,7 +134,7 @@ class jQueryUpload extends SpecialPage {
 
 		//$title = empty( $info ) ? " title=\"$filename\"" : '';
 		if( !empty( $info ) ) $info = "<span style=\"display:none\">$info</span>";
-		return "<span class=\"jqu-span\"><span class=\"plainlinks$class\" title=\"$href\">$filename$info</span></span>";
+		return "<span class=\"jqu-span\"><span class=\"plainlinks$class\" title=\"$href\">$anchor$info</span></span>";
 	}
 
 	/**
