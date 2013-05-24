@@ -15,7 +15,7 @@ class jQueryUpload extends SpecialPage {
 	public static $desc = array();
 
 	function __construct() {
-		global $wgHooks;
+		global $wgOut, $wgResourceModules, $wgHooks, $wgParser, $wgJQUploadFileMagic;
 
 		// Initialise the special page
 		parent::__construct( 'jQueryUpload', 'upload' );
@@ -23,6 +23,10 @@ class jQueryUpload extends SpecialPage {
 		// If attachments allowed in this page, add the module into the page
 		if( $title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false )
 			$this->id = $title->getArticleID();
+
+		// Set up the #file parser-function
+		$wgHooks['LanguageGetMagic'][] = $this;
+		$wgParser->setFunctionHook( $wgJQUploadFileMagic, array( $this, 'expandFile' ) );
 
 		// Allow overriding of the file ID
 		wfRunHooks( 'jQueryUploadSetId', array( $title, &$this->id ) );
@@ -35,6 +39,16 @@ class jQueryUpload extends SpecialPage {
 			$this->head();
 			$wgHooks['BeforePageDisplay'][] = $this;
 		}
+
+		// Add the extensions own js
+		$wgResourceModules['ext.jqueryupload'] = array(
+			'scripts'       => array( 'jqueryupload.js' ),
+			'styles'        => array( 'jqueryupload.css' ),
+			'dependencies'  => array( 'mediawiki.util', 'jquery.ui.dialog' ),
+			'localBasePath' => dirname( __FILE__ ),
+			'remoteExtPath' => basename( dirname( __FILE__ ) )
+		);
+		$wgOut->addModules( 'ext.jqueryupload' );
 
 	}
 
@@ -71,6 +85,62 @@ class jQueryUpload extends SpecialPage {
 		$icon = "$prefix$ext.png";
 		if( !file_exists( $icon ) ) $icon = preg_replace( '|[-_]$|', '', $prefix ) . '.png';
 		return $icon;
+	}
+
+	/**
+	 * Expand the #file parser-function
+	 */
+	function expandFile( $parser, $filename ) {
+		$class = '';
+		$href = false;
+		$info = '';
+
+		// Check if the file is a locally uploaded one
+		$img = wfLocalFile( $filename );
+		if( $img->exists() ) {
+			$href = $img->getUrl();
+			$class = ' local-file';
+			$title = $img->getTitle();
+			$article = new Article( $title );
+			$info = $parser->parse( $article->getContent(), $parser->getTitle(), new ParserOptions(), false, false )->getText();
+			$info = '<span class="file-desc">' . $info . '</span>';
+		}
+
+		// Not local, check if it's a jQuery one
+		if( $href === false ) {
+			global $wgUploadDirectory, $wgScript;
+			if( $glob = glob( "$wgUploadDirectory/jquery_upload_files/*/$filename" ) ) {
+				if( preg_match( "|jquery_upload_files/(\d+)/(.+?)$|", $glob[0], $m ) ) {
+					$path = $m[1];
+					$file = $m[2];
+					$class = ' jquery-file';
+					$href = "$wgScript?action=ajax&rs=jQueryUpload::server&rsargs[]=$path&rsargs[]=$file";
+					$meta = "$wgUploadDirectory/jquery_upload_files/$path/meta/$filename";
+					if( file_exists( $meta ) ) {
+						$data = unserialize( file_get_contents( $meta ) );
+						$info = '<span class="file-info">' . MWUploadHandler::renderData( $data ) . '</span>';
+						$info .= '<br /><span class="file-desc">' . $data[2] . '</span>';
+					}
+				}
+			}
+		}
+
+		if( $href === false ) {
+			$class = ' redlink';
+		}
+
+		//$title = empty( $info ) ? " title=\"$filename\"" : '';
+		if( !empty( $info ) ) $info = "<span style=\"display:none\">$info</span>";
+		return "<span class=\"jqu-span\"><span class=\"plainlinks$class\" title=\"$href\">$filename$info</span></span>";
+	}
+
+	/**
+	 * Register #file magic word
+	 */
+	function onLanguageGetMagic( &$magicWords, $langCode = 0 ) {
+		global $wgJQUploadFileMagic;
+		$magicWords[$wgJQUploadFileMagic] = array( 0, $wgJQUploadFileMagic );
+		return true;
 	}
 
 	/**
@@ -195,11 +265,10 @@ class jQueryUpload extends SpecialPage {
 		$css = "$base/upload/css";
 
 		// Bootstrap CSS Toolkit styles
-		$wgOut->addStyle( "$base/jqueryupload.css", 'screen' );
+//		$wgOut->addStyle( "$base/jqueryupload.css", 'screen' );
 
 		// Bootstrap styles for responsive website layout, supporting different screen sizes
 		//$wgOut->addStyle( 'http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css', 'screen' );
-
 		// CSS to style the file input field as button and adjust the Bootstrap progress bars
 		$wgOut->addStyle( "$css/jquery.fileupload-ui.css", 'screen' );
 
@@ -211,38 +280,48 @@ class jQueryUpload extends SpecialPage {
 
 		// Set the ID to use for images on this page (defaults to article ID)
 		$wgOut->addJsConfigVars( 'jQueryUploadID', $this->id );
-
 	}
 
 	function scripts() {
 		global $wgExtensionAssetsPath;
 		$base = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) );
 		$js = "$base/upload/js";
-		return "<script src=\"$js/vendor/jquery.ui.widget.js\"></script>
-		<!-- The Templates plugin is included to render the upload/download listings -->
-		<script src=\"http://blueimp.github.com/JavaScript-Templates/tmpl.min.js\"></script>
-		<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-		<script src=\"http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js\"></script>
-		<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-		<script src=\"http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js\"></script>
-		<!-- Bootstrap JS and Bootstrap Image Gallery are not required, but included for the demo -->
-		<script src=\"http://blueimp.github.com/cdn/js/bootstrap.min.js\"></script>
-		<script src=\"http://blueimp.github.com/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js\"></script>
-		<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-		<script src=\"$js/jquery.iframe-transport.js\"></script>
-		<!-- The basic File Upload plugin -->
-		<script src=\"$js/jquery.fileupload.js\"></script>
-		<!-- The File Upload file processing plugin -->
-		<script src=\"$js/jquery.fileupload-fp.js\"></script>
-		<!-- The File Upload user interface plugin -->
-		<script src=\"$js/jquery.fileupload-ui.js\"></script>
-		<!-- The localization script -->
-		<script src=\"$js/locale.js\"></script>
-		<!-- The main application script -->
-		<script src=\"$base/jqueryupload.js\"></script>
-		<!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
-		<!--[if gte IE 8]><script src=\"$js/cors/jquery.xdr-transport.js\"></script><![endif]-->
-		<script>
+		$blueimp = "$base/blueimp";
+		$script = "<script src=\"$js/vendor/jquery.ui.widget.js\"></script>\n";
+
+		// The Templates plugin is included to render the upload/download listings
+		$script .= "<script src=\"$blueimp/JavaScript-Templates/tmpl.min.js\"></script>\n";
+
+		// The Load Image plugin is included for the preview images and image resizing functionality
+		$script .= "<script src=\"$blueimp/JavaScript-Load-Image/load-image.min.js\"></script>\n";
+
+		// The Canvas to Blob plugin is included for image resizing functionality
+		$script .= "<script src=\"$blueimp/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js\"></script>\n";
+
+		// Bootstrap JS and Bootstrap Image Gallery are not required, but included for the demo
+		$script .= "<script src=\"$blueimp/cdn/js/bootstrap.min.js\"></script>\n";
+		$script .= "<script src=\"$blueimp/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js\"></script>\n";
+
+		// The Iframe Transport is required for browsers without support for XHR file uploads
+		$script .= "<script src=\"$js/jquery.iframe-transport.js\"></script>\n";
+
+		// The basic File Upload plugin
+		$script .= "<script src=\"$js/jquery.fileupload.js\"></script>\n";
+
+		// The File Upload file processing plugin
+		$script .= "<script src=\"$js/jquery.fileupload-fp.js\"></script>\n";
+
+		// The File Upload user interface plugin
+		$script .= "<script src=\"$js/jquery.fileupload-ui.js\"></script>\n";
+
+		// The localization script
+		$script .= "<script src=\"$js/locale.js\"></script>\n";
+
+		// The XDomainRequest Transport is included for cross-domain file deletion for IE8+
+		$script .= "<!--[if gte IE 8]><script src=\"$js/cors/jquery.xdr-transport.js\"></script><![endif]-->\n";
+
+		// Functions added for allowing uploaded files to be renamed
+		$script .= "<script>
 			function uploadRenameBase(name) {
 				var re = /^(.+)(\..+?)$/;
 				var m = re.exec(name);
@@ -252,8 +331,9 @@ class jQueryUpload extends SpecialPage {
 				var re = /^(.+)(\..+?)$/;
 				var m = re.exec(name);
 				return m[2];
-			}
-		</script>";
+			}</script>\n";
+
+		return $script;
 	}
 
 	function form() {

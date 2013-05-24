@@ -19,25 +19,55 @@
 $(function() {
 	'use strict';
 
-	// Initialize the jQuery File Upload widget:
-	$('#fileupload').fileupload();
+	if($('#fileupload').length > 0) {
 
-    // Enable iframe cross-domain access via redirect option:
-	$('#fileupload').fileupload(
-		'option',
-		'redirect',
-		window.location.href.replace( /\/[^\/]*$/, '/cors/result.html?%s' )
-	);
+		// Initialize the jQuery File Upload widget:
+		$('#fileupload').fileupload();
 
-	// Load existing files using a path set to the current article ID if non-zero
-	var path = mw.config.get('jQueryUploadID');
-	path = path ? '&path=' + path : '';
-	$('#fileupload').each(function () {
-		var that = this;
-		$.getJSON('?action=ajax' + path + '&rs=jQueryUpload::server', function(result) {
-			if(result && result.length) {
-				$(that).fileupload('option', 'done').call(that, null, {result: result});
-			}
+		// Enable iframe cross-domain access via redirect option:
+		$('#fileupload').fileupload(
+			'option',
+			'redirect',
+			window.location.href.replace( /\/[^\/]*$/, '/cors/result.html?%s' )
+		);
+
+		// Load existing files using a path set to the current article ID if non-zero
+		var path = mw.config.get('jQueryUploadID');
+		path = path ? '&path=' + path : '';
+		$('#fileupload').each(function () {
+			var that = this;
+			$.getJSON('?action=ajax' + path + '&rs=jQueryUpload::server', function(result) {
+				if(result && result.length) {
+					$(that).fileupload('option', 'done').call(that, null, {result: result});
+				}
+			});
 		});
+	}
+
+	// Replace the spans with A elements (a hack to avoid the parser adding p's when isHTML = true)
+	$('.jqu-span').each(function() {
+		var e = $('span:first',this);
+		var classes = e.attr('class');
+		var href = e.attr('title');
+		var html = e.html();
+		$(this).replaceWith($('<a></a>').html(html).attr({'href': href,'class': classes}).addClass('jqu-link'));
 	});
+
+	// Add popup hover to all file links made with the parser-function
+	$('.jqu-link').hover(function() {
+		var a = $(this);
+		var span = $('span',a);
+		if(span.length > 0 ) {
+			if( $('#jqu-popup').length == 0 ) $('#bodyContent').prepend('<div id="jqu-popup" />');
+			$('#jqu-popup').html(span.html()).dialog({
+				title: 'File description',
+				closeText: '',
+				resizable: false,
+				width: 450,
+			}).parent().css('left',a.position().left+225).css('top',a.position().top-20);
+		}
+	});
+
 });
+
+

@@ -80,7 +80,7 @@
   clear: both;
 }
 
-[class*="span"] {
+#fileupload [class*="span"] {
   float: left;
   min-height: 1px;
   margin-left: 20px;
@@ -5179,4 +5179,14 @@ a.badge:hover {
 
 .affix {
   position: fixed;
+}
+
+.file-info {
+	font-size: 95%;
+	font-style: italic;
+	color: #999;
+}
+.file-desc {
+	font-size: 95%;
+	color: #666;
 }
