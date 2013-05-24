@@ -13,6 +13,7 @@ define( 'JQU_VERSION', "1.2.0, 2013-05-23" );
 
 $wgJQUploadIconPrefix = dirname( __FILE__ ) . '/icons/Farm-Fresh_file_extension_';
 $wgJQUploadFileMagic = 'file';
+$wgHooks['LanguageGetMagic'][] = 'jQueryUpload::onLanguageGetMagic';
 
 $wgAjaxExportList[] = 'jQueryUpload::server';
 

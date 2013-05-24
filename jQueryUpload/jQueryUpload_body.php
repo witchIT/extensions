@@ -25,7 +25,6 @@ class jQueryUpload extends SpecialPage {
 			$this->id = $title->getArticleID();
 
 		// Set up the #file parser-function
-		$wgHooks['LanguageGetMagic'][] = $this;
 		$wgParser->setFunctionHook( $wgJQUploadFileMagic, array( $this, 'expandFile' ) );
 
 		// Allow overriding of the file ID
@@ -140,7 +139,7 @@ class jQueryUpload extends SpecialPage {
 	/**
 	 * Register #file magic word
 	 */
-	function onLanguageGetMagic( &$magicWords, $langCode = 0 ) {
+	public static function onLanguageGetMagic( &$magicWords, $langCode = 0 ) {
 		global $wgJQUploadFileMagic;
 		$magicWords[$wgJQUploadFileMagic] = array( 0, $wgJQUploadFileMagic );
 		return true;
