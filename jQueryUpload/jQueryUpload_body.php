@@ -98,12 +98,15 @@ class jQueryUpload extends SpecialPage {
 		// Check if the file is a locally uploaded one
 		$img = wfLocalFile( $filename );
 		if( $img->exists() ) {
+			global $wgLang;
 			$href = $img->getUrl();
 			$class = ' local-file';
 			$title = $img->getTitle();
 			$article = new Article( $title );
 			$info = $parser->parse( $article->getContent(), $parser->getTitle(), new ParserOptions(), false, false )->getText();
-			$info = '<span class="file-desc">' . $info . '</span>';
+			if( !empty( $info ) ) $info = '<span class="file-desc">' . $info . '</span>';
+			$date = wfMsg( 'jqueryupload-uploadinfo', $img->user_text, $wgLang->date( $img->timestamp, true ) );
+			$info = '<span class="file-info">' . $date . '</span><br />' . $info;
 		}
 
 		// Not local, check if it's a jQuery one
@@ -119,7 +122,7 @@ class jQueryUpload extends SpecialPage {
 					if( file_exists( $meta ) ) {
 						$data = unserialize( file_get_contents( $meta ) );
 						$info = '<span class="file-info">' . MWUploadHandler::renderData( $data ) . '</span>';
-						$info .= '<br /><span class="file-desc">' . $data[2] . '</span>';
+						if( $data[2] ) $info .= '<br /><span class="file-desc">' . $data[2] . '</span>';
 					}
 				}
 			}
