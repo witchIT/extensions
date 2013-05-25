@@ -25,7 +25,7 @@ class jQueryUpload extends SpecialPage {
 			$this->id = $title->getArticleID();
 
 		// Set up the #file parser-function
-		$wgParser->setFunctionHook( $wgJQUploadFileMagic, array( $this, 'expandFile' ) );
+		$wgParser->setFunctionHook( $wgJQUploadFileMagic, array( $this, 'expandFile' ), SFH_NO_HASH );
 
 		// Allow overriding of the file ID
 		wfRunHooks( 'jQueryUploadSetId', array( $title, &$this->id ) );
