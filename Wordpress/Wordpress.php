@@ -26,11 +26,11 @@ class Wordpress {
 	/**
 	 * Return info for the current user
 	 */
-	public static function user() {
+	public static function user( $id, $token ) {
 		global $wgUser;
 		header( 'Content-Type: application/json' );
 		$data = array();
-		if( $wgUser->isLoggedIn() && self::isLocal() ) {
+		if( $wgUser->isLoggedIn() && $wgUser->getToken() == $token ) {
 			$data['id'] = $wgUser->getId();
 			$data['name'] = $wgUser->getName();
 			$data['email'] = $wgUser->getEmail();

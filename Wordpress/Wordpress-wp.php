@@ -8,11 +8,23 @@
  * @copyright © 2013 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
+
+$mediawiki_url = ''; // URL of the local mediawiki ti sync users with
+$mediawiki_db  = ''; // name of the DB the wiki uses
+$mediawiki_pre = ''; // DB table prefix, if any, the wiki uses
+ 
 function auto_login() {
-	global $mediawiki_url;
+	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
 
 	// Check if a mediawiki user is logged in
-	$mwuser = json_decode( file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user" ) );
+	$cookie_prefix = implode( '_', $mediawiki_db, $mediawiki_pre );
+	$idkey = $cookie_prefix . 'UserID';
+	$tokenkey = $cookie_prefix . 'Token';
+	$id = array_key_exists( $idkey, $_COOKIE ) ? $_COOKIE[$idkey] : false;
+	$token = array_key_exists( $tokenkey, $_COOKIE ) ? $_COOKIE[$tokenkey] : false;
+	if( $token ) {
+		$mwuser = json_decode( file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs=$token" ) );
+	} else $mwuser = false;
 
 	// If no current user returned, redirect to login
 	if( !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
