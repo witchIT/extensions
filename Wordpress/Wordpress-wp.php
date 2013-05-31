@@ -36,8 +36,8 @@ function auto_login() {
 print_r($mwuser);
 
 	// If there is no equivalent Wordpress user, create now
-	if( !$user_id = username_exists( $mwuser['name'] ) ) {
-		$user_id = wp_create_user( $mwuser['name'], $mwuser['pass'], $mwuser['email'] );
+	if( !$user_id = username_exists( $mwuser->name ) ) {
+		$user_id = wp_create_user( $mwuser->name, $mwuser->pass, $mwuser->email );
 	}
 
 	// If the current Wordpress user is not the MediaWiki user, log them out
@@ -49,7 +49,7 @@ print_r($mwuser);
 	if( $cur != $user_id ) {
 		wp_set_current_user( $user_id );
 		wp_set_auth_cookie( $user_id );
-		do_action( 'wp_login', $mwuser['name'] );
+		do_action( 'wp_login', $mwuser->name );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'auto_login' );
