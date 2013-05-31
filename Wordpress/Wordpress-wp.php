@@ -51,3 +51,4 @@ function auto_login() {
 	}
 }
 add_action( 'init', 'auto_login' );
+print 'test';
