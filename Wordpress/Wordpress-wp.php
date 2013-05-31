@@ -50,5 +50,5 @@ function auto_login() {
 		do_action( 'wp_login', $mwuser['name'] );
 	}
 }
-add_action( 'init', 'auto_login' );
-print 'test';
+print 'add:'. add_action( 'init', 'auto_login' );
+
