@@ -28,8 +28,8 @@ function auto_login() {
 
 	// If no current user returned, redirect to login
 	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
-		$return = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; //preg_match( "|^/(\w+)|", $m ) ? "&returnto=$m[1]" : '';
-		header( "Location: $mediawiki_url?title=Special:Userlogin&returnto=$return" );
+		$return = preg_match( "|^/(\w+)|", $_SERVER['REQUEST_URI'], $m ) ? "&returnto=$m[1]" : '';
+		header( "Location: $mediawiki_url?title=Special:Userlogin$return" );
 	}
 
 	// If there is no equivalent Wordpress user, create now
