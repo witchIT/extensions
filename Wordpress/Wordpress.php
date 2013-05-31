@@ -24,7 +24,7 @@ $wgExtensionCredits['other'][] = array(
 class Wordpress {
 
 	/**
-	 * Return info for the current user
+	 * Return info for the passed user if its token matches the passed token
 	 */
 	public static function user( $id, $token ) {
 		global $wgUser;
