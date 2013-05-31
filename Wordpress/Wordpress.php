@@ -27,14 +27,14 @@ class Wordpress {
 	 * Return info for the passed user if its token matches the passed token
 	 */
 	public static function user( $id, $token ) {
-		global $wgUser;
 		header( 'Content-Type: application/json' );
 		$data = array();
-		if( $wgUser->isLoggedIn() && $wgUser->getToken() == $token ) {
-			$data['id'] = $wgUser->getId();
-			$data['name'] = $wgUser->getName();
-			$data['email'] = $wgUser->getEmail();
-			$data['pass'] = md5( $wgUser->getRegistration() ); // used as wordpress internal user password
+		$user = User::newFromId( $id );
+		if( $user->getToken() == $token ) {
+			$data['id'] = $user->getId();
+			$data['name'] = $user->getName();
+			$data['email'] = $user->getEmail();
+			$data['pass'] = md5( $user->getRegistration() ); // used as wordpress internal user password
 		}
 		return json_encode( $data );
 	}
