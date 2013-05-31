@@ -30,7 +30,7 @@ function auto_login() {
 	// If no current user returned, redirect to login
 	if( !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
 		//header( "Location: $mediawiki_url?title=Special:Userlogin&returnto=" . $_SERVER['REQUEST_URI'] );
-		print "no user returned';
+		print "no user returned";
 		exit();
 	}
 
