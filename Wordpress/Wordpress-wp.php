@@ -22,10 +22,8 @@ function auto_login() {
 	$tokenkey = $cookie_prefix . 'Token';
 	$id = array_key_exists( $idkey, $_COOKIE ) ? $_COOKIE[$idkey] : false;
 	$token = array_key_exists( $tokenkey, $_COOKIE ) ? $_COOKIE[$tokenkey] : false;
-	print "$id,$token";
 	if( $token ) {
-		$mwuser = json_decode( $x=file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
-		print $x;
+		$mwuser = json_decode( file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
 	} else $mwuser = false;
 
 	// If no current user returned, redirect to login
@@ -34,6 +32,8 @@ function auto_login() {
 		print "no user returned";
 		exit();
 	}
+
+print_r($mwuser);
 
 	// If there is no equivalent Wordpress user, create now
 	if( !$user_id = username_exists( $mwuser['name'] ) ) {
