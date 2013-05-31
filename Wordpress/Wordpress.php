@@ -9,7 +9,7 @@ if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @copyright © 2013 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
-define( 'DCSUD_VERSION', "0.0.1, 2013-05-30" );
+define( 'WORDPRESS_VERSION', "0.0.1, 2013-05-30" );
 
 $wgAjaxExportList[] = 'Wordpress::user';
 $wgExtensionFunctions[] = 'wfSetupWordpress';
