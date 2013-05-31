@@ -30,6 +30,7 @@ class Wordpress {
 		header( 'Content-Type: application/json' );
 		$data = array();
 		$user = User::newFromId( $id );
+		print $user->getToken();
 		if( $user->getToken() == $token ) {
 			$data['id'] = $user->getId();
 			$data['name'] = $user->getName();
