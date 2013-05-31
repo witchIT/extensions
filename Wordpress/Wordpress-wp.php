@@ -28,12 +28,8 @@ function auto_login() {
 
 	// If no current user returned, redirect to login
 	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
-		//header( "Location: $mediawiki_url?title=Special:Userlogin&returnto=" . $_SERVER['REQUEST_URI'] );
-		print "no user returned";
-		exit();
+		header( "Location: $mediawiki_url?title=Special:Userlogin&returnto=" . $_SERVER['REQUEST_URI'] );
 	}
-
-print_r($mwuser);
 
 	// If there is no equivalent Wordpress user, create now
 	if( !$user_id = username_exists( $mwuser->name ) ) {
