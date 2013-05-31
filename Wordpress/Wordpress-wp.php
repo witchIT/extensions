@@ -9,9 +9,9 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 
-$mediawiki_url = ''; // URL of the local mediawiki ti sync users with
-$mediawiki_db  = ''; // name of the DB the wiki uses
-$mediawiki_pre = ''; // DB table prefix, if any, the wiki uses
+//$mediawiki_url = ''; // URL of the local mediawiki ti sync users with
+//$mediawiki_db  = ''; // name of the DB the wiki uses
+//$mediawiki_pre = ''; // DB table prefix, if any, the wiki uses
  
 function auto_login() {
 	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
