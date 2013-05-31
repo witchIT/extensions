@@ -17,7 +17,7 @@ function auto_login() {
 	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
 
 	// Check if a mediawiki user is logged in
-	$cookie_prefix = implode( '_', $mediawiki_db, $mediawiki_pre );
+	$cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
 	$idkey = $cookie_prefix . 'UserID';
 	$tokenkey = $cookie_prefix . 'Token';
 	$id = array_key_exists( $idkey, $_COOKIE ) ? $_COOKIE[$idkey] : false;
