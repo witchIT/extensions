@@ -30,7 +30,7 @@ class Wordpress {
 		header( 'Content-Type: application/json' );
 		$data = array();
 		$user = User::newFromId( $id );
-		if( $user->getToken() == $token ) {
+		if( $user->getToken() == $token && self::isLocal() ) {
 			$data['id'] = $user->getId();
 			$data['name'] = $user->getName();
 			$data['email'] = $user->getEmail();
