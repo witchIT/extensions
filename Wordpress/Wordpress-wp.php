@@ -24,7 +24,8 @@ function auto_login() {
 	$token = array_key_exists( $tokenkey, $_COOKIE ) ? $_COOKIE[$tokenkey] : false;
 	print "$id,$token";
 	if( $token ) {
-		$mwuser = json_decode( file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs=$token" ) );
+		$mwuser = json_decode( $x=file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs=$token" ) );
+		print $x;
 	} else $mwuser = false;
 
 	// If no current user returned, redirect to login
