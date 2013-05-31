@@ -24,12 +24,12 @@ function auto_login() {
 	$token = array_key_exists( $tokenkey, $_COOKIE ) ? $_COOKIE[$tokenkey] : false;
 	print "$id,$token";
 	if( $token ) {
-		$mwuser = json_decode( $x=file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs=$token" ) );
+		$mwuser = json_decode( $x=file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
 		print $x;
 	} else $mwuser = false;
 
 	// If no current user returned, redirect to login
-	if( !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
+	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
 		//header( "Location: $mediawiki_url?title=Special:Userlogin&returnto=" . $_SERVER['REQUEST_URI'] );
 		print "no user returned";
 		exit();
