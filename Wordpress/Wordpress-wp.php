@@ -22,7 +22,7 @@ function auto_login() {
 	$tokenkey = $cookie_prefix . 'Token';
 	$id = array_key_exists( $idkey, $_COOKIE ) ? $_COOKIE[$idkey] : false;
 	$token = array_key_exists( $tokenkey, $_COOKIE ) ? $_COOKIE[$tokenkey] : false;
-	print 'token: '.$token;
+	print "$tokenkey: ".$token;
 	if( $token ) {
 		$mwuser = json_decode( file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs=$token" ) );
 	} else $mwuser = false;
