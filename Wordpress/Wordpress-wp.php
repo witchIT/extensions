@@ -2,8 +2,6 @@
 /**
  * Integrate MediaWiki with Wordpress
  *
- * @package MediaWiki
- * @subpackage Extensions
  * @author Aran Dunkley (http://www.organicdesign.co.nz/nad)
  * @copyright © 2013 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
@@ -13,7 +11,7 @@ $mediawiki_url = ''; // URL of the local mediawiki ti sync users with
 $mediawiki_db  = ''; // name of the DB the wiki uses
 $mediawiki_pre = ''; // DB table prefix, if any, the wiki uses
  
-function auto_login() {
+function mediawiki_login() {
 	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
 
 	// Check if there are cookies for a logged in MediaWiki user in this domain
@@ -28,11 +26,10 @@ function auto_login() {
 		$mwuser = json_decode( file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
 	} else $mwuser = false;
 
-	// If no user info returned, redirect to wiki login
+	// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
 	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
-		$return = preg_match( "|^/(\w+)|", $_SERVER['REQUEST_URI'], $m ) ? "&returnto=$m[1]" : '';
-		header( "Location: $mediawiki_url?title=Special:Userlogin$return" );
-		exit();
+		wp_logout();
+		return;
 	}
 
 	// If there is no equivalent Wordpress user, create user now
@@ -52,5 +49,5 @@ function auto_login() {
 		do_action( 'wp_login', $mwuser->name );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'auto_login' );
+add_action( 'wp_enqueue_scripts', 'mediawiki_login' );
 
