@@ -20,7 +20,7 @@ if( preg_match( '|wp-login\.php|', $_SERVER['SCRIPT_NAME'] ) ) {
 		elseif( $action == 'register' ) $location .= '&type=signup';
 	}
 	$return = preg_match( "|^/(\w+)|", $_SERVER['REQUEST_URI'], $m ) ? "&returnto=$m[1]" : '';
-	header( "Location: /index.php?title=$location$return" );
+	header( "Location: $mediawiki_url?title=$location$return" );
 	exit();
 }
  
