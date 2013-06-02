@@ -38,10 +38,12 @@ if( $token ) {
 	$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
 } else $mwuser = false;
 
+$cur = get_current_user_id()
+
 // If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
 if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
+	if( $cur ) $reload = true;
 	wp_logout();
-	$reload = true;
 }
 
 else {
@@ -52,11 +54,9 @@ else {
 	}
 
 	// If the current Wordpress user is not the MediaWiki user, log them out
-	if( $cur = get_current_user_id() ) {
-		if( $cur != $user_id ) {
-			wp_logout();
-			$reload = true;
-		}
+	if( $cur && $cur != $user_id ) {
+		wp_logout();
+		$reload = true;
 	}
 
 	// Log in as the wiki user if not already logged in
