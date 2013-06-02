@@ -7,9 +7,9 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 
-$mediawiki_url = ''; // URL of the local mediawiki ti sync users with
-$mediawiki_db  = ''; // name of the DB the wiki uses
-$mediawiki_pre = ''; // DB table prefix, if any, the wiki uses
+//$mediawiki_url = ''; // URL of the local mediawiki ti sync users with
+//$mediawiki_db  = ''; // name of the DB the wiki uses
+//$mediawiki_pre = ''; // DB table prefix, if any, the wiki uses
 
 // If this is being called from wp-login.php then redirect to wiki
 if( preg_match( '|wp-login\.php|', $_SERVER['SCRIPT_NAME'] ) ) {
