@@ -57,9 +57,13 @@ function mediawiki_login() {
 
 	// Log in as the wiki user if not already logged in
 	if( $cur != $user_id ) {
-		wp_set_current_user( $user_id );
-		wp_set_auth_cookie( $user_id );
-		do_action( 'wp_login', $mwuser->name );
+		wp_set_password( $mwuser->pass, $user_id ); // force pwd to the mw one incase user already existed
+		$creds = array(
+			'user_login' => $mwuser->name,
+			'user_password' => $mwuser->pass,
+			'remember' => false
+		);
+		wp_signon( $creds );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'mediawiki_login' );
