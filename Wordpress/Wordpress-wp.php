@@ -64,10 +64,10 @@ function mediawiki_login() {
 			'remember' => false
 		);
 		wp_signon( $creds );
+		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
+		exit();
 	}
 }
 //add_action( 'wp_enqueue_scripts', 'mediawiki_login' );
 mediawiki_login();
 
-header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
