@@ -29,16 +29,16 @@ function mediawiki_login() {
 
 	// Check if there are cookies for a logged in MediaWiki user in this domain
 	$cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
-	$idkey = $cookie_prefix . 'UserID';
-	$tokenkey = $cookie_prefix . 'Token';
-	$id = array_key_exists( $idkey, $_COOKIE ) ? $_COOKIE[$idkey] : false;
-	$token = array_key_exists( $tokenkey, $_COOKIE ) ? $_COOKIE[$tokenkey] : false;
+	$ikey = $cookie_prefix . 'UserID';
+	$tkey = $cookie_prefix . 'Token';
+	$id = array_key_exists( $ikey, $_COOKIE ) ? $_COOKIE[$ikey] : false;
+	$token = array_key_exists( $tkey, $_COOKIE ) ? $_COOKIE[$tkey] : false;
 
 	// If cookies found, check with the wiki that the token is valid, if it is user info is returned
 	if( $token ) {
-		$mwuser = json_decode( file_get_contents( "$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
+		$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
 	} else $mwuser = false;
-
+print $x;
 	// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
 	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
 		wp_logout();
