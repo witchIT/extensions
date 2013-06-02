@@ -10,6 +10,19 @@
 $mediawiki_url = ''; // URL of the local mediawiki ti sync users with
 $mediawiki_db  = ''; // name of the DB the wiki uses
 $mediawiki_pre = ''; // DB table prefix, if any, the wiki uses
+
+// If this is being called from wp-login.php then redirect to wiki
+if( preg_match( '|wp-login\.php|', $_SERVER['SCRIPT_NAME'] ) ) {
+	$location = 'Special:UserLogin';
+	if( array_key_exists( 'action', $_REQUEST ) ) {
+		$action = $_REQUEST['action'];
+		if( $action == 'logout' ) $location = 'Special:UserLogout';
+		elseif( $action == 'register' ) $location .= '&type=signup';
+	}
+	$return = preg_match( "|^/(\w+)|", $_SERVER['REQUEST_URI'], $m ) ? "&returnto=$m[1]" : '';
+	header( "Location: /index.php?title=$location$return" );
+	exit();
+}
  
 function mediawiki_login() {
 	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
