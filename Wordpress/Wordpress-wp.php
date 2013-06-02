@@ -53,11 +53,7 @@ function mediawiki_login() {
 
 	// If the current Wordpress user is not the MediaWiki user, log them out
 	if( $cur = get_current_user_id() ) {
-		if( $cur != $user_id ) {
-			wp_logout();
-			header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-			exit();
-		}
+		if( $cur != $user_id ) wp_logout();
 	}
 
 	// Log in as the wiki user if not already logged in
