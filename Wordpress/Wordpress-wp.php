@@ -24,28 +24,27 @@ if( preg_match( '|wp-login\.php|', $_SERVER['SCRIPT_NAME'] ) ) {
 	exit();
 }
  
-function mediawiki_login() {
-	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
-	$reload = false;
+$reload = false;
 
-	// Check if there are cookies for a logged in MediaWiki user in this domain
-	$cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
-	$ikey = $cookie_prefix . 'UserID';
-	$tkey = $cookie_prefix . 'Token';
-	$id = array_key_exists( $ikey, $_COOKIE ) ? $_COOKIE[$ikey] : false;
-	$token = array_key_exists( $tkey, $_COOKIE ) ? $_COOKIE[$tkey] : false;
+// Check if there are cookies for a logged in MediaWiki user in this domain
+$cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
+$ikey = $cookie_prefix . 'UserID';
+$tkey = $cookie_prefix . 'Token';
+$id = array_key_exists( $ikey, $_COOKIE ) ? $_COOKIE[$ikey] : false;
+$token = array_key_exists( $tkey, $_COOKIE ) ? $_COOKIE[$tkey] : false;
 
-	// If cookies found, check with the wiki that the token is valid, if it is user info is returned
-	if( $token ) {
-		$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
-	} else $mwuser = false;
+// If cookies found, check with the wiki that the token is valid, if it is user info is returned
+if( $token ) {
+	$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
+} else $mwuser = false;
 
-	// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
-	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
-		wp_logout();
-		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-		return;
-	}
+// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
+if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
+	wp_logout();
+	$reload = true;
+}
+
+else {
 
 	// If there is no equivalent Wordpress user, create user now
 	if( !$user_id = username_exists( $mwuser->name ) ) {
@@ -71,11 +70,10 @@ function mediawiki_login() {
 		wp_signon( $creds );
 		$reload = true;
 	}
-
-	if( $reload ) {
-		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-		exit();
-	}
 }
-mediawiki_login();
+
+if( $reload ) {
+	header( 'Location: ' . $_SERVER['REQUEST_URI'] );
+	exit();
+}
 
