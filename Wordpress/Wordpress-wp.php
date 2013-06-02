@@ -66,5 +66,5 @@ function mediawiki_login() {
 		wp_signon( $creds );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'mediawiki_login' );
-
+//add_action( 'wp_enqueue_scripts', 'mediawiki_login' );
+mediawiki_login();
