@@ -38,7 +38,7 @@ function mediawiki_login() {
 	if( $token ) {
 		$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
 	} else $mwuser = false;
-print "t:$token, x:$x";
+print "i: $ikey, t:$token, x:$x";
 	// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
 	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
 		wp_logout();
