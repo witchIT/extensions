@@ -25,6 +25,7 @@ if( preg_match( '|wp-login\.php|', $_SERVER['SCRIPT_NAME'] ) ) {
 }
  
 $reload = false;
+$cur = get_current_user_id();
 
 // Check if there are cookies for a logged in MediaWiki user in this domain
 $cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
@@ -38,14 +39,13 @@ if( $token ) {
 	$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
 } else $mwuser = false;
 
-$cur = get_current_user_id();
-
 // If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
 if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
 	if( $cur ) $reload = true;
 	wp_logout();
 }
 
+// Otherwise login as the returned user
 else {
 
 	// If there is no equivalent Wordpress user, create user now
