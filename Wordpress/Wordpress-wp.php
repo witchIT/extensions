@@ -42,6 +42,7 @@ function mediawiki_login() {
 	// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
 	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
 		wp_logout();
+		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
 		return;
 	}
 
@@ -52,7 +53,10 @@ function mediawiki_login() {
 
 	// If the current Wordpress user is not the MediaWiki user, log them out
 	if( $cur = get_current_user_id() ) {
-		if( $cur != $user_id ) wp_logout();
+		if( $cur != $user_id ) {
+			wp_logout();
+			header( 'Location: ' . $_SERVER['REQUEST_URI'] );
+		}
 	}
 
 	// Log in as the wiki user if not already logged in
@@ -68,6 +72,5 @@ function mediawiki_login() {
 		exit();
 	}
 }
-//add_action( 'wp_enqueue_scripts', 'mediawiki_login' );
 mediawiki_login();
 
