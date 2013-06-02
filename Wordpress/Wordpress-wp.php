@@ -26,6 +26,7 @@ if( preg_match( '|wp-login\.php|', $_SERVER['SCRIPT_NAME'] ) ) {
  
 function mediawiki_login() {
 	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
+	$reload = false;
 
 	// Check if there are cookies for a logged in MediaWiki user in this domain
 	$cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
@@ -53,7 +54,10 @@ function mediawiki_login() {
 
 	// If the current Wordpress user is not the MediaWiki user, log them out
 	if( $cur = get_current_user_id() ) {
-		if( $cur != $user_id ) wp_logout();
+		if( $cur != $user_id ) {
+			wp_logout();
+			$reload = true;
+		}
 	}
 
 	// Log in as the wiki user if not already logged in
@@ -65,6 +69,10 @@ function mediawiki_login() {
 			'remember' => false
 		);
 		wp_signon( $creds );
+		$reload = true;
+	}
+
+	if( $reload ) {
 		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
 		exit();
 	}
