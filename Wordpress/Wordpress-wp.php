@@ -24,53 +24,49 @@ if( preg_match( '|wp-login\.php|', $_SERVER['SCRIPT_NAME'] ) ) {
 	exit();
 }
  
-function mediawiki_login() {
-	global $mediawiki_url, $mediawiki_db, $mediawiki_pre;
+// Check if there are cookies for a logged in MediaWiki user in this domain
+$cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
+$ikey = $cookie_prefix . 'UserID';
+$tkey = $cookie_prefix . 'Token';
+$id = array_key_exists( $ikey, $_COOKIE ) ? $_COOKIE[$ikey] : false;
+$token = array_key_exists( $tkey, $_COOKIE ) ? $_COOKIE[$tkey] : false;
 
-	// Check if there are cookies for a logged in MediaWiki user in this domain
-	$cookie_prefix = $mediawiki_pre ? $mediawiki_db . '_' . $mediawiki_pre : $mediawiki_db;
-	$ikey = $cookie_prefix . 'UserID';
-	$tkey = $cookie_prefix . 'Token';
-	$id = array_key_exists( $ikey, $_COOKIE ) ? $_COOKIE[$ikey] : false;
-	$token = array_key_exists( $tkey, $_COOKIE ) ? $_COOKIE[$tkey] : false;
+// If cookies found, check with the wiki that the token is valid, if it is user info is returned
+if( $token ) {
+	$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
+} else $mwuser = false;
 
-	// If cookies found, check with the wiki that the token is valid, if it is user info is returned
-	if( $token ) {
-		$mwuser = json_decode( file_get_contents( $x="$mediawiki_url?action=ajax&rs=Wordpress::user&rsargs[]=$id&rsargs[]=$token" ) );
-	} else $mwuser = false;
+// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
+if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
+	wp_logout();
+	header( 'Location: ' . $_SERVER['REQUEST_URI'] );
+	exit();
+}
 
-	// If no user info returned, log any Wordpress user out and return allowing anonymous browsing of the Wordpress site
-	if( is_null( $mwuser ) || !array( $mwuser ) || !array_key_exists( 'name', $mwuser ) ) {
-		wp_logout();
-		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-		return;
-	}
+// If there is no equivalent Wordpress user, create user now
+if( !$user_id = username_exists( $mwuser->name ) ) {
+	$user_id = wp_create_user( $mwuser->name, $mwuser->pass, $mwuser->email );
+}
 
-	// If there is no equivalent Wordpress user, create user now
-	if( !$user_id = username_exists( $mwuser->name ) ) {
-		$user_id = wp_create_user( $mwuser->name, $mwuser->pass, $mwuser->email );
-	}
-
-	// If the current Wordpress user is not the MediaWiki user, log them out
-	if( $cur = get_current_user_id() ) {
-		if( $cur != $user_id ) {
-			wp_logout();
-			header( 'Location: ' . $_SERVER['REQUEST_URI'] );
-		}
-	}
-
-	// Log in as the wiki user if not already logged in
+// If the current Wordpress user is not the MediaWiki user, log them out
+if( $cur = get_current_user_id() ) {
 	if( $cur != $user_id ) {
-		wp_set_password( $mwuser->pass, $user_id ); // force pwd to the mw one incase user already existed
-		$creds = array(
-			'user_login' => $mwuser->name,
-			'user_password' => $mwuser->pass,
-			'remember' => false
-		);
-		wp_signon( $creds );
+		wp_logout();
 		header( 'Location: ' . $_SERVER['REQUEST_URI'] );
 		exit();
 	}
 }
-mediawiki_login();
+
+// Log in as the wiki user if not already logged in
+if( $cur != $user_id ) {
+	wp_set_password( $mwuser->pass, $user_id ); // force pwd to the mw one incase user already existed
+	$creds = array(
+		'user_login' => $mwuser->name,
+		'user_password' => $mwuser->pass,
+		'remember' => false
+	);
+	wp_signon( $creds );
+	header( 'Location: ' . $_SERVER['REQUEST_URI'] );
+	exit();
+}
 
