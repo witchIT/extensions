@@ -12,7 +12,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'FORMMAILER_VERSION', '1.0.4, 2012-09-27' );
+define( 'FORMMAILER_VERSION', '1.0.5, 2013-06-21' );
 
 // A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
@@ -47,7 +47,7 @@ $wgExtensionCredits['other'][] = array(
 
 function wfSetupFormMailer() {
 	global $wgFormMailerVarName, $wgFormMailerRecipients, $wgFormMailerMessage, $wgFormMailerSubject,
-		$wgFormMailerFrom, $wgFormMailerDontSend,
+		$wgFormMailerFrom, $wgFormMailerDontSend, $wgResourceModules,
 		$wgRequest, $wgSiteNotice, $wgSitename, $wgFormMailerAntiSpam, $wgOut, $wgJsMimeType;
 
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -86,15 +86,13 @@ function wfSetupFormMailer() {
 	// Add the antispam script
 	// - adds the MD5 of the IP address to the formmailer input name after page load
 	if( $wgFormMailerAntiSpam ) {
-		$wgOut->addScript( "<script type='$wgJsMimeType'>
-		$(document).ready(function() {
-			e = document.getElementsByTagName( 'input' );
-			for( i = 0; i < e.length; i++ ) {
-				if( e[i].name == 'formmailer' ) e[i].name += '$ap';
-			}
-		});
-		</script>" );
+		$wgResourceModules['ext.formmailer'] = array(
+			'scripts'       => array( 'formmailer.js' ),
+			'localBasePath' => dirname( __FILE__ ),
+			'remoteExtPath' => basename( dirname( __FILE__ ) ),
+		);
+		$wgOut->addModules( 'ext.formmailer' );
+		$wgOut->addJsConfigVars( 'wgFormMailerAP', $ap );
 	}
-
 }
 
