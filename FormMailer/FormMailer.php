@@ -94,5 +94,6 @@ function wfSetupFormMailer() {
 		$wgOut->addModules( 'ext.formmailer' );
 		$wgOut->addJsConfigVars( 'wgFormMailerAP', $ap );
 	}
+
 }
 
