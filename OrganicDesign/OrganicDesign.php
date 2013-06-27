@@ -40,7 +40,7 @@ class OrganicDesign {
 
 	function setup() {
 		global $wgUser;
-
+		error_reporting(E_ALL & ~E_STRICT);
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
