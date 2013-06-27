@@ -22,6 +22,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '128M' );
 
 // Need to turn of strict warnings as too many third-party extensions raise errors
+ini_set('display_errors', '0'); 
 error_reporting(E_ALL ^ E_STRICT);
 
 // Constants
