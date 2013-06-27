@@ -23,7 +23,7 @@ ini_set( 'memory_limit', '128M' );
 
 // Need to turn of strict warnings as too many third-party extensions raise errors
 ini_set('display_errors', 'Off'); 
-error_reporting(E_ALL & ~E_STRICT);
+//error_reporting(E_ALL & ~E_STRICT);
 
 // Constants
 define( 'WIKIA_VERSION', '1.2.10, 2013-06-27' );
