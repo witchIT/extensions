@@ -19,10 +19,13 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * http://www.gnu.org/copyleft/gpl.html
  *
  */
-ini_set( 'memory_limit', '64M' );
+ini_set( 'memory_limit', '128M' );
+
+// Need to turn of trsict warnings as too many third-party extensions raise errors
+error_reporting(E_ALL ^ E_STRICT);
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.9, 2012-08-15' );
+define( 'WIKIA_VERSION', '1.2.10, 2013-06-27' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -193,7 +196,7 @@ function odWikidAccess( &$user, &$result ) {
 }
 
 // Block problem users, bots and requests
-$wgExtensionFunctions[] = 'odLogActivity';
+#$wgExtensionFunctions[] = 'odLogActivity';
 function odLogActivity() {
 	global $wgUser, $wgShortName, $wgRequest;
 	$user = $wgUser->getUserPage()->getText();
