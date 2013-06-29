@@ -81,6 +81,11 @@ $wgUseSiteCss             = true;
 $wgUseSiteJs              = true;
 $wgUseWikiaCss            = true;
 
+// Set the server from the environment
+$scheme = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
+$port = $_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ':' . $_SERVER['SERVER_PORT'];
+$wgServer = $scheme . '://' . $_SERVER['SERVER_NAME'] . $port;
+
 // File upload settings
 $wgEnableUploads          = true;
 $wgAllowCopyUploads       = true;
