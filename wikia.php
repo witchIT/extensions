@@ -117,7 +117,7 @@ if( $wgCommandLineMode ) {
 // If it's a normal web request, set the root from SERVER_NAME
 else {
 	$domain = preg_replace( "/^(www\.|wiki\.)/", "", $_SERVER['SERVER_NAME'] );
-	$root   = $_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'] . "/$domain";
+	$root   = $_SERVER['DOCUMENT_ROOT'] = $_ENV['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'] . "/$domain";
 	$domain = $_SERVER['SERVER_NAME'];
 }
 
