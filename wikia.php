@@ -60,6 +60,7 @@ $wgExtraNamespaces[NS_EMAIL+1]     = 'Email_talk';
 // Default globals defined before specific LocalSettings inclusion
 $wgArticlePath            = '/$1';
 $wgScriptPath             = '/wiki';
+$wgUsePathInfo            = true;
 
 $wgUseDatabaseMessages    = true;
 $wgSecurityUseDBHook      = true;
