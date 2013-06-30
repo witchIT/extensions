@@ -70,7 +70,6 @@ $wgTruncatedCommentLength = 50;
 $wgVerifyMimeType         = false;
 $wgUseTeX                 = true;
 $wgSVGConverter           = 'rsvg';
-$wgRewriteRule            = 'Friendly'; // rewrite.pl URL transformation function name
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
 
