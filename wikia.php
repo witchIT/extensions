@@ -26,7 +26,7 @@ ini_set('display_errors', 'Off');
 //error_reporting(E_ALL & ~E_STRICT);
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.10, 2013-06-27' );
+define( 'WIKIA_VERSION', '1.2.11, 2013-06-29' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
