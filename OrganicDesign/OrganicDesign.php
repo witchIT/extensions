@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "0.0.0, 2012-09-27" );
+define( 'OD_VERSION', "1.0.0, 2013-07-02" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'		=> "OrganicDesign",
@@ -47,7 +47,7 @@ class OrganicDesign {
 		// - works for standard ports 80 & 443 (scheme://od/uri) and 8080/8989 (scheme://od:port/uri)
 		$host = preg_match( "|^(.+):\d+$|", $_SERVER['HTTP_HOST'], $m ) ? $m[1] : $_SERVER['HTTP_HOST'];
 		$uri = $_SERVER['REQUEST_URI'];
-		$ssl = isset( $_SERVER['HTTPS'] );
+		$ssl = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on';
 		$port = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : '';
 		if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
 		$od = preg_match( "|^www\.organicdesign\.co\.nz$|", $host );
