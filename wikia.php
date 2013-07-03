@@ -66,10 +66,8 @@ $wgUseDatabaseMessages    = true;
 $wgSecurityUseDBHook      = true;
 $wgDBmysql5               = false;
 
-$wgTruncatedCommentLength = 50;
 $wgVerifyMimeType         = false;
 $wgSVGConverter           = 'rsvg';
-$wgTexvc                  = "$IP/extensions/Math/math/texvc";
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
 
