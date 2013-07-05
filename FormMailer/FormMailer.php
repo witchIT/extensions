@@ -12,7 +12,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'FORMMAILER_VERSION', '1.0.5, 2013-06-21' );
+define( 'FORMMAILER_VERSION', '1.0.6, 2013-07-05' );
 
 // A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
@@ -52,6 +52,7 @@ function wfSetupFormMailer() {
 
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$ap = $wgFormMailerAntiSpam ? '-' . md5( $ip ) : '';
+	$from_email = '';
 
 	if( $wgRequest->getText( $wgFormMailerVarName . $ap ) ) {
 
@@ -65,6 +66,7 @@ function wfSetupFormMailer() {
 				if     ( $k == 'formmailer message' ) $message = $v;
 				elseif ( $k == 'formmailer subject' ) $subject = $v;
 				elseif ( $k != $wgFormMailerVarName ) $body .= "$k: $v\n\n";
+				if( preg_match( "|^email|i", $k ) ) $from_email = $v;
 			}
 		}
 
@@ -74,7 +76,7 @@ function wfSetupFormMailer() {
 		$site = "\"$wgSitename\"<$wgFormMailerFrom>";
 		foreach( $wgFormMailerRecipients as $recipient ) {
 			if( User::isValidEmailAddr( $recipient ) ) {
-				$from = new MailAddress( $recipient, $site );
+				$from = new MailAddress( $from_email );
 				$to = new MailAddress( $recipient );
 				$status = UserMailer::send( $to, $from, $subject, $body );
 				if( !is_object( $status ) || !$status->ok ) $err = 'Failed to send!';
