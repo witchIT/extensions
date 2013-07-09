@@ -102,7 +102,7 @@ class ExtraMagic {
 		$varCache['guid'] = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
 
 		// USERPAGESELFEDITS
-		$out = 'test';
+		$out = '';
 		$dbr = wfGetDB( DB_SLAVE );
 		$tbl = array( 'user', 'page', 'revision' );
 		$cond = array(
@@ -112,7 +112,7 @@ class ExtraMagic {
 		);
 		$res = $dbr->select( $tbl, 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
 		foreach( $res as $row ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
-		$varCache['userpageselfedits'] = $out;
+		$varCache['userpageselfedits'] = $dbr->lastQuery();
 
 		return true;
 	}
