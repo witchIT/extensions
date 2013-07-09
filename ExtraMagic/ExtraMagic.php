@@ -108,7 +108,8 @@ class ExtraMagic {
 		$cond = array(
 			'user_name = page_title',
 			'rev_page  = page_id',
-			'rev_user  = user_id'
+			'rev_user  = user_id',
+			'page_latest > 0'
 		);
 		$res = $dbr->select( $tbl, 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
 		foreach( $res as $row ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
