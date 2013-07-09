@@ -112,7 +112,10 @@ class ExtraMagic {
 			'page_latest > 0'
 		);
 		$res = $dbr->select( $tbl, 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
-		foreach( $res as $row ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
+		foreach( $res as $row ) {
+			$title = Title::newFromText( $row->user_name, NS_USER );
+			if( $title->exists() ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
+		}
 		$varCache['userpageselfedits'] = $out;
 
 		return true;
