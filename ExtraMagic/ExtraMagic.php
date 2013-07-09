@@ -104,12 +104,13 @@ class ExtraMagic {
 		// USERPAGESELFEDITS
 		$out = '';
 		$dbr = wfGetDB( DB_SLAVE );
+		$tbl = array( 'user', 'page', 'revision' );
 		$cond = array(
 			'user_name' => 'page_title',
 			'rev_page'  => 'page_id',
 			'rev_user'  => 'user_id'
 		);
-		$res = $dbr->select( 'user,page,revision', 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
+		$res = $dbr->select( $tbl, 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
 		foreach( $res as $row ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
 		$varCache['userpageselfedits'] = $out;
 
