@@ -112,7 +112,7 @@ class ExtraMagic {
 		);
 		$res = $dbr->select( $tbl, 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
 		foreach( $res as $row ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
-		$varCache['userpageselfedits'] = $dbr->lastQuery();
+		$varCache['userpageselfedits'] = $out;
 
 		return true;
 	}
