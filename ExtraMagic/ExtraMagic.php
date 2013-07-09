@@ -30,7 +30,8 @@ $wgExtraMagicVariables = array(
 	'ARTICLEID',
 	'IPADDRESS',
 	'DOMAIN',
-	'GUID'
+	'GUID',
+	'USERPAGESELFEDITS'
 );
 
 
@@ -50,7 +51,6 @@ class ExtraMagic {
 		$wgParser->setFunctionHook( 'COOKIE',  array( $this, 'expandCookie' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'USERID',  array( $this, 'expandUserID' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'IFGROUP', array( $this, 'expandIfGroup' ) );
-		$wgParser->setFunctionHook( 'USERPAGESELFEDITS', array( $this, 'expandUserPageSelfEdits' ) );
 	}
 
 	function onLanguageGetMagic( &$magicWords, $langCode = null ) {
@@ -64,7 +64,6 @@ class ExtraMagic {
 		$magicWords['COOKIE']  = array( 0, 'COOKIE' );
 		$magicWords['USERID']  = array( 0, 'USERID' );
 		$magicWords['IFGROUP'] = array( 0, 'IFGROUP' );
-		$magicWords['USERPAGESELFEDITS'] = array( 0, 'USERPAGESELFEDITS' );
 
 		return true;
 	}
@@ -102,6 +101,18 @@ class ExtraMagic {
 		// GUID:
 		$varCache['guid'] = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
 
+		// USERPAGESELFEDITS
+		$out = '';
+		$dbr = wfGetDB( DB_SLAVE );
+		$cond = array(
+			'user_name' => 'page_title',
+			'rev_page'  => 'page_id',
+			'rev_user'  => 'user_id'
+		);
+		$res = $dbr->select( 'user,page,revision', 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
+		foreach( $res as $row ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
+		$varCache['userpageselfedits'] = $out;
+
 		return true;
 	}
 
@@ -138,19 +149,6 @@ class ExtraMagic {
 		global $wgUser;
 		$intersection = array_intersect( array_map( 'strtolower', explode( ',', $groups ) ), $wgUser->getEffectiveGroups() );
 		return count( $intersection ) > 0 ? $then : $else;
-	}
-
-	function expandUserPageSelfEdits( &$parser ) {
-		$out = '';
-		$dbr = wfGetDB( DB_SLAVE );
-		$cond = array(
-			'user_name' => 'page_title',
-			'rev_page'  => 'page_id',
-			'rev_user'  => 'user_id'
-		);
-		$res = $dbr->select( 'user,page,revision', 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
-		foreach( $res as $row ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
-		return $out;
 	}
 }
 
