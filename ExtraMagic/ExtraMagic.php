@@ -102,7 +102,7 @@ class ExtraMagic {
 		$varCache['guid'] = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
 
 		// USERPAGESELFEDITS
-		$out = '';
+		$out = 'test';
 		$dbr = wfGetDB( DB_SLAVE );
 		$tbl = array( 'user', 'page', 'revision' );
 		$cond = array(
