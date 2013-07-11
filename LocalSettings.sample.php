@@ -13,7 +13,6 @@ $wgDBprefix          = "foo_";
 $wgUseDatabaseMessages    = true;
 $wgVerifyMimeType         = false;
 $wgSVGConverter           = 'rsvg';
-$wgEmergencyContact       = false;
 $wgRawHtml                = true;
 $wgUseSiteCss             = true;
 $wgUseSiteJs              = true;
