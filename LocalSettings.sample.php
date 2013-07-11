@@ -9,13 +9,6 @@ $wgShortName         = "foo";
 $wgDBname            = "foo";
 $wgDBprefix          = "foo_";
 
-
-
-# Namespaces
-define( 'NS_FORM', 106  );
-$wgExtraNamespaces[NS_FORM]        = 'Form';
-$wgExtraNamespaces[NS_FORM + 1]    = 'Form_talk';
-
 # General settings
 $wgUseDatabaseMessages    = true;
 $wgVerifyMimeType         = false;
