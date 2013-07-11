@@ -18,7 +18,6 @@ $wgExtraNamespaces[NS_FORM + 1]    = 'Form_talk';
 
 # General settings
 $wgUseDatabaseMessages    = true;
-$wgSecurityUseDBHook      = true;
 $wgVerifyMimeType         = false;
 $wgSVGConverter           = 'rsvg';
 $wgEmergencyContact       = false;
