@@ -26,7 +26,7 @@ ini_set('display_errors', 'Off');
 error_reporting(E_ALL & ~E_STRICT);
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.12, 2013-07-02' );
+define( 'WIKIA_VERSION', '1.2.13, 2013-07-17' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -72,7 +72,6 @@ $wgSiteDown               = false;
 $wgEmergencyContact       = false;
 
 $wgMaxShellMemory         = 262144;
-$wgAllowDisplayTitle      = true;
 $wgAllowPageInfo          = true;
 $wgRawHtml                = true;
 $wgUseSiteCss             = true;
@@ -87,6 +86,7 @@ $wgServer = $scheme . '://' . $_SERVER['SERVER_NAME'] . $port;
 // File upload settings
 $wgEnableUploads          = true;
 $wgAllowCopyUploads       = true;
+$wgCopyUploadsFromSpecialUpload = true;
 $wgUploadPath             = '/files';
 $wgFileExtensions         = array(
 	'jpeg', 'jpg', 'png', 'gif', 'svg', 'swf',
