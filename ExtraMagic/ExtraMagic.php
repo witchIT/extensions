@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.2.0, 2013-07-23' );
+define( 'EXTRAMAGIC_VERSION', '3.2.1, 2013-07-23' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -158,9 +158,10 @@ class ExtraMagic {
 	}
 
 	function expandIfUses( &$parser, $tmpl, $then, $else = '' ) {
+		global $wgTitle;
 		$dbr  = wfGetDB( DB_SLAVE );
 		$tmpl = $dbr->addQuotes( Title::newFromText( $tmpl )->getDBkey() );
-		$id   = $parser->getTitle()->getArticleID();
+		$id   = $wgTitle->getArticleID();
 		return $dbr->selectRow( 'templatelinks', '1', "tl_from = $id AND tl_namespace = 10 AND tl_title = $tmpl" ) ? $then : $else;
 	}
 }
