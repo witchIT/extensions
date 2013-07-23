@@ -159,10 +159,8 @@ class ExtraMagic {
 
 	function expandIfUses( &$parser, $tmpl, $then, $else = '' ) {
 		global $wgTitle;
-		$dbr  = wfGetDB( DB_SLAVE );
-		$tmpl = $dbr->addQuotes( Title::newFromText( $tmpl )->getDBkey() );
-		$id   = $wgTitle->getArticleID();
-		return $dbr->selectRow( 'templatelinks', '1', "tl_from = $id AND tl_namespace = 10 AND tl_title = $tmpl" ) ? $then : $else;
+		$article = new Article( $wgTitle );
+		return strpos( $article->getContent(), '{{' . $tmpl ) === false ? $else : $then;
 	}
 }
 
