@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.3.0, 2013-07-24' );
+define( 'EXTRAMAGIC_VERSION', '3.3.1, 2013-07-24' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -97,10 +97,10 @@ class ExtraMagic {
 		$varCache['articleid'] = is_object( $wgTitle ) ? $ret = $wgTitle->getArticleID() : 'NULL';
 
 		// IPADDRESS:
-		$varCache['ipaddress'] = $_SERVER['REMOTE_ADDR'];
+		$varCache['ipaddress'] = array_key_exists( 'REMOTE_ADDR', $_SERVER ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
 
 		// DOMAIN:
-		$varCache['domain'] = str_replace( 'www.', '', $_SERVER['SERVER_NAME'] );
+		$varCache['domain'] = array_key_exists( 'SERVER_NAME', $_SERVER ) ? str_replace( 'www.', '', $_SERVER['SERVER_NAME'] ) : 'localhost';
 
 		// GUID:
 		$varCache['guid'] = strftime( '%Y%m%d', time() ) . '-' . substr( strtoupper( uniqid('', true) ), -5 );
