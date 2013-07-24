@@ -26,7 +26,7 @@ ini_set('display_errors', 'Off');
 error_reporting(E_ALL & ~E_STRICT);
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.13, 2013-07-17' );
+define( 'WIKIA_VERSION', '1.2.14, 2013-07-24' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -80,8 +80,9 @@ $wgUseWikiaCss            = true;
 
 // Set the server from the environment
 $scheme = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';
+$port = array_key_exists( 'PORT', $_SERVER ) ? $_SERVER['SERVER_PORT'] : '80';
 $port = $_SERVER['SERVER_PORT'] == '80' || $_SERVER['SERVER_PORT'] == '443' ? '' : ':' . $_SERVER['SERVER_PORT'];
-$wgServer = $scheme . '://' . $_SERVER['SERVER_NAME'] . $port;
+$wgServer = $scheme . '://' . ( array_key_exists( 'SERVER_NAME', $_SERVER ) ? $_SERVER['SERVER_NAME'] : 'localhost' ) . $port;
 
 // File upload settings
 $wgEnableUploads          = true;
