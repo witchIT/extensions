@@ -32,7 +32,7 @@
 				</div>
 
 				<div class="entry">
-					<?php the_excerpt(); ?>
+					<?php the_content(); ?>
 					<p><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e('Permanent Link to','ml');?> <?php the_title(); ?>"><?php _e('Read Full Post &#187;','ml');?></a></p>
 				</div>
 			</div>
