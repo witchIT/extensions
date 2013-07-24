@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.2.1, 2013-07-23' );
+define( 'EXTRAMAGIC_VERSION', '3.3.0, 2013-07-24' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -52,6 +52,7 @@ class ExtraMagic {
 		$wgParser->setFunctionHook( 'USERID',  array( $this, 'expandUserID' ), SFH_NO_HASH );
 		$wgParser->setFunctionHook( 'IFGROUP', array( $this, 'expandIfGroup' ) );
 		$wgParser->setFunctionHook( 'IFUSES', array( $this, 'expandIfUses' ) );
+		$wgParser->setFunctionHook( 'IFCAT', array( $this, 'expandIfCat' ) );
 	}
 
 	function onLanguageGetMagic( &$magicWords, $langCode = null ) {
@@ -66,6 +67,7 @@ class ExtraMagic {
 		$magicWords['USERID']  = array( 0, 'USERID' );
 		$magicWords['IFGROUP'] = array( 0, 'IFGROUP' );
 		$magicWords['IFUSES'] = array( 0, 'IFUSES' );
+		$magicWords['IFCAT'] = array( 0, 'IFCAT' );
 
 		return true;
 	}
@@ -163,6 +165,14 @@ class ExtraMagic {
 		$tmpl = $dbr->addQuotes( Title::newFromText( $tmpl )->getDBkey() );
 		$id   = $wgTitle->getArticleID();
 		return $dbr->selectRow( 'templatelinks', '1', "tl_from = $id AND tl_namespace = 10 AND tl_title = $tmpl" ) ? $then : $else;
+	}
+
+	function expandIfCat( &$parser, $cat, $then, $else = '' ) {
+		global $wgTitle;
+		$id   = $wgTitle->getArticleID();
+		$dbr  = wfGetDB( DB_SLAVE );
+		$cat  = $dbr->addQuotes( Title::newFromText( $cat )->getDBkey() );
+		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" ) ? $then : $else;
 	}
 }
 
