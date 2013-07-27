@@ -8,9 +8,9 @@ define( 'BLIKI_VERSION','2.0.0, 2013-07-27' );
 
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
-	'name'        => 'ChildrenAreWelcome',
+	'name'        => 'Bliki',
 	'author'      => '[http://www.organicdesign.co.nz/User:Nad Aran Dunkley]',
-	'url'         => 'http://www.childrenarewelcome.co.uk',
+	'url'         => 'http://www.organicdesign.co.nz/bliki',
 	'description' => 'Adds [[Bliki]] (blog in a wiki) functionality',
 	'version'     => BLIKI_VERSION
 );
