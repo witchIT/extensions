@@ -22,21 +22,19 @@ function wfBlogPost( $action, $article ) {
 			$summary = $wgRequest->getText( 'summary' );
 			$content = $wgRequest->getText( 'content' );
 			$user = $wgUser->getName();
-			$date = date( 'd F, Y' );
-			$sig = "Posted by [[User:$user|$user]] on $date";
 			$type = $wgRequest->getText( 'type' );
 			switch( $type ) {
 
 				// Preview the item
 				case "Full preview":
-					$wikitext = "<div class=\"blog-sig\">$sig</div>\n$summary\n\n$content";
+					$wikitext = "{{BlogUser|$user}}\n$summary\n\n$content";
 					wfBlogPreview( $type, $title, $wikitext );
 					$article->view();
 				break;
 
 				// Preview the item in news/blog format
 				case "Summary preview":
-					$wikitext = "{|class=\"blog\"\n|\n== [[Post a blog item|$newtitle]] ==\n|-\n!$sig\n|-\n|$summary\n|}";
+					$wikitext = "{|class=\"blog\"\n|\n== [[Post a blog item|$newtitle]] ==\n|-\n!{{BlogUser|$user}}\n|-\n|$summary\n|}";
 					$title = Title::newFromText( 'Blog' );
 					wfBlogPreview( $type, $title, $wikitext );
 					$article->view();
@@ -45,7 +43,7 @@ function wfBlogPost( $action, $article ) {
 				// Create the item with tags as category links
 				case "Post":
 					$wikitext = '{{' . "Blog|1=$summary|2=$content" . '}}';
-					$wikitext .= "<noinclude>[[Category:Blog item]][[Category:Posts by $user]]";
+					$wikitext .= "<noinclude>[[Category:Blog items]][[Category:Posts by $user]]";
 					foreach( array_keys( $_POST ) as $k ) {
 						if( preg_match( "|^tag(.+)$|", $k, $m ) ) {
 							$wikitext .= '[[Category:' . str_replace( '_', ' ', $m[1] ) . ']]';
