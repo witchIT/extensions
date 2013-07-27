@@ -3,7 +3,7 @@
 # Adds a blog item in response to the post-item form being submitted
 # See http://www.organicdesign.co.nz/Bliki_2.0 for details
 
-$wgHooks['UnknownAction'][] = 'wfBlogPOst';
+$wgHooks['UnknownAction'][] = 'wfBlogPost';
 function wfBlogPost( $action, $article ) {
 	global $wgOut, $wgRequest, $wgUser, $wgParser;
 	if( $action == 'blog' ) {
