@@ -73,6 +73,8 @@ $wgEmergencyContact       = false;
 
 $wgMaxShellMemory         = 262144;
 $wgAllowPageInfo          = true;
+$wgAllowDisplatTitle      = true;
+$wgRestrictDisplayTitle   = false;
 $wgRawHtml                = true;
 $wgUseSiteCss             = true;
 $wgUseSiteJs              = true;
