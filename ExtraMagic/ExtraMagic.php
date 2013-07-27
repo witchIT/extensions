@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.3.1, 2013-07-24' );
+define( 'EXTRAMAGIC_VERSION', '3.4.0, 2013-07-27' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -53,6 +53,8 @@ class ExtraMagic {
 		$wgParser->setFunctionHook( 'IFGROUP', array( $this, 'expandIfGroup' ) );
 		$wgParser->setFunctionHook( 'IFUSES', array( $this, 'expandIfUses' ) );
 		$wgParser->setFunctionHook( 'IFCAT', array( $this, 'expandIfCat' ) );
+		$wgParser->setFunctionHook( 'PREV', array( $this, 'expandPrev' ) );
+		$wgParser->setFunctionHook( 'NEXT', array( $this, 'expandNext' ) );
 	}
 
 	function onLanguageGetMagic( &$magicWords, $langCode = null ) {
@@ -68,6 +70,8 @@ class ExtraMagic {
 		$magicWords['IFGROUP'] = array( 0, 'IFGROUP' );
 		$magicWords['IFUSES'] = array( 0, 'IFUSES' );
 		$magicWords['IFCAT'] = array( 0, 'IFCAT' );
+		$magicWords['PREV'] = array( 0, 'PREV' );
+		$magicWords['NEXT'] = array( 0, 'NEXT' );
 
 		return true;
 	}
@@ -129,19 +133,19 @@ class ExtraMagic {
 	/**
 	 * Expand parser functions
 	 */
-	function expandRequest( &$parser, $param, $default = '', $seperator = "\n" ) {
+	static function expandRequest( &$parser, $param, $default = '', $seperator = "\n" ) {
 		$parser->disableCache();
 		$val = array_key_exists( $param, $_REQUEST ) ? $_REQUEST[$param] : $default;
 		if( is_array( $val ) ) $val = implode( $seperator, $val );
 		return $val;
 	}
 
-	function expandCookie( &$parser, $param, $default = '' ) {
+	static function expandCookie( &$parser, $param, $default = '' ) {
 		$parser->disableCache();
 		return array_key_exists( $param, $_COOKIE ) ? $_COOKIE[$param] : $default;
 	}
 
-	function expandUserID( &$parser, $param ) {
+	static function expandUserID( &$parser, $param ) {
 		if( $param ) {
 			$col = strpos( $param, ' ' ) ? 'user_real_name' : 'user_name';
 			$dbr = wfGetDB( DB_SLAVE );
@@ -153,13 +157,13 @@ class ExtraMagic {
 		return '';
 	}
 
-	function expandIfGroup( &$parser, $groups, $then, $else = '' ) {
+	static function expandIfGroup( &$parser, $groups, $then, $else = '' ) {
 		global $wgUser;
 		$intersection = array_intersect( array_map( 'strtolower', explode( ',', $groups ) ), $wgUser->getEffectiveGroups() );
 		return count( $intersection ) > 0 ? $then : $else;
 	}
 
-	function expandIfUses( &$parser, $tmpl, $then, $else = '' ) {
+	static function expandIfUses( &$parser, $tmpl, $then, $else = '' ) {
 		global $wgTitle;
 		$dbr  = wfGetDB( DB_SLAVE );
 		$tmpl = $dbr->addQuotes( Title::newFromText( $tmpl )->getDBkey() );
@@ -167,12 +171,29 @@ class ExtraMagic {
 		return $dbr->selectRow( 'templatelinks', '1', "tl_from = $id AND tl_namespace = 10 AND tl_title = $tmpl" ) ? $then : $else;
 	}
 
-	function expandIfCat( &$parser, $cat, $then, $else = '' ) {
+	static function expandIfCat( &$parser, $cat, $then, $else = '' ) {
 		global $wgTitle;
 		$id   = $wgTitle->getArticleID();
 		$dbr  = wfGetDB( DB_SLAVE );
 		$cat  = $dbr->addQuotes( Title::newFromText( $cat )->getDBkey() );
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" ) ? $then : $else;
+	}
+
+	static function expandNext( $parser, $list ) {
+		return self::nextprev( $list, 1 );
+	}
+ 
+	static function expandPrev( $parser, $list ) {
+		return self::nextprev( $list, -1 );
+	}
+	
+	static function nextprev( $l, $j ) {
+		global $wgTitle;
+		$r = '';
+		$l = explode( '#', $l );
+		$i = array_search( $wgTitle->getPrefixedText(), $l );
+		if( $i !== false && array_key_exists( $i+$j, $l ) ) $r = $l[$i+$j];
+		return $r;
 	}
 }
 
