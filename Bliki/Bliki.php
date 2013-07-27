@@ -16,5 +16,5 @@ $wgExtensionCredits['other'][] = array(
 );
 
 $dir = dirname( __FILE__ );
-include( "$dir/post-form-processor.php" )
-include( "$dir/add-body-class.php" )
+include( "$dir/post-form-processor.php" );
+include( "$dir/add-body-class.php" );
