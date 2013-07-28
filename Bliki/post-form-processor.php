@@ -22,19 +22,21 @@ function wfBlogPost( $action, $article ) {
 			$summary = $wgRequest->getText( 'summary' );
 			$content = $wgRequest->getText( 'content' );
 			$user = $wgUser->getName();
+			$date = date();
+			$sig = "{{BlogSig|$user|$date}}";
 			$type = $wgRequest->getText( 'type' );
 			switch( $type ) {
 
 				// Preview the item
 				case "Full preview":
-					$wikitext = "{{BlogUser|$user}}\n$summary\n\n$content";
+					$wikitext = "$sig\n$summary\n\n$content";
 					wfBlogPreview( $type, $title, $wikitext );
 					$article->view();
 				break;
 
 				// Preview the item in news/blog format
 				case "Summary preview":
-					$wikitext = "{|class=\"blog\"\n|\n== [[Post a blog item|$newtitle]] ==\n|-\n!{{BlogUser|$user}}\n|-\n|$summary\n|}";
+					$wikitext = "{|class=\"blog\"\n|\n== [[Post a blog item|$newtitle]] ==\n|-\n!$sig\n|-\n|$summary\n|}";
 					$title = Title::newFromText( 'Blog' );
 					wfBlogPreview( $type, $title, $wikitext );
 					$article->view();
