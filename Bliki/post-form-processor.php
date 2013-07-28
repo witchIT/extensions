@@ -23,7 +23,7 @@ function wfBlogPost( $action, $article ) {
 			$content = $wgRequest->getText( 'content' );
 			$user = $wgUser->getName();
 			$date = date('U');
-			$sig = "{{BlogSig|$user|$date}}($date)";
+			$sig = "{{BlogSig|$user|@$date}}($date)";
 			$type = $wgRequest->getText( 'type' );
 			switch( $type ) {
 
