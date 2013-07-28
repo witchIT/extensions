@@ -36,7 +36,7 @@ function wfBlogPost( $action, $article ) {
 
 				// Preview the item in news/blog format
 				case "Summary preview":
-					$wikitext = "{|class=\"blog\"\n|\n== [[Post a blog item|$newtitle]] ==\n|-\n!$sig\n|-\n|$summary\n|}";
+					$wikitext = "{|class=\"blog\"\n|\n== [[Post a blog item|$newtitle]] ==\n|-\n!$sig\n|-\n|$summary\n|}__NOEDITSECTION__";
 					$title = Title::newFromText( 'Blog' );
 					wfBlogPreview( $type, $title, $wikitext );
 					$article->view();
