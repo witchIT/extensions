@@ -128,10 +128,10 @@ class OrganicDesign {
 	public static function inCat( $cat, $title = false ) {
 		global $wgTitle;
 		if( $title === false ) $title = $wgTitle;
-		if( !is_object( $title ) ) $title = Title::newFromText( $title, NS_CATEGORY );
+		if( !is_object( $title ) ) $title = Title::newFromText( $title );
 		$id   = $title->getArticleID();
 		$dbr  = wfGetDB( DB_SLAVE );
-		$cat  = $dbr->addQuotes( Title::newFromText( $cat )->getDBkey() );
+		$cat  = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
 	}
 
