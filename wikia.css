@@ -949,3 +949,7 @@ form.person-record td.EmailList p {
 	margin: 0;
 	padding: 0;
 }
+
+body.hide-cats #catlinks {
+	display: none;
+}

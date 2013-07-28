@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "1.0.0, 2013-07-02" );
+define( 'OD_VERSION', "1.0.1, 2013-07-27" );
 
 $wgExtensionCredits['other'][] = array(
 	'name'		=> "OrganicDesign",
@@ -104,6 +104,23 @@ class OrganicDesign {
 		return !self::inCat( 'No files or comments', $title );
 	}
 
+	/**
+	 * Add group info to body tag
+	 */
+	public static function onOutputPageBodyAttributes( $out, $sk, &$bodyAttrs ) {
+		global $wgUser;
+
+		// Add user group information
+		if( $wgUser->isAnon() ) $bodyAttrs['class'] .= ' anon';
+		if( $wgUser->isLoggedIn() ) $bodyAttrs['class'] .= ' user';
+		if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) $bodyAttrs['class'] .= ' sysop';
+		else $bodyAttrs['class'] .= ' notsysop';
+
+		// Add hide-cats if in Category:Hide categories
+		if( self::inCat( 'Hide categories' ) ) $bodyAttrs['class'] .= ' hide-cats';
+
+		return true;
+	}
 
 	/**
 	 * Return whether or not the passed title is a member of the passed cat
@@ -113,10 +130,9 @@ class OrganicDesign {
 		if( $title === false ) $title = $wgTitle;
 		if( !is_object( $title ) ) $title = Title::newFromText( $title, NS_CATEGORY );
 		$id   = $title->getArticleID();
-		$dbr  = &wfGetDB( DB_SLAVE );
+		$dbr  = wfGetDB( DB_SLAVE );
 		$cat  = $dbr->addQuotes( Title::newFromText( $cat )->getDBkey() );
-		$cl   = $dbr->tableName( 'categorylinks' );
-		return $dbr->selectRow( $cl, '0', "cl_from = $id AND cl_to = $cat", __METHOD__ );
+		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
 	}
 
 }
