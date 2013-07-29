@@ -24,15 +24,16 @@ $wgExtensionCredits['other'][] = array(
 	'version'     => BLIKI_VERSION
 );
 
+$dir = dirname( __FILE__ );
+//$wgExtensionMessagesFiles['Bliki'] = "$dir/Bliki.i18n.php";
+include( "$dir/BlikiFeed.php" );
+
 class Bliki {
 	
 	function __construct() {
 		global $wgHooks, $wgBlikiAddBodyClass;
-
 		$wgHooks['UnknownAction'][] = $this;
-
 		if( $wgBlikiAddBodyClass ) $wgHooks['OutputPageBodyAttributes'][] = $this;
-
 	}
 
 	function onUnknownAction( $action, $article ) {
@@ -103,11 +104,21 @@ class Bliki {
 	}
 
 	function onOutputPageBodyAttributes( $out, $sk, &$bodyAttrs ) {
-		global $wgTitle;
-		$id  = $wgTitle->getArticleID();
-		$dbr = wfGetDB( DB_SLAVE );
-		if( $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = 'Blog_items'" ) ) $bodyAttrs['class'] .= ' blog-item';
+		if( self::inCat( 'Blog_items' ) ) $bodyAttrs['class'] .= ' blog-item';
 		return true;
+	}
+
+	/**
+	 * Return whether or not the passed title is a member of the passed cat
+	 */
+	public static function inCat( $cat, $title = false ) {
+		global $wgTitle;
+		if( $title === false ) $title = $wgTitle;
+		if( !is_object( $title ) ) $title = Title::newFromText( $title );
+		$id  = $title->getArticleID();
+		$dbr = wfGetDB( DB_SLAVE );
+		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
+		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
 	}
 }
 
