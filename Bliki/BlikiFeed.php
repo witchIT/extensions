@@ -52,7 +52,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$cat = $q ? Title::newFromText( $q )->getText() : false;
 			$tag = $cat ? Bliki::inCat( 'Tags', $cat ) : false;
 			$title = str_replace( ' wiki', '', $wgSitename ) . ' blog';
-			$desc = $cat ? ( $tag ? "$cat posts" : lcfirst( $cat ) ) : 'posts';
+			$desc = $cat ? ( $tag ? "\"$cat\" posts" : lcfirst( $cat ) ) : 'posts';
 			$desc = wfMsg( 'bliki-desc', $desc, $wgSitename );
 
 			// Blog URL
