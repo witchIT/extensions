@@ -34,6 +34,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 
 	// If it's a bliki list, filter the list to onlynew items and to the tag cat if q supplied
 	public static function onSpecialRecentChangesQuery( &$conds, &$tables, &$join_conds, $opts, &$query_options, &$fields ) {
+		print_r($opts);
 		if( array_key_exists( 'bliki', $opts ) ) {
 			$tables[] = 'categorylinks';
 			$conds[] = 'rc_new=1';
