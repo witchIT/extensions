@@ -14,6 +14,7 @@
 /**
  * Add a new special page for blog feeds based on Special:RecentChanges
  */
+$wgSpecialPages['BlikiFeed'] = 'SpecialBlikiFeed';
 class SpecialBlikiFeed extends SpecialRecentChanges {
 
 	// Construct special page with our new name, and force to feed type
