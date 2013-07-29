@@ -14,4 +14,5 @@ $messages = array();
  */
 $messages['en'] = array(
 	'blikifeed' => 'Bliki feed',
+	'bliki-desc' => "Use this feed to track the most recent $1 at $2."
 );

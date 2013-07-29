@@ -53,7 +53,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$tag = $cat ? Bliki::inCat( 'Tags', $cat ) : false;
 			$title = str_replace( ' wiki', '', $wgSitename ) . ' blog';
 			$desc = $cat ? ( $tag ? "$cat posts" : lcfirst( $cat ) ) : 'posts';
-			$desc = "Use this feed to track the most recent $desc in the $wgSitename.";
+			$desc = wfMsg( 'bliki-desc', $desc, $wgSitename );
 
 			// Blog URL
 			$blog = Title::newFromText( 'Blog' );
@@ -81,7 +81,7 @@ class BlikiChangesFeed extends ChangesFeed {
 			$title = Title::makeTitle( $obj->rc_namespace, $obj->rc_title );
 			$url = $title->getFullURL();
 			$item = new FeedItem( $title->getPrefixedText(), self::desc( $title ), $url, $obj->rc_timestamp, $obj->rc_user_text, $url );
-			$feed->outItem( $item );
+			//$feed->outItem( $item );
 		}
 		$feed->outFooter();
 	}
