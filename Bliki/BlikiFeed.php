@@ -27,6 +27,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 
 	// Inject a value into opts so we can know on the hook function that its a bliki feed
 	public function doMainQuery( $conds, $opts ) {
+		$opts->add( 'bliki', false );
 		$opts['bliki'] = $this->getRequest()->getVal( 'q', 'Blog items' );
 		return parent::doMainQuery( $conds, $opts );
 	}
