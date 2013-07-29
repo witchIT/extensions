@@ -78,6 +78,7 @@ class BlikiChangesFeed extends ChangesFeed {
 	public static function generateFeed( $rows, &$feed ) {
 		$feed->outHeader();
 		foreach( $rows as $obj ) {
+			print_r($obj);
 			$title = Title::makeTitle( $obj->rc_namespace, $obj->rc_title );
 			$url = $title->getFullURL();
 			$item = new FeedItem( $title->getPrefixedText(), self::desc( $title ), $url, $obj->rc_timestamp, $obj->rc_user_text, $url );
