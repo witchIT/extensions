@@ -74,6 +74,33 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
  */
 class BlikiChangesFeed extends ChangesFeed {
 
+	public function execute( $feed, $rows, $lastmod, $opts ) {
+		global $wgLang, $wgRenderHashAppend;
+
+		if ( !FeedUtils::checkFeedOutput( $this->format ) ) {
+			return null;
+		}
+
+		$optionsHash = md5( serialize( $opts->getAllValues() ) ) . $wgRenderHashAppend;
+		$timekey = wfMemcKey( $this->type, $this->format, $wgLang->getCode(), $optionsHash, 'timestamp' );
+		$key = wfMemcKey( $this->type, $this->format, $wgLang->getCode(), $optionsHash );
+
+		FeedUtils::checkPurge( $timekey, $key );
+
+		$cachedFeed = $this->loadFromCache( $lastmod, $timekey, $key );
+		if( is_string( $cachedFeed ) ) {
+			$feed->httpHeaders();
+			echo $cachedFeed;
+		} else {
+			ob_start();
+			self::generateFeed( $rows, $feed );
+			$cachedFeed = ob_get_contents();
+			ob_end_flush();
+			$this->saveToCache( $cachedFeed, $timekey, $key );
+		}
+		return true;
+	}
+
 	// Much more compact version than parent because only new items by known authors will be in the list
 	public static function generateFeed( $rows, &$feed ) {
 		$feed->outHeader();
