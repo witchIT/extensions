@@ -13,6 +13,6 @@ $messages = array();
  * @author Dunkley
  */
 $messages['en'] = array(
-	'blikifeed' => 'Bliki feed',
+	'blikifeed' => "Bliki feed",
 	'bliki-desc' => "Use this feed to track the most recent $1 at $2.",
 );
