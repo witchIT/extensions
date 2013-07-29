@@ -35,11 +35,11 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 	// If it's a bliki list, filter the list to onlynew items and to the tag cat if q supplied
 	public static function onSpecialRecentChangesQuery( &$conds, &$tables, &$join_conds, $opts, &$query_options, &$fields ) {
 		if( $opts->validateName( 'bliki' ) ) {
-		print_r($opts);
 			$tables[] = 'categorylinks';
 			$conds[] = 'rc_new=1';
 			$cat = Title::newFromText( $opts['bliki'] )->getDBkey();
 			$join_conds['categorylinks'] = array( 'RIGHT JOIN', 'cl_from=page_id AND cl_to=\'$cat\'' );
+		print_r($join_conds);
 		}
 		return true;
 	}
