@@ -14,7 +14,7 @@
 /**
  * Add a new special page for blog feeds based on Special:RecentChanges
  */
-class BlikiFeed extends SpecialRecentChanges {
+class SpecialBlikiFeed extends SpecialRecentChanges {
 
 	// Construct special page with our new name, and force to feed type
 	public function __construct() {
