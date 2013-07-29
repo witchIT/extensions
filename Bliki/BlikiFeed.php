@@ -10,10 +10,6 @@
  * @copyright © 2013 [http://www.organicdesign.co.nz/nad Nad]
  * @licence GNU General Public Licence 2.0 or later
  */
- 
- First we need to override getFeedObject in a new class based on SpecialRecentChanges.
- This uses a new version of ChangesFeed which has its generateFeed method overridden
- to modify the description parameter used when creating FeedIten instances
 
 /**
  * Add a new special page for blog feeds based on Special:RecentChanges
