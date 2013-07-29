@@ -40,7 +40,6 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$dbr  = wfGetDB( DB_SLAVE );
 			$cat = $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
 			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to=$cat" );
-		print_r($join_conds);
 		}
 		return true;
 	}
