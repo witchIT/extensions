@@ -25,7 +25,7 @@ $wgExtensionCredits['other'][] = array(
 );
 
 $dir = dirname( __FILE__ );
-//$wgExtensionMessagesFiles['Bliki'] = "$dir/Bliki.i18n.php";
+$wgExtensionMessagesFiles['Bliki'] = "$dir/Bliki.i18n.php";
 include( "$dir/BlikiFeed.php" );
 
 class Bliki {
