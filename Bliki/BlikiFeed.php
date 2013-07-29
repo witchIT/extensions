@@ -37,8 +37,8 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		if( $opts->validateName( 'bliki' ) ) {
 			$tables[] = 'categorylinks';
 			$conds[] = 'rc_new=1';
-			$cat = Title::newFromText( $opts['bliki'] )->getDBkey();
-			$join_conds['categorylinks'] = array( 'RIGHT JOIN', 'cl_from=page_id AND cl_to=\'$cat\'' );
+			$cat = $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
+			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to=$cat" );
 		print_r($join_conds);
 		}
 		return true;
