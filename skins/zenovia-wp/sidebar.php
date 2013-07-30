@@ -17,7 +17,7 @@
 <li class="sidebox">
 	<h3><?php
 	$child = array_key_exists( 'cat', $_REQUEST ) ? '&child_of=' . $_REQUEST['cat'] : '';
-	_e($child_of ? 'Sub categories' : 'Categories','ml'); ?></h3>
+	_e($child ? 'Sub categories' : 'Categories','ml'); ?></h3>
 	<ul>
 		<?php
 		if (function_exists('wp_list_categories'))
