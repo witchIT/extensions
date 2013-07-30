@@ -20,7 +20,8 @@
 		<?php
 		if (function_exists('wp_list_categories'))
 		{
-			wp_list_categories('show_count=1&depth=1&&hierarchical=1&title_li=');
+			$child = array_key_exists( 'cat', $_REQUEST ) ? '&child_of=' . $_REQUEST['cat'] : '';
+			wp_list_categories('show_count=1&depth=1&&hierarchical=1&title_li='.$child);
 		}
 		else
 		{
