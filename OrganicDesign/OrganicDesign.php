@@ -11,6 +11,9 @@
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 define( 'OD_VERSION', "1.0.1, 2013-07-27" );
 
+// Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
+$wgCookieSecure = false;
+
 $wgExtensionCredits['other'][] = array(
 	'name'		=> "OrganicDesign",
 	'author'	  => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
