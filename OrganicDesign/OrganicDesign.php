@@ -52,18 +52,23 @@ class OrganicDesign {
 		$port = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : '';
 		if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
 		$od = preg_match( "|^www\.organicdesign\.co\.nz$|", $host );
+
+		// Sysop logins
 		if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
 
-			// Sysops are bounced to the https www (if they're not https or not www)
+			// Bounce to the https www (if they're not https or not www)
 			if( !$od || !$ssl ) {
 				if( $port ) $port = ':8989';
 				header( "Location: https://www.organicdesign.co.nz$port$uri" );
 				exit;
 			}
-		} else {
+		}
 
-			// Logins by non-sysop are bounced to the https www (if they're not https or not www)
-			if( array_key_exists( 'title', $_REQUEST ) || $_REQUEST['title'] != 'Special:UserLogin' ) {
+		// Non-sysops
+		else {
+
+			// Login pages bounce to the https www (if they're not https or not www)
+			if( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) {
 				if( !$od || !$ssl ) {
 					if( $port ) $port = ':8989';
 					header( "Location: https://www.organicdesign.co.nz$port$uri" );

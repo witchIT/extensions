@@ -37,7 +37,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		if( $opts->validateName( 'bliki' ) ) {
 			$tables[] = 'categorylinks';
 			$conds[] = 'rc_new=1';
-			$dbr  = wfGetDB( DB_SLAVE );
+			$dbr = wfGetDB( DB_SLAVE );
 			$cat = $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
 			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to=$cat" );
 		}
@@ -74,6 +74,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
  */
 class BlikiChangesFeed extends ChangesFeed {
 
+	// This is just an exact copy of the parent, we had to override because it calls self::generateFeed
 	public function execute( $feed, $rows, $lastmod, $opts ) {
 		global $wgLang, $wgRenderHashAppend;
 
