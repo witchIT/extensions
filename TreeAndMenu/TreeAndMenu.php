@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.0.4, 2013-02-27' );
+define( 'TREEANDMENU_VERSION','3.1.0, 2013-08-09' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -52,13 +52,12 @@ class TreeAndMenu {
 	 * Constructor
 	 */
 	function __construct() {
-		global $wgOut, $wgHooks, $wgParser, $wgJsMimeType, $wgExtensionAssetsPath, $wgResourceModules, $wgTreeViewImages, $wgTreeViewShowLines;
-
-global $wgDisableParserCache;
-$wgDisableParserCache = true;
+		global $wgOut, $wgHooks, $wgParser, $wgJsMimeType, $wgExtensionAssetsPath, $wgResourceModules,
+			$wgTreeViewImages, $wgTreeViewShowLines;
 
 		// Add hooks
-		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTreeAndMenu' ) );
+		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
+		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
 
 		// Update general tree paths and properties
 		$this->baseDir  = dirname( __FILE__ );
@@ -85,16 +84,30 @@ $wgDisableParserCache = true;
 	}
 
 	/**
+	 * Expand #tree parser-functions
+	 */
+	public function expandTree() {
+		return $this->expandTreeAndMenu( 'tree', func_get_args() );
+	}
+
+	/**
+	 * Expand #menu parser-functions
+	 */
+	public function expandMenu() {
+		return $this->expandTreeAndMenu( 'menu', func_get_args() );
+	}
+
+	/**
 	 * Expand either kind of parser-function (reformats tree rows for matching later) and store args
 	 */
-	public function expandTreeAndMenu( &$parser ) {
+	public function expandTreeAndMenu( $magic, $args ) {
 		global $wgUser;
-		$args = func_get_args();
-		array_shift( $args );
+		$parser = array_shift( $args );
 	
 		// Store args for this tree for later use
 		$text = '';
 		foreach( $args as $arg ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $arg, $m ) ) $args[$m[1]] = $m[2]; else $text = $arg;
+		$args['type'] = $magic;
 
 		// If root, parse as wikitext
 		if( isset( $args['root'] ) ) {
@@ -199,6 +212,7 @@ $wgDisableParserCache = true;
 				list( $id, $depth, $icon, $item, $start ) = $info;
 				$objid = $this->uniqname . preg_replace( '/\W/', '', $id );
 				$args  = $this->args[$id];
+				$type  = $args['type'];
 				$end   = $i == count( $rows )-1 || $rows[$i+1][4];
 				if( !isset( $args['root'] ) ) $args['root'] = ''; // tmp - need to handle rootless trees
 				$openlevels = isset( $args['openlevels'] ) ? $args['openlevels']+1 : 0;
@@ -207,34 +221,67 @@ $wgDisableParserCache = true;
 				// Append node script for this row
 				if( $depth > $last ) $parents[$depth] = $node-1;
 				$parent = $parents[$depth];
-				$nodes .= "$objid.add($node, $parent, '$item');\n";
-				if( $depth > 0 && $openlevels > $depth ) $opennodes[$parent] = true;
+				if( $type == 'tree' ) {
+					$nodes .= "$objid.add($node, $parent, '$item');\n";
+					if( $depth > 0 && $openlevels > $depth ) $opennodes[$parent] = true;
+				}
+				else {
+					if( !$start ) {
+						if( $depth < $last ) $nodes .= str_repeat( '</ul></li>', $last - $depth );
+						elseif ( $depth > $last ) $nodes .= "\n<ul>";
+					}
+					$parity[$depth] = isset( $parity[$depth] ) ? $parity[$depth]^1 : 0;
+					$class = $parity[$depth] ? 'odd' : 'even';
+					$nodes .= "<li class=\"$class\">$item";
+					if( $depth >= $rows[$node][1] ) $nodes .= "</li>\n";
+				}
 				$last = $depth;
 
 				// Last row of current root, surround nodes dtree or menu script and div etc
 				if( $end ) {
-					$class = isset( $args['class'] ) ? $args['class'] : "dtree";
-					$add = isset( $args['root'] ) ? "tree.add(0,-1,'" . $args['root'] . "');" : '';
-					$top = $bottom = $root = $opennodesjs = '';
-					foreach( array_keys( $opennodes ) as $i ) $opennodesjs .= "$objid.o($i);";
-					foreach( $args as $arg => $pos )
-						if( ( $pos == 'top' || $pos == 'bottom' || $pos == 'root' ) && ( $arg == 'open' || $arg == 'close' ) )
-							$$pos .= "<a href=\"javascript: $objid.{$arg}All();\">&#160;{$arg} all</a>&#160;";
-					if( $top ) $top = "<p>&#160;$top</p>";
-					if( $bottom ) $bottom = "<p>&#160;$bottom</p>";
+					$class = isset( $args['class'] ) ? $args['class'] : "d$type";
 
-					// Define the script to build this tree
-					$script = "tree = new dTree('$objid');
-						for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
-						tree.config.useLines = {$this->useLines};
-						$add
-						$objid = tree;
-						$nodes
-						document.getElementById('$id').innerHTML = $objid.toString();
-						$opennodesjs
-						for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
-					$html = "$top<div class='$class' id='$id'></div>$bottom";
-					$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[];$script</script>";
+					// Finalise a tree
+					if ( $type == 'tree' ) {
+						$add = isset( $args['root'] ) ? "tree.add(0,-1,'" . $args['root'] . "');" : '';
+						$top = $bottom = $root = $opennodesjs = '';
+						foreach( array_keys( $opennodes ) as $i ) $opennodesjs .= "$objid.o($i);";
+						foreach( $args as $arg => $pos )
+							if( ( $pos == 'top' || $pos == 'bottom' || $pos == 'root' ) && ( $arg == 'open' || $arg == 'close' ) )
+								$$pos .= "<a href=\"javascript: $objid.{$arg}All();\">&#160;{$arg} all</a>&#160;";
+						if( $top ) $top = "<p>&#160;$top</p>";
+						if( $bottom ) $bottom = "<p>&#160;$bottom</p>";
+
+						// Define the script to build this tree
+						$script = "tree = new dTree('$objid');
+							for (i in tree.icon) tree.icon[i] = '{$this->baseUrl}/'+tree.icon[i];{$this->images}
+							tree.config.useLines = {$this->useLines};
+							$add
+							$objid = tree;
+							$nodes
+							document.getElementById('$id').innerHTML = $objid.toString();
+							$opennodesjs
+							for(i in window.tamOnload_$objid) { window.tamOnload_{$objid}[i](); }";
+						$html = "$top<div class='$class' id='$id'></div>$bottom";
+						$html .= "<script type=\"$wgJsMimeType\">window.tamOnload_$objid=[];$script</script>";
+					}
+
+					// Finalise a menu
+					else {
+						if( $depth > 0 ) $nodes .= str_repeat( '</ul></li>', $depth );
+						$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); // IE has problems with title attribute in suckerfish menus
+						$html = "<ul class='$class' id='$id'>\n$nodes</ul>
+							<script type=\"$wgJsMimeType\">/*<![CDATA[*/
+								if (window.attachEvent) {
+									var sfEls = document.getElementById('$id').getElementsByTagName('li');
+									for (var i=0; i<sfEls.length; i++) {
+										sfEls[i].onmouseover=function() { this.className+=' sfhover'; }
+										sfEls[i].onmouseout=function()  { this.className=this.className.replace(new RegExp(' sfhover *'),''); }
+									}
+								}
+							/*]]>*/</script>";
+					}
+
 					$html = str_replace( '$', '\$', $html );
 					$text  = preg_replace( "/~x7f1$u~x7f$id~x7f.+?$/m", $html, $text, 1 ); // replace first occurrence of this trees root-id
 					$nodes = '';
