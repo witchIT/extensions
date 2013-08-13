@@ -269,7 +269,7 @@ class TreeAndMenu {
 					// Finalise a menu
 					else {
 						if( $depth > 0 ) $nodes .= str_repeat( '</ul></li>', $depth );
-						$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); // IE has problems with title attribute in suckerfish menus
+						//$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); // IE has problems with title attribute in suckerfish menus
 						$html = "<ul class='$class' id='$id'>\n$nodes</ul>
 							<script type=\"$wgJsMimeType\">/*<![CDATA[*/
 								if (window.attachEvent) {
