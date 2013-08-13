@@ -195,7 +195,7 @@ class TreeAndMenu {
 					if( !isset( $depths[$id] ) ) $depths[$id] = $depths[$lastId]+$lastDepth;
 					if( $start = $rootId != $id && !in_array( $id, $subs[1] ) ) $depths[$rootId = $id] = 0;
 				}
-				if( $item ) $rows[] = array( $rootId, $depth + $depths[$id], $icon, addslashes( $item ), $start );
+				if( $item ) $rows[] = array( $rootId, $depth + $depths[$id], $icon, $item, $start );
 				$lastId    = $id;
 				$lastDepth = $depth;
 			}
@@ -222,7 +222,7 @@ class TreeAndMenu {
 				if( $depth > $last ) $parents[$depth] = $node-1;
 				$parent = $parents[$depth];
 				if( $type == 'tree' ) {
-					$nodes .= "$objid.add($node, $parent, '$item');\n";
+					$nodes .= "$objid.add($node, $parent, '" . addslashes( $item ) . "');\n";
 					if( $depth > 0 && $openlevels > $depth ) $opennodes[$parent] = true;
 				}
 				else {
@@ -269,8 +269,7 @@ class TreeAndMenu {
 					// Finalise a menu
 					else {
 						if( $depth > 0 ) $nodes .= str_repeat( '</ul></li>', $depth );
-						/*$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); // IE has problems with title attribute in suckerfish menus
-						 */
+						$nodes = preg_replace( "/<(a.*? )title=\".+?\".*?>/", "<$1>", $nodes ); // IE has problems with title attribute in suckerfish menus
 						$html = "<ul class='$class' id='$id'>\n$nodes</ul>
 							<script type=\"$wgJsMimeType\">/*<![CDATA[*/
 								if (window.attachEvent) {
