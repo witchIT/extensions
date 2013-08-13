@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.1.0, 2013-08-09' );
+define( 'TREEANDMENU_VERSION','3.1.1, 2013-08-13' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -233,7 +233,7 @@ class TreeAndMenu {
 					$parity[$depth] = isset( $parity[$depth] ) ? $parity[$depth]^1 : 0;
 					$class = $parity[$depth] ? 'odd' : 'even';
 					$nodes .= "<li class=\"$class\">$item";
-					if( $depth >= $rows[$node][1] ) $nodes .= "</li>\n";
+					if( !array_key_exists( $node, $rows ) || $depth >= $rows[$node][1] ) $nodes .= "</li>\n";
 				}
 				$last = $depth;
 
