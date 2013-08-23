@@ -54,7 +54,8 @@ class OrganicDesign {
 		$ssl = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on';
 		$port = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : '';
 		if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
-		$od = preg_match( "|^www\.organicdesign\.co\.nz$|", $host );
+		$od = preg_match( "|^(www|pt)\.organicdesign\.co\.nz$|", $host, $m );
+		$www = $m[1] ? $m[1] : 'www';
 
 		// Sysop logins
 		if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
@@ -62,7 +63,7 @@ class OrganicDesign {
 			// Bounce to the https www (if they're not https or not www)
 			if( !$od || !$ssl ) {
 				if( $port ) $port = ':8989';
-				header( "Location: https://www.organicdesign.co.nz$port$uri" );
+				header( "Location: https://$www.organicdesign.co.nz$port$uri" );
 				exit;
 			}
 		}
@@ -74,7 +75,7 @@ class OrganicDesign {
 			if( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) {
 				if( !$od || !$ssl ) {
 					if( $port ) $port = ':8989';
-					header( "Location: https://www.organicdesign.co.nz$port$uri" );
+					header( "Location: https://$www.organicdesign.co.nz$port$uri" );
 					exit;
 				}
 			}
@@ -82,7 +83,7 @@ class OrganicDesign {
 			// Non-login pages bounce to non-https www (if they're https or they're not www)
 			else if( $ssl || !$od ) {
 				if( $port ) $port = ':8080';
-				header( "Location: http://www.organicdesign.co.nz$port$uri" );
+				header( "Location: http://$www.organicdesign.co.nz$port$uri" );
 				exit;
 			}
 		}
