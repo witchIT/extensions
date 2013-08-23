@@ -43,7 +43,7 @@ class OrganicDesign {
 	}
 
 	function setup() {
-		global $wgUser;
+		global $wgUser, $wgLanguageCode;
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
@@ -56,6 +56,9 @@ class OrganicDesign {
 		if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
 		$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
 		$www = $m[1] ? $m[1] : 'www';
+
+		// Set language to pt if it's the pt domain
+		if( $www == 'pt' ) $wgLanguageCode = 'pt';
 
 		// Sysop logins
 		if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
