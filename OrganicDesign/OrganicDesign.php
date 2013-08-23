@@ -54,7 +54,7 @@ class OrganicDesign {
 		$ssl = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on';
 		$port = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : '';
 		if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
-		$od = preg_match( "|^(www|pt)\.organicdesign\.co\.nz$|", $host, $m );
+		$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
 		$www = $m[1] ? $m[1] : 'www';
 
 		// Sysop logins
