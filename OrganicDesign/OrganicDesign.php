@@ -46,6 +46,9 @@ class OrganicDesign {
 		global $wgUser, $wgLanguageCode;
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
+		// Force the recentchanges to the JS format
+		$wgUser->setOption( 'usenewrc', 1 );
+
 		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
 		// - conditions must be such that redirects only happen if something needs to change
 		// - works for standard ports 80 & 443 (scheme://od/uri) and 8080/8989 (scheme://od:port/uri)
