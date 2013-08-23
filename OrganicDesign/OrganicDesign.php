@@ -34,16 +34,20 @@ class OrganicDesign {
 	public static $title = false;
 
 	function __construct() {
-		global $wgExtensionFunctions, $wgHooks;
+		global $wgExtensionFunctions, $wgHooks, $wgLanguageCode;
 
 		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 		$wgHooks['jQueryUploadAddAttachLink'][] = $this;
 		$wgHooks['OutputPageBodyAttributes'][]  = $this;
+
+		// Set language to pt if it's the pt domain
+		if( preg_match( "/^pt\./", $_SERVER['HTTP_HOST'] ) ) $wgLanguageCode = 'pt';
+
 	}
 
 	function setup() {
-		global $wgUser, $wgLanguageCode;
+		global $wgUser;
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
 		// Force the recentchanges to the JS format
@@ -59,9 +63,6 @@ class OrganicDesign {
 		if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
 		$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
 		$www = $m[1] ? $m[1] : 'www';
-
-		// Set language to pt if it's the pt domain
-		if( $www == 'pt' ) $wgLanguageCode = 'pt';
 
 		// Sysop logins
 		if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
