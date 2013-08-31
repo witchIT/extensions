@@ -37,7 +37,8 @@ $messages['en'] = array(
 	'ea-selectcss'        => "You can select a CSS stylesheet",
 	'ea-data'             => "Data",
 	'ea-selectrecord'     => "These templates can be used to fill in fields in the message content",
-	'ea-allusers'         => "ALL USERS"
+	'ea-allusers'         => "ALL USERS",
+	'ea-addcomments'      => "Include user comments?"
 );
 
 /** Message documentation (Message documentation)

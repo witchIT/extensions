@@ -65,7 +65,7 @@ class SpecialEmailPage extends SpecialPage {
 		// From (dropdown list of self and wiki addresses)
 		$from = "<option>$wgEmergencyContact</option>";
 		$ue = $wgUser->getEmail();
-		if( $wgUser->isValidEmailAddr( $ue ) ) $from = "<option>$ue</option>$from"; else $ue = "";
+		$from = $wgUser->isValidEmailAddr( $ue ) ? "<option>$ue</option>$from" : "";
 		$wgOut->addHTML( "<tr id=\"ea-from\"><th align=\"right\">" . wfMsg( 'ea-from' ) . ":</th>" );
 		$wgOut->addHTML( "<td><select name=\"ea-from\">$from</select></td></tr>\n" );
 
@@ -156,6 +156,12 @@ class SpecialEmailPage extends SpecialPage {
 				$wgOut->addHTML( "<select name=\"ea-record\"><option />$options</select>" );
 				$wgOut->addHTML( " <small><i>(" . wfMsg( 'ea-selectrecord' ) . ")</i></small></td></tr>" );
 			}
+		}
+
+		// Include comments checkbox
+		if( defined( 'AJAXCOMMENTS_VERSION' ) && AjaxComments::checkTitle( $this->title ) ) {
+			$wgOut->addHTML( "<tr id=\"ea-addcomments\"><th>&nbsp;</th><td>" );
+			$wgOut->addHTML( "<input type=\"checkbox\" name=\"ea-addcomments\" />&nbsp;" . wfMsg( 'ea-addcomments' ) . "</td></tr>" );
 		}
 
 		// Submit buttons & hidden values
