@@ -105,17 +105,20 @@ class AjaxComments {
 	/**
 	 * Process the Ajax requests
 	 * - we're bypassing the Ajax handler because we need the title and parser to be established
+	 * - if "ajaxcommentsinternal" action is passed, all comments are returned directly as html
 	 */
 	function onUnknownAction( $action, $article ) {
-		if( $action == 'ajaxcomments' ) {
+		if( $action == 'ajaxcomments' || $action == 'ajaxcommentsinternal' ) {
 			global $wgOut, $wgRequest;
-			$wgOut->disable();
+			if( $action == 'ajaxcomments' ) $wgOut->disable();
 			$talk = $article->getTitle()->getTalkPage();
 			if( is_object( $talk ) ) {
-				$id = $wgRequest->getText( 'id', false );
-				$text = $wgRequest->getText( 'text', false );
-				$ts = $wgRequest->getText( 'ts', '' );
-				$command = $wgRequest->getText( 'cmd' );
+				if( $action == 'ajaxcomments' ) {
+					$id = $wgRequest->getText( 'id', false );
+					$text = $wgRequest->getText( 'text', false );
+					$ts = $wgRequest->getText( 'ts', '' );
+					$command = $wgRequest->getText( 'cmd' );
+				} else $id = $text = $ts = $command = '';
 				$this->talk = $talk;
 				$article = new Article( $talk );
 				$summary = wfMsg( "ajaxcomments-$command-summary" );
@@ -169,13 +172,17 @@ class AjaxComments {
 
 					// By default return the whole rendered comments area
 					default:
+						$content = '';
 						$n = count( $this->comments );
-						$tsdiv = "<div id=\"ajaxcomment-timestamp\" style=\"display:none\">$latest</div>";
-						print "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
+						if( $action == 'ajaxcomments' ) {
+							$tsdiv = "<div id=\"ajaxcomment-timestamp\" style=\"display:none\">$latest</div>";
+							$content .= "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
+						}
 						$cc = "<h3 id=\"ajaxcomments-count\">";
-						if( $n == 1 ) print $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
-						else if( $n > 1 ) print $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
-						print $this->renderComments();
+						if( $n == 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
+						else if( $n > 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
+						$content .= $this->renderComments();
+						if( $action == 'ajaxcomments' ) print $content else return $content;
 				}
 
 				// If any comment data has been changed write it back to the talk article
