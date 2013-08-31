@@ -44,6 +44,7 @@ class SpecialEmailPage extends SpecialPage {
 		$this->textonly = $wgRequest->getText( 'ea-textonly', false );
 		$this->css      = $wgRequest->getText( 'ea-css', $wgEmailPageCss );
 		$this->record   = $wgRequest->getText( 'ea-record', false );
+		$this->addcomments = $wgRequest->getText( 'ea-addcomments', false );
 		$this->db       = $db;
 
 		// Bail if no page title to send has been specified
@@ -226,6 +227,13 @@ class SpecialEmailPage extends SpecialPage {
 			$wgScript      = $wgServer . $wgScript;
 			$message       = $wgParser->parse( $message, $title, $opt, true, true )->getText();
 			list( $wgArticlePath, $wgScriptPath, $wgScript ) = $tmp;
+
+			// If add comments is set append them to the message now
+			if( $this->addcomments ) {
+				global $wgAjaxComments;
+				$article = new Article( Title::newFromText( $this->title ) );
+				$message .= $wgAjaxComments->onUnknownAction( 'ajaxcommentsinternal', $article );
+			}
 
 			// If no links allowed in message, change them all to spans
 			if( $wgEmailPageNoLinks ) $message = preg_replace( "|(</?)a([^>]*)|i", "$1u", $message );
