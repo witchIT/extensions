@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.0.13, 2013-03-13' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.0, 2013-08-31' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -48,12 +48,8 @@ class AjaxComments {
 		$wgHooks['UnknownAction'][] = $this;
 
 		// Create a hook to allow external condition for whether there should be comments shown
-		$ret = true;
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
-		if( (!is_object( $title )) || ($title->getArticleID() == 0) || $title->isRedirect() || ($title->getNamespace()&1) || array_key_exists( 'action', $_REQUEST ) )
-			$ret = false;
-		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
-		if( $ret ) $wgHooks['BeforePageDisplay'][] = $this; else $wgAjaxCommentsPollServer = -1;
+		if( !array_key_exists( 'action', $_REQUEST ) && self::checkTitle( $title ) ) $wgHooks['BeforePageDisplay'][] = $this; else $wgAjaxCommentsPollServer = -1;
 
 		// Create a hook to allow external condition for whether comments can be added or replied to (default is just user logged in)
 		$this->canComment = $wgUser->isLoggedIn();
@@ -87,13 +83,24 @@ class AjaxComments {
 	}
 
 	/**
+	 * Allow other extensions to check if a title has comments
+	 */
+	public static function checkTitle( $title ) {
+		$ret = true;
+		if( !is_object( $title ) ) $title = Title::newFromText( $title );
+		if( !is_object( $title ) || $title->getArticleID() == 0 || $title->isRedirect() || ($title->getNamespace()&1) )
+			$ret = false;
+		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
+		return $ret;
+	}
+
+	/**
 	 * Render a name at the end of the page so redirected talk pages can go there before ajax loads the content
 	 */
 	function onBeforePageDisplay( $out, $skin ) {
 		$out->addHtml( "<a id=\"ajaxcomments-name\" name=\"ajaxcomments\"></a>" );
 		return true;
 	}
-
 
 	/**
 	 * Process the Ajax requests
