@@ -182,7 +182,7 @@ class AjaxComments {
 						if( $n == 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
 						$content .= $this->renderComments();
-						if( $action == 'ajaxcomments' ) print $content else return $content;
+						if( $action == 'ajaxcomments' ) print $content; else return $content;
 				}
 
 				// If any comment data has been changed write it back to the talk article
