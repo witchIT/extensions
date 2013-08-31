@@ -117,30 +117,6 @@ class SpecialEmailPage extends SpecialPage {
 		$wgOut->addHTML( "<td><textarea name=\"ea-message\" rows=\"3\" style=\"width:100%\">{$this->message}</textarea>" );
 		$wgOut->addHTML( "<br /><i><small>(" . wfMsg( 'ea-message-info' ) . ")</small></i></td></tr>" );
 
-		// CSS
-		$options = '';
-		$res = $db->select(
-			'page',
-			'page_id',
-			'page_title LIKE \'%.css\'',
-			__METHOD__,
-			array( 'ORDER BY' => 'page_title' )
-		);
-
-		while( $row = $db->fetchRow( $res ) ) {
-			$t = Title::newFromID( $row[0] )->getPrefixedText();
-			if( $this->css ) $selected = $t == $this->css ? ' selected' : '';
-			else $selected = $t == $wgEmailPageCss ? ' selected' : '';
-			$options .= "<option$selected>$t</option>";
-		}
-		$db->freeResult( $res );
-
-		if( $options ) {
-			$wgOut->addHTML( "<tr id=\"ea-css\"><th align=\"right\">" . wfMsg( 'ea-style' ) . ":</th><td>" );
-			$wgOut->addHTML( "<select name=\"ea-css\"><option />$options</select>" );
-			$wgOut->addHTML( " <small><i>(" . wfMsg( 'ea-selectcss' ) . ")</i></small></td></tr>" );
-		}
-
 		// Data
 		if( defined( 'NS_FORM' ) ) {
 			$options = "";
