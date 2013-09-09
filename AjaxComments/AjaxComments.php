@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.0, 2013-08-31' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.1, 2013-09-09' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -110,7 +110,7 @@ class AjaxComments {
 	function onUnknownAction( $action, $article ) {
 		if( $action == 'ajaxcomments' || $action == 'ajaxcommentsinternal' ) {
 			global $wgOut, $wgRequest;
-			if( $action == 'ajaxcomments' ) $wgOut->disable();
+			if( $action == 'ajaxcomments' ) $wgOut->disable(); else $this->canComment = false;
 			$talk = $article->getTitle()->getTalkPage();
 			if( is_object( $talk ) ) {
 				if( $action == 'ajaxcomments' ) {
