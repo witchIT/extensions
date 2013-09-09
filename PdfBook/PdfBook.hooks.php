@@ -6,7 +6,7 @@ class PdfBookHooks {
 	 * Perform the export operation
 	 */
 	public static function onUnknownAction( $action, $article ) {
-		global $wgOut, $wgUser, $wgParser, $wgRequest;
+		global $wgOut, $wgUser, $wgParser, $wgRequest, $wgAjaxComments;
 		global $wgServer, $wgArticlePath, $wgScriptPath, $wgUploadPath, $wgUploadDirectory, $wgScript;
 
 		if( $action == 'pdfbook' ) {
@@ -20,23 +20,24 @@ class PdfBookHooks {
 			$log->addEntry( 'book', $article->getTitle(), $msg );
 
 			// Initialise PDF variables
-			$format  = $wgRequest->getText( 'format' );
-			$notitle = $wgRequest->getText( 'notitle' );
-			$layout  = $format == 'single' ? '--webpage' : '--firstpage toc';
-			$charset = self::setProperty( 'Charset',     'iso-8859-1' );
-			$left    = self::setProperty( 'LeftMargin',  '1cm' );
-			$right   = self::setProperty( 'RightMargin', '1cm' );
-			$top     = self::setProperty( 'TopMargin',   '1cm' );
-			$bottom  = self::setProperty( 'BottomMargin','1cm' );
-			$font    = self::setProperty( 'Font',        'Arial' );
-			$size    = self::setProperty( 'FontSize',    '8' );
-			$ls      = self::setProperty( 'LineSpacing', 1 );
-			$linkcol = self::setProperty( 'LinkColour',  '217A28' );
-			$levels  = self::setProperty( 'TocLevels',   '2' );
-			$exclude = self::setProperty( 'Exclude',     array() );
-			$width   = self::setProperty( 'Width',       '' );
-			$options = self::setProperty( 'Options',     '' );
-			$width   = $width ? "--browserwidth $width" : '';
+			$format   = $wgRequest->getText( 'format' );
+			$notitle  = $wgRequest->getText( 'notitle' );
+			$comments = $wgAjaxComments ? $wgRequest->getText( 'comments' ) : '';
+			$layout   = $format == 'single' ? '--webpage' : '--firstpage toc';
+			$charset  = self::setProperty( 'Charset',     'iso-8859-1' );
+			$left     = self::setProperty( 'LeftMargin',  '1cm' );
+			$right    = self::setProperty( 'RightMargin', '1cm' );
+			$top      = self::setProperty( 'TopMargin',   '1cm' );
+			$bottom   = self::setProperty( 'BottomMargin','1cm' );
+			$font     = self::setProperty( 'Font',        'Arial' );
+			$size     = self::setProperty( 'FontSize',    '8' );
+			$ls       = self::setProperty( 'LineSpacing', 1 );
+			$linkcol  = self::setProperty( 'LinkColour',  '217A28' );
+			$levels   = self::setProperty( 'TocLevels',   '2' );
+			$exclude  = self::setProperty( 'Exclude',     array() );
+			$width    = self::setProperty( 'Width',       '' );
+			$options  = self::setProperty( 'Options',     '' );
+			$width    = $width ? "--browserwidth $width" : '';
 			if( !is_array( $exclude ) ) $exclude = split( '\\s*,\\s*', $exclude );
  
 			// Select articles from members if a category or links in content if not
@@ -87,7 +88,13 @@ class PdfBookHooks {
 					$text    = preg_replace( "|@{4}([^@]+?)@{4}|s", "<!--$1-->", $text );                  # HTML comments hack
 					$ttext   = basename( $ttext );
 					$h1      = $notitle ? "" : "<center><h1>$ttext</h1></center>";
-					$html   .= utf8_decode( "$h1$text\n" );
+
+					// Add comments if selected and AjaxComments is installed
+					if( $comments ) {
+						$comments = $wgAjaxComments->onUnknownAction( 'ajaxcommentsinternal', $article );
+					}
+
+					$html .= utf8_decode( "$h1$text\n$comments" );
 				}
 			}
 
