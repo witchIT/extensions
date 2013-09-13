@@ -16,7 +16,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 
-define( 'PDFBOOK_VERSION', "1.2.0, 2013-08-09" );
+define( 'PDFBOOK_VERSION', "1.2.1, 2013-08-09" );
 
 $dir = dirname( __FILE__ );
 $wgAutoloadClasses['PdfBookHooks'] = $dir . '/PdfBook.hooks.php';
@@ -25,7 +25,7 @@ $wgExtensionMessagesFiles['PdfBook'] = $dir . '/PdfBook.i18n.php';
 $wgExtensionCredits['parserhook'][] = array(
 	'path'           => __FILE__,
 	'name'           => "PdfBook",
-	'author'         => "[http://www.organicdesign.co.nz/nad User:Nad]",
+	'author'         => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
 	'url'            => "http://www.mediawiki.org/wiki/Extension:PdfBook",
 	'version'        => PDFBOOK_VERSION,
 	'descriptionmsg' => 'pdfbook-desc',
@@ -33,6 +33,9 @@ $wgExtensionCredits['parserhook'][] = array(
 
 // Whether or not an action tab is wanted for printing to PDF
 $wgPdfBookTab = false;
+
+// Whether the files should be downloaded or view in-browser
+$wgPdfBookDownload = true;
 
 $wgHooks['UnknownAction'][] = 'PdfBookHooks::onUnknownAction';
 

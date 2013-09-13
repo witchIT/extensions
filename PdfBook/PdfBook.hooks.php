@@ -6,7 +6,7 @@ class PdfBookHooks {
 	 * Perform the export operation
 	 */
 	public static function onUnknownAction( $action, $article ) {
-		global $wgOut, $wgUser, $wgParser, $wgRequest, $wgAjaxComments;
+		global $wgOut, $wgUser, $wgParser, $wgRequest, $wgAjaxComments, $wgPdfBookDownload;
 		global $wgServer, $wgArticlePath, $wgScriptPath, $wgUploadPath, $wgUploadDirectory, $wgScript;
 
 		if( $action == 'pdfbook' ) {
@@ -117,7 +117,7 @@ class PdfBookHooks {
 				// Send the file to the client via htmldoc converter
 				$wgOut->disable();
 				header( "Content-Type: application/pdf" );
-				header( "Content-Disposition: attachment; filename=\"$book.pdf\"" );
+				if( $wgPdfBookDownload ) header( "Content-Disposition: attachment; filename=\"$book.pdf\"" );
 				$cmd  = "--left $left --right $right --top $top --bottom $bottom";
 				$cmd .= " --header ... --footer $footer --headfootsize 8 --quiet --jpeg --color";
 				$cmd .= " --bodyfont $font --fontsize $size --fontspacing $ls --linkstyle plain --linkcolor $linkcol";
