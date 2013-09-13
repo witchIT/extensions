@@ -118,6 +118,7 @@ class PdfBookHooks {
 				$wgOut->disable();
 				header( "Content-Type: application/pdf" );
 				if( $wgPdfBookDownload ) header( "Content-Disposition: attachment; filename=\"$book.pdf\"" );
+				else header( "Content-Disposition: inline; filename=\"$book.pdf\"" );
 				$cmd  = "--left $left --right $right --top $top --bottom $bottom";
 				$cmd .= " --header ... --footer $footer --headfootsize 8 --quiet --jpeg --color";
 				$cmd .= " --bodyfont $font --fontsize $size --fontspacing $ls --linkstyle plain --linkcolor $linkcol";
