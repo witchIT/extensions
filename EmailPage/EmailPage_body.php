@@ -66,7 +66,7 @@ class SpecialEmailPage extends SpecialPage {
 		// From (dropdown list of self and wiki addresses)
 		$from = "<option>$wgEmergencyContact</option>";
 		$ue = $wgUser->getEmail();
-		$from = $wgUser->isValidEmailAddr( $ue ) ? "<option>$ue</option>$from" : "";
+		$from = $wgUser->isValidEmailAddr( $ue ) ? "<option>$ue</option>$from" : $from;
 		$wgOut->addHTML( "<tr id=\"ea-from\"><th align=\"right\">" . wfMsg( 'ea-from' ) . ":</th>" );
 		$wgOut->addHTML( "<td><select name=\"ea-from\">$from</select></td></tr>\n" );
 
