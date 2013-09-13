@@ -16,7 +16,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 
-define( 'PDFBOOK_VERSION', "1.2.1, 2013-08-09" );
+define( 'PDFBOOK_VERSION', "1.2.2, 2013-09-13" );
 
 $dir = dirname( __FILE__ );
 $wgAutoloadClasses['PdfBookHooks'] = $dir . '/PdfBook.hooks.php';
