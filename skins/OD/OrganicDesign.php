@@ -197,16 +197,16 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 			<td><div id="shadow-b"></div></td>
 			<td><div id="shadow-br"></div></td>
 		</tr>
-		<tr><td><?php
+		<tr><td colspan="3"><?php
 // MediaWiki:Footer
 global $wgUser,$wgTitle,$wgParser;
 $title = 'footer';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
 $text = $article->fetchContent();
-if ( empty( $text ) ) $text = wfMsg( $title );
-if ( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+if( empty( $text ) ) $text = wfMsg( $title );
+if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
-if ( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 ?></td></tr>
 		</table>
