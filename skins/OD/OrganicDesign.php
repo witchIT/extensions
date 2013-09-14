@@ -201,7 +201,7 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 	</td></tr>
 	</table>
 	</td></tr>
-	<tr><td colspan="2">
+	<tr><td>
 <?php
 
 // MediaWiki:Footer
