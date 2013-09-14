@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.4.0, 2013-07-27' );
+define( 'EXTRAMAGIC_VERSION', '3.4.1, 2013-09-13' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -95,7 +95,7 @@ class ExtraMagic {
 		$varCache['currentlang'] = $wgUser->getOption( 'language' );
 
 		// CURRENTSKIN:
-		$varCache['currentlang'] = $wgUser->getOption( 'skin' );
+		$varCache['currentskin'] = $wgUser->getOption( 'skin' );
 
 		// ARTICLEID:
 		$varCache['articleid'] = is_object( $wgTitle ) ? $ret = $wgTitle->getArticleID() : 'NULL';
