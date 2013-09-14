@@ -238,6 +238,6 @@ $messages['en'] = array(
 $messages['pt'] = array(
 	'tips-welcome' => "Doações são bem vindas",
 	'paypal-or-cc' => "A gente aceita paypal<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou cartão de crédito",
-	'btc-awesome' => "mas $1 é melhor ainda :-)",
+	'btc-awesome' => "Mas $1 é melhor ainda :-)",
 	'also' => "Também",
 );
