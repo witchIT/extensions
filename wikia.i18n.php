@@ -14,6 +14,10 @@ $messages = array();
  */
 $messages['en'] = array(
 	'specialpages-group-od' => "OrganicDesign admin pages",
+	'tips-welcome' => "Tips are welcome",
+	'paypal-or-cc' => "We accept paypal or credit card",
+	'btc-awesome' => "But $1 are awesome :-)",
+	'also' => "So is",
 	'od-nospec' => "There is no specification yet, you can create one after submitting this form",
 	'od-nospec-form' => "There is no specification yet, you can create one after submitting this form. <br />This should lead to a complete set of Milestone Tasks.",
 	'od-nospec-template' => "By clicking on the Specifications link below you can create a complete set of Milestone Tasks and their Due Dates",
@@ -229,4 +233,11 @@ $messages['en'] = array(
 **[{{fullurl:MediaWiki:Sidebar|action=edit}} Edit Sidebar]
 }}}}",
 	'footer' => "[[OD:Wiki organisation|About Wiki Organisation]]",
+);
+
+$messages['pt'] = array(
+	'tips-welcome' => "Doações são bem vindas",
+	'paypal-or-cc' => "A gente aceita paypal<br>ou cartão de crédito",
+	'btc-awesome' => "mas $1 é melhor ainda :-)",
+	'also' => "Também",
 );

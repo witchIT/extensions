@@ -86,8 +86,8 @@ if ($wgUser->isLoggedIn()) {
 global $wgOrganicDesignDonations;
 if ( $wgOrganicDesignDonations ) {?>
 	<div class="portlet" id="donations" >
-		<h2>Tips are welcome</h2>
-		<h5>We accept paypal or credit card</h5>
+		<h2><?php echo wfMsg('tips-welcome'); ?></h2>
+		<h5><?php echo wfMsg('paypal-or-cc'); ?></h5>
 		<div class="pBody">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_xclick">
@@ -97,11 +97,11 @@ if ( $wgOrganicDesignDonations ) {?>
 				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
 			</form>
 		</div>
-		<h5 id="btcbest">But <a href="/Bitcoin">Bitcoins</a> are awesome :-)</h5>
+		<h5 id="btcbest"><?php echo wfMsg('btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' ); ?></h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="1ADB7fMcciUxmXsUrQnt6Se2x2Xdvvhv9m" onmouseover="this.select()" />
 		</div>
-		<h5 id="nmccool">So is <a href="/Ripple">XRP</a>, <a href="/Namecoin">NMC</a> & <a href="/Litecoin">LTC</a></h5>
+		<h5 id="nmccool"><?php echo wfMsg('also'); ?> <a href="/Ripple">XRP</a>, <a href="/Namecoin">NMC</a> & <a href="/Litecoin">LTC</a></h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/2/23/Ripple.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="rBSVzXKvPiRVKa4aBpr3SNqSem1RBDdhqy" onmouseover="this.select()" />
 		</div>
