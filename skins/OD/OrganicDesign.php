@@ -86,7 +86,7 @@ if ($wgUser->isLoggedIn()) {
 global $wgOrganicDesignDonations;
 if ( $wgOrganicDesignDonations ) {?>
 	<div class="portlet" id="donations" >
-		<h2><?php echo wfMsg('tips-welcome'); ?></h2>
+		<h2 style="white-space:nowrap"><?php echo wfMsg('tips-welcome'); ?></h2>
 		<h5><?php echo wfMsg('paypal-or-cc'); ?></h5>
 		<div class="pBody">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
