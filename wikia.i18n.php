@@ -21,6 +21,9 @@ $messages['en'] = array(
 	'also' => "So is",
 	'homepage' => "Home",
 	'news' => "News",
+	'contact' => "Contact",
+	'about' => "About",
+	'wiki' => "Wiki",
 	'latest-updates' => "Latest updates",
 	'latest-pictures' => "Latest pictures",
 	'recent-activity' => "Recent activity",
@@ -254,4 +257,7 @@ $messages['pt'] = array(
 	'latest-updates' => "Últimas atualizações",
 	'latest-pictures' => "Últimas imagens",
 	'sitemap' => "Mapa do site",
+	'contact' => "Contato",
+	'about' => "Sobre OD",
+	'wiki' => "Wiki",
 );
