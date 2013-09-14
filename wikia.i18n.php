@@ -17,6 +17,7 @@ $messages['en'] = array(
 	'tips-welcome' => "Tips are welcome",
 	'paypal-or-cc' => "We accept paypal or credit card",
 	'btc-awesome' => "But $1 are awesome :-)",
+	'checkout' => "Checkout",
 	'also' => "So is",
 	'od-nospec' => "There is no specification yet, you can create one after submitting this form",
 	'od-nospec-form' => "There is no specification yet, you can create one after submitting this form. <br />This should lead to a complete set of Milestone Tasks.",
@@ -240,4 +241,5 @@ $messages['pt'] = array(
 	'paypal-or-cc' => "A gente aceita paypal,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou cartão de crédito",
 	'btc-awesome' => "Mas $1 é melhor ainda :-)",
 	'also' => "Também",
+	'checkout' => "Caixa",
 );

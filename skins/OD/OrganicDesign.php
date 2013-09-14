@@ -94,7 +94,7 @@ if ( $wgOrganicDesignDonations ) {?>
 				<input type="hidden" name="business" value="<?php echo $wgOrganicDesignDonations ?>" />
 				<input type="hidden" name="item_name" value="Donation to Organic Design">
 				<input type="hidden" name="currency_code" value="USD">
-				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="Checkout" />
+				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="<?php echo wfMsg('checkout'); ?>" />
 			</form>
 		</div>
 		<h5 id="btcbest"><?php echo wfMsg('btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' ); ?></h5>
