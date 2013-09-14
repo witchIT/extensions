@@ -50,8 +50,8 @@ class OrganicDesignTemplate extends BaseTemplate {
 		$this->html( 'headelement' );?>
 	<table class="pageWrapper" cellpadding="0" cellspacing="0" width="100%"><tr><td align="center">
 		<div id="languages">
-			<a href="http://www.organicdesign.co.nz<?php echo $uri; ?>" title="English"><img src="/skins/organicdesign/uk.png" /></a>
-			<a href="http://pt.organicdesign.co.nz<?php echo $uri; ?>" title="Português brasileiro"><img src="/skins/organicdesign/br.png" /></a>
+			<a href="http://www.organicdesign.co.nz<?php echo $uri; ?>" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
+			<a href="http://pt.organicdesign.co.nz<?php echo $uri; ?>" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div>
 	<table id="globalWrapper" cellpadding="0" cellspacing="0"><tr><td>
 	<table class="pageWrapper" cellpadding="0" cellspacing="0" width="100%"><tr><td id="column-one"><div id="c1-div">
