@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.1, 2013-09-09' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.2, 2013-09-19' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -132,7 +132,7 @@ class AjaxComments {
 				} else $latest = 0;
 
 				// If a timestamp is provided in the request, bail if nothings happened to the talk content since that time
-				if( is_numeric( $ts ) && ( $ts == $latest || $latest == 0 ) ) return '';
+				if( is_numeric( $ts ) && ( $ts == $latest || $latest == 0 ) ) return true;
 
 				// Perform the command on the talk content
 				switch( $command ) {
