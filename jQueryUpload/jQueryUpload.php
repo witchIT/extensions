@@ -9,7 +9,7 @@
  * @author Aran Dunkley (http://www.organicdesign.co.nz/nad)
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'JQU_VERSION', "1.2.1, 2013-05-25" );
+define( 'JQU_VERSION', "1.2.2, 2013-09-20" );
 
 $wgJQUploadIconPrefix = dirname( __FILE__ ) . '/icons/Farm-Fresh_file_extension_';
 $wgJQUploadFileMagic = 'file';

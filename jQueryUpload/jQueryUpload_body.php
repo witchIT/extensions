@@ -491,7 +491,7 @@ class MWUploadHandler extends UploadHandler {
 			if( file_exists( $meta ) ) {
 				$data = unserialize( file_get_contents( $meta ) );
 				$file->info = self::renderData( $data );
-				$file->desc = $data[2];
+				$file->desc = array_key_exists(2, $data) ? $data[2] : '';
 			} else $file->info = $file->desc = "";
 		}
 		return $file;
