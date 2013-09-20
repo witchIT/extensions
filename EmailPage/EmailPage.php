@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 
-define( 'EMAILPAGE_VERSION', "2.2.2, 2013-09-19" );
+define( 'EMAILPAGE_VERSION', "2.2.3, 2013-09-19" );
 
 $wgEmailPageGroup           = "sysop";               // Users must belong to this group to send emails (empty string means anyone can send)
 $wgEmailPageCss             = false;                 // A minimal CSS page to embed in the email (eg. monobook/main.css without portlets, actions etc)
@@ -57,7 +57,7 @@ if( $wgEmailPageActionLink )  {
 
 function wfEmailPageToolboxLink() {
 	global $wgTitle, $wgUser, $wgEmailPageGroup;
-	if ( is_object( $wgTitle ) && ( empty( $wgEmailPageGroup ) || in_array( $wgEmailPageGroup, $wgUser->getEffectiveGroups() ) ) ) {
+	if ( is_object( $wgTitle ) && $wgUser->isLoggedIn() && ( empty( $wgEmailPageGroup ) || in_array( $wgEmailPageGroup, $wgUser->getEffectiveGroups() ) ) ) {
 		$url = htmlspecialchars( SpecialPage::getTitleFor( 'EmailPage' )->getLocalURL( array( 'ea-title' => $wgTitle->getPrefixedText() ) ) );
 		echo( "<li><a href=\"$url\">" . wfMsg( 'emailpage' ) . "</a></li>" );
 	}
@@ -66,7 +66,7 @@ function wfEmailPageToolboxLink() {
 
 function wfEmailPageActionLink( $skin, &$actions ) {
 	global $wgTitle, $wgUser, $wgEmailPageGroup;
-	if( is_object( $wgTitle ) && ( empty( $wgEmailPageGroup ) || in_array( $wgEmailPageGroup, $wgUser->getEffectiveGroups() ) ) ) {
+	if( is_object( $wgTitle ) && $wgUser->isLoggedIn() && ( empty( $wgEmailPageGroup ) || in_array( $wgEmailPageGroup, $wgUser->getEffectiveGroups() ) ) ) {
 		$url = SpecialPage::getTitleFor( 'EmailPage' )->getLocalURL( array( 'ea-title' => $wgTitle->getPrefixedText() ) );
 		$actions['email'] = array( 'text' => wfMsg( 'email' ), 'class' => false, 'href' => $url );
 	}
@@ -75,7 +75,7 @@ function wfEmailPageActionLink( $skin, &$actions ) {
 
 function wfEmailPageActionLinkVector( $skin, &$actions ) {
 	global $wgTitle, $wgUser, $wgEmailPageGroup;
-	if( is_object( $wgTitle ) && ( empty( $wgEmailPageGroup ) || in_array( $wgEmailPageGroup, $wgUser->getEffectiveGroups() ) ) ) {
+	if( is_object( $wgTitle ) && $wgUser->isLoggedIn() && ( empty( $wgEmailPageGroup ) || in_array( $wgEmailPageGroup, $wgUser->getEffectiveGroups() ) ) ) {
 		$url = SpecialPage::getTitleFor( 'EmailPage' )->getLocalURL( array( 'ea-title' => $wgTitle->getPrefixedText() ) );
 		$actions['views']['email'] = array( 'text' => wfMsg( 'email' ), 'class' => false, 'href' => $url );
 	}
