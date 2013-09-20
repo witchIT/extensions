@@ -177,8 +177,7 @@ class SpecialEmailPage extends SpecialPage {
 			$res = $this->group == 'user'
 				? $db->select( 'user', 'user_email', 'user_email != \'\'', __METHOD__ )
 				: $db->select( array( 'user', 'user_groups' ), 'user_email', "ug_user = user_id AND ug_group = $group", __METHOD__ );
-			while( $row = $db->fetchRow( $res ) ) $this->addRecipient( $row[0] );
-			$db->freeResult( $res );
+			foreach( $res as $row ) $this->addRecipient( $row->user_email );
 		}
 
 		// Recipients from the "to" and "cc" fields
