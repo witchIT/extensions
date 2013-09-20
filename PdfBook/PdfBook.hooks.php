@@ -9,7 +9,7 @@ class PdfBookHooks {
 		global $wgOut, $wgUser, $wgParser, $wgRequest, $wgAjaxComments, $wgPdfBookDownload;
 		global $wgServer, $wgArticlePath, $wgScriptPath, $wgUploadPath, $wgUploadDirectory, $wgScript;
 
-		if( $action == 'pdfbook' ) {
+		if( $action == 'pdfbook' && $wgUser->isLoggedIn() ) {
 
 			$title = $article->getTitle();
 			$opt = ParserOptions::newFromUser( $wgUser );
@@ -60,8 +60,8 @@ class PdfBookHooks {
 				else {
 					$text = $article->fetchContent();
 					$text = $wgParser->preprocess( $text, $title, $opt );
-					if ( preg_match_all( "/^\\*\\s*\\[{2}\\s*([^\\|\\]]+)\\s*.*?\\]{2}/m", $text, $links ) )
-						foreach ( $links[1] as $link ) $articles[] = Title::newFromText( $link );
+					if( preg_match_all( "/^\\*\\s*\\[{2}\\s*([^\\|\\]]+)\\s*.*?\\]{2}/m", $text, $links ) )
+						foreach( $links[1] as $link ) $articles[] = Title::newFromText( $link );
 				}
 			}
 
@@ -140,9 +140,9 @@ class PdfBookHooks {
 	 */
 	private static function setProperty( $name, $default ) {
 		global $wgRequest;
-		if ( $wgRequest->getText( "pdf$name" ) ) return $wgRequest->getText( "pdf$name" );
-		if ( $wgRequest->getText( "amp;pdf$name" ) ) return $wgRequest->getText( "amp;pdf$name" ); // hack to handle ampersand entities in URL
-		if ( isset( $GLOBALS["wgPdfBook$name"] ) ) return $GLOBALS["wgPdfBook$name"];
+		if( $wgRequest->getText( "pdf$name" ) ) return $wgRequest->getText( "pdf$name" );
+		if( $wgRequest->getText( "amp;pdf$name" ) ) return $wgRequest->getText( "amp;pdf$name" ); // hack to handle ampersand entities in URL
+		if( isset( $GLOBALS["wgPdfBook$name"] ) ) return $GLOBALS["wgPdfBook$name"];
 		return $default;
 	}
 
@@ -151,8 +151,8 @@ class PdfBookHooks {
 	 * Add PDF to actions tabs in MonoBook based skins
 	 */
 	public static function onSkinTemplateTabs( $skin, &$actions) {
-		global $wgPdfBookTab;
-		if ( $wgPdfBookTab ) {
+		global $wgPdfBookTab, $wgUser;
+		if( $wgPdfBookTab && $wgUser->isLoggedIn() ) {
 			$actions['pdfbook'] = array(
 				'class' => false,
 				'text' => wfMsg( 'pdfbook-action' ),
@@ -167,9 +167,8 @@ class PdfBookHooks {
 	 * Add PDF to actions tabs in vector based skins
 	 */
 	public static function onSkinTemplateNavigation( $skin, &$actions ) {
-		global $wgPdfBookTab;
-
-		if ( $wgPdfBookTab ) {
+		global $wgPdfBookTab, $wgUser;
+		if( $wgPdfBookTab && $wgUser->isLoggedIn() ) {
 			$actions['views']['pdfbook'] = array(
 				'class' => false,
 				'text' => wfMsg( 'pdfbook-action' ),
