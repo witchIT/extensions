@@ -407,7 +407,7 @@ class jQueryUpload extends SpecialPage {
 					<td class="start">{% if (!o.options.autoUpload) { %}
 						<button class="btn btn-primary">
 							<i class="icon-upload icon-white"></i>
-							<span>' . wfMsg( 'jqueryupload-cancel' ) . '</span>
+							<span>' . wfMsg( 'jqueryupload-start' ) . '</span>
 						</button>
 					{% } %}</td>
 				{% } else { %}
