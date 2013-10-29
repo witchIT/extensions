@@ -349,20 +349,20 @@ class jQueryUpload extends SpecialPage {
 					<!-- The fileinput-button span is used to style the file input field as button -->
 					<span class="btn btn-success fileinput-button">
 						<i class="icon-plus icon-white"></i>
-						<span>Add files...</span>
+						<span>' . wfMsg( 'jqueryupload-add' ) . '</span>
 						<input type="file" name="files[]" multiple>
 					</span>
 					<button type="submit" class="btn btn-primary start">
 						<i class="icon-upload icon-white"></i>
-						<span>Start upload</span>
+						<span>' . wfMsg( 'jqueryupload-start' ) . '</span>
 					</button>
 					<button type="reset" class="btn btn-warning cancel">
 						<i class="icon-ban-circle icon-white"></i>
-						<span>Cancel upload</span>
+						<span>' . wfMsg( 'jqueryupload-cancel' ) . '</span>
 					</button>
 					<button type="button" class="btn btn-danger delete">
 						<i class="icon-trash icon-white"></i>
-						<span>Delete</span>
+						<span>' . wfMsg( 'jqueryupload-delsel' ) . '</span>
 					</button>
 					<input type="checkbox" class="toggle">
 				</div>
@@ -407,7 +407,7 @@ class jQueryUpload extends SpecialPage {
 					<td class="start">{% if (!o.options.autoUpload) { %}
 						<button class="btn btn-primary">
 							<i class="icon-upload icon-white"></i>
-							<span>{%=locale.fileupload.start%}</span>
+							<span>' . wfMsg( 'jqueryupload-cancel' ) . '</span>
 						</button>
 					{% } %}</td>
 				{% } else { %}
@@ -416,7 +416,7 @@ class jQueryUpload extends SpecialPage {
 				<td class="cancel">{% if (!i) { %}
 					<button class="btn btn-warning">
 						<i class="icon-ban-circle icon-white"></i>
-						<span>{%=locale.fileupload.cancel%}</span>
+						<span>' . wfMsg( 'jqueryupload-cancel' ) . '</span>
 					</button>
 				{% } %}</td>
 			</tr>
@@ -446,7 +446,7 @@ class jQueryUpload extends SpecialPage {
 				<td class="delete">
 					<button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
 						<i class="icon-trash icon-white"></i>
-						<span>{%=locale.fileupload.destroy%}</span>
+						<span>' . wfMsg( 'jqueryupload-del' ) . '</span>
 					</button>
 					<input type="checkbox" name="delete" value="1">
 				</td>
