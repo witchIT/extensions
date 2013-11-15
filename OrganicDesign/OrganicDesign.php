@@ -79,7 +79,7 @@ class OrganicDesign {
 		else {
 
 			// Login or API requests bounce to the https www (if they're not https or not www)
-			if( strpos( $uri, '/api.php' ) !== false ) || ( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) ) {
+			if( strpos( $uri, '/api.php' ) !== false || ( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) ) {
 				if( !$od || !$ssl ) {
 					if( $port ) $port = ':8989';
 					header( "Location: https://$www.organicdesign.co.nz$port$uri" );
