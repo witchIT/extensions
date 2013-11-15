@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "1.0.1, 2013-07-27" );
+define( 'OD_VERSION', "1.0.2, 2013-11-15" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -78,8 +78,8 @@ class OrganicDesign {
 		// Non-sysops
 		else {
 
-			// Login pages bounce to the https www (if they're not https or not www)
-			if( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) {
+			// Login or API requests bounce to the https www (if they're not https or not www)
+			if( strpos( $uri, '/api.php' ) !== false ) || ( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) ) {
 				if( !$od || !$ssl ) {
 					if( $port ) $port = ':8989';
 					header( "Location: https://$www.organicdesign.co.nz$port$uri" );
