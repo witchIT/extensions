@@ -155,6 +155,33 @@ class jQueryUpload extends SpecialPage {
 		header( 'Pragma: no-cache' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 
+		// Get the file locations
+		$path = $wgRequest->getText( 'path', '' );
+		$dir = "$wgUploadDirectory/jquery_upload_files/$path";
+		if( $path ) $dir .= '/';
+		$thm = $dir . 'thumb/';
+		$meta = $dir . 'meta/';
+
+		// Set the initial options for the upload file object
+		$url = "$wgScript?action=ajax&rs=jQueryUpload::server";
+		if( $path ) $path = "&rsargs[]=$path";
+		$upload_options = array(
+			'script_url' => $url,
+			'upload_dir' => $dir,
+			'upload_url' => "$url$path&rsargs[]=",
+			'accept_file_types' => '/(' . implode( '|', $wgFileExtensions ) . ')/i',
+			'delete_type' => 'POST',
+			'max_file_size' => 50000000,
+			'image_versions' => array(
+				'thumbnail' => array(
+					'upload_dir' => $thm,
+					'upload_url' => "$url&rsargs[]=thumb$path&rsargs[]=",
+					'max_width' => 80,
+					'max_height' => 80
+				)
+			)
+		);
+
 		// If there are args, then this is a file or thumbnail request
 		if( $n = func_num_args() ) {
 			global $wgUser;
@@ -169,6 +196,12 @@ class jQueryUpload extends SpecialPage {
 				$path = $n == 3 ? array_shift( $a ) . '/' : '';
 				$name = "thumb/$a[0]";
 				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
+				
+				// Create the thumb if it doesn't exist
+				if( !file_exists( $file ) ) {
+					$upload_handler = new MWUploadHandler( $upload_options );
+					$upload_handler->create_scaled_image( $a[0], $upload_options['image_versions']['thumbnail'] );
+				}
 			}
 			else {
 				$path = $n == 2 ? array_shift( $a ) . '/' : '';
@@ -205,33 +238,6 @@ class jQueryUpload extends SpecialPage {
 
 		// So that meaningful errors can be sent back to the client
 		error_reporting( E_ALL | E_STRICT );
-
-		// Get the file locations
-		$path = $wgRequest->getText( 'path', '' );
-		$dir = "$wgUploadDirectory/jquery_upload_files/$path";
-		if( $path ) $dir .= '/';
-		$thm = $dir . 'thumb/';
-		$meta = $dir . 'meta/';
-
-		// Set the initial options for the upload file object
-		$url = "$wgScript?action=ajax&rs=jQueryUpload::server";
-		if( $path ) $path = "&rsargs[]=$path";
-		$upload_options = array(
-			'script_url' => $url,
-			'upload_dir' => $dir,
-			'upload_url' => "$url$path&rsargs[]=",
-			'accept_file_types' => '/(' . implode( '|', $wgFileExtensions ) . ')/i',
-			'delete_type' => 'POST',
-			'max_file_size' => 50000000,
-			'image_versions' => array(
-				'thumbnail' => array(
-					'upload_dir' => $thm,
-					'upload_url' => "$url&rsargs[]=thumb$path&rsargs[]=",
-					'max_width' => 80,
-					'max_height' => 80
-				)
-			)
-		);
 
 		// Create the file upload object
 		$upload_handler = new MWUploadHandler( $upload_options );
@@ -488,11 +494,23 @@ class MWUploadHandler extends UploadHandler {
 		$file = parent::get_file_object( $file_name );
 		if( is_object( $file ) ) {
 			$meta = $this->options['upload_dir'] . 'meta/' . $file_name;
-			if( file_exists( $meta ) ) {
+			$file->info = $file->desc = "";
+
+			// If the meta data file exists, extract and render the content
+			if( is_file( $meta ) ) {
 				$data = unserialize( file_get_contents( $meta ) );
 				$file->info = self::renderData( $data );
 				$file->desc = array_key_exists(2, $data) ? $data[2] : '';
-			} else $file->info = $file->desc = "";
+			}
+			
+			// If the file is a symlink to a file uploaded in the wiki, get the metadata from the wiki file instead
+			elseif( is_link( $meta ) ) {
+				$title = Title::newFromText( $file_name, NS_FILE );
+				if( is_object( $title ) && $title->exists() ) {
+					list( $uid, $ts, $file->desc ) = self::getUploadedFileInfo( $title );
+					$file->info = self::renderData( array( $uid, wfTimestamp( TS_UNIX, $ts ) ) );
+				}
+			}
 		}
 		return $file;
 	}
@@ -506,6 +524,23 @@ class MWUploadHandler extends UploadHandler {
 		if( empty( $name ) ) $name = $user->getName();
 		$date = date( "j M Y", $data[1] );
 		return wfMsg( 'jqueryupload-uploadinfo', $name, $date );
+	}
+
+	/**
+	 * Get the description, name and upload time of the passed wiki file
+	 */
+	public static function getUploadedFileInfo( $title ) {
+		$article = new Article( $title );
+		$desc = $article->getContent();
+		$dbr = wfGetDB( DB_SLAVE );
+		$row = $dbr->selectRow(
+			'revision',
+			array( 'rev_user', 'rev_timestamp' ),
+			array( 'rev_page' => $title->getArticleID(),
+			__METHOD__,
+			array( 'ORDER BY' => 'rev_timestamp','LIMIT' => 1 )
+		);
+		return array( $row->rev_user, $row->rev_timestamp, $desc );
 	}
 
 	/**
