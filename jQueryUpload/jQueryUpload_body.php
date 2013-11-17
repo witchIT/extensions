@@ -490,7 +490,7 @@ class MWUploadHandler extends UploadHandler {
 		// Create the thumb if it doesn't exist
 		$thumb = $this->options['upload_dir'] . 'thumb/' . $file_name;
 		if( !file_exists( $thumb ) ) {
-			$upload_handler->create_scaled_image( $file_name, $this->options['image_versions']['thumbnail'] );
+			$this->create_scaled_image( $file_name, $this->options['image_versions']['thumbnail'] );
 		}
 
 		// Call the parent method to create the file object
