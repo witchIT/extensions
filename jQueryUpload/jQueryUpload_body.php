@@ -201,7 +201,7 @@ class jQueryUpload extends SpecialPage {
 				if( !file_exists( $file ) ) {
 					$upload_handler = new MWUploadHandler( $upload_options );
 					$thumb_options = $upload_options['image_versions']['thumbnail'];
-					$thumb_options['upload_dir'] .= "$wgUploadDirectory/jquery_upload_files/$path/thumb/";
+					$thumb_options['upload_dir'] = "$wgUploadDirectory/jquery_upload_files/{$path}thumb/";
 					$upload_handler->create_scaled_image( $a[0], $thumb_options );
 				}
 			}
