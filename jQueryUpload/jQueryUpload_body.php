@@ -486,7 +486,6 @@ class MWUploadHandler extends UploadHandler {
 	public function create_scaled_image( $file, $options ) {
 		if( $result = parent::create_scaled_image( $file, $options ) ) return $result;
 		$icon = jQueryUpload::icon( $file );
-		die( "$icon, " . $options['upload_dir'] . $file );
 		return symlink( $icon , $options['upload_dir'] . $file );
 	}
 
