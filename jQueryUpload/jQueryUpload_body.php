@@ -536,7 +536,7 @@ class MWUploadHandler extends UploadHandler {
 		$row = $dbr->selectRow(
 			'revision',
 			array( 'rev_user', 'rev_timestamp' ),
-			array( 'rev_page' => $title->getArticleID(),
+			array( 'rev_page' => $title->getArticleID() ),
 			__METHOD__,
 			array( 'ORDER BY' => 'rev_timestamp','LIMIT' => 1 )
 		);
