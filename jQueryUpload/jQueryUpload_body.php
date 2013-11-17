@@ -481,7 +481,7 @@ class MWUploadHandler extends UploadHandler {
 	/**
 	 * We override the thumbnail creation to return a filetype icon when files can't be scaled as an image
 	 */
-	protected function create_scaled_image( $file, $options ) {
+	public function create_scaled_image( $file, $options ) {
 		if( $result = parent::create_scaled_image( $file, $options ) ) return $result;
 		$icon = jQueryUpload::icon( $file );
 		return symlink( $icon , $options['upload_dir'] . $file );
