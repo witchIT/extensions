@@ -200,7 +200,9 @@ class jQueryUpload extends SpecialPage {
 				// Create the thumb if it doesn't exist
 				if( !file_exists( $file ) ) {
 					$upload_handler = new MWUploadHandler( $upload_options );
-					$upload_handler->create_scaled_image( $a[0], $upload_options['image_versions']['thumbnail'] );
+					$thumb_options = $upload_options['image_versions']['thumbnail'];
+					$thumb_options['upload_dir'] .= "$path/";
+					$upload_handler->create_scaled_image( $a[0], $thumb_options );
 				}
 			}
 			else {
