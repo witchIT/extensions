@@ -504,7 +504,7 @@ class MWUploadHandler extends UploadHandler {
 			}
 			
 			// If the file is a symlink to a file uploaded in the wiki, get the metadata from the wiki file instead
-			elseif( is_link( $meta ) ) {
+			elseif( is_link( $this->options['upload_dir'] . $file_name ) ) {
 				$title = Title::newFromText( $file_name, NS_FILE );
 				if( is_object( $title ) && $title->exists() ) {
 					list( $uid, $ts, $file->desc ) = self::getUploadedFileInfo( $title );
