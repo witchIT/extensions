@@ -155,33 +155,6 @@ class jQueryUpload extends SpecialPage {
 		header( 'Pragma: no-cache' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 
-		// Get the file locations
-		$path = $wgRequest->getText( 'path', '' );
-		$dir = "$wgUploadDirectory/jquery_upload_files/$path";
-		if( $path ) $dir .= '/';
-		$thm = $dir . 'thumb/';
-		$meta = $dir . 'meta/';
-
-		// Set the initial options for the upload file object
-		$url = "$wgScript?action=ajax&rs=jQueryUpload::server";
-		if( $path ) $path = "&rsargs[]=$path";
-		$upload_options = array(
-			'script_url' => $url,
-			'upload_dir' => $dir,
-			'upload_url' => "$url$path&rsargs[]=",
-			'accept_file_types' => '/(' . implode( '|', $wgFileExtensions ) . ')/i',
-			'delete_type' => 'POST',
-			'max_file_size' => 50000000,
-			'image_versions' => array(
-				'thumbnail' => array(
-					'upload_dir' => $thm,
-					'upload_url' => "$url&rsargs[]=thumb$path&rsargs[]=",
-					'max_width' => 80,
-					'max_height' => 80
-				)
-			)
-		);
-
 		// If there are args, then this is a file or thumbnail request
 		if( $n = func_num_args() ) {
 			global $wgUser;
@@ -196,15 +169,8 @@ class jQueryUpload extends SpecialPage {
 				$path = $n == 3 ? array_shift( $a ) . '/' : '';
 				$name = "thumb/$a[0]";
 				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
-				
-				// Create the thumb if it doesn't exist
-				if( !file_exists( $file ) ) {
-					$upload_handler = new MWUploadHandler( $upload_options );
-					$thumb_options = $upload_options['image_versions']['thumbnail'];
-					$thumb_options['upload_dir'] = "$wgUploadDirectory/jquery_upload_files/{$path}thumb/";
-					$upload_handler->create_scaled_image( $a[0], $thumb_options );
-				}
 			}
+
 			else {
 				$path = $n == 2 ? array_shift( $a ) . '/' : '';
 				$name = $a[0];
@@ -240,6 +206,33 @@ class jQueryUpload extends SpecialPage {
 
 		// So that meaningful errors can be sent back to the client
 		error_reporting( E_ALL | E_STRICT );
+
+		// Get the file locations
+		$path = $wgRequest->getText( 'path', '' );
+		$dir = "$wgUploadDirectory/jquery_upload_files/$path";
+		if( $path ) $dir .= '/';
+		$thm = $dir . 'thumb/';
+		$meta = $dir . 'meta/';
+
+		// Set the initial options for the upload file object
+		$url = "$wgScript?action=ajax&rs=jQueryUpload::server";
+		if( $path ) $path = "&rsargs[]=$path";
+		$upload_options = array(
+			'script_url' => $url,
+			'upload_dir' => $dir,
+			'upload_url' => "$url$path&rsargs[]=",
+			'accept_file_types' => '/(' . implode( '|', $wgFileExtensions ) . ')/i',
+			'delete_type' => 'POST',
+			'max_file_size' => 50000000,
+			'image_versions' => array(
+				'thumbnail' => array(
+					'upload_dir' => $thm,
+					'upload_url' => "$url&rsargs[]=thumb$path&rsargs[]=",
+					'max_width' => 80,
+					'max_height' => 80
+				)
+			)
+		);
 
 		// Create the file upload object
 		$upload_handler = new MWUploadHandler( $upload_options );
@@ -483,17 +476,27 @@ class MWUploadHandler extends UploadHandler {
 	/**
 	 * We override the thumbnail creation to return a filetype icon when files can't be scaled as an image
 	 */
-	public function create_scaled_image( $file, $options ) {
+	protected function create_scaled_image( $file, $options ) {
 		if( $result = parent::create_scaled_image( $file, $options ) ) return $result;
 		$icon = jQueryUpload::icon( $file );
 		return symlink( $icon , $options['upload_dir'] . $file );
 	}
 
 	/**
-	 * Add info on the user who uploaded the file and the date it was uploaded
+	 * Add info on the user who uploaded the file and the date it was uploaded, and create thumb if it doesn't exist
 	 */
 	protected function get_file_object( $file_name ) {
+
+		// Create the thumb if it doesn't exist
+		$thumb = $this->options['upload_dir'] . 'thumb/' . $file_name;
+		if( !file_exists( $thumb ) ) {
+			$upload_handler->create_scaled_image( $file_name, $this->options['image_versions']['thumbnail'] );
+		}
+
+		// Call the parent method to create the file object
 		$file = parent::get_file_object( $file_name );
+
+		// Add the meta data to the object
 		if( is_object( $file ) ) {
 			$meta = $this->options['upload_dir'] . 'meta/' . $file_name;
 			$file->info = $file->desc = "";
