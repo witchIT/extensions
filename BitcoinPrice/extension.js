@@ -30,7 +30,7 @@ function init() {
 
 function enable() {
     let children = Main.panel._rightBox.get_children();
-    Main.panel._rightBox.insert_child_at_index(label, children.length-3);
+    Main.panel._rightBox.insert_child_at_index(label, children.length-2);
 }
 
 function disable() {
