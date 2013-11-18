@@ -1,0 +1,11 @@
+.panel-bitcoin-price {
+	background-image: url(./Bitcoin-icon.png) left center no-repeat;
+    color: #ccc;
+    text-align: center;
+    font-size: 11pt;
+    font-weight: bold;
+    padding-top: 2px;
+}
+.panel-bitcoin-price:hover {
+	color: white;
+}
