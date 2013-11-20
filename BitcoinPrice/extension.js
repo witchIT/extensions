@@ -3,9 +3,6 @@
 const St = imports.gi.St;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
-const Tweener = imports.ui.tweener;
-const GLib = imports.gi.GLib;
-const Gio = imports.gi.Gio;
 const Json = imports.gi.Json;
 const Soup = imports.gi.Soup;
 
