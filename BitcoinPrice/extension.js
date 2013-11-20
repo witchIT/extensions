@@ -1,8 +1,8 @@
 // Copyright (C) 2013 Aran Dunkley
 // Licence: GPLv2+
-const St = imports.gi.St;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
+const St = imports.gi.St;
 const Json = imports.gi.Json;
 const Soup = imports.gi.Soup;
 
