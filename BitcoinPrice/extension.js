@@ -2,30 +2,33 @@
 // Licence: GPLv2+
 const St = imports.gi.St;
 const Main = imports.ui.main;
+const Mainloop = imports.mainloop;
 const Tweener = imports.ui.tweener;
 const GLib = imports.gi.GLib;
 const Gio = imports.gi.Gio;
+const Json = imports.gi.Json;
+const Soup = imports.gi.Soup;
 
 let label;
-let btcPriceFile;
-let monitor;
+let update_price;
 function init() {
-
-	btcPriceFile = Gio.File.new_for_path(GLib.get_home_dir() + '/.btcprice.txt');
 	label = new St.Bin({ style_class: 'panel-bitcoin-price' });
-	let price = '$' + btcPriceFile.load_contents(null)[1];
-	let text = new St.Label({ text: price.trim() });
-	label.set_child(text);
-    
-	monitor = btcPriceFile.monitor(Gio.FileMonitorFlags.NONE, null);
-	monitor.connect('changed', function(file, otherFile, eventType) {
-		let [flag, price] = btcPriceFile.load_contents(null);
-		if(flag && parseInt(price) > 0) {
-			price = '$' + price;
-			let text = new St.Label({ text: price.trim() });
-			label.set_child(text);
-		}
-	});
+	update_price = function() {
+		let session = new Soup.SessionAsync();
+		let message = Soup.Message.new('GET', 'http://mtgox.com/api/1/BTCUSD/ticker');
+		session.queue_message(message, function(session, message) {
+			let parser = new Json.Parser();
+			parser.load_from_data(message.response_body.data, -1);
+			let json = parser.get_root().get_object();
+			if( json.get_string_member('result') == 'success' ) {
+				let price = json.get_object_member('return').get_object_member('last').get_string_member('display');
+				let text = new St.Label({ text: price });
+				label.set_child(text);
+			}
+		});
+		Mainloop.timeout_add(120000, update_price);
+	};
+	update_price();
 }
 
 function enable() {
