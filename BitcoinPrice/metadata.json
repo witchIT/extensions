@@ -1,10 +1,10 @@
 {
-  "description": "Add the current Bitcoin price to the main panel", 
-  "name": "Bitcoin Price", 
-  "shell-version": [
-    "3.4"
-  ], 
-  "url": "http://www.organicdesign.co.nz/Extension:BitcoinPrice", 
-  "uuid": "BitcoinPrice@organicdesign.co.nz", 
-  "version": 1
+	"description": "Add the current Bitcoin price to the main panel", 
+	"name": "Bitcoin Price", 
+	"shell-version": ["3.4"], 
+	"settings-schema": "org.gnome.shell.extensions.bitcoinprice", 
+	"url": "http://www.organicdesign.co.nz/Extension:BitcoinPrice", 
+	"uuid": "BitcoinPrice@organicdesign.co.nz",
+	"gettext-domain": "gnome3-bitcoinprice",
+	"version": 1
 }
