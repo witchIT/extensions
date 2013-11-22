@@ -3,7 +3,6 @@
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 const St = imports.gi.St;
-const Json = imports.gi.Json;
 const Soup = imports.gi.Soup;
 const Local = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Local.imports.convenience;
@@ -20,7 +19,7 @@ function init() {
 	label.set_child(text);
 	update_price = function() {
 
-		// Get the currency and make the url
+		// Get the currency setting and make the url
 		let settings_data = Settings.getSettings(settings);
 		let currency = currencies[parseInt(settings_data.currency)];
 		let url = 'http://mtgox.com/api/1/BTC' + currency + '/ticker';
@@ -29,12 +28,9 @@ function init() {
 		let session = new Soup.SessionAsync();
 		let message = Soup.Message.new('GET', url);
 		session.queue_message(message, function(session, message) {
-			let parser = new Json.Parser();
-			parser.load_from_data(message.response_body.data, -1);
-			let json = parser.get_root().get_object();
-			if( json.get_string_member('result') == 'success' ) {
-				let price = json.get_object_member('return').get_object_member('last').get_string_member('display');
-				let text = new St.Label({ text: price });
+			let json = JSON.parse(message.response_body.data);
+			if(json.result == 'success') {
+				let text = new St.Label({ text: json['return']['last']['display'] });
 				label.set_child(text);
 			}
 		});
