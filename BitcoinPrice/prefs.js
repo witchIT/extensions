@@ -66,7 +66,7 @@ function widget_connect() {
 function widget_init_values() {
 	settings = Convenience.getSettings();
 	settings_data = Settings.getSettings(settings);
-	currency_input.set_active(parseInt(settings_data.currency));
+	currency_input.set_active(settings_data.currency);
 }
  
 function buildPrefsWidget() {

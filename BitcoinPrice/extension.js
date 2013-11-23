@@ -39,7 +39,7 @@ function init() {
 
 		// Get the currency setting and make the url
 		let settings_data = Settings.getSettings(settings);
-		let currency = currencies[parseInt(settings_data.currency)];
+		let currency = currencies[settings_data.currency];
 		let url = 'http://mtgox.com/api/1/BTC' + currency + '/ticker';
 
 		// Request the MtGox data
@@ -58,7 +58,7 @@ function init() {
 	update_price_regular = function() {
 		update_price();
 		let settings_data = Settings.getSettings(settings);
-		let period = 120; //parseInt(settings_data.refresh_period);
+		let period = 120; //settings_data.refresh_period;
 		Mainloop.timeout_add_seconds(period, update_price_regular);
 	};
 	update_price_regular();
