@@ -23,8 +23,8 @@ function init() {
 	// Check settings called every 2 seconds
 	check_settings = function() {
 		let settings_data = Settings.getSettings(settings);
-		if(settings_data.reload_now == "1") {
-			settings_data.reload_now = "0";
+		if(settings_data.reload_now == true) {
+			settings_data.reload_now = false;
 			settings.set_string("settings-json", JSON.stringify(settings_data));
 			let text = new St.Label({ text: '...' });
 			label.set_child(text);

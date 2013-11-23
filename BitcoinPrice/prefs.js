@@ -57,7 +57,7 @@ function widget_connect() {
 	reload_button.connect('clicked', Lang.bind(this, function() {
 		settings = Convenience.getSettings();
 		settings_data = Settings.getSettings(settings);
-		settings_data.reload_now = "1";
+		settings_data.reload_now = true;
 		settings.set_string("settings-json", JSON.stringify(settings_data));
 	}));
 }
