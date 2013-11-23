@@ -9,9 +9,9 @@ let main_frame;
 let currency_box;
 let currency_label;
 let currency_input;
-let save_settings_box;
-let save_settings_button;
-let save_settings_spacer;
+let reload_box;
+let reload_button;
+let reload_spacer;
 let settings;
 let settings_data;
  
@@ -24,37 +24,40 @@ function widget_initliaze() {
 	// initilize main frame
 	main_frame = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, border_width: 10 });
 
-	// auth
+	// Currency
 	currency_box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL });
 	currency_label = new Gtk.Label({label: "Currency", xalign: 0, margin_right: 30 });
 	currency_input = new Gtk.ComboBoxText();
 	let currencies = ["USD","AUD","CHF","NOK","RUB","DKK","JPY","CAD","NZD","PLN","CNY","SEK","SGD","HKD","EUR"];
 	for(let i = 0; i < currencies.length; i++) currency_input.append_text(currencies[i]);
 
-	// save settings box
-	save_settings_box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL });
-	save_settings_spacer = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, vexpand: true, hexpand: true });
-	save_settings_button = new Gtk.Button({label: "Save Settings" });
+	// Reload box
+	reload_box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL });
+	reload_spacer = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL, vexpand: true, hexpand: true });
+	reload_button = new Gtk.Button({label: "Update price now" });
 }
  
 function widget_packaging() {
 	currency_box.pack_start(currency_label, false, false, 15);
 	currency_box.pack_start(currency_input, true, true, 15);
-	save_settings_box.pack_start(save_settings_spacer, true, true, 15);
-	save_settings_box.pack_start(save_settings_button, false, false, 15);	 
+	reload_box.pack_start(reload_spacer, true, true, 15);
+	reload_box.pack_start(reload_button, false, false, 15);	 
 	main_frame.add(currency_box);
-	main_frame.add(save_settings_box);
+	main_frame.add(reload_box);
 }
 
 function widget_connect() {
 	currency_input.connect('changed', Lang.bind(this, function() {
-		// todo: call update
-	}));
-
-	save_settings_button.connect('clicked', Lang.bind(this, function() {
 		settings = Convenience.getSettings();
 		settings_data = Settings.getSettings(settings);
 		settings_data.currency = currency_input.get_active();
+		settings.set_string("settings-json", JSON.stringify(settings_data));
+	}));
+
+	reload_button.connect('clicked', Lang.bind(this, function() {
+		settings = Convenience.getSettings();
+		settings_data = Settings.getSettings(settings);
+		settings_data.reload_now = "1";
 		settings.set_string("settings-json", JSON.stringify(settings_data));
 	}));
 }

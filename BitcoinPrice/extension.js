@@ -9,7 +9,9 @@ const Convenience = Local.imports.convenience;
 const Settings = Local.imports.settings;
 
 let label;
+let check_settings;
 let update_price;
+let update_price_regular;
 let settings;
 let currencies = ["USD","AUD","CHF","NOK","RUB","DKK","JPY","CAD","NZD","PLN","CNY","SEK","SGD","HKD","EUR"];
 function init() {
@@ -17,6 +19,22 @@ function init() {
 	label = new St.Bin({ style_class: 'panel-bitcoin-price' });
 	let text = new St.Label({ text: '...' });
 	label.set_child(text);
+
+	// Check settings called every 2 seconds
+	check_settings = function() {
+		let settings_data = Settings.getSettings(settings);
+		if(settings_data.reload_now == "1") {
+			settings_data.reload_now = "0";
+			settings.set_string("settings-json", JSON.stringify(settings_data));
+			let text = new St.Label({ text: '...' });
+			label.set_child(text);
+			update_price();
+		}
+		Mainloop.timeout_add_seconds(2, check_settings);
+	};
+	check_settings();
+
+	// Actual update price function
 	update_price = function() {
 
 		// Get the currency setting and make the url
@@ -34,9 +52,16 @@ function init() {
 				label.set_child(text);
 			}
 		});
-		Mainloop.timeout_add(120000, update_price);
 	};
-	update_price();
+
+	// Update price function called regularly
+	update_price_regular = function() {
+		update_price();
+		let settings_data = Settings.getSettings(settings);
+		let period = 120; //parseInt(settings_data.refresh_period);
+		Mainloop.timeout_add_seconds(period, update_price_regular);
+	};
+	update_price_regular();
 }
 
 function enable() {
