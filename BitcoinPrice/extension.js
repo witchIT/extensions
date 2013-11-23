@@ -21,7 +21,13 @@ let update_price;
 let update_price_regular;
 let settings;
 let currencies = ["USD","AUD","CHF","NOK","RUB","DKK","JPY","CAD","NZD","PLN","CNY","SEK","SGD","HKD","EUR"];
+let extPath;
+
 function init(metadata) {
+	extPath = metadata.path;
+}
+
+function enable() {
 
 	// Text
 	settings = Convenience.getSettings();
@@ -31,16 +37,20 @@ function init(metadata) {
 
 	// Icon
 	let icon = new St.Icon({ style_class: 'bitcoinprice-icon' });
-	icon.set_gicon(new Gio.FileIcon({ file: Gio.file_new_for_path(GLib.build_filenamev([metadata.path, 'Bitcoin-icon.png']))}));
+	icon.set_gicon(new Gio.FileIcon({ file: Gio.file_new_for_path(GLib.build_filenamev([extPath, 'Bitcoin-icon.png']))}));
 	panelicon = new St.Bin({ style_class: 'panel-button', reactive: true, can_focus: true, x_fill: true, y_fill: false, track_hover: true });
 	panelicon.set_child(icon);
 
-	// Add them both to a box
+	// Add them both to the panel box
 	panelbox = new St.BoxLayout();
 	panelbox.add_actor(panelicon);
 	panelbox.add_actor(paneltext);	
 
-	// Check settings called every 2 seconds
+	// Add the panel box to the panel
+    let children = Main.panel._rightBox.get_children();
+    Main.panel._rightBox.insert_child_at_index(panelbox, children.length - 2);
+
+	// Check for changes to settings called every 2 seconds
 	check_settings = function() {
 		let settings_data = Settings.getSettings(settings);
 		if(settings_data.reload_now == true) {
@@ -54,7 +64,7 @@ function init(metadata) {
 	};
 	check_settings();
 
-	// Actual update price function
+	// Function to retrieve the price and update the panel label
 	update_price = function() {
 
 		// Get the currency setting and make the url
@@ -74,7 +84,7 @@ function init(metadata) {
 		});
 	};
 
-	// Update price function called regularly
+	// Call the update price function on a regular interval
 	update_price_regular = function() {
 		update_price();
 		let settings_data = Settings.getSettings(settings);
@@ -84,39 +94,6 @@ function init(metadata) {
 	update_price_regular();
 }
 
-/*
-let testMenu;
-let topbox;
-const BitcoinPriceMenuButton = new Lang.Class({
-	Name: 'BitcoinPriceMenuButton',
-	Extends: PanelMenu.Button,
-	_init: function() {
-		testMenu = new St.Bin({ style_class: 'panel-bitcoin-price' });
-		let text = new St.Label({ text: 'testMenu' });
-		testMenu.set_child(text);		
-		
-		this.actor.add_actor(testMenu);
-
-		let children = Main.panel._rightBox.get_children();
-		Main.panel._rightBox.insert_child_at_index(this.actor, children.length - 2);
-		Main.panel._menus.addMenu(this.menu);
-		this.parent(0.25);
-		if(typeof Main.panel._menus == "undefined") Main.panel.menuManager.addMenu(this.menu);
-		else Main.panel._menus.addMenu(this.menu);
-	}
-});
-*/
-
-let bitcoinpriceMenu;
-function enable() {
-    let children = Main.panel._rightBox.get_children();
-    Main.panel._rightBox.insert_child_at_index(panelbox, children.length - 2);
-	//bitcoinpriceMenu = new BitcoinPriceMenuButton();
-	//Main.panel.addToStatusArea('bitcoinpriceMenu', bitcoinpriceMenu);
-}
-
 function disable() {
 	Main.panel._rightBox.remove_child(panelbox);
-	//bitcoinpriceMenu.stop();
-	//bitcoinpriceMenu.destroy();
 }
