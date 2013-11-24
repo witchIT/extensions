@@ -2,7 +2,12 @@
 <schemalist gettext-domain="gnome3-bitcoinprice">
 	<schema id="org.gnome.shell.extensions.bitcoinprice" path="/org/gnome/shell/extensions/bitcoinprice/">
 		<key type="s" name="settings-json">
-			<default>'{"currency": 0, "refresh_period": 120, "reload_now": false}'</default>
+			<default>'{
+			"currency": 0,
+			"currencies": ["USD","AUD","CHF","NOK","RUB","DKK","JPY","CAD","NZD","PLN","CNY","SEK","SGD","HKD","EUR"],
+			"refresh_period": 120,
+			"reload_now": false
+			}'</default>
 			<summary>JSON settings</summary>
 			<description>Settings for BitcoinPrice configuration.</description>
 		</key>
