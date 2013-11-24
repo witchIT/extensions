@@ -48,7 +48,6 @@ let BitcoinPriceMenuButton = new Lang.Class({
 		// Call the regular update and settings check
 		this.update_price();
 		this.check_settings();
-		global.log("init");
 	},
 
 	stop: function() {
@@ -57,7 +56,6 @@ let BitcoinPriceMenuButton = new Lang.Class({
 	},
 
 	update_price: function() {
-		global.log("update price");
 
 		// Get the currency setting and make the url
 		let settings = Settings.getSettings(this._settings);
