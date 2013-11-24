@@ -12,6 +12,7 @@ const Lang = imports.lang;
 const Convenience = Local.imports.convenience;
 const Settings = Local.imports.settings;
 const Soup = imports.gi.Soup;
+const Util = imports.misc.util;
 
 let extpath;
 function init(metadata) {
@@ -24,6 +25,7 @@ let BitcoinPriceMenuButton = new Lang.Class({
 
 	_init: function(extpath) {
 		this._settings = Convenience.getSettings();
+		let settings = Settings.getSettings(this._settings);
 		this.parent(0.25);
 
 		// Text & icon
@@ -39,9 +41,42 @@ let BitcoinPriceMenuButton = new Lang.Class({
 		topBox.add_actor(this.paneltext);
 		this.actor.add_actor(topBox);
 
-		// Add the menu
-		let item = new PopupMenu.PopupSeparatorMenuItem();
+		// Add the Reload Price menu item
+		let item = new PopupMenu.PopupMenuItem("Reload Price");
+		item.connect('activate', Lang.bind(this, function() {
+			this.paneltext.set_text('...');
+			if(this._timeoutSrc) Mainloop.source_remove(this._timeoutSrc);
+			this.update_price();
+		}));
 		this.menu.addMenuItem(item);
+
+		// Add the currencies selection
+		let item = new PopupMenu.PopupSubMenuMenuItem("Select Currency");
+		for(let i = 0; i < settings.currencies.length; i++) {
+			let subitem = new PopupMenu.PopupMenuItem(settings.currencies[i]);
+			item.menu.addMenuItem(subitem);
+		}
+		item.connect('activate', Lang.bind(this, function() {
+			this.paneltext.set_text('...');
+			if(this._timeoutSrc) Mainloop.source_remove(this._timeoutSrc);
+			this.update_price();
+		}));
+		this.menu.addMenuItem(item);
+
+		// Add te display currency switch
+		let item = new PopupMenu.PopupSwitchMenuItem("Display Currency");
+		this.menu.addMenuItem(item);
+
+		// Add the settings menu item
+		this.menu.addMenuItem(item);
+		let item = new PopupMenu.PopupMenuItem("BitcoinPrice Settings");
+		item.connect('activate', Lang.bind(this, function() {
+			Util.spawn(["gnome-shell-extension-prefs","BitcoinPrice@organicdesign.co.nz"]);
+			return 0;
+		}));
+		this.menu.addMenuItem(item);
+
+		// Add the menu to the main panel
 		Main.panel._menus.addMenu(this.menu);
 		Main.panel._rightBox.insert_child_at_index(this.actor, 0);
 
