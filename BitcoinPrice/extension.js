@@ -54,18 +54,22 @@ let BitcoinPriceMenuButton = new Lang.Class({
 		let item = new PopupMenu.PopupSubMenuMenuItem("Select Currency");
 		for(let i = 0; i < settings.currencies.length; i++) {
 			let subitem = new PopupMenu.PopupMenuItem(settings.currencies[i]);
+			subitem._index = i;
+			subitem.connect('activate', Lang.bind(this, function(item) {
+				let settings = Settings.getSettings(this._settings);
+				settings.currency = item._index;
+				this._settings.set_string("settings-json", JSON.stringify(settings));
+				this.paneltext.set_text('...');
+				if(this._timeoutSrc) Mainloop.source_remove(this._timeoutSrc);
+				this.update_price();
+			}));
 			item.menu.addMenuItem(subitem);
 		}
-		item.connect('activate', Lang.bind(this, function() {
-			this.paneltext.set_text('...');
-			if(this._timeoutSrc) Mainloop.source_remove(this._timeoutSrc);
-			this.update_price();
-		}));
 		this.menu.addMenuItem(item);
 
 		// Add te display currency switch
-		let item = new PopupMenu.PopupSwitchMenuItem("Display Currency");
-		this.menu.addMenuItem(item);
+		//let item = new PopupMenu.PopupSwitchMenuItem("Display Currency");
+		//this.menu.addMenuItem(item);
 
 		// Add the settings menu item
 		this.menu.addMenuItem(item);
