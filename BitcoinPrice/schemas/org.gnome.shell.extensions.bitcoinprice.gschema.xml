@@ -5,8 +5,8 @@
 			<default>'{
 			"currency": 0,
 			"currencies": ["USD","AUD","CHF","NOK","RUB","DKK","JPY","CAD","NZD","PLN","CNY","SEK","SGD","HKD","EUR"],
+			"reload_now": false,
 			"refresh_period": 120,
-			"reload_now": false
 			}'</default>
 			<summary>JSON settings</summary>
 			<description>Settings for BitcoinPrice configuration.</description>

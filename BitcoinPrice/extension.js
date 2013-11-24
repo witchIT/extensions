@@ -48,6 +48,7 @@ let BitcoinPriceMenuButton = new Lang.Class({
 		// Call the regular update and settings check
 		this.update_price();
 		this.check_settings();
+		global.log("init");
 	},
 
 	stop: function() {
@@ -56,25 +57,26 @@ let BitcoinPriceMenuButton = new Lang.Class({
 	},
 
 	update_price: function() {
+		global.log("update price");
 
 		// Get the currency setting and make the url
 		let settings = Settings.getSettings(this._settings);
-		let currencies = ["USD","AUD","CHF","NOK","RUB","DKK","JPY","CAD","NZD","PLN","CNY","SEK","SGD","HKD","EUR"];
-		let currency = currencies[settings.currency];
+		let currency = settings.currencies[settings.currency];
 		let url = 'http://mtgox.com/api/1/BTC' + currency + '/ticker';
-		let text = this.paneltext;
 
 		// Request the MtGox data
 		let session = new Soup.SessionAsync();
 		let message = Soup.Message.new('GET', url);
+		let paneltext = this.paneltext;
 		session.queue_message(message, function(session, message) {
 			let json = JSON.parse(message.response_body.data);
-			if(json.result == 'success') text.set_text(json['return']['last']['display']);
+			if(json.result == 'success') paneltext.set_text(json['return']['last']['display']);
 		});
 
 		// Call regularly
-		let period = 120; //settings_data.refresh_period;
-		this._timeoutSrc = Mainloop.timeout_add_seconds(period, this.update_price);
+		this._timeoutSrc = Mainloop.timeout_add_seconds(settings.refresh_period, Lang.bind(this, function() {
+			this.update_price();
+		}));
 	},
 
 	check_settings: function() {
@@ -86,7 +88,9 @@ let BitcoinPriceMenuButton = new Lang.Class({
 			if(this._timeoutSrc) Mainloop.source_remove(this._timeoutSrc);
 			this.update_price();
 		}
-		this._checkSettingsSrc = Mainloop.timeout_add_seconds(2, this.check_settings);
+		this._checkSettingsSrc = Mainloop.timeout_add_seconds(2, Lang.bind(this, function() {
+			this.check_settings();
+		}));
 	}
 });
 
