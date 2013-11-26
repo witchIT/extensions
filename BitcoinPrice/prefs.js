@@ -55,9 +55,12 @@ function widget_connect() {
 
 	let update_settings = function() {
 		let data = Settings.getSettings(settings);
+		oldcur = data.currency;
+		oldshcur = data.show_currency;
 		data.currency = currency_input.get_active();
 		data.show_currency = showcur_input.active;
 		data.refresh_period = refresh_input.get_value();
+		if(oldcur != data.currency || oldshcur != data.show_currency) data.reload_now = true;
 		settings.set_string("settings-json", JSON.stringify(data));
 	};
 

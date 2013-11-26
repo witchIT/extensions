@@ -103,7 +103,11 @@ let BitcoinPriceMenuButton = new Lang.Class({
 		let paneltext = this.paneltext;
 		session.queue_message(message, function(session, message) {
 			let json = JSON.parse(message.response_body.data);
-			if(json.result == 'success') paneltext.set_text(json['return']['last']['display']);
+			if(json.result == 'success') {
+				let price = json['return']['last']['display'];
+				if('show_currency' in settings && !settings.show_currency) price = price.replace( /[^0-9.,]/g, "", price);
+				paneltext.set_text(price);
+			}
 		});
 
 		// Call regularly
