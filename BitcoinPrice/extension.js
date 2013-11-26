@@ -67,10 +67,6 @@ let BitcoinPriceMenuButton = new Lang.Class({
 		}
 		this.menu.addMenuItem(item);
 
-		// Add te display currency switch
-		//let item = new PopupMenu.PopupSwitchMenuItem("Display Currency");
-		//this.menu.addMenuItem(item);
-
 		// Add the settings menu item
 		this.menu.addMenuItem(item);
 		let item = new PopupMenu.PopupMenuItem("BitcoinPrice Settings");
