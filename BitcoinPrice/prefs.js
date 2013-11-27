@@ -55,10 +55,12 @@ function widget_connect() {
 
 	let update_settings = function() {
 		let data = Settings.getSettings(settings);
-		oldcur = data.currency;
-		oldshcur = data.show_currency;
+		let oldcur = 0;
+		let oldshcur = true;
+		if('currency' in data) oldcur = data.currency;
+		if('show_currency' in data) oldshcur = data.show_currency;
 		data.currency = currency_input.get_active();
-		data.show_currency = showcur_input.active;
+		data.show_currency = showcur_input.get_active();
 		data.refresh_period = refresh_input.get_value();
 		if(oldcur != data.currency || oldshcur != data.show_currency) data.reload_now = true;
 		settings.set_string("settings-json", JSON.stringify(data));
@@ -74,14 +76,14 @@ function widget_connect() {
 function widget_init_values() {
 	let data = Settings.getSettings(settings);
 	if('currency' in data) currency_input.set_active(data.currency); else currency_input.set_active(0);
-	if('show_currency' in data) showcur_input.active = data.show_currency; else showcur_input.active = true;
+	if('show_currency' in data) showcur_input.set_active(data.show_currency); else showcur_input.set_active(true);
 	if('refresh_period' in data) refresh_input.set_value(data.refresh_period); else refresh_input.set_value(120);
 }
  
 function buildPrefsWidget() {
 	widget_initliaze();
-	widget_connect();
 	widget_init_values();
+	widget_connect();
 	main_frame.show_all();
 	return main_frame;
 }
