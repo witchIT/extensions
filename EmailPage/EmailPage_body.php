@@ -72,7 +72,7 @@ class SpecialEmailPage extends SpecialPage {
 		// To
 		$wgOut->addHTML( "<tr id=\"ea-to\"><th align=\"right\" valign=\"top\">" . wfMsg( 'ea-to' ) . ":</th>" );
 		$wgOut->addHTML( "<td><textarea name=\"ea-to\" rows=\"2\" style=\"width:100%\">{$this->to}</textarea>" );
-		$wgOut->addHTML( "<br /><small><i>(" . wfMsg( 'ea-to-info' ) . ")</i></small>" );
+		$wgOut->addHTML( "<br /><small><i>" . wfMsg( 'ea-to-info' ) . "</i></small>" );
 
 		// To group
 		$groups = "<option />";
@@ -85,7 +85,7 @@ class SpecialEmailPage extends SpecialPage {
 			$groups .= "<option$selected value=\"user\">" . wfMsg( 'ea-allusers' ) . "</option>";
 		}
 		$wgOut->addHTML( "<div id=\"ea-group\"><select name=\"ea-group\">$groups</select>" );
-		$wgOut->addHTML( " <i><small>(" . wfMsg( 'ea-group-info' ) . "</small></i></div>" );
+		$wgOut->addHTML( " <i><small>" . wfMsg( 'ea-group-info' ) . "</small></i></div>" );
 
 		$wgOut->addHTML( "</td></tr>" );
 
@@ -114,7 +114,7 @@ class SpecialEmailPage extends SpecialPage {
 		// Message
 		$wgOut->addHTML( "<tr id=\"ea-message\"><th align=\"right\" valign=\"top\">" . wfMsg( 'ea-message' ) . ":</th>" );
 		$wgOut->addHTML( "<td><textarea name=\"ea-message\" rows=\"3\" style=\"width:100%\">{$this->message}</textarea>" );
-		$wgOut->addHTML( "<br /><i><small>(" . wfMsg( 'ea-message-info' ) . ")</small></i></td></tr>" );
+		$wgOut->addHTML( "<br /><i><small>" . wfMsg( 'ea-message-info' ) . "</small></i></td></tr>" );
 
 		// Data
 		if( defined( 'NS_FORM' ) ) {
@@ -130,7 +130,7 @@ class SpecialEmailPage extends SpecialPage {
 			if( $options ) {
 				$wgOut->addHTML( "<tr id=\"ea-data\"><th align=\"right\">" . wfMsg( 'ea-data' ) . ":</th><td>" );
 				$wgOut->addHTML( "<select name=\"ea-record\"><option />$options</select>" );
-				$wgOut->addHTML( " <small><i>(" . wfMsg( 'ea-selectrecord' ) . ")</i></small></td></tr>" );
+				$wgOut->addHTML( " <small><i>" . wfMsg( 'ea-selectrecord' ) . "</i></small></td></tr>" );
 			}
 		}
 

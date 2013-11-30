@@ -19,10 +19,10 @@ $messages['en'] = array(
 	'ea-pagesend'         => "Page \"$1\" sent from $2",
 	'ea-nopage'           => "No page was specified for sending, please use the E-mail links from the sidebar or page actions.",
 	'ea-norecipients'     => "No valid e-mail addresses found!",
-	'ea-listrecipients'   => "Listing {{PLURAL:$1|Recipient|$1 recipients}}",
+	'ea-listrecipients'   => "Listing {{PLURAL:$1|recipient|$1 recipients}}",
 	'ea-error'            => "'''Error sending [[$1]]:''' ''$2''",
 	'ea-denied'           => "Permission denied",
-	'ea-sent'             => "Page [[$1]] sent successfully to '''$2''' {{PLURAL:$2|recipient|recipients}} by [[User:$3|$3]].",
+	'ea-sent'             => "Page [[$1]] sent successfully to '''$2''' {{PLURAL:$2|recipient|recipients}} by [[{{ns:User}}:$3|$3]].",
 	'ea-compose'          => "Compose content",
 	'ea-show'             => "View recipient list",
 	'ea-from'             => "From",
@@ -63,7 +63,7 @@ $messages['ar'] = array(
 	'ea-listrecipients' => '=== {{PLURAL:$1|متلقي|$1 متلقي}} ===',
 	'ea-error' => "'''خطأ في إرسال [[$1]]:''' ''$2''",
 	'ea-denied' => 'السماح مرفوض',
-	'ea-sent' => "الصفحة [[$1]] تم إرسالها بنجاح إلى '''$2''' {{PLURAL:$2|متلق|متلق}} بواسطة [[User:$3|$3]].",
+	'ea-sent' => "الصفحة [[$1]] تم إرسالها بنجاح إلى '''$2''' {{PLURAL:$2|متلق|متلق}} بواسطة [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'اختر المتلقين',
 	'ea-compose' => 'كتابة المحتوى',
 	'ea-selectlist' => "متلقون إضافيون كعناوين صفحات أو عناوين بريد إلكتروني
@@ -90,7 +90,7 @@ $messages['arz'] = array(
 	'ea-listrecipients' => '=== {{PLURAL:$1|متلقي|$1 متلقي}} ===',
 	'ea-error' => "'''خطأ في إرسال [[$1]]:''' ''$2''",
 	'ea-denied' => 'السماح مرفوض',
-	'ea-sent' => "الصفحة [[$1]] تم إرسالها بنجاح إلى '''$2''' {{PLURAL:$2|متلق|متلق}} بواسطة [[User:$3|$3]].",
+	'ea-sent' => "الصفحة [[$1]] تم إرسالها بنجاح إلى '''$2''' {{PLURAL:$2|متلق|متلق}} بواسطة [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'اختر المتلقين',
 	'ea-compose' => 'كتابة المحتوى',
 	'ea-selectlist' => "متلقون إضافيون كعناوين صفحات أو عناوين بريد إلكترونى
@@ -124,54 +124,33 @@ $messages['bg'] = array(
  * @author kghbln
  */
 $messages['de'] = array(
-	'emailpage' => 'Per E-Mail versenden',
-	'ea-desc' => 'Nutzt [http://phpmailer.worxware.com/ PHPMailer], um HTML-Seiten an E-Mail-Adressen oder E-Mail-Adresslisten zu versenden.',
-	'ea-heading' => "=== E-Mail-Versand von Seite [[$1]]. ===",
-	'ea-fromgroup' => 'An Gruppe:',
-	'ea-pagesend' => 'Seite "$1" (aus dem Wiki $2)',
-	'ea-nopage' => "Bitte gebe eine Seite zum Versenden an, bspw. \"[[Special:EmailPage/{{MediaWiki:Mainpage-url}}]]\".",
+	'emailpage' => "Per E-Mail versenden",
+	'ea-desc' => "Nutzt [http://phpmailer.worxware.com/ PHPMailer], um Seiten an E-Mail-Adressen oder E-Mail-Adresslisten zu versenden",
+	'ea-heading' => "E-Mail-Versand von Seite „[[$1]]“",
+	'ea-group-info' => "Die Seite kann zusätzlich an die Mitglieder einer Benutzergruppe gesandt werden.",
+	'ea-pagesend' => "Seite „$1“ (aus dem Wiki „$2“)",
+	'ea-nopage' => "Es wurde keine Seite zum Versenden ausgewählt. Bitte hierzu entweder den Link in der Seitenleiste oder im Aktionsmenü nutzen.",
 	'ea-norecipients' => "Es sind keine E-Mail-Adressen zum Versenden vorhanden!",
-	'ea-listrecipients' => '=== {{PLURAL:$1|Empfänger|$1 Empfänger}} ===',
-	'ea-error' => "'''Fehler beim Versenden von Seite [[$1]]:''' ''$2''",
-	'ea-denied' => 'E-Mail-Versand wurde aufgrund fehlender Berechtigung unterbunden.',
-	'ea-sent' => "Seite [[$1]] wurde erfolgreich von [[User:$3|$3]] an '''$2''' {{PLURAL:$2|Empfänger|Empfänger}} versandt.",
-	'ea-selectrecipients' => 'Empfänger auswählen',
-	'ea-compose' => 'Nachricht erstellen',
-	'ea-selectlist' => "Zusätzliche Empfänger entweder mit Seitentitel oder E-Mail-Adresse angeben: (''Angaben mit , ; * oder \\n trennen. Die Liste kann Vorlagen und Parser-Funktionen enthalten.)''",
-	'ea-show' => 'Empfänger anzeigen',
-	'ea-send' => 'Senden',
-	'ea-subject' => 'Betreff:',
-	'ea-message' => 'Der zu versendenden Seite folgende Nachricht voranstellen (optional, Eingabe in Wikitext erforderlich):',
-	'ea-selectcss' => 'Wähle ein CSS-Stylesheet aus',
-	'ea-selectrecord' => 'Datengruppe auswählen (falls vorhanden):'
-);
-
-/** German (Deutsch)
- * @author Church of emacs
- * @author Leithian
- * @author kghbln
- */
-$messages['de-formal'] = array(
-	'emailpage' => 'Per E-Mail versenden',
-	'ea-desc' => 'Nutzt [http://phpmailer.worxware.com/ PHPMailer], um HTML-Seiten an E-Mail-Adressen oder E-Mail-Adresslisten zu versenden.',
-	'ea-heading' => "=== E-Mail-Versand von Seite [[$1]]. ===",
-	'ea-fromgroup' => 'An Gruppe:',
-	'ea-pagesend' => 'Seite "$1" (aus dem Wiki $2)',
-	'ea-nopage' => "Bitte geben Sie eine Seite zum Versenden an, bspw. \"[[Special:EmailPage/{{MediaWiki:Mainpage-url}}]]\".",
-	'ea-norecipients' => "Es sind keine E-Mail-Adressen zum Versenden vorhanden!",
-	'ea-listrecipients' => '=== {{PLURAL:$1|Empfänger|$1 Empfänger}} ===',
-	'ea-error' => "'''Fehler beim Versenden von Seite [[$1]]:''' ''$2''",
-	'ea-denied' => 'E-Mail-Versand wurde aufgrund fehlender Berechtigung unterbunden.',
-	'ea-sent' => "Seite [[$1]] wurde erfolgreich von [[User:$3|$3]] an '''$2''' {{PLURAL:$2|Empfänger|Empfänger}} versandt.",
-	'ea-selectrecipients' => 'Empfänger auswählen',
-	'ea-compose' => 'Nachricht erstellen',
-	'ea-selectlist' => "Zusätzliche Empfänger entweder mit Seitentitel oder E-Mail-Adresse angeben: (''Angaben mit , ; * oder \\n trennen. Die Liste kann Vorlagen und Parser-Funktionen enthalten.)''",
-	'ea-show' => 'Empfänger anzeigen',
-	'ea-send' => 'Senden',
-	'ea-subject' => 'Betreff:',
-	'ea-message' => 'Der zu versendenden Seite folgende Nachricht voranstellen (optional, Eingabe in Wikitext erforderlich):',
-	'ea-selectcss' => 'CSS-Stylesheet auswählen:',
-	'ea-selectrecord' => 'Datengruppe auswählen (falls vorhanden):'
+	'ea-listrecipients' => "Der E-Mail-Versand erfolgt an {{PLURAL:$1|den folgenden Empfänger|die folgenden $1 Empfänger}}:",
+	'ea-error' => "'''Fehler beim Versenden von Seite „[[$1]]“:''' ''$2''",
+	'ea-denied' => "Der E-Mail-Versand konnte aufgrund fehlender Berechtigung nicht durchgeführt werden.",
+	'ea-sent' => "Die Seite „[[$1]]“ wurde erfolgreich von [[{{ns:User}}:$3|$3]] an {{PLURAL:$2|einen Empfänger|$2 Empfänger}} versandt.",
+	'ea-compose' => "Nachricht erstellen",
+	'ea-show' => "Empfängerliste anzeigen",
+	'ea-send' => "Seite versenden",
+	'ea-from' => "Von",
+	'ea-to' => "An",
+	'ea-to-info' => "E-Mail-Adressen können mit einem Semikolon, einem Komma, einem Sternchen oder einer neuen Zeile voneinander getrennt werden.",
+	'ea-cc' => "CC",
+	'ea-subject' => "Betreff",
+	'ea-message' => "Nachricht",
+	'ea-message-info' => "Der Seite eine optionale Nachricht voranstellen (in Wikitext).",
+	'ea-style' => "Formatierungen",
+	'ea-selectcss' => "CSS-Stylesheet auswählen",
+	'ea-data' => "Daten",
+	'ea-selectrecord' => "Diese Vorlagen können dazu genutzt werden die Felder im Nachrichtentext zu befüllen.",
+	'ea-allusers' => "Alle Benutzer",
+	'ea-addcomments' => "Benutzerkommentare einbeziehen?"
 );
 
 /** Esperanto (Esperanto)
@@ -187,7 +166,7 @@ $messages['eo'] = array(
 	'ea-listrecipients' => '=== Listo de $1 {{PLURAL:$1|ricevonto|ricevontoj}} ===',
 	'ea-error' => "'''Eraro sendante [[$1]]:''' ''$2''",
 	'ea-denied' => 'Malpermesite',
-	'ea-sent' => "Paĝo [[$1]] sendita sukcese al '''$2''' {{PLURAL:$2|ricevonto|ricevontoj}} de [[User:$3|$3]].",
+	'ea-sent' => "Paĝo [[$1]] sendita sukcese al '''$2''' {{PLURAL:$2|ricevonto|ricevontoj}} de [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Selektu ricevontojn',
 	'ea-compose' => 'Skribu enhavon',
 	'ea-send' => 'Sendi!',
@@ -208,7 +187,7 @@ $messages['fr'] = array(
 	'ea-listrecipients' => '=== Liste de $1 {{PLURAL:$1|destinataire|destinataires}} ===',
 	'ea-error' => "'''Erreur de l’envoi de [[$1]] :''' ''$2''",
 	'ea-denied' => 'Permission refusée',
-	'ea-sent' => "L'article [[$1]] a été envoyé avec succès à '''$2''' {{PLURAL:$2|destinataire|destinataires}} par [[User:$3|$3]].",
+	'ea-sent' => "L'article [[$1]] a été envoyé avec succès à '''$2''' {{PLURAL:$2|destinataire|destinataires}} par [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Sélectionner les destinataires',
 	'ea-compose' => 'Composer le contenu',
 	'ea-selectlist' => "Destinataires supplémentaires comme les titres d'articles ou les adresses courriel
@@ -235,7 +214,7 @@ $messages['gl'] = array(
 	'ea-listrecipients' => '=== {{PLURAL:$1|Nome do destinatario|Listaxe dos $1 destinatarios}} ===',
 	'ea-error' => "'''Erro no envío de \"[[\$1]]\":''' ''\$2''",
 	'ea-denied' => 'Permiso denegado',
-	'ea-sent' => 'A páxina "[[$1]]" foi enviada con éxito a \'\'\'$2\'\'\' {{PLURAL:$2|destinatario|destinatarios}} por [[User:$3|$3]].',
+	'ea-sent' => 'A páxina "[[$1]]" foi enviada con éxito a \'\'\'$2\'\'\' {{PLURAL:$2|destinatario|destinatarios}} por [[{{ns:User}}:$3|$3]].',
 	'ea-selectrecipients' => 'Seleccionar os destinatarios',
 	'ea-compose' => 'Compoñer o contido',
 	'ea-selectlist' => "Destinatarios adicionais como títulos de páxinas ou correos electrónicos
@@ -262,7 +241,7 @@ $messages['ia'] = array(
 	'ea-listrecipients' => '=== {{PLURAL:$1|Destinatario|$1 destinatarios}} ===',
 	'ea-error' => "'''Error durante le invio de [[$1]]:''' ''$2''",
 	'ea-denied' => 'Permission refusate',
-	'ea-sent' => "Le pagina [[$1]] ha essite inviate con successo a '''$2''' {{PLURAL:$2|destinatario|destinatarios}} per [[User:$3|$3]].",
+	'ea-sent' => "Le pagina [[$1]] ha essite inviate con successo a '''$2''' {{PLURAL:$2|destinatario|destinatarios}} per [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Seliger destinatarios',
 	'ea-compose' => 'Componer contento',
 	'ea-selectlist' => "Adde destinatarios como titulos de paginas o adresses de e-mail
@@ -315,7 +294,7 @@ $messages['ml'] = array(
 	'ea-listrecipients' => '=== $1 {{PLURAL:$1|സ്വീകര്‍ത്താവിന്റെ|സ്വീകര്‍ത്താക്കളുടെ}} പട്ടിക ===',
 	'ea-error' => "'''[[$1]] അയക്കുന്നതില്‍ പിഴവ്:''' ''$2''",
 	'ea-denied' => 'അനുവാദം നിഷേധിച്ചിരിക്കുന്നു',
-	'ea-sent' => "[[User:$3|$3]] എന്ന ഉപയോക്താവ് [[$1]] എന്ന താള്‍ വിജയകരമായി '''$2''' {{PLURAL:$2|സ്വീകര്‍ത്താവിനു|സ്വീകര്‍ത്താക്കള്‍ക്ക്}} അയച്ചിരിക്കുന്നു.",
+	'ea-sent' => "[[{{ns:User}}:$3|$3]] എന്ന ഉപയോക്താവ് [[$1]] എന്ന താള്‍ വിജയകരമായി '''$2''' {{PLURAL:$2|സ്വീകര്‍ത്താവിനു|സ്വീകര്‍ത്താക്കള്‍ക്ക്}} അയച്ചിരിക്കുന്നു.",
 	'ea-selectrecipients' => 'സ്വീകര്‍ത്താക്കളെ‍ തിരഞ്ഞെടുക്കുക',
 	'ea-compose' => 'ഉള്ളടക്കം ചേര്‍ക്കുക',
 	'ea-show' => 'സ്വീകര്‍ത്താക്കളെ പ്രദര്‍ശിപ്പിക്കുക',
@@ -337,7 +316,7 @@ $messages['mr'] = array(
 	'ea-listrecipients' => '=== $1 {{PLURAL:$1|सदस्याची|सदस्यांची}}यादी ===',
 	'ea-error' => "'''पाठविण्यामध्ये त्रुटी [[$1]]:''' ''$2''",
 	'ea-denied' => 'परवानगी नाकारली',
-	'ea-sent' => "[[User:$3|$3]] ने [[$1]] पान '''$2''' {{PLURAL:$2|सदस्याला|सदस्यांना}} पाठविले.",
+	'ea-sent' => "[[{{ns:User}}:$3|$3]] ने [[$1]] पान '''$2''' {{PLURAL:$2|सदस्याला|सदस्यांना}} पाठविले.",
 	'ea-selectrecipients' => 'सदस्य निवडा',
 	'ea-compose' => 'मजकूर लिहा',
 	'ea-selectlist' => "जास्तीचे सदस्य लेख शीर्षक किंवा इ-मेल पत्ता
@@ -379,7 +358,7 @@ $messages['nl'] = array(
 	'ea-listrecipients' => '=== Lijst met $1 {{PLURAL:$1|ontvanger|ontvangers}} ===',
 	'ea-error' => "'''Fout bij het versturen van [[$1]]:''' ''$2''",
 	'ea-denied' => 'U hebt geen rechten om deze handeling uit te voeren',
-	'ea-sent' => "Pagina [[$1]] is verstuurd naar '''$2''' {{PLURAL:$2|ontvanger|ontvangers}} door [[User:$3|$3]].",
+	'ea-sent' => "Pagina [[$1]] is verstuurd naar '''$2''' {{PLURAL:$2|ontvanger|ontvangers}} door [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Ontvangers selecteren',
 	'ea-compose' => 'Inhoud samenstellen',
 	'ea-selectlist' => 'Meer ontvangers als paginanamen of e-mailadressen
@@ -406,7 +385,7 @@ $messages['no'] = array(
 	'ea-listrecipients' => '=== Liste over $1 {{PLURAL:$1|mottaker|mottakere}} ===',
 	'ea-error' => "'''Feil under sending av [[$1]]:''' ''$2''",
 	'ea-denied' => 'Ingen adgang',
-	'ea-sent' => "Siden [[$1]] ble sendt til '''$2''' {{PLURAL:$2|mottaker|mottakere}} av [[User:$3|$3]].",
+	'ea-sent' => "Siden [[$1]] ble sendt til '''$2''' {{PLURAL:$2|mottaker|mottakere}} av [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Velg mottakere',
 	'ea-compose' => 'Skriv inn innhold',
 	'ea-selectlist' => "Ytterligere mottakere som sidetitler eller e-postadresser
@@ -433,7 +412,7 @@ $messages['oc'] = array(
 	'ea-listrecipients' => '=== Tièra de $1 {{PLURAL:$1|destinatari|destinataris}} ===',
 	'ea-error' => "'''Error del mandadís de [[$1]] :''' ''$2''",
 	'ea-denied' => 'Permission refusada',
-	'ea-sent' => "L'article [[$1]] es estat mandat amb succès a '''$2''' {{PLURAL:$2|destinatari|destinataris}} per [[User:$3|$3]].",
+	'ea-sent' => "L'article [[$1]] es estat mandat amb succès a '''$2''' {{PLURAL:$2|destinatari|destinataris}} per [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Seleccionar los destinataris',
 	'ea-compose' => 'Compausar lo contengut',
 	'ea-selectlist' => "Destinataris suplementaris coma los títols d'articles o las adreças de corrièr electronic
@@ -460,7 +439,7 @@ $messages['pl'] = array(
 	'ea-listrecipients' => '=== {{PLURAL:$1|Odbiorca|$1 odbiorców}} ===',
 	'ea-error' => "'''Błąd podczas wysyłania [[$1]]:''' ''$2''",
 	'ea-denied' => 'Odmowa dostępu',
-	'ea-sent' => "Strona [[$1]] została wysłana do '''$2''' {{PLURAL:$2|odbiorcy|odbiorców}} przez [[User:$3|$3]].",
+	'ea-sent' => "Strona [[$1]] została wysłana do '''$2''' {{PLURAL:$2|odbiorcy|odbiorców}} przez [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Wybierz odbiorców',
 	'ea-compose' => 'Tworzenie zawartości',
 	'ea-selectlist' => "Dodatkowi odbiorcy:
@@ -495,7 +474,7 @@ $messages['sk'] = array(
 	'ea-listrecipients' => '=== Zoznam $1 {{PLURAL:$1|príjemcu|príjemcov}} ===',
 	'ea-error' => "'''Chyba pri odosielaní [[$1]]:''' ''$2''",
 	'ea-denied' => 'Nemáte potrebné oprávnenie',
-	'ea-sent' => "[[User:$3|$3]] úspešne poslal stránku [[$1]] '''$2''' {{PLURAL:$2|používateľovi|používateľom}}.",
+	'ea-sent' => "[[{{ns:User}}:$3|$3]] úspešne poslal stránku [[$1]] '''$2''' {{PLURAL:$2|používateľovi|používateľom}}.",
 	'ea-selectrecipients' => 'Vybrať príjemcov',
 	'ea-compose' => 'Napísať obsah správy',
 	'ea-selectlist' => "Ďalší príjemci vo forme názvov stránok alebo emailových adries
@@ -530,7 +509,7 @@ $messages['sv'] = array(
 	'ea-listrecipients' => '=== Lista över $1 {{PLURAL:$1|mottagare|mottagare}} ===',
 	'ea-error' => "'''Fel under sändande av [[$1]]:''' ''$2''",
 	'ea-denied' => 'Åtkomst nekas',
-	'ea-sent' => "Sidan [[$1]] har skickats till '''$2''' {{PLURAL:$2|mottagare|mottagare}} av [[User:$3|$3]].",
+	'ea-sent' => "Sidan [[$1]] har skickats till '''$2''' {{PLURAL:$2|mottagare|mottagare}} av [[{{ns:User}}:$3|$3]].",
 	'ea-selectrecipients' => 'Ange mottagare',
 	'ea-compose' => 'Komponera innehåll',
 	'ea-selectlist' => "Ytterligare mottagare som sidtitlar eller e-postadresser
@@ -564,7 +543,7 @@ $messages['vi'] = array(
 	'ea-norecipients' => 'Không tìm thấy địa chỉ thư điện tử hợp lệ!',
 	'ea-listrecipients' => '=== Danh sách $1 {{PLURAL:$1|người nhận|người nhận}} ===',
 	'ea-error' => "'''Lỗi khi gửi [[$1]]:''' ''$2''",
-	'ea-sent' => "Trang [[$1]] đã được [[User:$3|$3]] gửi thành công đến '''$2''' {{PLURAL:$2|người nhận|người nhận}}.",
+	'ea-sent' => "Trang [[$1]] đã được [[{{ns:User}}:$3|$3]] gửi thành công đến '''$2''' {{PLURAL:$2|người nhận|người nhận}}.",
 	'ea-selectrecipients' => 'Chọn người nhận',
 	'ea-compose' => 'Soạn nội dung',
 	'ea-selectlist' => "Những người nhận khác theo tựa đề trang hoặc địa chỉ thư điện tử
