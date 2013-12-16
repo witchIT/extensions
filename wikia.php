@@ -95,7 +95,7 @@ $wgFileExtensions         = array(
 	'jpeg', 'jpg', 'png', 'gif', 'svg', 'swf',
 	'pdf', 'xls', 'xlsx', 'ods', 'odt', 'odp', 'doc', 'docx', 'mm',
 	'zip', '7z', 'gz', 'tgz', 't7z',
-	'avi', 'divx', 'mpeg', 'mpg', 'ogv', 'ogm', 'mp3', 'mp4', 'flv',
+	'avi', 'divx', 'mpeg', 'mpg', 'ogv', 'ogm', 'mp3', 'mp4', 'flv', 'wav',
 	'torrent'
 );
 $wgGroupPermissions['sysop']['upload_by_url'] = true;
