@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.2, 2013-09-19' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.3, 2014-01-30' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -88,9 +88,8 @@ class AjaxComments {
 	public static function checkTitle( $title ) {
 		$ret = true;
 		if( !is_object( $title ) ) $title = Title::newFromText( $title );
-		if( !is_object( $title ) || $title->getArticleID() == 0 || $title->isRedirect() || ($title->getNamespace()&1) )
-			$ret = false;
-		if( $ret ) wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
+		if( !is_object( $title ) || $title->getArticleID() == 0 || $title->isRedirect() || ($title->getNamespace()&1) ) $ret = false;
+		else wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 		return $ret;
 	}
 

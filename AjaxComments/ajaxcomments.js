@@ -4,10 +4,10 @@ $(document).ready( function() {
 	// If a value of -1 has been supplied for this, then comments are disabled for this page
 	if(poll < 0) return;
 
-	// If there's a discussion tab, normal view action and not on talk page, render the discussion below the article
-	if($('#ca-talk').length > 0) {
+	// If the comments area has been added, render the discussion into it
+	if($('#ajaxcomments-name').length > 0) {
 
-		// Change the talk page tab to a local link to the comments at the end of the page
+		// Change the talk page tab to a local link to the comments at the end of the page if it exists
 		$('#ca-talk a').attr('href','#ajaxcomments');
 		$('#ca-talk').removeClass('new');
 
@@ -20,9 +20,7 @@ $(document).ready( function() {
 			url: mw.util.wikiScript(),
 			data: { action: 'ajaxcomments', title: mw.config.get('wgPageName') },
 			dataType: 'html',
-			success: function(html) {
-				$('#ajaxcomments').html(html);
-			}
+			success: function(html) { $('#ajaxcomments').html(html); }
 		});
 	}
 
