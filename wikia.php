@@ -26,7 +26,7 @@ ini_set('display_errors', 'Off');
 error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.15, 2013-07-27' );
+define( 'WIKIA_VERSION', '1.2.16, 2014-01-31' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -131,14 +131,20 @@ else {
 $wgExtensionFunctions[] = 'wfGoogleAnalytics';
 $wgGoogleTrackingCodes = array();
 function wfGoogleAnalytics() {
-	global $wgOut, $wgGoogleTrackingCodes;
-	foreach( $wgGoogleTrackingCodes as $code ) $wgOut->addScript( '<script type="text/javascript">
-		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-		document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
-		</script><script type="text/javascript">
-		var pageTracker = _gat._getTracker("' . $code . '");
-		pageTracker._trackPageview();</script>' );
+	global $wgOut, $wgGoogleTrackingCodes, $wgServer;
+	foreach( $wgGoogleTrackingCodes as $code ) $wgOut->addScript( "<script type=\"text/javascript\">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', '" . $code . "', '" . preg_replace( '|https?://(www.)?|', '', $wgServer ) . "');
+ga('send', 'pageview');
+	</script>" );
 }
+
+<script>
+
+</script>
 
 // Include the LocalSettings file for the domain
 $wgUploadDirectory = "$root$wgUploadPath";
