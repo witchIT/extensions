@@ -142,10 +142,6 @@ ga('send', 'pageview');
 	</script>" );
 }
 
-<script>
-
-</script>
-
 // Include the LocalSettings file for the domain
 $wgUploadDirectory = "$root$wgUploadPath";
 include( "$root/LocalSettings.php" );
