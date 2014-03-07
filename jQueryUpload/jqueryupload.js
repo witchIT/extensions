@@ -64,7 +64,7 @@ $(function() {
 				closeText: '',
 				resizable: false,
 				width: 450,
-			}).parent().css('left',a.position().left+20).css('top',a.position().top+10);
+			}).parent().css('left',a.position().left+20).css('top',a.position().top+15);
 		}
 	});
 
