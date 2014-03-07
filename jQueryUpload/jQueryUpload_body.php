@@ -497,7 +497,7 @@ class MWUploadHandler extends UploadHandler {
 	protected function get_file_object( $file_name ) {
 
 		// Create the thumb if it doesn't exist
-		$thumb = $this->options['upload_dir'] . 'thumb/' . $file_name;
+		$thumb = $this->options['upload_dir'] . 'thumb/' . jQueryUpload::thumbFilename( $file_name );
 		if( !file_exists( $thumb ) ) {
 			$this->create_scaled_image( $file_name, $this->options['image_versions']['thumbnail'] );
 		}
