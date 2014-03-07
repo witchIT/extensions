@@ -91,6 +91,7 @@ class jQueryUpload extends SpecialPage {
 	 * (so that thumbnails always have an image extension)
 	 */
 	public static function thumbFilename( $file ) {
+		return $file;
 		return preg_match( "/^.+\.(jpe?g$|png|gif)$/", $file ) ? $file : "$file.png";
 	}
 
