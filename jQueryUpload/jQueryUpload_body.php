@@ -158,7 +158,6 @@ class jQueryUpload extends SpecialPage {
 		// If there are args, then this is a file or thumbnail request
 		if( $n = func_num_args() ) {
 			global $wgUser;
-			$download = true;
 			$a = func_get_args();
 
 			// Only return the file if the user is logged in
@@ -170,7 +169,6 @@ class jQueryUpload extends SpecialPage {
 				$path = $n == 3 ? array_shift( $a ) . '/' : '';
 				$name = "thumb/$a[0]";
 				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
-				$download = false;
 			}
 
 			else {
@@ -182,7 +180,7 @@ class jQueryUpload extends SpecialPage {
 			// Set the headers, output the file and bail
 			header( "Content-Type: " . mime_content_type( $file ) );
 			header( "Content-Length: " . filesize( $file ) );
-			if( $download ) header( "Content-Disposition: inline; filename=\"$name\"" );
+			header( "Content-Disposition: inline; filename=\"$name\"" );
 			//header( "Content-Transfer-Encoding: binary" );
 			header( "Pragma: private" );
 			readfile( $file );
