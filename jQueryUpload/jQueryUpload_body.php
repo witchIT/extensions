@@ -169,16 +169,19 @@ class jQueryUpload extends SpecialPage {
 				$path = $n == 3 ? array_shift( $a ) . '/' : '';
 				$name = "thumb/$a[0]";
 				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
+				$type = mime_content_type( $file );
+				if( !preg_match( '|^image/|', $type ) ) $type = 'image/png';
 			}
 
 			else {
 				$path = $n == 2 ? array_shift( $a ) . '/' : '';
 				$name = $a[0];
 				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
+				$type = mime_content_type( $file );
 			}
 
 			// Set the headers, output the file and bail
-			header( "Content-Type: " . mime_content_type( $file ) );
+			header( "Content-Type: $type" );
 			header( "Content-Length: " . filesize( $file ) );
 			header( "Content-Disposition: inline; filename=\"$name\"" );
 			//header( "Content-Transfer-Encoding: binary" );
