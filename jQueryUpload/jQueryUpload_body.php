@@ -87,6 +87,14 @@ class jQueryUpload extends SpecialPage {
 	}
 
 	/**
+	 * Return the filename appended with .png for non-image files
+	 * (so that thumbnails always have an image extension)
+	 */
+	public static function thumbFilename( $file ) {
+		return preg_match( "/^.+\.(jpe?g$|png|gif)$/", $file ) ? $file : "$file.png";
+	}
+
+	/**
 	 * Expand the #file parser-function
 	 */
 	function expandFile( $parser, $filename, $anchor = false ) {
@@ -167,24 +175,21 @@ class jQueryUpload extends SpecialPage {
 			if( $a[0] == 'thumb' ) {
 				array_shift( $a );
 				$path = $n == 3 ? array_shift( $a ) . '/' : '';
-				$name = "thumb/$a[0]";
+				$name = self::thumbFilename( "thumb/$a[0]" );
 				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
-				$type = mime_content_type( $file );
-				if( !preg_match( '|^image/|', $type ) ) $type = 'image/png';
 			}
 
 			else {
 				$path = $n == 2 ? array_shift( $a ) . '/' : '';
 				$name = $a[0];
 				$file = "$wgUploadDirectory/jquery_upload_files/$path$name";
-				$type = mime_content_type( $file );
 			}
 
 			// Set the headers, output the file and bail
-			header( "Content-Type: $type" );
+			header( "Content-Type: " . mime_content_type( $file ) );
 			header( "Content-Length: " . filesize( $file ) );
 			header( "Content-Disposition: inline; filename=\"$name\"" );
-			//header( "Content-Transfer-Encoding: binary" );
+			//header( "Content-Transfer-Encoding: binary" );   IE was not rendering PDF's inline with this header included
 			header( "Pragma: private" );
 			readfile( $file );
 			return '';
