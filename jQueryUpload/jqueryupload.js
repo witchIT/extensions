@@ -50,9 +50,7 @@ $(function() {
 		var classes = e.attr('class');
 		var href = e.attr('title');
 		var html = e.html();
-		var popup = e.hasClass('jqu-popup');
-		$(this).replaceWith($('<a></a>').html(html).attr({'href': href,'class': classes}));
-		if(popup) $(this).addClass('jqu-link');
+		$(this).replaceWith($('<a></a>').html(html).attr({'href': href,'class': classes}).addClass('jqu-link'));
 	});
 
 	// Add popup hover to all file links made with the parser-function

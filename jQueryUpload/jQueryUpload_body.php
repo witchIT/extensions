@@ -100,7 +100,6 @@ class jQueryUpload extends SpecialPage {
 	 */
 	function expandFile( $parser, $filename, $anchor = false ) {
 		global $wgJQUploadFileLinkPopup;
-		$popup = $wgJQUploadFileLinkPopup ? ' jqu-popup' : '';
 		$class = '';
 		$href = false;
 		$info = '';
@@ -112,12 +111,14 @@ class jQueryUpload extends SpecialPage {
 			global $wgLang;
 			$href = $img->getUrl();
 			$class = ' local-file';
-			$title = $img->getTitle();
-			$article = new Article( $title );
-			$info = $parser->parse( $article->getContent(), $parser->getTitle(), new ParserOptions(), false, false )->getText();
-			if( !empty( $info ) ) $info = '<span class="file-desc">' . $info . '</span>';
-			$date = wfMsg( 'jqueryupload-uploadinfo', $img->user_text, $wgLang->date( $img->timestamp, true ) );
-			$info = '<span class="file-info">' . $date . '</span><br />' . $info;
+			if( $wgJQUploadFileLinkPopup ) {
+				$title = $img->getTitle();
+				$article = new Article( $title );
+				$info = $parser->parse( $article->getContent(), $parser->getTitle(), new ParserOptions(), false, false )->getText();
+				if( !empty( $info ) ) $info = '<span class="file-desc">' . $info . '</span>';
+				$date = wfMsg( 'jqueryupload-uploadinfo', $img->user_text, $wgLang->date( $img->timestamp, true ) );
+				$info = '<span class="file-info">' . $date . '</span><br />' . $info;
+			}
 		}
 
 		// Not local, check if it's a jQuery one
@@ -128,11 +129,13 @@ class jQueryUpload extends SpecialPage {
 					$path = $m[1];
 					$class = ' jquery-file';
 					$href = "$wgScript?action=ajax&rs=jQueryUpload::server&rsargs[]=$path&rsargs[]=" . urlencode( $filename );
-					$meta = "$wgUploadDirectory/jquery_upload_files/$path/meta/$filename";
-					if( file_exists( $meta ) ) {
-						$data = unserialize( file_get_contents( $meta ) );
-						$info = '<span class="file-info">' . MWUploadHandler::renderData( $data ) . '</span>';
-						if( $data[2] ) $info .= '<br /><span class="file-desc">' . $data[2] . '</span>';
+					if( $wgJQUploadFileLinkPopup ) {
+						$meta = "$wgUploadDirectory/jquery_upload_files/$path/meta/$filename";
+						if( file_exists( $meta ) ) {
+							$data = unserialize( file_get_contents( $meta ) );
+							$info = '<span class="file-info">' . MWUploadHandler::renderData( $data ) . '</span>';
+							if( $data[2] ) $info .= '<br /><span class="file-desc">' . $data[2] . '</span>';
+						}
 					}
 				}
 			}
@@ -144,7 +147,7 @@ class jQueryUpload extends SpecialPage {
 
 		//$title = empty( $info ) ? " title=\"$filename\"" : '';
 		if( !empty( $info ) ) $info = "<span style=\"display:none\">$info</span>";
-		return "<span class=\"jqu-span$popup\"><span class=\"plainlinks$class\" title=\"$href\">$anchor$info</span></span>";
+		return "<span class=\"jqu-span\"><span class=\"plainlinks$class\" title=\"$href\">$anchor$info</span></span>";
 	}
 
 	/**
