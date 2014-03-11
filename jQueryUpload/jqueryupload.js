@@ -50,7 +50,7 @@ $(function() {
 		var classes = e.attr('class');
 		var href = e.attr('title');
 		var html = e.html();
-		var popup = $(this).hasClass('jqu-popup');
+		var popup = e.hasClass('jqu-popup');
 		$(this).replaceWith($('<a></a>').html(html).attr({'href': href,'class': classes}));
 		if(popup) $(this).addClass('jqu-link');
 	});
