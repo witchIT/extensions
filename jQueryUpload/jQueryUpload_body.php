@@ -99,6 +99,8 @@ class jQueryUpload extends SpecialPage {
 	 * Expand the #file parser-function
 	 */
 	function expandFile( $parser, $filename, $anchor = false ) {
+		global $wgJQUploadFileLinkPopup;
+		$popup = $wgJQUploadFileLinkPopup ? ' jqu-popup' : '';
 		$class = '';
 		$href = false;
 		$info = '';
@@ -142,7 +144,7 @@ class jQueryUpload extends SpecialPage {
 
 		//$title = empty( $info ) ? " title=\"$filename\"" : '';
 		if( !empty( $info ) ) $info = "<span style=\"display:none\">$info</span>";
-		return "<span class=\"jqu-span\"><span class=\"plainlinks$class\" title=\"$href\">$anchor$info</span></span>";
+		return "<span class=\"jqu-span$popup\"><span class=\"plainlinks$class\" title=\"$href\">$anchor$info</span></span>";
 	}
 
 	/**
