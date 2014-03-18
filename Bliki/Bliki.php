@@ -11,7 +11,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'BLIKI_VERSION','2.0.3, 2014-03-17' );
+define( 'BLIKI_VERSION','2.0.4, 2014-03-17' );
 
 $wgBlikiAddBodyClass = false;
 $wgBlikiPostGroup = 'sysop';
