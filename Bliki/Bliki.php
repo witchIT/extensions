@@ -11,9 +11,10 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'BLIKI_VERSION','2.0.2, 2013-07-29' );
+define( 'BLIKI_VERSION','2.0.3, 2014-03-17' );
 
 $wgBlikiAddBodyClass = false;
+$wgBlikiPostGroup = 'sysop';
 
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
@@ -37,8 +38,8 @@ class Bliki {
 	}
 
 	function onUnknownAction( $action, $article ) {
-		global $wgOut, $wgRequest, $wgUser, $wgParser;
-		if( $action == 'blog' ) {
+		global $wgOut, $wgRequest, $wgUser, $wgParser, $wgBlikiPostGroup;
+		if( $action == 'blog' && in_array( $wgBlikiPostGroup, $wgUser->getEffectiveGroups() ) ) {
 			$newtitle = $wgRequest->getText( 'newtitle' );
 			$title = Title::newFromText( $newtitle );
 			$error = false;
