@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.1.1, 2013-08-13' );
+define( 'TREEANDMENU_VERSION','3.1.2, 2014-04-02' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
