@@ -261,8 +261,7 @@ class AjaxComments {
 
 			// If there are no comments now, delete the page
 			if( count( $this->comments ) == 0 ) {
-				$title = Title::newFromId( $this->talk );
-				$article = new Article( $title );
+				$article = new Article( $this->talk );
 				$article->doDelete( wfMsg( 'ajaxcomments-talkdeleted' ) );
 			}
 
