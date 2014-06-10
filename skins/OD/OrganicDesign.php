@@ -104,7 +104,7 @@ if ( $wgOrganicDesignDonations ) {?>
 		</div>
 		<h5 id="btcbest"><?php echo wfMsg('btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' ); ?></h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
-			<input style="width:139px;margin-left:23px" readonly="1" value="1ADB7fMcciUxmXsUrQnt6Se2x2Xdvvhv9m" onmouseover="this.select()" />
+			<input style="width:139px;margin-left:23px" readonly="1" value="1CwVqJrUwJBiENvt7H7hoYEyjjtA7kScqs" onmouseover="this.select()" />
 		</div>
 		<h5 id="nmccool"><?php echo wfMsg('also'); ?> <a href="/Ripple">XRP</a>, <a href="/Namecoin">NMC</a> & <a href="/Litecoin">LTC</a></h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/2/23/Ripple.png) no-repeat 5px 2px;">
