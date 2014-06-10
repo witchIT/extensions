@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.3, 2014-01-30' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.4, 2014-06-10' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -258,6 +258,13 @@ class AjaxComments {
 
 			// Remove this comment from the data
 			unset( $this->comments[$id] );
+
+			// If there are no comments now, delete the page
+			if( count( $this->comments ) == 0 ) {
+				$title = Title::newFromId( $this->talk );
+				$article = new Article( $title );
+				$article->doDelete( wfMsg( 'ajaxcomments-talkdeleted' ) );
+			}
 
 			$this->changed = true;
 		}

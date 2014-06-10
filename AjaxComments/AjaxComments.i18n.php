@@ -27,6 +27,7 @@ $messages['en'] = array(
 	'ajaxcomments-reply-summary' => "Comment reply made using the AjaxComments extension",
 	'ajaxcomments-edit-summary' => "Comment edited using the AjaxComments extension",
 	'ajaxcomments-del-summary' => "Comment deleted using the AjaxComments extension",
+	'ajaxcomments-talkdeleted' => "Last comment removed, talk page deleted",
 	'ajaxcomments-like' => "$1 likes $2's comment",
 	'ajaxcomments-dislike' => "$1 dislikes $2's comment",
 	'ajaxcomments-unlike' => "$1 no longer likes $2's comment",
