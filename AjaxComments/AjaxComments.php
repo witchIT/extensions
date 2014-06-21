@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.4, 2014-06-10' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.5, 2014-06-21' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -125,7 +125,7 @@ class AjaxComments {
 				// If the talk page exists, get its content and the timestamp of the latest revision
 				$content = '';
 				if( $talk->exists() ) {
-					$content = $article->fetchContent();
+					$content = $article->getContent();
 					$this->comments = self::textToData( $content );
 					$latest = Revision::newFromTitle( $talk )->getTimestamp();
 				} else $latest = 0;
