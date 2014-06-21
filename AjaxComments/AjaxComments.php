@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.5, 2014-06-21' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.6, 2014-06-21' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -265,7 +265,8 @@ class AjaxComments {
 				$article->doDelete( wfMsg( 'ajaxcomments-talkdeleted' ) );
 			}
 
-			$this->changed = true;
+			// Otherwise mark the article is changed so it gets updated
+			else $this->changed = true;
 		}
 	}
 
