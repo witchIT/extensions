@@ -199,6 +199,7 @@ class ExtraMagic {
 	}
 	
 	public static function expandOwner( $parser, $title ) {
+		$owner = '';
 		if( empty( $title ) ) {
 			global $wgTitle;
 			$title = $wgTitle;
@@ -207,9 +208,8 @@ class ExtraMagic {
 		$dbr = wfGetDB( DB_SLAVE );
 		if( $id > 0 && $row = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) ) ) {
 			$owner = User::newFromID( $row->rev_user )->getName();
-		} else $owner = '';
+		}
 		return $owner;
-	}
 	}
 }
 
