@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.4.1, 2013-09-13' );
+define( 'EXTRAMAGIC_VERSION', '3.5.0, 2014-07-02' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -55,6 +55,7 @@ class ExtraMagic {
 		$wgParser->setFunctionHook( 'IFCAT', array( $this, 'expandIfCat' ) );
 		$wgParser->setFunctionHook( 'PREV', array( $this, 'expandPrev' ) );
 		$wgParser->setFunctionHook( 'NEXT', array( $this, 'expandNext' ) );
+		$wgParser->setFunctionHook( 'OWNER', array( $this, 'expandOwner' ), SFH_NO_HASH );		
 	}
 
 	function onLanguageGetMagic( &$magicWords, $langCode = null ) {
@@ -72,6 +73,7 @@ class ExtraMagic {
 		$magicWords['IFCAT'] = array( 0, 'IFCAT' );
 		$magicWords['PREV'] = array( 0, 'PREV' );
 		$magicWords['NEXT'] = array( 0, 'NEXT' );
+		$magicWords['OWNER'] = array( 0, 'OWNER' );
 
 		return true;
 	}
@@ -133,19 +135,19 @@ class ExtraMagic {
 	/**
 	 * Expand parser functions
 	 */
-	static function expandRequest( &$parser, $param, $default = '', $seperator = "\n" ) {
+	public static function expandRequest( &$parser, $param, $default = '', $seperator = "\n" ) {
 		$parser->disableCache();
 		$val = array_key_exists( $param, $_REQUEST ) ? $_REQUEST[$param] : $default;
 		if( is_array( $val ) ) $val = implode( $seperator, $val );
 		return $val;
 	}
 
-	static function expandCookie( &$parser, $param, $default = '' ) {
+	public static function expandCookie( &$parser, $param, $default = '' ) {
 		$parser->disableCache();
 		return array_key_exists( $param, $_COOKIE ) ? $_COOKIE[$param] : $default;
 	}
 
-	static function expandUserID( &$parser, $param ) {
+	public static function expandUserID( &$parser, $param ) {
 		if( $param ) {
 			$col = strpos( $param, ' ' ) ? 'user_real_name' : 'user_name';
 			$dbr = wfGetDB( DB_SLAVE );
@@ -157,13 +159,13 @@ class ExtraMagic {
 		return '';
 	}
 
-	static function expandIfGroup( &$parser, $groups, $then, $else = '' ) {
+	public static function expandIfGroup( &$parser, $groups, $then, $else = '' ) {
 		global $wgUser;
 		$intersection = array_intersect( array_map( 'strtolower', explode( ',', $groups ) ), $wgUser->getEffectiveGroups() );
 		return count( $intersection ) > 0 ? $then : $else;
 	}
 
-	static function expandIfUses( &$parser, $tmpl, $then, $else = '' ) {
+	public static function expandIfUses( &$parser, $tmpl, $then, $else = '' ) {
 		global $wgTitle;
 		$dbr  = wfGetDB( DB_SLAVE );
 		$tmpl = $dbr->addQuotes( Title::newFromText( $tmpl )->getDBkey() );
@@ -171,7 +173,7 @@ class ExtraMagic {
 		return $dbr->selectRow( 'templatelinks', '1', "tl_from = $id AND tl_namespace = 10 AND tl_title = $tmpl" ) ? $then : $else;
 	}
 
-	static function expandIfCat( &$parser, $cat, $then, $else = '' ) {
+	public static function expandIfCat( &$parser, $cat, $then, $else = '' ) {
 		global $wgTitle;
 		$id   = $wgTitle->getArticleID();
 		$dbr  = wfGetDB( DB_SLAVE );
@@ -179,21 +181,35 @@ class ExtraMagic {
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" ) ? $then : $else;
 	}
 
-	static function expandNext( $parser, $list ) {
+	public static function expandNext( $parser, $list ) {
 		return self::nextprev( $list, 1 );
 	}
  
-	static function expandPrev( $parser, $list ) {
+	public static function expandPrev( $parser, $list ) {
 		return self::nextprev( $list, -1 );
 	}
 	
-	static function nextprev( $l, $j ) {
+	public static function nextprev( $l, $j ) {
 		global $wgTitle;
 		$r = '';
 		$l = explode( '#', $l );
 		$i = array_search( $wgTitle->getPrefixedText(), $l );
 		if( $i !== false && array_key_exists( $i+$j, $l ) ) $r = $l[$i+$j];
 		return $r;
+	}
+	
+	public static function expandOwner( $parser, $title ) {
+		if( empty( $title ) ) {
+			global $wgTitle;
+			$title = $wgTitle;
+		} else $title = Title::newFromText( $title );
+		$id = $title->getArticleID();
+		$dbr = wfGetDB( DB_SLAVE );
+		if( $id > 0 && $row = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) ) ) {
+			$owner = User::newFromID( $row->rev_user )->getName();
+		} else $owner = '';
+		return $owner;
+	}
 	}
 }
 
