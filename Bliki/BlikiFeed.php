@@ -32,6 +32,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		global $wgBlikiDefaultCat;
 		$opts->add( 'bliki', false );
 		$opts['bliki'] = $this->getRequest()->getVal( 'q', $wgBlikiDefaultCat );
+		if( !is_array( $opts['bliki'] ) ) $opts['bliki'] = array( $opts['bliki'] );
 		return parent::doMainQuery( $conds, $opts );
 	}
 
@@ -41,8 +42,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$tables[] = 'categorylinks';
 			$conds[] = 'rc_new=1';
 			$dbr = wfGetDB( DB_SLAVE );
-			$cat = $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
-			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to=$cat" );
+			$join_conds['categorylinks'] = array( 'RIGHT JOIN', 'cl_from=page_id AND cl_to IN (' . $dbr->makeList( $opts['bliki'] ) . ')' );
 		}
 		return true;
 	}
