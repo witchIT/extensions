@@ -14,6 +14,7 @@
 /**
  * Add a new special page for blog feeds based on Special:RecentChanges
  */
+if( !isset( $wgBlikiDefaultCat ) ) $wgBlikiDefaultCat = 'Blog items';
 $wgSpecialPages['BlikiFeed'] = 'SpecialBlikiFeed';
 class SpecialBlikiFeed extends SpecialRecentChanges {
 
@@ -28,8 +29,9 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 
 	// Inject a value into opts so we can know on the hook function that its a bliki feed
 	public function doMainQuery( $conds, $opts ) {
+		global $wgBlikiDefaultCat;
 		$opts->add( 'bliki', false );
-		$opts['bliki'] = $this->getRequest()->getVal( 'q', 'Blog items' );
+		$opts['bliki'] = $this->getRequest()->getVal( 'q', $wgBlikiDefaultCat );
 		return parent::doMainQuery( $conds, $opts );
 	}
 

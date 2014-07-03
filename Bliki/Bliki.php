@@ -15,6 +15,7 @@ define( 'BLIKI_VERSION','2.0.5, 2014-07-03' );
 
 $wgBlikiAddBodyClass = false;
 $wgBlikiPostGroup = 'sysop';
+$wgBlikiDefaultCat = 'Blog items';
 
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
