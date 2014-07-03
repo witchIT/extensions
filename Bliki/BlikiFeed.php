@@ -39,8 +39,8 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$conds[] = 'rc_new=1';
 			$dbr = wfGetDB( DB_SLAVE );
 			$cat = $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
-			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to=$cat" );
-			print_r($join_conds);
+			//$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to=$cat" );
+			//print_r($join_conds);
 		}
 		return true;
 	}
