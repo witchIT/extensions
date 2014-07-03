@@ -105,21 +105,8 @@ class Bliki {
 	}
 
 	function onOutputPageBodyAttributes( $out, $sk, &$bodyAttrs ) {
-		if( self::inCat( 'Blog_items' ) ) $bodyAttrs['class'] .= ' blog-item';
+		if( SpecialBlikiFeed::inCat( 'Blog_items' ) ) $bodyAttrs['class'] .= ' blog-item';
 		return true;
-	}
-
-	/**
-	 * Return whether or not the passed title is a member of the passed cat
-	 */
-	public static function inCat( $cat, $title = false ) {
-		global $wgTitle;
-		if( $title === false ) $title = $wgTitle;
-		if( !is_object( $title ) ) $title = Title::newFromText( $title );
-		$id  = $title->getArticleID();
-		$dbr = wfGetDB( DB_SLAVE );
-		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
-		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
 	}
 }
 
