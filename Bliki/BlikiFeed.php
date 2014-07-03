@@ -43,9 +43,9 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$dbr = wfGetDB( DB_SLAVE );
 			if( is_array( $opts['bliki'] ) ) {
 				foreach( $opts['bliki'] as $i => $cat ) $opts['bliki'][$i] = Title::newFromText( $cat )->getDBkey();
-				$catCond = 'IN (' . $dbr->makeList( $opts['bliki'] ) . ')';
-			} else $catCond = '=' . $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
-			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to $catCond" );
+				$catCond = 'cl_to IN (' . $dbr->makeList( $opts['bliki'] ) . ')';
+			} else $catCond = 'cl_to =' . $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
+			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND $catCond AND foo" );
 		}
 		return true;
 	}
