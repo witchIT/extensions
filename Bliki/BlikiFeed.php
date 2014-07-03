@@ -21,7 +21,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 	public function __construct() {
 		global $wgHooks;
 		$wgHooks['SpecialRecentChangesQuery'][] = $this;
-		if( !$this->getRequest()->getVal( 'feed' ) ) $this->getRequest()->setVal( 'feed', 'rss' );
+		//if( !$this->getRequest()->getVal( 'feed' ) ) $this->getRequest()->setVal( 'feed', 'rss' );
 		parent::__construct( 'BlikiFeed' );
 	}
 
