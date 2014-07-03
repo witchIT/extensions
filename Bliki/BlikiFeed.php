@@ -31,9 +31,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 	public function doMainQuery( $conds, $opts ) {
 		global $wgBlikiDefaultCat;
 		$opts->add( 'bliki', false );
-		$opts['bliki'] = $this->getRequest()->getVal( 'q', $wgBlikiDefaultCat );
-		print_r($_REQUEST['q']);
-		if( !is_array( $opts['bliki'] ) ) $opts['bliki'] = array( $opts['bliki'] );
+		$opts['bliki'] = array_key_exists( 'q', $_REQUEST ) ? $_REQUEST['q'] : $wgBlikiDefaultCat;
 		return parent::doMainQuery( $conds, $opts );
 	}
 
@@ -43,7 +41,11 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$tables[] = 'categorylinks';
 			$conds[] = 'rc_new=1';
 			$dbr = wfGetDB( DB_SLAVE );
-			$join_conds['categorylinks'] = array( 'RIGHT JOIN', 'cl_from=page_id AND cl_to IN (' . $dbr->makeList( $opts['bliki'] ) . ')' );
+			if( is_array( $opts['bliki'] ) ) {
+				foreach( $opts['bliki'] as $i => $cat ) $opts['bliki'][$i] = Title::newFromText( $opts['bliki'] )->getDBkey();
+				$catCond = 'IN (' . $dbr->makeList( $opts['bliki'] ) . ')';
+			} else $catCond = '=' . $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
+			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND cl_to $catCond" );
 		}
 		return true;
 	}
