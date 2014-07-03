@@ -42,9 +42,8 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			$conds[] = 'rc_new=1';
 			$dbr = wfGetDB( DB_SLAVE );
 			if( is_array( $opts['bliki'] ) ) {
-				$tmp = array();
-				foreach( $opts['bliki'] as $cat ) $tmp[] = 'cl_to=' . $dbr->addQuotes( Title::newFromText( $cat )->getDBkey() );
-				$catCond = '(' . join( ' OR ', $tmp ) . ')';
+				foreach( $opts['bliki'] as $i => $cat ) $opts['bliki'][$i] = Title::newFromText( $cat )->getDBkey();
+				$catCond = 'cl_to IN (' . $dbr->makeList( $opts['bliki'] ) . ')';
 			} else $catCond = 'cl_to =' . $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
 			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND $catCond AND foo" );
 		}
