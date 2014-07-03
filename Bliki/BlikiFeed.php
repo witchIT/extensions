@@ -51,7 +51,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			// Blog title & description
 			$q = $wgRequest->getVal( 'q', false );
 			$cat = $q ? Title::newFromText( $q )->getText() : false;
-			$tag = $cat ? Bliki::inCat( 'Tags', $cat ) : false;
+			$tag = $cat ? self::inCat( 'Tags', $cat ) : false;
 			$title = str_replace( ' wiki', '', $wgSitename ) . ' blog';
 			$desc = $cat ? ( $tag ? "\"$cat\" posts" : lcfirst( $cat ) ) : 'posts';
 			$desc = wfMsg( 'bliki-desc', $desc, $wgSitename );
@@ -67,6 +67,18 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			return array( $changesFeed, $formatter );
 		}
 
+	/**
+	 * Return whether or not the passed title is a member of the passed cat
+	 */
+	public static function inCat( $cat, $title = false ) {
+		global $wgTitle;
+		if( $title === false ) $title = $wgTitle;
+		if( !is_object( $title ) ) $title = Title::newFromText( $title );
+		$id  = $title->getArticleID();
+		$dbr = wfGetDB( DB_SLAVE );
+		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
+		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
+	}
 }
 
 /**
