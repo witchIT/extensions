@@ -32,6 +32,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		global $wgBlikiDefaultCat;
 		$opts->add( 'bliki', false );
 		$opts['bliki'] = $this->getRequest()->getVal( 'q', $wgBlikiDefaultCat );
+		print_r($opts['bliki']);
 		if( !is_array( $opts['bliki'] ) ) $opts['bliki'] = array( $opts['bliki'] );
 		return parent::doMainQuery( $conds, $opts );
 	}
