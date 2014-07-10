@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.5.0, 2014-07-02' );
+define( 'EXTRAMAGIC_VERSION', '3.5.1, 2014-07-10' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -123,7 +123,7 @@ class ExtraMagic {
 		$res = $dbr->select( $tbl, 'user_name', $cond, __METHOD__, array( 'DISTINCT', 'ORDER BY' => 'user_name' ) );
 		foreach( $res as $row ) {
 			$title = Title::newFromText( $row->user_name, NS_USER );
-			if( $title->exists() ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
+			if( is_object( $title ) && $title->exists() ) $out .= "*[[User:{$row->user_name}|{$row->user_name}]]\n";
 		}
 		$varCache['userpageselfedits'] = $out;
 
