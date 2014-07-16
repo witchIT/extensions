@@ -146,7 +146,7 @@ class BlikiChangesFeed extends ChangesFeed {
 		$content = $article->getContent();
 		$desc = preg_match( "/^.+?1=(.+?)\|2=/s", $content, $m ) ? $m[1] : $title->getText();
 		$desc = strip_tags( $wgParser->parse( $desc, $title, new ParserOptions(), true, true )->getText() );
-		$desc = preg_replace( "/(^$)+/m", "\r\n", $desc );
+		$desc = preg_replace( "/\n+/m", "\n", $desc );
 		return $desc;
 	}
 
