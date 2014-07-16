@@ -40,8 +40,6 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
  		$res = parent::doMainQuery( $conds, $opts );
 		$user->mRights = $rights;
 
-$dbr = wfGetDB( DB_SLAVE );
-print_r($dbr->lastQuery());
 		return $res;
 	}
 
