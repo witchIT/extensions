@@ -32,10 +32,15 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		global $wgBlikiDefaultCat;
 		$opts->add( 'bliki', false );
 		$opts['bliki'] = array_key_exists( 'q', $_REQUEST ) ? $_REQUEST['q'] : $wgBlikiDefaultCat;
-		$x=parent::doMainQuery( $conds, $opts );
-$db=wfGetDB(DB_SLAVE);
-print_r($db->lastQuery());
-		return $x;
+
+		// Add the rollback right to the user object so that the page join exists, because without it the new category join fails
+		$user = $this->getUser();
+		$rights = $user->mRights;
+		$user->mRights[] = 'rollback';
+ 		$res = parent::doMainQuery( $conds, $opts );
+		$user->mRights = $rights;
+
+		return $res;
 	}
 
 	// If it's a bliki list, filter the list to onlynew items and to the tag cat if q supplied
