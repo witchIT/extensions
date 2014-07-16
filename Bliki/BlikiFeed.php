@@ -38,8 +38,8 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 	// If it's a bliki list, filter the list to onlynew items and to the tag cat if q supplied
 	public static function onSpecialRecentChangesQuery( &$conds, &$tables, &$join_conds, $opts, &$query_options, &$fields ) {
 		if( $opts->validateName( 'bliki' ) ) {
-			$tables[] = 'categorylinks';
-			print_r($tables);
+			if( !in_array( 'categorylinks' ), $tables ) $tables[] = 'categorylinks';
+			if( !in_array( 'page' ), $tables ) $tables[] = 'page';
 			$conds[] = 'rc_new=1';
 			$dbr = wfGetDB( DB_SLAVE );
 			if( is_array( $opts['bliki'] ) ) {
