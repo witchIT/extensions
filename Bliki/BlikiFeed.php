@@ -32,7 +32,10 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		global $wgBlikiDefaultCat;
 		$opts->add( 'bliki', false );
 		$opts['bliki'] = array_key_exists( 'q', $_REQUEST ) ? $_REQUEST['q'] : $wgBlikiDefaultCat;
-		return parent::doMainQuery( $conds, $opts );
+		$x=parent::doMainQuery( $conds, $opts );
+$db=wfGetDB(DB_SLAVE);
+print_r($db->lastQuery());
+		return $x;
 	}
 
 	// If it's a bliki list, filter the list to onlynew items and to the tag cat if q supplied
@@ -68,8 +71,6 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 			// Instantiate our custom ChangesFeed class
 			$changesFeed = new BlikiChangesFeed( $feedFormat, 'rcfeed' );
 			$formatter = $changesFeed->getFeedObject( $title, $desc, $url );
-$db=wfGetDB(DB_SLAVE);
-print_r($db->lastQuery());
 			return array( $changesFeed, $formatter );
 		}
 
