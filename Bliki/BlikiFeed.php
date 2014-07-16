@@ -39,6 +39,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 	public static function onSpecialRecentChangesQuery( &$conds, &$tables, &$join_conds, $opts, &$query_options, &$fields ) {
 		if( $opts->validateName( 'bliki' ) ) {
 			$tables[] = 'categorylinks';
+			print_r($tables);
 			$conds[] = 'rc_new=1';
 			$dbr = wfGetDB( DB_SLAVE );
 			if( is_array( $opts['bliki'] ) ) {
