@@ -16,7 +16,7 @@ define( 'EXTRAMAGIC_VERSION', '3.5.1, 2014-07-10' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
-	'author'      => '[http://www.organicdesign.co.nz/User:Nad User:Nad]',
+	'author'      => '[http://www.organicdesign.co.nz/User:Nad Aran Dunkley]',
 	'description' => 'Adds useful variables and parser functions',
 	'url'         => 'http://www.organicdesign.co.nz/Extension:ExtraMagic.php',
 	'version'     => EXTRAMAGIC_VERSION
