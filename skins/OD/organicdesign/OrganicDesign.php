@@ -8,6 +8,22 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 
+$wgExtensionCredits['skin'][] = array(
+	'path' => __FILE__,
+	'name' => 'OrganicDesign', // name as shown under [[Special:Version]]
+	'namemsg' => 'organicdesign', // used since MW 1.24, see the section on "Localisation messages" below
+	'version' => '2.1',
+	'url' => 'http://www.organicdesign.co.nz/Skinning',
+	'author' => '[http://www.organicdesign.co.nz/nad Aran Dunkley]',
+	'descriptionmsg' => 'od-skin-desc', // see the section on "Localisation messages" below
+	'license' => 'GPL-2.0+',
+);
+
+// Register the skin
+$wgValidSkinNames['organicdesign'] = 'OrganicDesign';
+//$wgAutoloadClasses['SkinMySkin'] = __DIR__ . '/MySkin.skin.php';
+//$wgMessagesDirs['MySkin'] = __DIR__ . '/i18n';
+
 // Register the CSS file
 $wgResourceModules['skins.organicdesign'] = array(
 		'styles' => array( 'organicdesign.css' => array( 'media' => 'screen' ) ),
