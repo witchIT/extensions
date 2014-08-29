@@ -22,13 +22,6 @@ $wgExtensionCredits['other'][] = array(
 	'version'	 => OD_VERSION
 );
 
-// Register the CSS file for the OrganicDesign skin
-$wgResourceModules['skins.organicdesign'] = array(
-		'styles' => array( 'organicdesign.css' => array( 'media' => 'screen' ) ),
-		'remoteBasePath' => "$wgStylePath/organicdesign",
-		'localBasePath' => "$IP/skins/organicdesign",
-);
-
 class OrganicDesign {
 
 	public static $title = false;
