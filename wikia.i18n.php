@@ -13,6 +13,8 @@ $messages = array();
  * @author Nad
  */
 $messages['en'] = array(
+	'organicdesign' => "Organic Design",
+	'od-skin-desc' => "The Organic Design skin",
 	'specialpages-group-od' => "OrganicDesign admin pages",
 	'tips-welcome' => "Tips are welcome",
 	'paypal-or-cc' => "We accept paypal or credit card",
