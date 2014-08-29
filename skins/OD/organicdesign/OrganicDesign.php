@@ -8,6 +8,13 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( -1 );
 
+// Register the CSS file
+$wgResourceModules['skins.organicdesign'] = array(
+		'styles' => array( 'organicdesign.css' => array( 'media' => 'screen' ) ),
+		'remoteBasePath' => "$wgStylePath/organicdesign",
+		'localBasePath' => "$IP/skins/organicdesign",
+);
+
 /**
  * SkinTemplate class for OrganicDesign skin
  * @ingroup Skins
@@ -139,7 +146,7 @@ if ( $wgOrganicDesignDonations ) {?>
 global $wgUser,$wgTitle,$wgParser;
 $title = 'od-sidebar';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ), 0 );
-$text = $article->fetchContent();
+$text = $article->getContent();
 if( empty( $text ) ) $text = wfMsg( $title );
 if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
@@ -202,7 +209,7 @@ echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
 global $wgUser,$wgTitle,$wgParser;
 $title = 'footer';
 $article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ) );
-$text = $article->fetchContent();
+$text = $article->getContent();
 if( empty( $text ) ) $text = wfMsg( $title );
 if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 else { $psr = new Parser; $opt = NULL; }
@@ -233,7 +240,7 @@ function wfSidebarTree( $out, $skin ) {
 	$title = Title::newFromText( 'SidebarTree', NS_MEDIAWIKI );
 	$article = new Article( $title );
 	$html = $this->searchBox();
-	$html .= $wgParser->parse( $article->fetchContent(), $title, $opt, true, true )->getText();
+	$html .= $wgParser->parse( $article->getContent(), $title, $opt, true, true )->getText();
 	$out->addHTML( "<div id=\"sidebar-tree\">$html</div>" );
 	return true;
 }
