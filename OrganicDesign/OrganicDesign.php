@@ -11,6 +11,8 @@
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
 define( 'OD_VERSION', "1.0.2, 2013-11-15" );
 
+include( "$IP/skins/organicdesign/OrganicDesign.php" );
+
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
 
