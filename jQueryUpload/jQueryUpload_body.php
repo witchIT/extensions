@@ -166,6 +166,7 @@ class jQueryUpload extends SpecialPage {
 		global $wgScript, $wgUploadDirectory, $wgJQUploadAction, $wgRequest, $wgFileExtensions;
 		if( $wgJQUploadAction ) $_REQUEST['action'] = $wgJQUploadAction;
 
+		ini_set("display_errors", "off");
 		header( 'Pragma: no-cache' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 
