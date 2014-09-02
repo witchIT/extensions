@@ -166,7 +166,12 @@ class jQueryUpload extends SpecialPage {
 		global $wgScript, $wgUploadDirectory, $wgJQUploadAction, $wgRequest, $wgFileExtensions;
 		if( $wgJQUploadAction ) $_REQUEST['action'] = $wgJQUploadAction;
 
+		// So that meaningful errors can be sent back to the client
+		error_reporting( E_ALL | E_STRICT );
+
+		// But turn off error output as warnings can break the json syntax
 		ini_set("display_errors", "off");
+
 		header( 'Pragma: no-cache' );
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 
@@ -219,9 +224,6 @@ class jQueryUpload extends SpecialPage {
 				}
 			}
 		}
-
-		// So that meaningful errors can be sent back to the client
-		error_reporting( E_ALL | E_STRICT );
 
 		// Get the file locations
 		$path = $wgRequest->getText( 'path', '' );
