@@ -21,8 +21,6 @@ $wgExtensionCredits['skin'][] = array(
 
 // Register the skin
 $wgValidSkinNames['organicdesign'] = 'OrganicDesign';
-//$wgAutoloadClasses['SkinMySkin'] = __DIR__ . '/MySkin.skin.php';
-//$wgMessagesDirs['MySkin'] = __DIR__ . '/i18n';
 
 // Register the CSS file
 $wgResourceModules['skins.organicdesign'] = array(
@@ -131,7 +129,7 @@ if ( $wgOrganicDesignDonations ) {?>
 		</div>
 		<h5 id="nmccool"><?php echo wfMsg('also'); ?> <a href="/Litecoin">LTC</a>, <a href="/Ripple">XRP</a> & <a href="/Stellar">STR</a></h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a4/Litecoin-icon.png) no-repeat 5px 2px;">
-			<input style="width:139px;margin-left:23px" readonly="1" value="LeqKPQyxCvrXkXUf6rSxMkMBUpo1NLKQTY" onmouseover="this.select()" />
+			<input style="width:139px;margin-left:23px" readonly="1" value="LUoC9TbjN4iPVh1wKNfFBHUr4DozuVKr4X" onmouseover="this.select()" />
 		</div>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/2/23/Ripple.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="rBSVzXKvPiRVKa4aBpr3SNqSem1RBDdhqy" onmouseover="this.select()" />
