@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.6, 2014-06-21' );
+define( 'AJAXCOMMENTS_VERSION', '1.1.7, 2014-09-23' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -180,7 +180,7 @@ class AjaxComments {
 						$cc = "<h3 id=\"ajaxcomments-count\">";
 						if( $n == 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
-						$content .= $this->renderComments();
+						if( $n > 0 ) $content .= $this->renderComments();
 						if( $action == 'ajaxcomments' ) print $content; else return $content;
 				}
 
