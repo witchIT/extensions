@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.1.7, 2014-09-23' );
+define( 'AJAXCOMMENTS_VERSION', '1.2.0, 2014-09-28' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -416,9 +416,14 @@ class AjaxComments {
 
 	/**
 	 * Return the passed talk text as a data structure of comments
+	 * - detect if the content needs to be base64 decoded before unserialising
 	 */
 	static function textToData( $text ) {
-		if( preg_match( "|== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $m ) ) return unserialize( $m[1] );
+		if( preg_match( "|== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $m ) ) {
+			$data = $m[1];
+			if( substr( $data, -1 ) != '}' ) $data = base64_decode( $data );
+			return unserialize( $data );
+		}
 		return array();
 	}
 
@@ -427,7 +432,7 @@ class AjaxComments {
 	 * - $content is the current talk page text to integrate with
 	 */
 	static function dataToText( $data, $content ) {
-		$text = serialize( $data );
+		$text = base64_encode( serialize( $data ) );
 		$text = "\n== AjaxComments:DataStart ==\n$text\n== AjaxComments:DataEnd ==";
 		$content = preg_replace( "|== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $content, 1, $count );
 		if( $count == 0 ) $content .= $text;
