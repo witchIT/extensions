@@ -419,7 +419,7 @@ class AjaxComments {
 	 * - detect if the content needs to be base64 decoded before unserialising
 	 */
 	static function textToData( $text ) {
-		if( preg_match( "|== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $m ) ) {
+		if( preg_match( "|== AjaxComments:DataStart ==\s*(.+?)\s*== AjaxComments:DataEnd ==|s", $text, $m ) ) {
 			$data = $m[1];
 			if( substr( $data, -1 ) != '}' ) $data = base64_decode( $data );
 			return unserialize( $data );
