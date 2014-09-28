@@ -434,7 +434,7 @@ class AjaxComments {
 	static function dataToText( $data, $content ) {
 		$text = base64_encode( serialize( $data ) );
 		$text = "\n== AjaxComments:DataStart ==\n$text\n== AjaxComments:DataEnd ==";
-		$content = preg_replace( "|== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $content, 1, $count );
+		$content = preg_replace( "|\s*== AjaxComments:DataStart ==\s*(.+)\s*== AjaxComments:DataEnd ==|s", $text, $content, 1, $count );
 		if( $count == 0 ) $content .= $text;
 		return $content;
 	}
