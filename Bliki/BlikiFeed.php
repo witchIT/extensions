@@ -160,7 +160,7 @@ class BlikiChangesFeed extends ChangesFeed {
 		$html = $wgParser->parse( $text, $title, new ParserOptions(), true, true )->getText();
 		$html = preg_replace( '|<a[^<]+<img .+?</a>|', '', $html );
 		$desc = strip_tags( $html, '<p><a><i><b><u><s>' );
-		$desc = trim( preg_replace( "/[\r\n]+/", "\r\n\r\n", $desc ) );
+		$desc = trim( preg_replace( "/[\r\n]+/", "\r\n", $desc ) );
 		return $desc;
 	}
 }
