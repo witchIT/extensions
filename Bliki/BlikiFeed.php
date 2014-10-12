@@ -35,7 +35,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 
 if( array_key_exists( 'x', $_REQUEST ) ) {
 	$t = Title::newFromText( 'BitcoinToYou in Curitiba' );
-	print '<pre>' . BlikiChangesFeed::desc( $t ) . '</pre>';
+	print BlikiChangesFeed::desc( $t );
 	die;
 }
 
