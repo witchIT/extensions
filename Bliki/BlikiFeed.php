@@ -40,7 +40,7 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 
 		// Allow printing raw desc results
 		if(  array_key_exists( 'test', $_REQUEST ) ) {
-			$t = Title::newFromText( 'BitcoinToYou in Curitiba' );
+			$t = Title::newFromText( $_REQUEST['test'] );
 			print BlikiChangesFeed::desc($t);
 			die;
 		}
