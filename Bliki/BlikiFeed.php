@@ -161,7 +161,7 @@ class BlikiChangesFeed extends ChangesFeed {
 		$html = preg_replace( '|<a[^<]+<img .+?</a>|', '', $html );
 		$desc = strip_tags( $html, '<p><a><i><b><u><s>' );
 		$desc = trim( preg_replace( "/[\r\n]+/", "", $desc ) );
-		$desc = preg_replace( "|</p>|", "</p>\n", $desc );
+		$desc = preg_replace( "|<p>|", "\n<p>", $desc );
 		return $desc;
 	}
 }
