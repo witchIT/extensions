@@ -38,10 +38,12 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		$wgScriptPath  = $wgServer.$wgScriptPath;
 		$wgScript      = $wgServer.$wgScript;
 
-if(  array_key_exists( 'test', $_REQUEST ) ) {
-	$t = Title::newFromText( 'BitcoinToYou in Curitiba' );
-	BlikiChangesFeed::desc($t);
-}
+		// Allow printing raw desc results
+		if(  array_key_exists( 'test', $_REQUEST ) ) {
+			$t = Title::newFromText( 'BitcoinToYou in Curitiba' );
+			print BlikiChangesFeed::desc($t);
+			die;
+		}
 
 		// Add the rollback right to the user object so that the page join exists, because without it the new category join fails
 		$user = $this->getUser();
@@ -157,8 +159,6 @@ class BlikiChangesFeed extends ChangesFeed {
 		$text = preg_match( "/^.+?1=(.+?)\|2=/s", $content, $m ) ? $m[1] : $title->getText();
 		$html = $wgParser->parse( $text, $title, new ParserOptions(), true, true )->getText();
 		$html = preg_replace( '|<a[^<]+<img .+?</a>|', '', $html );
-print $html;
-die;
 		$desc = strip_tags( $html, '<p><a><i><b><u><s>' );
 		$desc = trim( preg_replace( "/[\r\n]+/", "\r\n\r\n", $desc ) );
 		return $desc;
