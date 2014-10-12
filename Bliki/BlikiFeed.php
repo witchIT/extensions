@@ -157,11 +157,11 @@ class BlikiChangesFeed extends ChangesFeed {
 		$article = new Article( $title );
 		$content = $article->getContent();
 		$text = preg_match( "/^.+?1=(.+?)\|2=/s", $content, $m ) ? $m[1] : $title->getText();
-		$html = $wgParser->parse( $text, $title, new ParserOptions(), true, true )->getText();
+		$html = $wgParser->parse( trim( $text ), $title, new ParserOptions(), true, true )->getText();
 		$html = preg_replace( '|<a[^<]+<img .+?</a>|', '', $html );
 		$desc = strip_tags( $html, '<p><a><i><b><u><s>' );
 		$desc = trim( preg_replace( "/[\r\n]+/", "", $desc ) );
-		$desc = preg_replace( "|<p>|", "\n<p>", $desc );
+		$desc = trim( preg_replace( "|<p>|", "\n<p>", $desc ) );
 		return $desc;
 	}
 }
