@@ -152,6 +152,7 @@ class BlikiChangesFeed extends ChangesFeed {
 		$text = preg_match( "/^.+?1=(.+?)\|2=/s", $content, $m ) ? $m[1] : $title->getText();
 		$html = $wgParser->parse( $text, $title, new ParserOptions(), true, true )->getText();
 print "<pre>$html</pre>";
+die;
 		$html = preg_replace( '|<a[^<]+<img .+?</a>|', '', $html );
 		$desc = strip_tags( $html, '<p><a><i><b><u><s>' );
 		$desc = trim( preg_replace( "/[\r\n]+/", "\r\n\r\n", $desc ) );
