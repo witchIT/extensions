@@ -33,6 +33,12 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		$opts->add( 'bliki', false );
 		$opts['bliki'] = array_key_exists( 'q', $_REQUEST ) ? $_REQUEST['q'] : $wgBlikiDefaultCat;
 
+if( array_key_exists( 'x', $_REQUEST ) ) {
+	$t = Title::newFromText( 'BitcoinToYou in Curitiba' );
+	print '<pre>' . BlikiChangesFeed::desc( $t ) . '</pre>';
+	die;
+}
+
 		// Add the rollback right to the user object so that the page join exists, because without it the new category join fails
 		$user = $this->getUser();
 		$rights = $user->mRights;
