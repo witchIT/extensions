@@ -38,6 +38,11 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		$wgScriptPath  = $wgServer.$wgScriptPath;
 		$wgScript      = $wgServer.$wgScript;
 
+if(  array_key_exists( 'test', $_REQUEST ) ) {
+	$t = Title::newFromText( 'BitcoinToYou in Curitiba' );
+	print BlikiChangesFeed::desc($t);
+}
+
 		// Add the rollback right to the user object so that the page join exists, because without it the new category join fails
 		$user = $this->getUser();
 		$rights = $user->mRights;
@@ -158,5 +163,4 @@ die;
 		$desc = trim( preg_replace( "/[\r\n]+/", "\r\n\r\n", $desc ) );
 		return $desc;
 	}
-
 }
