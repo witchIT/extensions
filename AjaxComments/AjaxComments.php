@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.2.0, 2014-09-28' );
+define( 'AJAXCOMMENTS_VERSION', '1.2.1, 2014-10-17' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -32,8 +32,7 @@ $wgExtensionCredits['other'][] = array(
 	'version'     => AJAXCOMMENTS_VERSION
 );
 
-$dir = dirname( __FILE__ );
-$wgExtensionMessagesFiles['AjaxComments'] = "$dir/AjaxComments.i18n.php";
+$wgExtensionMessagesFiles['AjaxComments'] = __DIR__ . '/AjaxComments.i18n.php';
 
 class AjaxComments {
 
@@ -73,8 +72,8 @@ class AjaxComments {
 		$wgResourceModules['ext.ajaxcomments'] = array(
 			'scripts'        => array( 'ajaxcomments.js' ),
 			'styles'         => array( 'ajaxcomments.css' ),
-			'localBasePath'  => dirname( __FILE__ ),
-			'remoteBasePath' => $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) ),
+			'localBasePath'  => __DIR__,
+			'remoteBasePath' => $wgExtensionAssetsPath . '/' . basename( __DIR__ ),
 		);
 		$wgOut->addModules( 'ext.ajaxcomments' );
 
@@ -180,7 +179,7 @@ class AjaxComments {
 						$cc = "<h3 id=\"ajaxcomments-count\">";
 						if( $n == 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
 						else if( $n > 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
-						if( $n > 0 ) $content .= $this->renderComments();
+						$content .= $this->renderComments();
 						if( $action == 'ajaxcomments' ) print $content; else return $content;
 				}
 
