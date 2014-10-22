@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die('Not an entry point.' );
 
-define( 'EXTRAMAGIC_VERSION', '3.5.1, 2014-07-10' );
+define( 'EXTRAMAGIC_VERSION', '3.5.2, 2014-10-22' );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'name'        => 'ExtraMagic',
@@ -192,8 +192,8 @@ class ExtraMagic {
 	public static function nextprev( $l, $j ) {
 		global $wgTitle;
 		$r = '';
+		$l = preg_replace( '|\s*\[\[.+|', '', $l ); // ensure there's no "further results" link on the end
 		$l = explode( '#', $l );
-		print_r($l);
 		$i = array_search( $wgTitle->getPrefixedText(), $l );
 		if( $i !== false && array_key_exists( $i+$j, $l ) ) $r = $l[$i+$j];
 		return $r;
