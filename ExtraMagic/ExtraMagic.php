@@ -193,7 +193,7 @@ class ExtraMagic {
 		global $wgTitle;
 		$r = '';
 		$l = explode( '#', $l );
-		print_t($l);
+		print_r($l);
 		$i = array_search( $wgTitle->getPrefixedText(), $l );
 		if( $i !== false && array_key_exists( $i+$j, $l ) ) $r = $l[$i+$j];
 		return $r;
