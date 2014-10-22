@@ -195,6 +195,7 @@ class ExtraMagic {
 		$l = preg_replace( '|\s*\[\[.+|', '', $l ); // ensure there's no "further results" link on the end
 		$l = explode( '#', $l );
 	print_r($l);
+	print "\n" . $wgTitle->getPrefixedText() . "\n";
 		$i = array_search( $wgTitle->getPrefixedText(), $l );
 		if( $i !== false && array_key_exists( $i+$j, $l ) ) $r = $l[$i+$j];
 		return $r;
