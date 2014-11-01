@@ -159,7 +159,7 @@ class OrganicDesign {
 	}
 
 	public static function languages( $out ) {
-		$out->addHTML( '<div id="languages" style=\"display:none\">
+		$out->addHTML( '<div id="languages" style="display:none">
 			<a href="http://www.organicdesign.co.nz<?php echo $uri; ?>" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="http://pt.organicdesign.co.nz<?php echo $uri; ?>" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div>' );
