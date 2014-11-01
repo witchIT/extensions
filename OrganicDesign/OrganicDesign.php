@@ -160,8 +160,8 @@ class OrganicDesign {
 
 	public static function languages( $out ) {
 		$out->addHTML( '<div id="languages" style="display:none">
-			<a href="http://www.organicdesign.co.nz' . $uri . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
-			<a href="http://pt.organicdesign.co.nz' . $uri . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
+			<a href="http://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
+			<a href="http://pt.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div>' );
 	}
 
