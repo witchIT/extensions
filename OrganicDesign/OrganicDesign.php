@@ -142,13 +142,13 @@ class OrganicDesign {
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new Article( $title );
 		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
-		$out->addHTML( "<div id=\"wikitext-sidebar\">$html</div>" );
+		$out->addHTML( "<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>" );
 
 		// Add footer content
 		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
 		$article = new Article( $title );
 		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
-		$out->addHTML( "<div id=\"wikitext-footer\">$html</div>" );
+		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\">$html</div>" );
 
 		// Add the other items
 		self::donations( $out );
@@ -159,7 +159,7 @@ class OrganicDesign {
 	}
 
 	public static function languages( $out ) {
-		$out->addHTML( '<div id="languages">
+		$out->addHTML( '<div id="languages" style=\"display:none\">
 			<a href="http://www.organicdesign.co.nz<?php echo $uri; ?>" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="http://pt.organicdesign.co.nz<?php echo $uri; ?>" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div>' );
@@ -167,7 +167,7 @@ class OrganicDesign {
 
 	public static function donations( $out ) {
 		global $wgOrganicDesignDonations;
-		$out->addHTML( '<div class="portlet" id="donations" >
+		$out->addHTML( '<div class="portlet" id="donations" style="display:none">
 		<h2 style="white-space:nowrap">' . wfMsg('tips-welcome') . '</h2>
 		<h5>' . wfMsg('paypal-or-cc') . '</h5>
 		<div class="pBody">
@@ -198,7 +198,7 @@ class OrganicDesign {
 	public static function personal( $out, $user ) {
 		global $wgUploadDirectory, $wgUploadPath;
 		if( $user->isLoggedIn() ) {
-			$out->addHTML( '<div id="p-avatar">' );
+			$out->addHTML( '<div id="p-avatar" style="display:none">' );
 			$name  = $user->getName();
 			$img = wfLocalFile( "$name.png" );
 			if( is_object( $img  ) && $img->exists() ) {
