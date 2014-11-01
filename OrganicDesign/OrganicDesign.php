@@ -9,9 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "1.0.2, 2013-11-15" );
-
-include( "$IP/skins/organicdesign/OrganicDesign.php" );
+define( 'OD_VERSION', "2.0.0, 2014-11-01" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -35,6 +33,7 @@ class OrganicDesign {
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 		$wgHooks['jQueryUploadAddAttachLink'][] = $this;
 		$wgHooks['OutputPageBodyAttributes'][]  = $this;
+		$wgHooks['BeforePageDisplay'][] = $this;
 
 		// Set language to pt if it's the pt domain
 		if( preg_match( "/^pt\./", $_SERVER['HTTP_HOST'] ) ) $wgLanguageCode = 'pt';
@@ -132,6 +131,86 @@ class OrganicDesign {
 		if( self::inCat( 'Hide categories' ) ) $bodyAttrs['class'] .= ' hide-cats';
 
 		return true;
+	}
+
+	public static function onBeforePageDisplay( $out, $skin ) {
+		global $wgUser, $wgParser;
+		if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+		else { $psr = new Parser; $opt = NULL; }
+
+		// Add sidebar content
+		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
+		$article = new Article( $title );
+		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
+		$out->addHTML( "<div id=\"wikitext-sidebar\">$html</div>" );
+
+		// Add footer content
+		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
+		$article = new Article( $title );
+		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
+		$out->addHTML( "<div id=\"wikitext-footer\">$html</div>" );
+
+		// Add the other items
+		self::donations();
+		self::languages();
+		self::personal();
+
+		return true;
+	}
+
+	public static function languages() {
+		$out->addHTML( '<div id="languages">
+			<a href="http://www.organicdesign.co.nz<?php echo $uri; ?>" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
+			<a href="http://pt.organicdesign.co.nz<?php echo $uri; ?>" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
+		</div>' );
+	}
+
+	public static function donations() {
+		global $wgOrganicDesignDonations;
+		$out->addHTML( '<div class="portlet" id="donations" >
+		<h2 style="white-space:nowrap">' . wfMsg('tips-welcome') . '</h2>
+		<h5>' . wfMsg('paypal-or-cc') . '</h5>
+		<div class="pBody">
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+				<input type="hidden" name="cmd" value="_xclick">
+				<input type="hidden" name="business" value="' . $wgOrganicDesignDonations . '" />
+				<input type="hidden" name="item_name" value="Donation to Organic Design">
+				<input type="hidden" name="currency_code" value="USD">
+				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="' . wfMsg('checkout') . '" />
+			</form>
+		</div>
+		<h5 id="btcbest">' . wfMsg( 'btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' ) . '</h5>
+		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
+			<input style="width:139px;margin-left:23px" readonly="1" value="19BcAkFCok8VRM7kktc4kRhKnr5D51NxJd" onmouseover="this.select()" />
+		</div>
+		<h5 id="nmccool">' . wfMsg( 'also' ) . ' <a href="/Litecoin">LTC</a>, <a href="/Ripple">XRP</a> & <a href="/Stellar">STR</a></h5>
+		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a4/Litecoin-icon.png) no-repeat 5px 2px;">
+			<input style="width:139px;margin-left:23px" readonly="1" value="LUoC9TbjN4iPVh1wKNfFBHUr4DozuVKr4X" onmouseover="this.select()" />
+		</div>
+		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/2/23/Ripple.png) no-repeat 5px 2px;">
+			<input style="width:139px;margin-left:23px" readonly="1" value="rBSVzXKvPiRVKa4aBpr3SNqSem1RBDdhqy" onmouseover="this.select()" />
+		</div>
+		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/thumb/8/86/StellarLogo.png/30px-StellarLogo.png) no-repeat -1px 1px;">
+			<input style="width:139px;margin-left:23px" readonly="1" value="gHAcuAzTNXzq7wM74znnWsZ1N92mJTpNZ9" onmouseover="this.select()" />
+		</div></div>' );
+	}
+
+	public static function personal() {
+		global $wgUser, $wgUploadDirectory, $wgUploadPath;
+		if( $wgUser->isLoggedIn() ) {
+			$out->addHTML( '<div id="p-avatar">' );
+			$name  = $wgUser->getName();
+			$img = wfLocalFile( "$name.png" );
+			if( is_object( $img  ) && $img->exists() ) {
+				$url = $img->transform( array( 'width' => 50 ) )->getUrl();
+				$out->addHTML( "<a href=\"" . $wgUser->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>" );
+			} else {
+				$upload = Title::newFromText( 'Upload', NS_SPECIAL );
+				$url = $upload->getLocalUrl( "wpDestFile=$name.png" );
+				$out->addHTML( "<a href=\"$url\" class=\"new\"><br>user<br>icon</a>" );
+			}
+			$out->addHTML( '</div>' );
+		}
 	}
 
 	/**
