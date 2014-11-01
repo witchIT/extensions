@@ -15,11 +15,11 @@ define( 'OD_VERSION', "2.0.0, 2014-11-01" );
 $wgCookieSecure = false;
 
 $wgExtensionCredits['other'][] = array(
-	'name'		=> "OrganicDesign",
-	'author'	  => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
+	'name'        => "OrganicDesign",
+	'author'      => "[http://www.organicdesign.co.nz/nad Aran Dunkley]",
 	'description' => "An extension to encapsulate all the functionality specific to the Organic Design wiki",
-	'url'		 => "http://www.organicdesign.co.nz",
-	'version'	 => OD_VERSION
+	'url'         => "http://www.organicdesign.co.nz",
+	'version'     => OD_VERSION
 );
 
 class OrganicDesign {
@@ -151,21 +151,21 @@ class OrganicDesign {
 		$out->addHTML( "<div id=\"wikitext-footer\">$html</div>" );
 
 		// Add the other items
-		self::donations();
-		self::languages();
-		self::personal();
+		self::donations( $out );
+		self::languages( $out );
+		self::personal( $out, $user );
 
 		return true;
 	}
 
-	public static function languages() {
+	public static function languages( $out ) {
 		$out->addHTML( '<div id="languages">
 			<a href="http://www.organicdesign.co.nz<?php echo $uri; ?>" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="http://pt.organicdesign.co.nz<?php echo $uri; ?>" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div>' );
 	}
 
-	public static function donations() {
+	public static function donations( $out ) {
 		global $wgOrganicDesignDonations;
 		$out->addHTML( '<div class="portlet" id="donations" >
 		<h2 style="white-space:nowrap">' . wfMsg('tips-welcome') . '</h2>
@@ -195,15 +195,15 @@ class OrganicDesign {
 		</div></div>' );
 	}
 
-	public static function personal() {
-		global $wgUser, $wgUploadDirectory, $wgUploadPath;
-		if( $wgUser->isLoggedIn() ) {
+	public static function personal( $out, $user ) {
+		global $wgUploadDirectory, $wgUploadPath;
+		if( $user->isLoggedIn() ) {
 			$out->addHTML( '<div id="p-avatar">' );
 			$name  = $wgUser->getName();
 			$img = wfLocalFile( "$name.png" );
 			if( is_object( $img  ) && $img->exists() ) {
 				$url = $img->transform( array( 'width' => 50 ) )->getUrl();
-				$out->addHTML( "<a href=\"" . $wgUser->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>" );
+				$out->addHTML( "<a href=\"" . $user->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>" );
 			} else {
 				$upload = Title::newFromText( 'Upload', NS_SPECIAL );
 				$url = $upload->getLocalUrl( "wpDestFile=$name.png" );
