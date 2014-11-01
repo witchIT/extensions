@@ -148,7 +148,7 @@ class OrganicDesign {
 		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
 		$article = new Article( $title );
 		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
-		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"footer\">$html</div></div>" );
+		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"od-footer\">$html</div></div>" );
 
 		// Add the other items
 		self::donations( $out );
