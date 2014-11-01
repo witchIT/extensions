@@ -199,7 +199,7 @@ class OrganicDesign {
 		global $wgUploadDirectory, $wgUploadPath;
 		if( $user->isLoggedIn() ) {
 			$out->addHTML( '<div id="p-avatar">' );
-			$name  = $wgUser->getName();
+			$name  = $user->getName();
 			$img = wfLocalFile( "$name.png" );
 			if( is_object( $img  ) && $img->exists() ) {
 				$url = $img->transform( array( 'width' => 50 ) )->getUrl();
