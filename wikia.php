@@ -26,7 +26,7 @@ ini_set('display_errors', 'Off');
 error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.16, 2014-01-31' );
+define( 'WIKIA_VERSION', '1.2.17, 2014-11-01' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -43,6 +43,7 @@ define( 'NS_PORTAL',         1010 );
 define( 'NS_CREATE',         1014 );
 define( 'NS_EMAIL',          1016 );
 
+$wgNamespaceAliases = array( 'Ficheiro' => NS_FILE );
 $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgExtraNamespaces[NS_FORM]        = 'Form';
 $wgExtraNamespaces[NS_FORM+1]      = 'Form_talk';
