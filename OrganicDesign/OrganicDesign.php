@@ -137,6 +137,7 @@ class OrganicDesign {
 		global $wgUser, $wgParser;
 		if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
 		else { $psr = new Parser; $opt = NULL; }
+		if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 
 		// Add sidebar content
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
