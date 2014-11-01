@@ -148,26 +148,26 @@ class OrganicDesign {
 		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
 		$article = new Article( $title );
 		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
-		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\">$html</div>" );
+		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"footer\">$html</div></div>" );
 
 		// Add the other items
 		self::donations( $out );
 		self::languages( $out );
-		self::personal( $out, $wgUser );
+		self::avatar( $out, $wgUser );
 
 		return true;
 	}
 
 	public static function languages( $out ) {
-		$out->addHTML( '<div id="languages" style="display:none">
+		$out->addHTML( '<div id="languages-wrapper" style="display:none"><div id="languages">
 			<a href="http://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="http://pt.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
-		</div>' );
+		</div></div>' );
 	}
 
 	public static function donations( $out ) {
 		global $wgOrganicDesignDonations;
-		$out->addHTML( '<div class="portlet" id="donations" style="display:none">
+		$out->addHTML( '<div id="donations-wrapper" style="display:none"><div class="portlet" id="donations">
 		<h2 style="white-space:nowrap">' . wfMsg('tips-welcome') . '</h2>
 		<h5>' . wfMsg('paypal-or-cc') . '</h5>
 		<div class="pBody">
@@ -192,13 +192,13 @@ class OrganicDesign {
 		</div>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/thumb/8/86/StellarLogo.png/30px-StellarLogo.png) no-repeat -1px 1px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="gHAcuAzTNXzq7wM74znnWsZ1N92mJTpNZ9" onmouseover="this.select()" />
-		</div></div>' );
+		</div></div></div>' );
 	}
 
-	public static function personal( $out, $user ) {
+	public static function avatar( $out, $user ) {
 		global $wgUploadDirectory, $wgUploadPath;
 		if( $user->isLoggedIn() ) {
-			$out->addHTML( '<div id="p-avatar" style="display:none">' );
+			$out->addHTML( '<div id="avatar-wrapper" style="display:none"><div id="p-avatar">' );
 			$name  = $user->getName();
 			$img = wfLocalFile( "$name.png" );
 			if( is_object( $img  ) && $img->exists() ) {
@@ -209,7 +209,7 @@ class OrganicDesign {
 				$url = $upload->getLocalUrl( "wpDestFile=$name.png" );
 				$out->addHTML( "<a href=\"$url\" class=\"new\"><br>user<br>icon</a>" );
 			}
-			$out->addHTML( '</div>' );
+			$out->addHTML( '</div></div>' );
 		}
 	}
 
