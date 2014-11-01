@@ -53,60 +53,6 @@ form h5 { padding: 8px 0 0 0; margin:0; font-weight:normal; font-size:8pt }
 form .editsection { display:none }
 .namespacesettings form { background: none; }
 
-/* SimpleSecurity */
-#security-info-toggle {
-	margin: 0;
-	padding: 0 0 0 30px;
-	background: url(/files/thumb/5/59/Padlock.svg/30px-Padlock.svg.png) no-repeat;
-	}
-#security-info {
-	border-collapse: collapse;
-	margin: 10px 0 0 0;
-	padding: 3px;
-	border: 1px solid #ccc;
-	background: #eee;
-	color: black;
-	text-align: left;
-	font-weight: normal;
-	font-size: 8pt;
-	vertical-align: top;
-	}
-
-/* Workflow */
-.workflow {
-	width: 100px;
-	float: right;
-	border: 2px solid #ccc;
-	padding: 0;
-	margin: 0;
-	}
-.workflow table { width: 100% }
-.workflow td { text-align: center }
-.workflow-state #content {
-	background: white;
-	width: 100px;
-	height: 80px;
-	border-bottom: 2px solid #ccc;
-	text-align: center;
-	vertical-align: middle;
-	overflow: hidden;
-	}
-.workflow-state #left,.workflow-state #right {
-	width: 20px;
-	height: 20px;
-	background: #bbb;
-	text-align: center;
-	}
-.workflow-state #title {
-	background: #ccc;
-	text-align: center;
-	}
-.workflow-state .menu a {
-	font-size: 10pt;
-	font-weight: bold;
-	color: white;
-	margin: 0;
-	}
 #catlinks a, #catlinks b { padding: 0 5px; }
 #catlinks a.current {
 	background-color: #3D5270;
@@ -236,64 +182,6 @@ left: -999em;
 left: 182px;
 top: -3px;
 }
-
-/* Dynamic Navigation */
-div.Boxmerge,
-div.NavFrame {
-	margin: 0px;
-	padding: 2px;
-	border: 1px solid #aaaaaa;
-	text-align: left;
-	border-collapse: collapse;
-	font-size: 95%;
-}
-div.Boxmerge div.NavFrame {
-	border-style: none;
-	border-style: hidden;
-}
-div.NavFrame + div.NavFrame {
-	border-top-style: none;
-	border-top-style: hidden;
-}
-div.NavPic {
-	background-color: #ffffff;
-	margin: 0px;
-	padding: 2px;
-	float: left;
-}
-div.NavFrame div.NavHead {
-	height: 1.6em;
-	font-weight: bold;
-	font-size: 100%;
-	background-color: #efefef;
-	position:relative;
-}
-div.NavFrame p {
-	font-size: 100%;
-}
-div.NavFrame div.NavContent {
-	font-size: 100%;
-}
-div.NavFrame div.NavContent p {
-	font-size: 100%;
-}
-div.NavEnd {
-	margin: 0px;
-	padding: 0px;
-	line-height: 1px;
-	clear: both;
-}
-a.NavToggle {
-	position: absolute;
-	top: 0px;
-	right: 3px;
-	font-weight: normal;
-	font-size: smaller;
-}
-body div.NavShow {
-	display: block;
-}
-/* end of Dynamic Navigation */
 
 /* Web site */
 .web-bar li {
@@ -762,7 +650,7 @@ table.date_maintable table td p, table.date_maintable table th p { text-align: l
 	font-size: 110%; 
 	width: 100%;
 	padding-right: 20px;
-	margin-bottom: 5px;
+	margin: 35px 0 5px;
 }
 .ra_infobox a { 
 	color: white; 
@@ -907,26 +795,6 @@ body.page-Special_Preferences .prefsection table {
 
 .recordadmin-create, .recordadmin-create table {
 	background: #F5F5F0;
-}
-
-/* Person display */
-.person-panel { 
-	border: solid 1px #999999; 
-	background-color: white; 
-	padding-left: 15px;
-	padding-top: 15px;
-	padding-right: 10px;
-	padding-bottom: 10px;
-	height: 220px; 
-	min-width: 120px; 
-	margin-right: 20px;
-	margin-bottom: 20px;
-	margin-top: 10px;
-	float: left; 
-	overflow: hidden; 
-	display: inline;
-	font-size: 80%;
-	line-height: 1.4;
 }
 
 /* Person Form */
