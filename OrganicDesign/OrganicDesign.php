@@ -153,7 +153,7 @@ class OrganicDesign {
 		// Add the other items
 		self::donations( $out );
 		self::languages( $out );
-		self::personal( $out, $user );
+		self::personal( $out, $wgUser );
 
 		return true;
 	}
