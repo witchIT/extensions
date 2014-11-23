@@ -20,4 +20,5 @@ $messages['en'] = array(
 	'jqueryupload-del' => "Delete",
 	'jqueryupload-start' => "Start upload",
 	'jqueryupload-cancel' => "Cancel",
+	'jqueryupload-fileuploadsummary' => "File uploaded by jQueryUpload extension",
 );

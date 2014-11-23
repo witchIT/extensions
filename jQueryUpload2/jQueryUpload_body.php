@@ -160,6 +160,26 @@ class jQueryUpload extends SpecialPage {
 	}
 
 	/**
+	 * Upload the passed file from the request
+	 */
+	static function uploadFile( $param, $desiredDestName, $comment = false ) {
+		global $wgRequest, $wgUser;
+		$handler = new UploadFromFile();
+		$upload = $wgRequest->getUpload( $param );
+		$handler->initialize( $desiredDestName, $upload );
+		$status = $handler->fetchFile();
+		if( !$status->isOK() ) return $status->getWikiText();
+		$details = $handler->verifyUpload();
+		if( $details['status'] != UploadBase::OK ) return $handler->convertVerifyErrorToStatus( $details )->getWikiText();
+		$localFile = $handler->getLocalFile();
+		if( $comment === false ) $comment = wfMsg( 'jqueryupload-fileuploadsummary' );
+		$status = $handler->performUpload( $comment, $pageText, false, $wgUser );
+		if( !$status->isGood() ) return $status->getWikiText();
+		$url = $localFile->getTitle()->getFullURL();
+		return true;
+	}
+
+	/**
 	 * Ajax handler encapsulate jQueryUpload server-side functionality
 	 */
 	public static function server() {
