@@ -2,7 +2,12 @@
 /**
  * jQueryUpload2 MediaWiki extension - allows files to be uploaded to the wiki or to specific pages using the jQueryFileUpload module
  * 
- * Version 2.0.0+ uses MediaWiki's native files and adds a general upload special page that can be used in place of Special:Upload
+ * Version 2.0.0+ summary:
+ * - uses MediaWiki's native files instead of just files outside the wiki
+ * - uses categorisation to determine uploaded files belonging to a specific page
+ * - i18n message determines category naming convention, e.g. "File uploaded to $1"
+ * - adds a general upload special page that can be used in place of Special:Upload
+ * - uses MediaWiki's thumbnails instead of BlueImp's code
  *
  * jQueryFileUpload module: https://github.com/blueimp/jQuery-File-Upload
  *
