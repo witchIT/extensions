@@ -44,7 +44,8 @@ function wfSetupFormMailer() {
 		$wgRequest, $wgSiteNotice, $wgSitename, $wgFormMailerAntiSpam, $wgOut, $wgJsMimeType;
 
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$ap = $wgFormMailerAntiSpam ? $wgFormMailerVarName . '-' . md5( $ip ) : '';
+	$md5 = md5( $ip );
+	$ap = $wgFormMailerAntiSpam ? "$wgFormMailerVarName-$md5" : '';
 	$from_email = '';
 
 	if( $wgRequest->getText( $ap ) ) {
@@ -101,7 +102,7 @@ function wfSetupFormMailer() {
 			'remoteExtPath' => basename( __DIR__ ),
 		);
 		$wgOut->addModules( 'ext.formmailer' );
-		$wgOut->addJsConfigVars( 'wgFormMailerAP', $ap );
+		$wgOut->addJsConfigVars( 'wgFormMailerAP', $md5 );
 	}
 }
 
