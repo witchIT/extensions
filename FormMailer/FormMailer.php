@@ -7,47 +7,40 @@
  *
  * @package MediaWiki
  * @subpackage Extensions
- * @author [http://www.organicdesign.co.nz/User:Nad User:Nad]
- * @copyright © 2007 [http://www.organicdesign.co.nz/User:Nad User:Nad]
+ * @author [http://www.organicdesign.co.nz/aran Aran Dunkley]
+ * @copyright © 2007 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'FORMMAILER_VERSION', '1.0.6, 2013-07-05' );
+define( 'FORMMAILER_VERSION', '1.0.7, 2014-11-28' );
 
 // A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
 
 // If a variable of this name is posted, the data is assumed to be for mailing
-$wgFormMailerVarName    = "formmailer";
+$wgFormMailerVarName = "formmailer";
 
 // Name of sender of forms
-$wgFormMailerFrom       = 'wiki@' . preg_replace( '|^.+www\.|', '', $wgServer );
+$wgFormMailerFrom = 'wiki@' . preg_replace( '|^.+www\.|', '', $wgServer );
 
 // Don't post the following posted items
-$wgFormMailerDontSend   = array( 'title', 'action' );
-
-// Message to display after sending the form (can also be set in the form by posting formmailer_message
-$wgFormMailerMessage    = "Thanks, your enquiry has been submitted!";
-
-// Message to display after sending the form (can also be set in the form by posting formmailer_subject
-$wgFormMailerSubject    = "Form submitted from $wgSitename";
+$wgFormMailerDontSend = array( 'title', 'action' );
 
 // Add a JavaScript test to protect against spambot posts
-$wgFormMailerAntiSpam   = true;
+$wgFormMailerAntiSpam = true;
 
 $wgExtensionFunctions[] = 'wfSetupFormMailer';
-
+$wgExtensionMessagesFiles['FormMailer'] = __DIR__ . "/Bliki.i18n.php";
 $wgExtensionCredits['other'][] = array(
 	'name'        => 'FormMailer',
-	'author'      => '[http://www.organicdesign.co.nz/nad User:Nad]',
+	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
 	'description' => 'Formats and sends posted form fields to email recipients',
 	'url'         => 'http://www.mediawiki.org/wiki/Extension:FormMailer',
 	'version'     => FORMMAILER_VERSION
 );
 
 function wfSetupFormMailer() {
-	global $wgFormMailerVarName, $wgFormMailerRecipients, $wgFormMailerMessage, $wgFormMailerSubject,
-		$wgFormMailerFrom, $wgFormMailerDontSend, $wgResourceModules,
+	global $wgFormMailerVarName, $wgFormMailerRecipients, $wgFormMailerFrom, $wgFormMailerDontSend, $wgResourceModules,
 		$wgRequest, $wgSiteNotice, $wgSitename, $wgFormMailerAntiSpam, $wgOut, $wgJsMimeType;
 
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -57,9 +50,9 @@ function wfSetupFormMailer() {
 	if( $wgRequest->getText( $wgFormMailerVarName . $ap ) ) {
 
 		// Construct the message
-		$body    = "Form posted from $ip\n\n";
-		$message = $wgFormMailerMessage;
-		$subject = $wgFormMailerSubject;
+		$body = wfMsg( 'formmailer-posted', $ip ) . "\n\n";
+		$message = wfMsg( 'formmailer-message' );
+		$subject = wfMsg( 'formmailer-subject', $wgSitename );
 		foreach( $wgRequest->getValues() as $k => $v ) {
 			if( !in_array( $k, $wgFormMailerDontSend ) ) {
 				$k = str_replace( '_', ' ', $k );
@@ -79,7 +72,7 @@ function wfSetupFormMailer() {
 				$from = new MailAddress( $from_email );
 				$to = new MailAddress( $recipient );
 				$status = UserMailer::send( $to, $from, $subject, $body );
-				if( !is_object( $status ) || !$status->ok ) $err = 'Failed to send!';
+				if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
 			}
 		}
 		$wgSiteNotice .= "<div class='usermessage'>" . ( $err ? $err : $message ) . "</div>";
@@ -90,12 +83,11 @@ function wfSetupFormMailer() {
 	if( $wgFormMailerAntiSpam ) {
 		$wgResourceModules['ext.formmailer'] = array(
 			'scripts'       => array( 'formmailer.js' ),
-			'localBasePath' => dirname( __FILE__ ),
-			'remoteExtPath' => basename( dirname( __FILE__ ) ),
+			'localBasePath' => __DIR__,
+			'remoteExtPath' => basename( __DIR__ ),
 		);
 		$wgOut->addModules( 'ext.formmailer' );
 		$wgOut->addJsConfigVars( 'wgFormMailerAP', $ap );
 	}
-
 }
 
