@@ -16,5 +16,5 @@ $messages['en'] = array(
 	'formmailer-posted' => "Form posted from $1",
 	'formmailer-message' => "Thanks, your enquiry has been submitted!",
 	'formmailer-subject' => "Form submitted from $1",
-	'formmailer-failed' => "Failed to send!',
+	'formmailer-failed' => "Failed to send!",
 );
