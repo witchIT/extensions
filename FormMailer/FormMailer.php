@@ -63,19 +63,35 @@ function wfSetupFormMailer() {
 			}
 		}
 
-		// Send to recipients using the MediaWiki mailer
-		$err  = '';
-		$user = new User();
-		$site = "\"$wgSitename\"<$wgFormMailerFrom>";
-		foreach( $wgFormMailerRecipients as $recipient ) {
-			if( User::isValidEmailAddr( $recipient ) ) {
-				$from = new MailAddress( $from_email );
-				$to = new MailAddress( $recipient );
-				$status = UserMailer::send( $to, $from, $subject, $body );
-				if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
+		// Only continue if the email is valid
+		if( User::isValidEmailAddr( $from_email ) ) {
+
+			// Send to recipients using the MediaWiki mailer
+			$err  = '';
+			$user = new User();
+			foreach( $wgFormMailerRecipients as $recipient ) {
+				if( User::isValidEmailAddr( $recipient ) ) {
+					$from = new MailAddress( $from_email );
+					$to = new MailAddress( $recipient );
+					$status = UserMailer::send( $to, $from, $subject, $body );
+					if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
+				}
 			}
+
+			// Send a confirmation to the sender
+			$from = new MailAddress( "\"$wgSitename\"<$wgFormMailerFrom>" );
+			$to = new MailAddress( $from_email );
+			$status = UserMailer::send( $to, $from, wfMsg( 'formmailer-confirmsubject', $wgSitename ), wfMsg( 'formmailer-confirmmessage' ) );
+			if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
+
+			// Show the thankyou message
+			$wgSiteNotice .= "<div class='usermessage'>" . ( $err ? $err : $message ) . "</div>";
 		}
-		$wgSiteNotice .= "<div class='usermessage'>" . ( $err ? $err : $message ) . "</div>";
+		
+		// The inquirer's email wasn't valid
+		else {
+			$wgSiteNotice .= "<div class='errorbox'>" . wfMsg( 'formmailer-invalidemail', $from_email ) . "</div>";
+		}
 	}
 	
 	// Add the antispam script
