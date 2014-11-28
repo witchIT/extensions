@@ -64,11 +64,11 @@ function wfSetupFormMailer() {
 		}
 
 		// Only continue if the email is valid
+		$user = new User();
 		if( User::isValidEmailAddr( $from_email ) ) {
 
 			// Send to recipients using the MediaWiki mailer
 			$err  = '';
-			$user = new User();
 			foreach( $wgFormMailerRecipients as $recipient ) {
 				if( User::isValidEmailAddr( $recipient ) ) {
 					$from = new MailAddress( $from_email );
