@@ -30,7 +30,7 @@ $wgFormMailerDontSend = array( 'title', 'action' );
 $wgFormMailerAntiSpam = true;
 
 $wgExtensionFunctions[] = 'wfSetupFormMailer';
-$wgExtensionMessagesFiles['FormMailer'] = __DIR__ . "/Bliki.i18n.php";
+$wgExtensionMessagesFiles['FormMailer'] = __DIR__ . "/FormMailer.i18n.php";
 $wgExtensionCredits['other'][] = array(
 	'name'        => 'FormMailer',
 	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
