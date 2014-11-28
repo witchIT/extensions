@@ -64,7 +64,6 @@ function wfSetupFormMailer() {
 		}
 
 		// Only continue if the email is valid
-		$user = new User();
 		if( User::isValidEmailAddr( $from_email ) ) {
 
 			// Send to recipients using the MediaWiki mailer
@@ -85,13 +84,12 @@ function wfSetupFormMailer() {
 			if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
 
 			// Show the thankyou message
-			$wgSiteNotice .= "<div class='usermessage'>" . ( $err ? $err : $message ) . "</div>";
+			if( $err ) $wgSiteNotice .= "<div class='errorbox'>$err</div>";
+			else $wgSiteNotice .= "<div class='usermessage'>$message</div>";
 		}
 		
 		// The inquirer's email wasn't valid
-		else {
-			$wgSiteNotice .= "<div class='errorbox'>" . wfMsg( 'formmailer-invalidemail', $from_email ) . "</div>";
-		}
+		else $wgSiteNotice .= "<div class='errorbox'>" . wfMsg( 'formmailer-invalidemail', $from_email ) . "</div>";
 	}
 	
 	// Add the antispam script
