@@ -44,10 +44,10 @@ function wfSetupFormMailer() {
 		$wgRequest, $wgSiteNotice, $wgSitename, $wgFormMailerAntiSpam, $wgOut, $wgJsMimeType;
 
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$ap = $wgFormMailerAntiSpam ? '-' . md5( $ip ) : '';
+	$ap = $wgFormMailerAntiSpam ? $wgFormMailerVarName . '-' . md5( $ip ) : '';
 	$from_email = '';
 
-	if( $wgRequest->getText( $wgFormMailerVarName . $ap ) ) {
+	if( $wgRequest->getText( $ap ) ) {
 
 		// Construct the message
 		$body = wfMsg( 'formmailer-posted', $ip ) . "\n\n";
@@ -58,7 +58,7 @@ function wfSetupFormMailer() {
 				$k = str_replace( '_', ' ', $k );
 				if     ( $k == 'formmailer message' ) $message = $v;
 				elseif ( $k == 'formmailer subject' ) $subject = $v;
-				elseif ( $k != $wgFormMailerVarName ) $body .= "$k: $v\n\n";
+				elseif ( $k != $ap ) $body .= "$k: $v\n\n";
 				if( preg_match( "|^email|i", $k ) ) $from_email = $v;
 			}
 		}
