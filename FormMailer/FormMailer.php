@@ -51,7 +51,7 @@ function wfSetupFormMailer() {
 	if( $wgRequest->getText( $ap ) ) {
 
 		// Construct the message
-		$body = wfMsg( 'formmailer-posted', $ip ) . "\n\n";
+		$body = '';
 		$message = wfMsg( 'formmailer-message' );
 		$subject = wfMsg( 'formmailer-subject', $wgSitename );
 		foreach( $wgRequest->getValues() as $k => $v ) {
@@ -73,7 +73,7 @@ function wfSetupFormMailer() {
 				if( User::isValidEmailAddr( $recipient ) ) {
 					$from = new MailAddress( $from_email );
 					$to = new MailAddress( $recipient );
-					$status = UserMailer::send( $to, $from, $subject, $body );
+					$status = UserMailer::send( $to, $from, $subject, wfMsg( 'formmailer-posted', $ip ) . "\n\n$body" );
 					if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
 				}
 			}
@@ -81,16 +81,17 @@ function wfSetupFormMailer() {
 			// Send a confirmation to the sender
 			$from = new MailAddress( "\"$wgSitename\"<$wgFormMailerFrom>" );
 			$to = new MailAddress( $from_email );
-			$status = UserMailer::send( $to, $from, wfMsg( 'formmailer-confirmsubject', $wgSitename ), wfMsg( 'formmailer-confirmmessage' ) );
+			$body = wfMsg( 'formmailer-confirmmessage' ) . "\n\n$body";
+			$status = UserMailer::send( $to, $from, wfMsg( 'formmailer-confirmsubject', $wgSitename ), $body );
 			if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
 
 			// Show the thankyou message
-			if( $err ) $wgSiteNotice .= "<div class='errorbox'>$err</div>";
+			if( $err ) $wgSiteNotice .= "<div class='errorbox'>$err</div><div style='clear:both'></div>";
 			else $wgSiteNotice .= "<div class='usermessage'>$message</div>";
 		}
 		
 		// The inquirer's email wasn't valid
-		else $wgSiteNotice .= "<div class='errorbox'>" . wfMsg( 'formmailer-invalidemail', $from_email ) . "</div>";
+		else $wgSiteNotice .= "<div class='errorbox'>" . wfMsg( 'formmailer-invalidemail', $from_email ) . "</div><div style='clear:both'></div>";
 	}
 	
 	// Add the antispam script
