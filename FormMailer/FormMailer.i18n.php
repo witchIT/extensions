@@ -14,7 +14,8 @@ $messages = array();
  */
 $messages['en'] = array(
 	'formmailer-posted' => "Form posted from $1",
-	'formmailer-message' => "Thanks, your enquiry has been submitted! A confirmation email has been sent.",
+	'formmailer-message' => "Thanks, your enquiry has been submitted!",
+	'formmailer-confirmsent' => "A confirmation email has been sent.",
 	'formmailer-subject' => "Form submitted from $1",
 	'formmailer-failed' => "Failed to send!",
 	'formmailer-invalidemail' => "The email address \"$1\" is not valid!",

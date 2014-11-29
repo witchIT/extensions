@@ -12,13 +12,16 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'FORMMAILER_VERSION', '1.0.7, 2014-11-28' );
+define( 'FORMMAILER_VERSION', '1.0.8, 2014-11-29' );
 
 // A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
 
 // If a variable of this name is posted, the data is assumed to be for mailing
 $wgFormMailerVarName = "formmailer";
+
+// Whether to send the inquerer a confirmation email
+$wgFormMailerSendConfirmation = false;
 
 // Name of sender of forms
 $wgFormMailerFrom = 'wiki@' . preg_replace( '|^.+www\.|', '', $wgServer );
@@ -41,7 +44,7 @@ $wgExtensionCredits['other'][] = array(
 
 function wfSetupFormMailer() {
 	global $wgFormMailerVarName, $wgFormMailerRecipients, $wgFormMailerFrom, $wgFormMailerDontSend, $wgResourceModules,
-		$wgRequest, $wgSiteNotice, $wgSitename, $wgFormMailerAntiSpam, $wgOut, $wgJsMimeType;
+		$wgRequest, $wgSiteNotice, $wgSitename, $wgFormMailerAntiSpam, $wgOut, $wgJsMimeType, $wgFormMailerSendConfirmation;
 
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$md5 = md5( $ip );
@@ -52,13 +55,11 @@ function wfSetupFormMailer() {
 
 		// Construct the message
 		$body = '';
-		$message = wfMsg( 'formmailer-message' );
 		$subject = wfMsg( 'formmailer-subject', $wgSitename );
 		foreach( $wgRequest->getValues() as $k => $v ) {
 			if( !in_array( $k, $wgFormMailerDontSend ) ) {
 				$k = str_replace( '_', ' ', $k );
-				if     ( $k == 'formmailer message' ) $message = $v;
-				elseif ( $k == 'formmailer subject' ) $subject = $v;
+				if ( $k == 'formmailer subject' ) $subject = $v;
 				elseif ( $k != $ap ) $body .= "$k: $v\n\n";
 				if( preg_match( "|^email|i", $k ) ) $from_email = $v;
 			}
@@ -79,11 +80,15 @@ function wfSetupFormMailer() {
 			}
 
 			// Send a confirmation to the sender
-			$from = new MailAddress( "\"$wgSitename\"<$wgFormMailerFrom>" );
-			$to = new MailAddress( $from_email );
-			$body = wfMsg( 'formmailer-confirmmessage' ) . "\n\n$body";
-			$status = UserMailer::send( $to, $from, wfMsg( 'formmailer-confirmsubject', $wgSitename ), $body );
-			if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
+			$message = wfMsg( 'formmailer-message' );
+			if( $wgFormMailerSendConfirmation ) {
+				$message .= ' ' . wfMsg( 'formmailer-confirmsent' );
+				$from = new MailAddress( "\"$wgSitename\"<$wgFormMailerFrom>" );
+				$to = new MailAddress( $from_email );
+				$body = wfMsg( 'formmailer-confirmmessage' ) . "\n\n$body";
+				$status = UserMailer::send( $to, $from, wfMsg( 'formmailer-confirmsubject', $wgSitename ), $body );
+				if( !is_object( $status ) || !$status->ok ) $err = wfMsg( 'formmailer-failed' );
+			}
 
 			// Show the thankyou message
 			if( $err ) $wgSiteNotice .= "<div class='errorbox'>$err</div><div style='clear:both'></div>";
