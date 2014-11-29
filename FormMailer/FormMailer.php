@@ -12,7 +12,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'FORMMAILER_VERSION', '1.0.8, 2014-11-29' );
+define( 'FORMMAILER_VERSION', '1.0.9, 2014-11-29' );
 
 // A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
@@ -59,8 +59,8 @@ function wfSetupFormMailer() {
 		foreach( $wgRequest->getValues() as $k => $v ) {
 			if( !in_array( $k, $wgFormMailerDontSend ) ) {
 				$k = str_replace( '_', ' ', $k );
-				if ( $k == 'formmailer subject' ) $subject = $v;
-				elseif ( $k != $ap ) $body .= "$k: $v\n\n";
+				if ( strtolower( $k ) == 'subject' ) $subject = $v;
+				if ( $k != $ap ) $body .= "$k: $v\n\n";
 				if( preg_match( "|^email|i", $k ) ) $from_email = $v;
 			}
 		}
