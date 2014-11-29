@@ -60,8 +60,8 @@ function wfSetupFormMailer() {
 			if( !in_array( $k, $wgFormMailerDontSend ) ) {
 				$k = str_replace( '_', ' ', $k );
 				if ( strtolower( $k ) == 'subject' ) $subject = $v;
-				if ( $k != $ap ) $body .= "$k: $v\n\n";
 				if( preg_match( "|^email|i", $k ) ) $from_email = $v;
+				if ( $k != $ap ) $body .= "$k: $v\n\n";
 			}
 		}
 
