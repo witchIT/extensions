@@ -97,6 +97,8 @@ window.ajaxcomment_del = function(id) {
 	buttons[mw.message( 'ajaxcomments-cancel' ).escaped()] = function() { $(this).dialog('close'); };
 	$('<div>' + mw.message( 'ajaxcomments-confirmdel' ).escaped() + '</div>').dialog({
 		modal: true,
+		resizable: false,
+		width: 512,
 		title: mw.message( 'ajaxcomments-confirm' ).escaped(),
 		buttons: buttons
 	});
