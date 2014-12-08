@@ -76,7 +76,7 @@ window.ajaxcomment_del = function(id) {
 	var target = $('#ajaxcomments-' + id);
 	var yes = mw.message( 'ajaxcomments-yes' ).escaped();
 	var cancel = mw.message( 'ajaxcomments-cancel' ).escaped();
-	$('<div>' + mw.message( 'ajaxcomments-confirmdel' ).escaped() + '</div>').dialog({
+/*	$('<div>' + mw.message( 'ajaxcomments-confirmdel' ).escaped() + '</div>').dialog({
 		modal: true,
 		buttons: {
 			 yes: function() {
@@ -100,6 +100,25 @@ window.ajaxcomment_del = function(id) {
 			 cancel: function() { }
 		}
 	});
+*/
+	if(confirm(mw.message( 'ajaxcomments-confirmdel' ).escaped())) {
+		target.html('<div class="ajaxcomments-loader"></div>');
+		$.ajax({
+			type: 'GET',
+			url: mw.util.wikiScript(),
+			data: {
+				action: 'ajaxcomments',
+				title: mw.config.get('wgPageName'),
+				cmd: 'del',
+				id: id,
+			},
+			context: target,
+			dataType: 'html',
+			success: function(html) {
+				this.replaceWith(html);
+			}
+		});
+	}
 };
 
 /**
