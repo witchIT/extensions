@@ -76,6 +76,7 @@ class AjaxComments {
 			'remoteBasePath' => $wgExtensionAssetsPath . '/' . basename( __DIR__ ),
 			'messages' => array(
 				'ajaxcomments-confirmdel',
+				'ajaxcomments-yes',
 				'ajaxcomments-post',
 				'ajaxcomments-cancel'
 			),

@@ -74,24 +74,30 @@ window.ajaxcomment_reply = function(id) {
  */
 window.ajaxcomment_del = function(id) {
 	var target = $('#ajaxcomments-' + id);
-	if(confirm(mw.message( 'ajaxcomments-confirmdel' ).escaped())) {
-		target.html('<div class="ajaxcomments-loader"></div>');
-		$.ajax({
-			type: 'GET',
-			url: mw.util.wikiScript(),
-			data: {
-				action: 'ajaxcomments',
-				title: mw.config.get('wgPageName'),
-				cmd: 'del',
-				id: id,
-			},
-			context: target,
-			dataType: 'html',
-			success: function(html) {
-				this.replaceWith(html);
-			}
-		});
-	}
+	(mw.message( 'ajaxcomments-confirmdel' ).escaped()).dialog({
+		modal:true,
+		buttons:{
+			 mw.message( 'ajaxcomments-yes' ).escaped(): function() {
+				target.html('<div class="ajaxcomments-loader"></div>');
+				$.ajax({
+					type: 'GET',
+					url: mw.util.wikiScript(),
+					data: {
+						action: 'ajaxcomments',
+						title: mw.config.get('wgPageName'),
+						cmd: 'del',
+						id: id,
+					},
+					context: target,
+					dataType: 'html',
+					success: function(html) {
+						this.replaceWith(html);
+					}
+				});
+			 },
+			 mw.message( 'ajaxcomments-cancel' ).escaped(): function() { }
+		}
+	});
 };
 
 /**
