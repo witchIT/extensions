@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.2.1, 2014-10-17' );
+define( 'AJAXCOMMENTS_VERSION', '1.2.2, 2014-12-8' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -174,11 +174,11 @@ class AjaxComments {
 						$n = count( $this->comments );
 						if( $action == 'ajaxcomments' ) {
 							$tsdiv = "<div id=\"ajaxcomment-timestamp\" style=\"display:none\">$latest</div>";
-							$content .= "<h2>" . wfMsg( 'ajaxcomments-heading' ) . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
+							$content .= "<h2>" . wfMessage( 'ajaxcomments-heading' )->text() . "</h2><a name=\"ajaxcomments\"></a>$tsdiv\n";
 						}
 						$cc = "<h3 id=\"ajaxcomments-count\">";
-						if( $n == 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comment', $n ) . "</h3>\n";
-						else if( $n > 1 ) $content .= $cc . wfMsg( 'ajaxcomments-comments', $n ) . "</h3>\n";
+						if( $n == 1 ) $content .= $cc . wfMessage( 'ajaxcomments-comment', $n )->text() . "</h3>\n";
+						else if( $n > 1 ) $content .= $cc . wfMessage( 'ajaxcomments-comments', $n )->text() . "</h3>\n";
 						$content .= $this->renderComments();
 						if( $action == 'ajaxcomments' ) print $content; else return $content;
 				}
