@@ -74,12 +74,11 @@ window.ajaxcomment_reply = function(id) {
  */
 window.ajaxcomment_del = function(id) {
 	var target = $('#ajaxcomments-' + id);
-	var yes = mw.message( 'ajaxcomments-yes' ).escaped();
-	var cancel = mw.message( 'ajaxcomments-cancel' ).escaped();
-/*	$('<div>' + mw.message( 'ajaxcomments-confirmdel' ).escaped() + '</div>').dialog({
+	$('<div>' + mw.message( 'ajaxcomments-confirmdel' ).escaped() + '</div>').dialog({
 		modal: true,
+		title: mw.message( 'ajaxcomments-confirmdel' ).escaped(),
 		buttons: {
-			 yes: function() {
+			 (mw.message( 'ajaxcomments-yes' ).escaped()): function() {
 				target.html('<div class="ajaxcomments-loader"></div>');
 				$.ajax({
 					type: 'GET',
@@ -96,29 +95,11 @@ window.ajaxcomment_del = function(id) {
 						this.replaceWith(html);
 					}
 				});
+				$(this).dialog('close');
 			 },
-			 cancel: function() { }
+			 (mw.message( 'ajaxcomments-cancel' ).escaped()): function() { $(this).dialog('close'); }
 		}
 	});
-*/
-	if(confirm(mw.message( 'ajaxcomments-confirmdel' ).escaped())) {
-		target.html('<div class="ajaxcomments-loader"></div>');
-		$.ajax({
-			type: 'GET',
-			url: mw.util.wikiScript(),
-			data: {
-				action: 'ajaxcomments',
-				title: mw.config.get('wgPageName'),
-				cmd: 'del',
-				id: id,
-			},
-			context: target,
-			dataType: 'html',
-			success: function(html) {
-				this.replaceWith(html);
-			}
-		});
-	}
 };
 
 /**
