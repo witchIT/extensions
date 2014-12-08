@@ -74,6 +74,11 @@ class AjaxComments {
 			'styles'         => array( 'ajaxcomments.css' ),
 			'localBasePath'  => __DIR__,
 			'remoteBasePath' => $wgExtensionAssetsPath . '/' . basename( __DIR__ ),
+			'messages' => array(
+				'ajaxcomments-confirmdel',
+				'ajaxcomments-post',
+				'ajaxcomments-cancel'
+			),
 		);
 		$wgOut->addModules( 'ext.ajaxcomments' );
 
@@ -119,7 +124,7 @@ class AjaxComments {
 				} else $id = $text = $ts = $command = '';
 				$this->talk = $talk;
 				$article = new Article( $talk );
-				$summary = wfMsg( "ajaxcomments-$command-summary" );
+				$summary = wfMessage( "ajaxcomments-$command-summary" )->text();
 
 				// If the talk page exists, get its content and the timestamp of the latest revision
 				$content = '';
@@ -149,7 +154,7 @@ class AjaxComments {
 
 					case 'del':
 						print $this->delete( $id );
-						print count( $this->comments ) > 0 ? '' : "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-none' ) . "</i>";
+						print count( $this->comments ) > 0 ? '' : "<i id=\"ajaxcomments-none\">" . wfMessage( 'ajaxcomments-none' )->text() . "</i>";
 					break;
 
 					case 'like':
@@ -261,7 +266,7 @@ class AjaxComments {
 			// If there are no comments now, delete the page
 			if( count( $this->comments ) == 0 ) {
 				$article = new Article( $this->talk );
-				$article->doDelete( wfMsg( 'ajaxcomments-talkdeleted' ) );
+				$article->doDelete( wfMessage( 'ajaxcomments-talkdeleted' )->text() );
 			}
 
 			// Otherwise mark the article is changed so it gets updated
@@ -289,12 +294,12 @@ class AjaxComments {
 			else $this->comments[$id][AJAXCOMMENTS_LIKE][$name] = $like + $val;
 
 			if( $val > 0 ) {
-				if( $like < 0 ) return wfMsg( 'ajaxcomments-undislike', $name, $cname );
-				else return wfMsg( 'ajaxcomments-like', $name, $cname );
+				if( $like < 0 ) return wfMessage( 'ajaxcomments-undislike', $name, $cname )->text();
+				else return wfMessage( 'ajaxcomments-like', $name, $cname )->text();
 			}
 			else {
-				if( $like > 0 ) return wfMsg( 'ajaxcomments-unlike', $name, $cname );
-				else return wfMsg( 'ajaxcomments-dislike', $name, $cname );
+				if( $like > 0 ) return wfMessage( 'ajaxcomments-unlike', $name, $cname )->text();
+				else return wfMessage( 'ajaxcomments-dislike', $name, $cname )->text();
 			}
 		}
 
@@ -315,14 +320,14 @@ class AjaxComments {
 		foreach( $this->comments as $id => $comment ) {
 			if( $comment[AJAXCOMMENTS_PARENT] === false ) $html = $this->renderComment( $id ) . $html;
 		}
-		if( $html == '' ) $html = "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-none' ) . "</i><br />";
+		if( $html == '' ) $html = "<i id=\"ajaxcomments-none\">" . wfMessage( 'ajaxcomments-none' )->text() . "</i><br />";
 
 		// If logged in, allow replies and editing etc
 		if( $this->canComment ) {
 			$html = "<ul class=\"ajaxcomment-links\">" .
-				"<li id=\"ajaxcomment-add\"><a href=\"javascript:ajaxcomment_add()\">" . wfMsg( 'ajaxcomments-add' ) . "</a></li>\n" .
+				"<li id=\"ajaxcomment-add\"><a href=\"javascript:ajaxcomment_add()\">" . wfMessage( 'ajaxcomments-add' )->text() . "</a></li>\n" .
 				"</ul>\n$html";
-		} else $html = "<i id=\"ajaxcomments-none\">" . wfMsg( 'ajaxcomments-anon' ) . "</i><br />$html";
+		} else $html = "<i id=\"ajaxcomments-none\">" . wfMessage( 'ajaxcomments-anon' )->text() . "</i><br />$html";
 		return $html;
 	}
 
@@ -361,7 +366,7 @@ class AjaxComments {
 
 		if( !$likeonly ) $html .= "<div class=\"ajaxcomment\" id=\"ajaxcomments-$id\">\n" .
 			"<div class=\"ajaxcomment-sig\">" .
-				wfMsg( 'ajaxcomments-sig', $ulink, $wgLang->timeanddate( $c[AJAXCOMMENTS_DATE], true ) ) .
+				wfMessage( 'ajaxcomments-sig', $ulink, $wgLang->timeanddate( $c[AJAXCOMMENTS_DATE], true ) )->text() .
 			"</div>\n<div class=\"ajaxcomment-icon\">$grav</div><div class=\"ajaxcomment-text\">" .
 				$wgParser->parse( $c[AJAXCOMMENTS_TEXT], $this->talk, new ParserOptions(), true, true )->getText() .
 			"</div>\n<ul class=\"ajaxcomment-links\">";
@@ -372,12 +377,12 @@ class AjaxComments {
 			if( !$likeonly ) {
 
 				// Reply link
-				$html .= "<li id=\"ajaxcomment-reply\"><a href=\"javascript:ajaxcomment_reply('$id')\">" . wfMsg( 'ajaxcomments-reply' ) . "</a></li>\n";
+				$html .= "<li id=\"ajaxcomment-reply\"><a href=\"javascript:ajaxcomment_reply('$id')\">" . wfMessage( 'ajaxcomments-reply' )->text() . "</a></li>\n";
 
 				// If sysop, or no replies and current user is owner, add edit/del links
 				if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) || ( $curName == $c[AJAXCOMMENTS_USER] && $r == '' ) ) {
-					$html .= "<li id=\"ajaxcomment-edit\"><a href=\"javascript:ajaxcomment_edit('$id')\">" . wfMsg( 'ajaxcomments-edit' ) . "</a></li>\n";
-					$html .= "<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMsg( 'ajaxcomments-del' ) . "</a></li>\n";
+					$html .= "<li id=\"ajaxcomment-edit\"><a href=\"javascript:ajaxcomment_edit('$id')\">" . wfMessage( 'ajaxcomments-edit' )->text() . "</a></li>\n";
+					$html .= "<li id=\"ajaxcomment-del\"><a href=\"javascript:ajaxcomment_del('$id')\">" . wfMessage( 'ajaxcomments-del' )->text() . "</a></li>\n";
 				}
 			}
 
@@ -407,10 +412,10 @@ class AjaxComments {
 	 */
 	function formatNameList( $list, $msg ) {
 		$len = count( $list );
-		if( $len < 1 ) return wfMsg( "ajaxcomments-no$msg" );
-		if( $len == 1 ) return wfMsg( "ajaxcomments-one$msg", $list[0] );
+		if( $len < 1 ) return wfMessage( "ajaxcomments-no$msg" )->text();
+		if( $len == 1 ) return wfMessage( "ajaxcomments-one$msg", $list[0] )->text();
 		$last = array_pop( $list );
-		return wfMsg( "ajaxcomments-many$msg", join( ', ', $list ), $last );
+		return wfMessage( "ajaxcomments-many$msg", join( ', ', $list ), $last )->text();
 	}
 
 	/**
