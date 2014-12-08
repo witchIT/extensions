@@ -72,6 +72,7 @@ class AjaxComments {
 		$wgResourceModules['ext.ajaxcomments'] = array(
 			'scripts'        => array( 'ajaxcomments.js' ),
 			'styles'         => array( 'ajaxcomments.css' ),
+			'dependencies'   => array( 'jquery.ui.dialog' ),
 			'localBasePath'  => __DIR__,
 			'remoteBasePath' => $wgExtensionAssetsPath . '/' . basename( __DIR__ ),
 			'messages' => array(
