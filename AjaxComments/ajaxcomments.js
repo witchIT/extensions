@@ -74,10 +74,12 @@ window.ajaxcomment_reply = function(id) {
  */
 window.ajaxcomment_del = function(id) {
 	var target = $('#ajaxcomments-' + id);
+	var yes = mw.message( 'ajaxcomments-yes' ).escaped();
+	var cancel = mw.message( 'ajaxcomments-cancel' ).escaped();
 	(mw.message( 'ajaxcomments-confirmdel' ).escaped()).dialog({
-		modal:true,
-		buttons:{
-			 mw.message( 'ajaxcomments-yes' ).escaped(): function() {
+		modal: true,
+		buttons: {
+			 yes: function() {
 				target.html('<div class="ajaxcomments-loader"></div>');
 				$.ajax({
 					type: 'GET',
@@ -95,7 +97,7 @@ window.ajaxcomment_del = function(id) {
 					}
 				});
 			 },
-			 mw.message( 'ajaxcomments-cancel' ).escaped(): function() { }
+			 cancel: function() { }
 		}
 	});
 };
