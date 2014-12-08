@@ -74,7 +74,7 @@ window.ajaxcomment_reply = function(id) {
  */
 window.ajaxcomment_del = function(id) {
 	var target = $('#ajaxcomments-' + id);
-	if(confirm(mw.message( 'ajaxcomments-confirmdel' ).text())) {
+	if(confirm(mw.message( 'ajaxcomments-confirmdel' ).escaped())) {
 		target.html('<div class="ajaxcomments-loader"></div>');
 		$.ajax({
 			type: 'GET',
@@ -152,8 +152,8 @@ window.ajaxcomment_like = function(id, val) {
 window.ajaxcomment_textinput = function(e, cmd) {
 	ajaxcomment_cancel();
 	var html = '<div id="ajaxcomment-input" class="ajaxcomment-input-' + cmd + '"><textarea></textarea><br />';
-	html += '<input type="button" onclick="ajaxcomment_submit(this,\'' + cmd + '\')" value="' + mw.message( 'ajaxcomments-post' ).text() + '" />';
-	html += '<input type="button" onclick="ajaxcomment_cancel()" value="' + mw.message( 'ajaxcomments-cancel' ).text() + '" />';
+	html += '<input type="button" onclick="ajaxcomment_submit(this,\'' + cmd + '\')" value="' + mw.message( 'ajaxcomments-post' ).escaped() + '" />';
+	html += '<input type="button" onclick="ajaxcomment_cancel()" value="' + mw.message( 'ajaxcomments-cancel' ).escaped() + '" />';
 	html += '</div>';
 	e.after(html);
 };
