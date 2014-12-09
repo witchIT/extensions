@@ -12,7 +12,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'FORMMAILER_VERSION', '1.0.9, 2014-11-29' );
+define( 'FORMMAILER_VERSION', '1.0.10, 2014-12-09' );
 
 // A list of email addresses which should recieve posted forms
 $wgFormMailerRecipients = array();
@@ -66,12 +66,12 @@ function wfSetupFormMailer() {
 		}
 
 		// Only continue if the email is valid
-		if( User::isValidEmailAddr( $from_email ) ) {
+		if( Sanitizer::validateEmail( $from_email ) ) {
 
 			// Send to recipients using the MediaWiki mailer
 			$err  = '';
 			foreach( $wgFormMailerRecipients as $recipient ) {
-				if( User::isValidEmailAddr( $recipient ) ) {
+				if( Sanitizer::validateEmail( $recipient ) ) {
 					$from = new MailAddress( $from_email );
 					$to = new MailAddress( $recipient );
 					$status = UserMailer::send( $to, $from, $subject, wfMsg( 'formmailer-posted', $ip ) . "\n\n$body" );
@@ -109,6 +109,7 @@ function wfSetupFormMailer() {
 		);
 		$wgOut->addModules( 'ext.formmailer' );
 		$wgOut->addJsConfigVars( 'wgFormMailerAP', $md5 );
+		$wgOut->addJsConfigVars( 'wgFormMailerVarName', $wgFormMailerVarName );
 	}
 }
 
