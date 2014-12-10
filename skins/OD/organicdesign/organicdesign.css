@@ -85,7 +85,7 @@ a, #bodyContent a {
 	color: #217A28;
 	background: none;
 }
-a.external, #bodyContent a.external {
+body #bodyContent a.external, #bodyContent a.external[href^="https://"] {
 	color: #36b;
 }
 a, #bodyContent a:hover, #p-personal a:hover, #p-cactions a:hover {
