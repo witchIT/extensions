@@ -26,7 +26,7 @@ ini_set('display_errors', 'Off');
 error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.17, 2014-11-01' );
+define( 'WIKIA_VERSION', '1.2.18, 2014-12-23' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -68,7 +68,7 @@ $wgSecurityUseDBHook      = true;
 $wgDBmysql5               = false;
 
 $wgVerifyMimeType         = false;
-$wgSVGConverter           = 'rsvg';
+$wgSVGConverter           = 'rsvg-convert';
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
 
