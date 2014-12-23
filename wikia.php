@@ -68,7 +68,7 @@ $wgSecurityUseDBHook      = true;
 $wgDBmysql5               = false;
 
 $wgVerifyMimeType         = false;
-$wgSVGConverter           = 'rsvg-convert';
+$wgSVGConverter           = 'rsvg';
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
 
