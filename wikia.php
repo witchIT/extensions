@@ -68,6 +68,7 @@ $wgSecurityUseDBHook      = true;
 $wgDBmysql5               = false;
 
 $wgVerifyMimeType         = false;
+$wgSVGConverters['rsvg']  = '/usr/bin/rsvg-convert -w $width -h $height -o $output $input';
 $wgSVGConverter           = 'rsvg';
 $wgSiteDown               = false;
 $wgEmergencyContact       = false;
