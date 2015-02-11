@@ -35,7 +35,7 @@ class SpecialEmailPage extends SpecialPage {
 		// Get info from request or set to defaults
 		$this->title    = $wgRequest->getText( 'ea-title', $param );
 		$this->from     = $wgRequest->getText( 'ea-from' );
-		$this->subject  = $wgRequest->getText( 'ea-subject', wfMsg( 'ea-pagesend', $this->title, $wgSitename ) );
+		$this->subject  = $wgRequest->getText( 'ea-subject', wfMessage( 'ea-pagesend', $this->title, $wgSitename )->text() );
 		$this->message  = $wgRequest->getText( 'ea-message' );
 		$this->group    = $wgRequest->getText( 'ea-group' );
 		$this->to       = $wgRequest->getText( 'ea-to' );
@@ -47,8 +47,8 @@ class SpecialEmailPage extends SpecialPage {
 		$this->db       = $db;
 
 		// Bail if no page title to send has been specified
-		if( $this->title ) $wgOut->addWikiText( "===" . wfMsg( 'ea-heading', $this->title ) . "===" );
-		else return $wgOut->addWikiText( wfMsg( 'ea-nopage' ) );
+		if( $this->title ) $wgOut->addWikiText( "===" . wfMessage( 'ea-heading', $this->title )->text() . "===" );
+		else return $wgOut->addWikiText( wfMessage( 'ea-nopage' )->text() );
 
 		// If the send button was clicked, attempt to send and exit
 		if( $wgRequest->getText( 'ea-send', false ) ) return $this->send();
@@ -66,13 +66,13 @@ class SpecialEmailPage extends SpecialPage {
 		$from = "<option>$wgEmergencyContact</option>";
 		$ue = $wgUser->getEmail();
 		$from = $wgUser->isValidEmailAddr( $ue ) ? "<option>$ue</option>$from" : $from;
-		$wgOut->addHTML( "<tr id=\"ea-from\"><th align=\"right\">" . wfMsg( 'ea-from' ) . ":</th>" );
+		$wgOut->addHTML( "<tr id=\"ea-from\"><th align=\"right\">" . wfMessage( 'ea-from' )->text() . ":</th>" );
 		$wgOut->addHTML( "<td><select name=\"ea-from\">$from</select></td></tr>\n" );
 
 		// To
-		$wgOut->addHTML( "<tr id=\"ea-to\"><th align=\"right\" valign=\"top\">" . wfMsg( 'ea-to' ) . ":</th>" );
+		$wgOut->addHTML( "<tr id=\"ea-to\"><th align=\"right\" valign=\"top\">" . wfMessage( 'ea-to' )->text() . ":</th>" );
 		$wgOut->addHTML( "<td><textarea name=\"ea-to\" rows=\"2\" style=\"width:100%\">{$this->to}</textarea>" );
-		$wgOut->addHTML( "<br /><small><i>" . wfMsg( 'ea-to-info' ) . "</i></small>" );
+		$wgOut->addHTML( "<br /><small><i>" . wfMessage( 'ea-to-info' )->text() . "</i></small>" );
 
 		// To group
 		$groups = "<option />";
@@ -82,15 +82,15 @@ class SpecialEmailPage extends SpecialPage {
 		}
 		if( $wgEmailPageAllowAllUsers ) {
 			$selected = 'user' == $this->group ? ' selected' : '';
-			$groups .= "<option$selected value=\"user\">" . wfMsg( 'ea-allusers' ) . "</option>";
+			$groups .= "<option$selected value=\"user\">" . wfMessage( 'ea-allusers' )->text() . "</option>";
 		}
 		$wgOut->addHTML( "<div id=\"ea-group\"><select name=\"ea-group\">$groups</select>" );
-		$wgOut->addHTML( " <i><small>" . wfMsg( 'ea-group-info' ) . "</small></i></div>" );
+		$wgOut->addHTML( " <i><small>" . wfMessage( 'ea-group-info' )->text() . "</small></i></div>" );
 
 		$wgOut->addHTML( "</td></tr>" );
 
 		// Cc
-		$wgOut->addHTML( "<tr id=\"ea-cc\"><th align=\"right\">" . wfMsg( 'ea-cc' ) . ":</th>" );
+		$wgOut->addHTML( "<tr id=\"ea-cc\"><th align=\"right\">" . wfMessage( 'ea-cc' )->text() . ":</th>" );
 		$wgOut->addHTML( "<td>" . 
 			Xml::element( 'input', array(
 				'type'  => 'text',
@@ -101,7 +101,7 @@ class SpecialEmailPage extends SpecialPage {
 		. "</td></tr>" );
 
 		// Subject
-		$wgOut->addHTML( "<tr id=\"ea-subject\"><th align=\"right\">" . wfMsg( 'ea-subject' ) . ":</th>" );
+		$wgOut->addHTML( "<tr id=\"ea-subject\"><th align=\"right\">" . wfMessage( 'ea-subject' )->text() . ":</th>" );
 		$wgOut->addHTML( "<td>" . 
 			Xml::element( 'input', array(
 				'type'  => 'text',
@@ -112,9 +112,9 @@ class SpecialEmailPage extends SpecialPage {
 		. "</td></tr>" );
 
 		// Message
-		$wgOut->addHTML( "<tr id=\"ea-message\"><th align=\"right\" valign=\"top\">" . wfMsg( 'ea-message' ) . ":</th>" );
+		$wgOut->addHTML( "<tr id=\"ea-message\"><th align=\"right\" valign=\"top\">" . wfMessage( 'ea-message' )->text() . ":</th>" );
 		$wgOut->addHTML( "<td><textarea name=\"ea-message\" rows=\"3\" style=\"width:100%\">{$this->message}</textarea>" );
-		$wgOut->addHTML( "<br /><i><small>" . wfMsg( 'ea-message-info' ) . "</small></i></td></tr>" );
+		$wgOut->addHTML( "<br /><i><small>" . wfMessage( 'ea-message-info' )->text() . "</small></i></td></tr>" );
 
 		// Data
 		if( defined( 'NS_FORM' ) ) {
@@ -128,24 +128,24 @@ class SpecialEmailPage extends SpecialPage {
 			}
 			$db->freeResult( $res );
 			if( $options ) {
-				$wgOut->addHTML( "<tr id=\"ea-data\"><th align=\"right\">" . wfMsg( 'ea-data' ) . ":</th><td>" );
+				$wgOut->addHTML( "<tr id=\"ea-data\"><th align=\"right\">" . wfMessage( 'ea-data' )->text() . ":</th><td>" );
 				$wgOut->addHTML( "<select name=\"ea-record\"><option />$options</select>" );
-				$wgOut->addHTML( " <small><i>" . wfMsg( 'ea-selectrecord' ) . "</i></small></td></tr>" );
+				$wgOut->addHTML( " <small><i>" . wfMessage( 'ea-selectrecord' )->text() . "</i></small></td></tr>" );
 			}
 		}
 
 		// Include comments checkbox
 		if( defined( 'AJAXCOMMENTS_VERSION' ) && AjaxComments::checkTitle( $this->title ) ) {
 			$wgOut->addHTML( "<tr id=\"ea-addcomments\"><th>&nbsp;</th><td>" );
-			$wgOut->addHTML( "<input type=\"checkbox\" name=\"ea-addcomments\" />&nbsp;" . wfMsg( 'ea-addcomments' ) . "</td></tr>" );
+			$wgOut->addHTML( "<input type=\"checkbox\" name=\"ea-addcomments\" />&nbsp;" . wfMessage( 'ea-addcomments' )->text() . "</td></tr>" );
 		}
 
 		// Submit buttons & hidden values
 		$wgOut->addHTML( "<tr><td colspan=\"2\" align=\"right\">" );
 		$wgOut->addHTML( Xml::element( 'input', array( 'type' => 'hidden', 'name' => 'ea-title', 'value' => $this->title ) ) );
-		$wgOut->addHTML( Xml::element( 'input', array( 'id' => 'ea-show', 'type' => 'submit', 'name' => 'ea-show', 'value' => wfMsg( 'ea-show' ) ) ) );
+		$wgOut->addHTML( Xml::element( 'input', array( 'id' => 'ea-show', 'type' => 'submit', 'name' => 'ea-show', 'value' => wfMessage( 'ea-show' )->text() ) ) );
 		$wgOut->addHTML( "&nbsp;&nbsp;" );
-		$wgOut->addHTML( Xml::element( 'input', array( 'type' => 'submit', 'name' => 'ea-send', 'value' => wfMsg( 'ea-send' ) ) ) . '&#160;' );
+		$wgOut->addHTML( Xml::element( 'input', array( 'type' => 'submit', 'name' => 'ea-send', 'value' => wfMessage( 'ea-send' )->text() ) ) . '&#160;' );
 		$wgOut->addHTML( "</td></tr>" );
 
 		$wgOut->addHTML( "</table></form>" );
@@ -165,8 +165,8 @@ class SpecialEmailPage extends SpecialPage {
 		// Set error and bail if user not in postmaster group, and request not from trusted address
 		if( $wgEmailPageGroup && !in_array( $wgEmailPageGroup, $wgUser->getGroups() )
 		&& !in_array( $_SERVER['REMOTE_ADDR'], $wgEmailPageAllowRemoteAddr ) ) {
-			$denied = wfMsg( 'ea-denied' );
-			$wgOut->addWikiText( wfMsg( 'ea-error', $this->title, $denied ) );
+			$denied = wfMessage( 'ea-denied' )->text();
+			$wgOut->addWikiText( wfMessage( 'ea-error', $this->title, $denied )->text() );
 			return false;
 		}
 
@@ -237,7 +237,7 @@ class SpecialEmailPage extends SpecialPage {
 				$mail->Body     = $message;
 				$mail->IsHTML( !$this->textonly );
 			}
-			else $msg = "===" . wfMsg( 'ea-listrecipients', $count ) . "===";
+			else $msg = "===" . wfMessage( 'ea-listrecipients', $count )->text() . "===";
 
 			// Loop through recipients sending or adding to list
 			foreach( $this->recipients as $recipient ) {
@@ -245,14 +245,14 @@ class SpecialEmailPage extends SpecialPage {
 				if( $send ) {
 					if( $this->record ) $mail->Body = $this->replaceFields( $message, $recipient );
 					$mail->AddAddress( $recipient );
-					if( $state = $mail->Send() ) $msg = wfMsg( 'ea-sent', $this->title, $count, $wgUser->getName() );
+					if( $state = $mail->Send() ) $msg = wfMessage( 'ea-sent', $this->title, $count, $wgUser->getName() )->text();
 					else $error .= "Couldn't send to $recipient: {$mail->ErrorInfo}<br />\n";
 					$mail->ClearAddresses();
 				} else $msg .= "\n*[mailto:$recipient $recipient]";
-				if( $error ) $msg = wfMsg( 'ea-error', $this->title, $error );
+				if( $error ) $msg = wfMessage( 'ea-error', $this->title, $error )->text();
 			}
 		}
-		else $msg = wfMsg( 'ea-error', $this->title, wfMsg( 'ea-norecipients' ) );
+		else $msg = wfMessage( 'ea-error', $this->title, wfMessage( 'ea-norecipients' ) )->text();
 
 		$wgOut->addWikiText( $msg );
 		return $send ? $state : $count;
