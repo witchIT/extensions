@@ -262,7 +262,7 @@ class SpecialEmailPage extends SpecialPage {
 	 * Add a recipient the list if not already present
 	 */
 	function addRecipient( $recipient ) {
-		if( $valid = User::isValidEmailAddr( $recipient ) && !in_array( $recipient, $this->recipients ) ) {
+		if( $valid = Sanitizer::validateEmail( $recipient ) && !in_array( $recipient, $this->recipients ) ) {
 			$this->recipients[] = $recipient;
 		}
 		return $valid;
