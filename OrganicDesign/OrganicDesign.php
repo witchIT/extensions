@@ -169,24 +169,24 @@ class OrganicDesign {
 	public static function donations( $out ) {
 		global $wgOrganicDesignDonations;
 		$out->addHTML( '<div id="donations-wrapper" style="display:none"><div class="portlet" id="donations">
-		<h2 style="white-space:nowrap">' . wfMsg('tips-welcome') . '</h2>
-		<h5>' . wfMsg('paypal-or-cc') . '</h5>
+		<h2 style="white-space:nowrap">' . wfMessage('tips-welcome') . '</h2>
+		<h5>' . wfMessage('paypal-or-cc') . '</h5>
 		<div class="pBody">
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_xclick">
 				<input type="hidden" name="business" value="' . $wgOrganicDesignDonations . '" />
 				<input type="hidden" name="item_name" value="Donation to Organic Design">
 				<input type="hidden" name="currency_code" value="USD">
-				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="' . wfMsg('checkout') . '" />
+				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="' . wfMessage('checkout') . '" />
 			</form>
 		</div>
-		<h5 id="btcbest">' . wfMsg( 'btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' ) . '</h5>
+		<h5 id="btcbest">' . wfMessage( 'btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' ) . '</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="1Aran5dJVJVz1UVU8mLAGdrxCjCpZgm1Mz" onmouseover="this.select()" />
 		</div>
-		<h5 id="nmccool">' . wfMsg( 'also' ) . ' <a href="/Litecoin">LTC</a>, <a href="/Ripple">XRP</a> & <a href="/Stellar">STR</a></h5>
-		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a4/Litecoin-icon.png) no-repeat 5px 2px;">
-			<input style="width:139px;margin-left:23px" readonly="1" value="LUoC9TbjN4iPVh1wKNfFBHUr4DozuVKr4X" onmouseover="this.select()" />
+		<h5 id="nmccool">' . wfMessage( 'also' ) . ' <a href="/XCurrency">XC</a>, <a href="/Ripple">XRP</a> & <a href="/Stellar">STR</a></h5>
+		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/1/12/XC-icon.png) no-repeat 0px 4px;">
+			<input style="width:139px;margin-left:23px" readonly="1" value="XNDhYkgwvNXjiK6178r9i25U9hYCJvd43S" onmouseover="this.select()" />
 		</div>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/2/23/Ripple.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="rBSVzXKvPiRVKa4aBpr3SNqSem1RBDdhqy" onmouseover="this.select()" />
