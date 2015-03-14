@@ -542,11 +542,13 @@ class MWUploadHandler extends UploadHandler {
 	 * Render file data
 	 */
 	public static function renderData( $data ) {
+		global $wgContLang, $wgUser;
 		$user = User::newFromID( $data[0] );
 		$name = $user->getRealName();
 		if( empty( $name ) ) $name = $user->getName();
-		$date = date( "j M Y", $data[1] );
-		return wfMsg( 'jqueryupload-uploadinfo', $name, $date );
+		$d = $wgContLang->userDate( $data[1], $wgUser );
+		$t = $wgContLang->userTime( $data[1], $wgUser );
+		return wfMsg( 'jqueryupload-uploadinfo', $name, $d, $t );
 	}
 
 	/**
