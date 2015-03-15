@@ -5,12 +5,12 @@
  * @file
  * @ingroup Extensions
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
- * @copyright © 2012 Aran Dunkley
+ * @copyright © 2012-2015 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.2.2, 2014-12-8' );
+define( 'AJAXCOMMENTS_VERSION', '1.2.3, 2015-03-15' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -69,12 +69,12 @@ class AjaxComments {
 		}
 
 		// Set up JavaScript and CSS resources
+		$path = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
 		$wgResourceModules['ext.ajaxcomments'] = array(
 			'scripts'        => array( 'ajaxcomments.js' ),
-			'styles'         => array( 'ajaxcomments.css' ),
 			'dependencies'   => array( 'jquery.ui.dialog' ),
 			'localBasePath'  => __DIR__,
-			'remoteBasePath' => $wgExtensionAssetsPath . '/' . basename( __DIR__ ),
+			'remoteBasePath' => $path,
 			'messages' => array(
 				'ajaxcomments-confirmdel',
 				'ajaxcomments-confirm',
@@ -84,6 +84,7 @@ class AjaxComments {
 			),
 		);
 		$wgOut->addModules( 'ext.ajaxcomments' );
+		$wgOut->addStyle( "$path/ajaxcomments.css" );
 
 		// Set polling to -1 if checkTitle says comments are disabled
 		$wgOut->addJsConfigVars( 'wgAjaxCommentsPollServer', $wgAjaxCommentsPollServer );
