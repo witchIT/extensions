@@ -14,7 +14,7 @@
 
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','3.1.2, 2014-04-02' );
+define( 'TREEANDMENU_VERSION','3.1.3, 2015-03-15' );
 
 // Tree defaults
 if( !isset( $wgTreeViewImages ) || !is_array( $wgTreeViewImages ) ) $wgTreeViewImages = array();
@@ -52,7 +52,7 @@ class TreeAndMenu {
 	 * Constructor
 	 */
 	function __construct() {
-		global $wgOut, $wgHooks, $wgParser, $wgJsMimeType, $wgExtensionAssetsPath, $wgResourceModules,
+		global $wgOut, $wgHooks, $wgParser, $wgJsMimeType, $wgExtensionAssetsPath,
 			$wgTreeViewImages, $wgTreeViewShowLines;
 
 		// Add hooks
@@ -73,12 +73,7 @@ class TreeAndMenu {
 		}
 
 		// Set up JavaScript and CSS resources
-		$wgResourceModules['ext.treeandmenu'] = array(
-			'styles'         => array( 'treeandmenu.css' ),
-			'localBasePath'  => dirname( __FILE__ ),
-			'remoteBasePath' => $this->baseUrl,
-		);
-		$wgOut->addModules( 'ext.treeandmenu' );
+		$wgOut->addStyle( $this->baseUrl . '/treeandmenu.css' );
 		$wgOut->addHeadItem( 'treeBaseUrl', "<script type=\"$wgJsMimeType\">window.tamBaseUrl='{$this->baseUrl}'</script>\n" );
 		$wgOut->addHeadItem( 'dTree', "<script type=\"$wgJsMimeType\" src=\"{$this->baseUrl}/dtree.js\"></script>\n" );
 	}
