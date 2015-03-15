@@ -60,8 +60,8 @@ class TreeAndMenu {
 		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
 
 		// Update general tree paths and properties
-		$this->baseDir  = dirname( __FILE__ );
-		$this->baseUrl  = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) );
+		$this->baseDir  = __DIR__;
+		$this->baseUrl  = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
 		$this->useLines = $wgTreeViewShowLines ? 'true' : 'false';
 		$this->uniq     = uniqid( $this->uniqname );
 
