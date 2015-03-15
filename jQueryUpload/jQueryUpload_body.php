@@ -15,7 +15,7 @@ class jQueryUpload extends SpecialPage {
 	public static $desc = array();
 
 	function __construct() {
-		global $wgOut, $wgScriptPath, $wgResourceModules, $wgHooks, $wgParser, $wgJQUploadFileMagic;
+		global $wgOut, $wgExtensionAssetsPath, $wgResourceModules, $wgHooks, $wgParser, $wgJQUploadFileMagic;
 
 		// Initialise the special page
 		parent::__construct( 'jQueryUpload', 'upload' );
@@ -40,12 +40,12 @@ class jQueryUpload extends SpecialPage {
 		}
 
 		// Add the extensions own js
-		$path = "$wgScriptPath/extensions/" . basename( __DIR__ );
+		$path = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
 		$wgResourceModules['ext.jqueryupload'] = array(
 			'scripts'       => array( 'jqueryupload.js' ),
 			'dependencies'  => array( 'mediawiki.util', 'jquery.ui.dialog' ),
-			'localBasePath' => __DIR__,
-			'remoteExtPath' => $path
+			'remoteBasePath' => $path,
+			'localBasePath'  => __DIR__,
 		);
 		$wgOut->addModules( 'ext.jqueryupload' );
 		$wgOut->addStyle( "$path/jqueryupload.css" );
