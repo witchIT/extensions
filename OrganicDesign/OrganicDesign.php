@@ -5,11 +5,11 @@
  * @package MediaWiki
  * @subpackage Extensions
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
- * @copyright © 2012 Aran Dunkley
+ * @copyright © 2012-2015 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "2.0.1, 2014-11-19" );
+define( 'OD_VERSION', "2.0.2, 2015-03-20" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -45,7 +45,7 @@ class OrganicDesign {
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
 		// Add the OD monobook modification styles
-		$wgOut->addStyle( $wgExtensionAssetsPath . basename( __DIR__ ) . '/organicdesign.css" );
+		$wgOut->addStyle( $wgExtensionAssetsPath . basename( __DIR__ ) . '/organicdesign.css' );
 
 		// Force the recentchanges to the JS format
 		$wgUser->setOption( 'usenewrc', 1 );
