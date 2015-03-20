@@ -41,7 +41,7 @@ class OrganicDesign {
 	}
 
 	function setup() {
-		global $wgOut, $wgExtensionAssetsPath, $wgUser;
+		global $wgOut, $wgExtensionAssetsPath, $wgUser, $wgCommandLineMode;
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
 		// Add the OD monobook modification styles
