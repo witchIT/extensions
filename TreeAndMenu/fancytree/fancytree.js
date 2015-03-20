@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	$('.fancytree ul:first, .fancytree-persist ul:first').hide().setAttr('id','treeData');
+	$('.fancytree ul:first, .fancytree-persist ul:first').hide().attr('id','treeData');
 	$('.fancytree').fancytree();
 	$('.fancytree-persist').fancytree({ extensions: ["persist"] });
 
