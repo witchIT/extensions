@@ -62,8 +62,9 @@ class TreeAndMenu {
 		// First arg is parser
 		$parser = array_shift( $opts );
 
-		// Last arg is the tree structure
-		$bullets = array_pop( $opts );
+		// Last arg is the tree structure, remove any lines that doesn't start with asterisk
+		$bullets = preg_replace( '|^[^*].*?$|', '', array_pop( $opts ) );
+		print_r($bullets);
 
 		// Convert remaining args to named options
 		foreach( $opts as $opt ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $opt, $m ) ) $opts[$m[1]] = $m[2]; else $opts[$opt] = true;
