@@ -26,6 +26,7 @@ class TreeAndMenu {
 		);
 		$wgOut->addModules( 'ext.fancytree' );
 		$wgOut->addStyle( "$path/fancytree.css" );
+		$wgOut->addJsConfigVars( 'fancytree_path', $path );
 
 		// Add the Suckerfish scripts and styles
 		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ ) . '/suckerfish';

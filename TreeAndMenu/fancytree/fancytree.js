@@ -1,10 +1,11 @@
 $(document).ready(function(){
-
+	var jQuery = $;
 	$('.fancytree').fancytree();
 	$('.fancytree-persist').fancytree({ extensions: ["persist"] });
 
 });
 
 // Preload the tree icons and loader
-(new Image()).src = 'loading.gif';
-(new Image()).src = 'icons.gif';
+var path = mw.config.get('fancytree_path');
+(new Image()).src = path + '/loading.gif';
+(new Image()).src = path + '/icons.gif';
