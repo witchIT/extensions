@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	var jQuery = $;
+	alert(jQuery.easing);
 	$('.fancytree').fancytree();
 	$('.fancytree-persist').fancytree({ extensions: ["persist"] });
 
