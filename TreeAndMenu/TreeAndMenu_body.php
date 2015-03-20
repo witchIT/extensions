@@ -39,20 +39,22 @@ class TreeAndMenu {
 	 * Expand #tree parser-functions
 	 */
 	public function expandTree() {
-		return $this->expandTreeAndMenu( 'fancytree', func_get_args() );
+		$args = func_get_args();
+		return $this->expandTreeAndMenu( 'fancytree', $args );
 	}
 
 	/**
 	 * Expand #menu parser-functions
 	 */
 	public function expandMenu() {
-		return $this->expandTreeAndMenu( 'suckerfish', func_get_args() );
+		$args = func_get_args();
+		return $this->expandTreeAndMenu( 'suckerfish', $args );
 	}
 
 	/**
 	 * Expand either kind of parser-function
 	 */
-	public function expandTreeAndMenu( $class, $opts ) {
+	private function expandTreeAndMenu( $class, $opts ) {
 
 		// First arg is parser
 		$parser = array_unshift( $opts );
