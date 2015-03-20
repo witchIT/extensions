@@ -73,7 +73,7 @@ class TreeAndMenu {
 		if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class'];
 
 		// Parse the bullet structure
-		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, true )->getText();		
+		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), false, true )->getText();		
 
 		// Add the class and id if any
 		$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
