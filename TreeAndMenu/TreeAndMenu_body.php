@@ -65,7 +65,7 @@ class TreeAndMenu {
 		
 		// If persist option or class option present add to the class
 		if( array_key_exists( 'persist', $opts ) ) $class .= '-persist';
-		if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class']
+		if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class'];
 
 		// Parse the bullet structure
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, true )->getText();		
