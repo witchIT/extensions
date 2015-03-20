@@ -423,14 +423,7 @@ body.blog-item #catlinks {
     border: none;
     font-size: 12px;
     line-height: 10px;
-    margin-left: 0.6em;
 }
 .fancytree p {
 	display: none;
-}
-#fancytree-drop-marker {
-	background-image: url("/wiki/extensions/TreeAndMenu/fancytree/icons.gif");
-}
-.fancytree-statusnode-wait span.fancytree-icon:hover {
-	background-image: url("/wiki/extensions/TreeAndMenu/fancytree/loading.gif");
 }
