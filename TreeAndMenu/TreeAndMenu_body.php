@@ -56,6 +56,8 @@ class TreeAndMenu {
 	 */
 	private function expandTreeAndMenu( $class, $opts ) {
 
+return 'foo';
+
 		// First arg is parser
 		$parser = array_unshift( $opts );
 
@@ -70,8 +72,7 @@ class TreeAndMenu {
 		if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class'];
 
 		// Parse the bullet structure
-		//$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, true )->getText();		
-		$html = 'foo';
+		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, true )->getText();		
 
 		// Add the class and id if any
 		$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
