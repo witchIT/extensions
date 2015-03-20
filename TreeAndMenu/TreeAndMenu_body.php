@@ -60,7 +60,7 @@ class TreeAndMenu {
 	private function expandTreeAndMenu( $class, $opts ) {
 
 		// First arg is parser
-		$parser = array_unshift( $opts );
+		$parser = array_shift( $opts );
 
 		// Last arg is the tree structure
 		$bullets = array_pop( $opts );
