@@ -60,6 +60,10 @@ class TreeAndMenu {
 	 */
 	private function expandTreeAndMenu( $class, $opts ) {
 
+		// Keep a record of recursive tree depth
+		static $depth = 0;
+		$depth++;
+
 		// First arg is parser
 		$parser = array_shift( $opts );
 
@@ -71,19 +75,20 @@ class TreeAndMenu {
 
 		// Convert remaining args to named options
 		foreach( $opts as $opt ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $opt, $m ) ) $opts[$m[1]] = $m[2]; else $opts[$opt] = true;
-		
-		// If persist option or class option present add to the class
-		if( array_key_exists( 'persist', $opts ) ) $class .= '-persist';
-		if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class'];
 
 		// Parse the bullet structure
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
 
-		// Add the class and id if any
-		$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
-		$html = preg_replace( '|<ul>|', "<ul id=\"treeData\" style=\"display:none\">", $html, 1 );
-		$html = "<div class=\"$class\"$id>$html</div>";
+		// Add the class, id and div, but only if this is not a nested tree
+		if( $depth == 1 ) {
+			if( array_key_exists( 'persist', $opts ) ) $class .= '-persist';
+			if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class'];
+			$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
+			$html = preg_replace( '|<ul>|', "<ul id=\"treeData\" style=\"display:none\">", $html, 1 );
+			$html = "<div class=\"$class\"$id>$html</div>";
+		}
 
+		$depth--;
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 }
