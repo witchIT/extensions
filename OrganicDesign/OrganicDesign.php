@@ -45,7 +45,7 @@ class OrganicDesign {
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
 		// Add the OD monobook modification styles
-		$wgOut->addStyle( $wgExtensionAssetsPath . basename( __DIR__ ) . '/organicdesign.css' );
+		$wgOut->addStyle( $wgExtensionAssetsPath . '/' . basename( __DIR__ ) . '/organicdesign.css' );
 
 		// Force the recentchanges to the JS format
 		$wgUser->setOption( 'usenewrc', 1 );
