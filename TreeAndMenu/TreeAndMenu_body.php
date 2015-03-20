@@ -82,7 +82,6 @@ class TreeAndMenu {
 		// Add the class and id if any
 		$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
 		$html = preg_replace( '|<ul>|', "<ul id=\"treeData\" style=\"display:none\">", $html, 1 );
-		$html = preg_replace( '|(?<=</ul>).+$|', '', $html );
 		$html = "<div class=\"$class\"$id>$html</div>";
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
