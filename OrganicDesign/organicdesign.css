@@ -1,0 +1,427 @@
+/**
+ * Monobook adjustments
+ */
+body { background: #f4f4f4 url( /files/f/f8/Od-pollen-bg2.jpg ) no-repeat scroll left top; }
+div#content {
+    margin: 0 0 0 16.5em;
+}
+.portlet {
+    width: 16.2em;
+}
+.pBody {
+    background: none;
+    border: none;
+    margin: 0 0 0 0.3em;
+}
+div#column-one {
+    padding-top: 5em;
+}
+div#column-one #sidebartree h2 {
+    background: url( /files/2/28/Folder_opn_mist.gif ) no-repeat 0px 2px;
+    padding-left: 19px;
+}
+div#column-content {
+    margin: 0 0 0.6em -16.5em;
+}
+#p-logo, #column-one #p-navigation, #p-tb, #footer {
+    display: none;
+}
+#p-cactions {
+    top: 3.5em;
+    left: 17em;
+}
+div#mw-panel div.portal div.body ul li a,
+#p-cactions li a,
+.mw-body a,
+#donations a,
+#od-footer a {
+    color: #217a28;
+}
+a.new, #bodyContent a.new, #p-personal a.new, #p-cactions .pBody .new a {
+    color: #cc0000;
+}
+#od-footer {
+    padding-bottom: 20px;
+}
+body #bodyContent a.external, #bodyContent a.external[href^="https://"] {
+    color: #36b;
+    padding-right: 0;
+    background: none;
+}
+body #bodyContent a.external[href^="http://www.organicdesign"],
+body #bodyContent a.external[href^="https://www.organicdesign"] {
+    color: #217a28;
+}
+body a { text-decoration: none }
+div#content {
+    background: url( /files/4/41/Organicdesign.jpg ) no-repeat scroll right top white;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #4e507f;
+    border-bottom: none;
+    margin-bottom: 0;
+    font-weight: bold;
+}
+h1 {
+    font-size: 220%;
+}
+#languages {
+    padding: 0;
+    margin: 0;
+    height: 5em;
+    text-align: right;
+}
+#languages img {
+    padding: 12px 8px 0 0;
+}
+#sidebartree {
+    margin-left: 0.6em;
+}
+table.od-message { margin-top: 3em; }
+#searchInput { width: 15.5em; }
+#donations h2, #p-search h3 {
+    position: static;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: none;
+    display: block;
+    margin-left: 0.6em;
+    padding: 0;
+}
+#donations h5 {
+    font-weight: normal;
+    font-size: 11px;
+    color: black;
+    margin: 0 0 0.2em 0.6em;
+}
+#donations form {
+    margin-left: 0.85em;
+    font-size: 15px;
+}
+
+/* Hide cat page details on load */
+.page-Category_Projects #content #mw-pages,
+.page-Category_Projects #content #mw-pages h2 {
+	display: block;
+}
+#mw-hidden-catlinks { display:none; }
+
+pre, .mw-code {
+    background: none;
+    border: none;
+    line-height: auto;
+}
+
+/**
+ * Recent activity in sidebar
+ */
+#recent-activity {
+	width: 16.5em;
+	overflow: hidden;
+}
+#recent-activity {
+	padding: 0 0 5px 0;
+}
+#recent-activity a {
+	color: black;
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 11px;
+	white-space: nowrap;
+	text-decoration: none;
+}
+#recent-activity a:hover {
+	text-decoration: underline;
+}
+#recent-activity ul {
+	padding-left: 10px;
+	line-height: 1.4em;
+	list-style-type: none;
+	list-style-image: none;
+	margin-left: 0;
+}
+
+
+/**
+ * Personal links and avatar
+ */
+#p-personal {
+	position: absolute;
+	left: 5.5em;
+	top: 0.5em;
+	padding: 0;
+	margin: 0;
+	border: none;
+	background: none;
+	font-size: 10pt;
+	width: 16.5em;
+}
+body.anon #p-personal {
+    left: 0.5em;
+}
+#p-personal h5 {
+	display: none;
+}
+#p-personal .portlet,
+#p-personal .pBody {
+	padding: 0;
+	margin: 0;
+	border: none;
+	background: none;
+}
+/* this is the ul contained in the portlet */
+#p-personal ul {
+	border: none;
+	line-height: 1.4em;
+	color: black;
+	padding: 8px 0 0 0;
+	margin: 0;
+	text-align: left;
+	list-style: none;	
+}
+#p-personal li {
+	border: none;
+	padding: 0;
+	display: block;
+	color: black;
+	background: none;
+}
+#p-personal li a {
+	color: black;
+}
+#p-personal li a:hover {
+	background: none;
+	text-decoration: underline;
+}
+li#pt-anonuserpage,
+li#pt-anontalk,
+li#pt-login,
+li#pt-anonlogin {
+	text-transform: none;
+	margin-left: 0;
+}				
+li#pt-userpage {
+	text-transform: none;
+}				
+#p-personal ul {
+	text-transform: lowercase;
+}
+#p-personal li.active {
+	font-weight: bold;
+}
+
+#p-avatar {
+	position: absolute;
+	top: 1.3em;
+	left: 1.3em;
+	background: #f0f0f0;
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	vertical-align: middle;
+	padding: 5px;
+	border: 2px solid #82879E;
+}
+
+
+/**
+ * Comments
+ */
+#ajaxcomments {
+	clear:both;
+}
+#ajaxcomments textarea {
+	height: 100px;
+}
+#ajaxcomments h2 {
+	margin-bottom: 0;
+}
+#ajaxcomments h3 {
+	color: #ccc;
+	font-style: italic;
+	padding: 0 0 10px 0;
+}
+#ajaxcomments textarea {
+	width: 600px;
+	height: 100px;
+}
+.ajaxcomments-loader {
+	background: url( /wiki/skins/common/images/ajax-loader.gif ) no-repeat center center;
+	height: 75px;
+}
+.ajaxcomment-icon {
+	float: left;
+	margin: 10px 5px 5px 0;
+}
+.ajaxcomment {
+	background-color: #fcfcfc;
+	border: 1px solid #ccc;
+	margin: 5px 0;
+	padding: 5px;
+
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
+.ajaxcomment .ajaxcomment {
+	background-color: #f8f8f8;
+}
+.ajaxcomment .ajaxcomment .ajaxcomment {
+	background-color: #f4f4f4;
+}
+.ajaxcomment .ajaxcomment .ajaxcomment .ajaxcomment {
+	background-color: #f0f0f0;
+}
+.ajaxcomment .ajaxcomment,
+.ajaxcomment-input-reply {
+	margin-left: 15px;
+}
+.ajaxcomment-sig {
+	color: #999;
+	font-size: 90%;
+}
+#ajaxcomments .ajaxcomment-links {
+	clear: both;
+	margin: 0;
+	list-style-type: none;
+}
+.ajaxcomment-links li {
+	display: inline;
+	font-size: 85%;
+	background: #ccc;
+	border: 1px solid #4E507F;
+	padding: 1px 5px;
+
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+}
+#content .ajaxcomment-links li a {
+	color: #4E507F;
+}
+#ajaxcomment-like,
+#ajaxcomment-dislike {
+	color: #4E507F;
+	padding-right: 20px;
+	cursor:
+}
+#ajaxcomment-like {
+	background: #bbb url( http://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Farm-Fresh_thumb_up.png/16px-Farm-Fresh_thumb_up.png ) no-repeat 16px 0;
+}
+#ajaxcomment-dislike {
+	background: #bbb url( http://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Farm-Fresh_thumb_down.png/16px-Farm-Fresh_thumb_down.png ) no-repeat 16px 3px;
+}
+.ajaxcomment-active {
+	cursor: pointer;
+}
+
+
+
+#fileupload .row {
+    margin-left: 0;
+}
+
+.od-info {
+    border-collapse: collapse;
+}
+.od-info td {
+    background-color: #fff;
+}
+.od-info th {
+    background-color: #f3f3f3;
+    text-align: left;
+}
+.od-info, .od-info td, .od-info th {
+    border: 1px solid #aaa;
+    padding: 2px 10px;
+}
+
+
+
+/*
+ * OD Bliki
+ */
+table.blog {
+    background-color: #FcF8Ff;
+    border: 1px solid #aaa;
+    margin-bottom: 15px;
+    padding: 5px 30px 15px 30px;
+    -moz-border-radius: 9px;
+    -webkit-border-radius: 9px;
+    -khtml-border-radius: 9px;
+    border-radius: 9px;
+    width: 100%;
+}
+#bodyContent table.blog h2 {
+    margin-bottom: 0;
+}
+table.blog th, .blog-sig {
+    text-align: left;
+    font-weight: normal;
+    font-size: 75%;
+    color: #666;
+}
+table.blog th a, .blog-sig a {
+    text-decoration: underline;
+    color: #666;
+}
+.taglist {
+    font-size: 85%;
+    color: #666;
+}
+
+/*
+ * Blog item page
+ */
+.next-post {
+	float: right;
+}
+.next-post p {
+	margin: 0;
+	padding: 0;
+}
+.no-more {
+	color: #999;
+}
+body.blog-item #catlinks {
+    display: none;
+}
+
+/*
+ * Blog post page
+ */
+.blog-tags-input {
+	float: left;
+	margin-right: 20px;
+}
+
+/* DPL Gallery example */
+.dpl-gallery {
+   float: left;
+   text-align: center;
+   overflow: hidden;
+   margin-bottom: 4px;
+}
+.dpl-gallery .img {
+   overflow: hidden;
+   border: 1px solid black;
+   margin: 4px;
+   width: 200px;
+   height: 150px;
+   padding: 0;
+}
+.dpl-gallery .link {
+   overflow: hidden;
+   width: 200px;
+   height: 40px;
+}
+
+/* trees */
+.fancytree ul {
+    background: none;
+    border: none;
+    font-size: 12px;
+    line-height: 10px;
+    margin-left: 0.6em;
+}
