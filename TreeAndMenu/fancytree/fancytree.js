@@ -1,7 +1,5 @@
 $(document).ready(function(){
-	var s = '';
-	for( var i in jQuery.easing ) s += i + ': ' + jQuery.easing[i] + '\n';
-	alert('test:'+s);
+
 	$('.fancytree').fancytree();
 	$('.fancytree-persist').fancytree({ extensions: ["persist"] });
 
