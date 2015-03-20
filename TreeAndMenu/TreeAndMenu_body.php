@@ -64,21 +64,18 @@ class TreeAndMenu {
 		static $depth = 0;
 		$depth++;
 
-		// First arg is parser
+		// First arg is parser, last is the structure, convert others to named options
 		$parser = array_shift( $opts );
-
-		// Last arg is the tree structure, remove any lines that doesn't start with asterisk, or empty lines that do
 		$bullets = array_pop( $opts );
-//		$bullets = preg_replace( '|^[^*].*?$|m', '', $bullets );
+		foreach( $opts as $opt ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $opt, $m ) ) $opts[$m[1]] = $m[2]; else $opts[$opt] = true;
+
+		// Sanitise the structure: remove empty lines and empty bullets
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
 
-		// Convert remaining args to named options
-		foreach( $opts as $opt ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $opt, $m ) ) $opts[$m[1]] = $m[2]; else $opts[$opt] = true;
-
 		// Parse the bullet structure
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
-print_r(array($bullets,$html));
+
 		// Add the class, id and div, but only if this is not a nested tree
 		if( $depth == 1 ) {
 			if( array_key_exists( 'persist', $opts ) ) $class .= '-persist';
