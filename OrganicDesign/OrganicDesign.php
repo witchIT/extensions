@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "2.0.2, 2015-03-20" );
+define( 'OD_VERSION', "2.0.3, 2015-03-20" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -50,33 +50,23 @@ class OrganicDesign {
 		// Force the recentchanges to the JS format
 		$wgUser->setOption( 'usenewrc', 1 );
 
-		// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
-		// - conditions must be such that redirects only happen if something needs to change
-		// - works for standard ports 80 & 443 (scheme://od/uri) and 8080/8989 (scheme://od:port/uri)
-		$host = preg_match( "|^(.+):\d+$|", $_SERVER['HTTP_HOST'], $m ) ? $m[1] : $_SERVER['HTTP_HOST'];
-		$uri = $_SERVER['REQUEST_URI'];
-		$ssl = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on';
-		$port = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : '';
-		if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
-		$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
-		$www = $m[1] ? $m[1] : 'www';
+		if( !$wgCommandLineMode ) {
 
-		// Sysop logins
-		if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
+			// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
+			// - conditions must be such that redirects only happen if something needs to change
+			// - works for standard ports 80 & 443 (scheme://od/uri) and 8080/8989 (scheme://od:port/uri)
+			$host = preg_match( "|^(.+):\d+$|", $_SERVER['HTTP_HOST'], $m ) ? $m[1] : $_SERVER['HTTP_HOST'];
+			$uri = $_SERVER['REQUEST_URI'];
+			$ssl = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on';
+			$port = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : '';
+			if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
+			$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
+			$www = $m[1] ? $m[1] : 'www';
 
-			// Bounce to the https www (if they're not https or not www)
-			if( !$od || !$ssl ) {
-				if( $port ) $port = ':8989';
-				header( "Location: https://$www.organicdesign.co.nz$port$uri", true, 301 );
-				exit;
-			}
-		}
+			// Sysop logins
+			if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
 
-		// Non-sysops
-		else {
-
-			// Login or API requests bounce to the https www (if they're not https or not www)
-			if( strpos( $uri, '/api.php' ) !== false || ( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) ) {
+				// Bounce to the https www (if they're not https or not www)
 				if( !$od || !$ssl ) {
 					if( $port ) $port = ':8989';
 					header( "Location: https://$www.organicdesign.co.nz$port$uri", true, 301 );
@@ -84,11 +74,24 @@ class OrganicDesign {
 				}
 			}
 
-			// Non-login pages bounce to non-https www (if they're https or they're not www)
-			else if( $ssl || !$od ) {
-				if( $port ) $port = ':8080';
-				header( "Location: http://$www.organicdesign.co.nz$port$uri", true, 301 );
-				exit;
+			// Non-sysops
+			else {
+
+				// Login or API requests bounce to the https www (if they're not https or not www)
+				if( strpos( $uri, '/api.php' ) !== false || ( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) ) {
+					if( !$od || !$ssl ) {
+						if( $port ) $port = ':8989';
+						header( "Location: https://$www.organicdesign.co.nz$port$uri", true, 301 );
+						exit;
+					}
+				}
+
+				// Non-login pages bounce to non-https www (if they're https or they're not www)
+				else if( $ssl || !$od ) {
+					if( $port ) $port = ':8080';
+					header( "Location: http://$www.organicdesign.co.nz$port$uri", true, 301 );
+					exit;
+				}
 			}
 		}
 	}
