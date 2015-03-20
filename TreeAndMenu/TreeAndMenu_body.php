@@ -67,7 +67,6 @@ class TreeAndMenu {
 		$bullets = preg_replace( '|^[^*].*?$|m', '', $bullets );
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
-		print_r($bullets);
 
 		// Convert remaining args to named options
 		foreach( $opts as $opt ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $opt, $m ) ) $opts[$m[1]] = $m[2]; else $opts[$opt] = true;
@@ -81,7 +80,7 @@ class TreeAndMenu {
 
 		// Add the class and id if any
 		$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
-		$html = str_replace( '<ul>', "<ul class=\"$class\"$id>", $html );
+		$html = preg_replace( '|<ul>|', "<ul class=\"$class\"$id>", $html, 1 );
 
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
