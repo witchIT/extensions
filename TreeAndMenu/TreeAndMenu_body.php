@@ -78,7 +78,7 @@ class TreeAndMenu {
 
 		// Parse the bullet structure
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
-
+print_r(array($bullets,$html));
 		// Add the class, id and div, but only if this is not a nested tree
 		if( $depth == 1 ) {
 			if( array_key_exists( 'persist', $opts ) ) $class .= '-persist';
