@@ -66,6 +66,7 @@ class TreeAndMenu {
 		$bullets = array_pop( $opts );
 		$bullets = preg_replace( '|^[^*].*?$|m', '', $bullets );
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
+		$bullets = preg_replace( '|\n+|', "\n", $bullets );
 		print_r($bullets);
 
 		// Convert remaining args to named options
