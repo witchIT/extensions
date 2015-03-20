@@ -1,17 +1,20 @@
 <?php
 class TreeAndMenu {
 
+	public static $instance;
+
 	function __construct() {
 		global $wgExtensionFunctions;
 		$wgExtensionFunctions[] = 'TreeAndMenu::setup';
+		self::$instance = $this;
 	}
 		
 	public static function setup() {
 		global $wgOut, $wgParser, $wgExtensionAssetsPath, $wgResourceModules;
 
 		// Add hooks
-		$wgParser->setFunctionHook( 'tree', array( $this, 'expandTree' ) );
-		$wgParser->setFunctionHook( 'menu', array( $this, 'expandMenu' ) );
+		$wgParser->setFunctionHook( 'tree', array( self::$instance, 'expandTree' ) );
+		$wgParser->setFunctionHook( 'menu', array( self::$instance, 'expandMenu' ) );
 
 		// Add the Fancy Tree scripts and styles
 		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ ) . '/fancytree';
@@ -55,8 +58,6 @@ class TreeAndMenu {
 	 * Render a bullet list for either a tree or menu structure
 	 */
 	private function expandTreeAndMenu( $class, $opts ) {
-
-return 'foo';
 
 		// First arg is parser
 		$parser = array_unshift( $opts );
