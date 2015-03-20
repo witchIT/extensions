@@ -69,6 +69,7 @@ class TreeAndMenu {
 
 		// Last arg is the tree structure, remove any lines that doesn't start with asterisk, or empty lines that do
 		$bullets = array_pop( $opts );
+		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|^[^*].*?$|m', '', $bullets );
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
