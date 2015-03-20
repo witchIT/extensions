@@ -20,7 +20,7 @@ class TreeAndMenu {
 		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ ) . '/fancytree';
 		$wgResourceModules['ext.fancytree'] = array(
 			'scripts'        => array( 'jquery.fancytree.js', 'jquery.fancytree.persist.js', 'fancytree.js' ),
-			'dependencies'   => array( 'jquery.ui.core', 'jquery.ui.effect', 'jquery.cookie' ),
+			'dependencies'   => array( 'jquery.ui.effect', 'jquery.cookie' ),
 			'remoteBasePath' => $path,
 			'localBasePath'  => __DIR__,
 		);
