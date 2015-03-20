@@ -76,14 +76,10 @@ class TreeAndMenu {
 		if( array_key_exists( 'persist', $opts ) ) $class .= '-persist';
 		if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class'];
 
-		// Parse the bullet structure
-		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, true )->getText();		
-
 		// Add the class and id if any
 		$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
-		$html = preg_replace( '|<ul>|', "<ul id=\"treeData\" style=\"display:none\">", $html, 1 );
-		$html = "<div class=\"$class\"$id>$html</div>";
+		$wikitext = "<div class=\"$class\"$id>\n$bullets</div>";
 
-		return array( $html, 'isHTML' => true, 'noparse' => true );
+		return $wikitext;
 	}
 }
