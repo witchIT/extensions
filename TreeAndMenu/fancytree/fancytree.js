@@ -1,10 +1,12 @@
 $(document).ready(function(){
 
-	//$('.fancytree ul:first, .fancytree-persist ul:first').hide().attr('id','treeData');
-	alert('foo');
-	$('.fancytree').fancytree();
-	$('.fancytree-persist').fancytree({ extensions: ["persist"] });
+	var opts = {
+		focusOnSelect: false,
+	}
+	$('.fancytree').fancytree(opts);
 
+	opts['extensions'] = ["persist"];
+	$('.fancytree-persist').fancytree(opts);
 });
 
 // Preload the tree icons and loader
