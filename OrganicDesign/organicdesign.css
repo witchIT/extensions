@@ -423,6 +423,7 @@ body.blog-item #catlinks {
 ul.fancytree-container {
   outline: 0;
   border: none;
+  overflow: hidden;
 }
 .fancytree p {
 	display: none;
