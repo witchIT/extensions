@@ -16,6 +16,9 @@ $(document).ready(function(){
 			if(node.data.href) window.open(node.data.href, '_self');
 		};
 
+		// Mustn't store active state because it triggers links to open again
+		opts['persist'] = { types: "expanded selected" };
+
 		// Activate the tree
 		$(this).fancytree(opts);
 

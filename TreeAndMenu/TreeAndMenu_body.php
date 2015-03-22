@@ -80,7 +80,7 @@ class TreeAndMenu {
 				else $opts[$m[1]] = preg_match( '|^[\[\{]|', $m[2] ) ? json_decode( $m[2] ) : $m[2];
 			} else $opts[$opt] = true;
 		}
-print_r($args);
+
 		// Sanitise the bullet structure (remove empty lines and empty bullets) and parse it to html
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
