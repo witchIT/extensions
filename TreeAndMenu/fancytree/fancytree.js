@@ -17,7 +17,7 @@ $(document).ready(function(){
 		};
 
 		// Mustn't store active state because it triggers links to open again
-		opts['persist'] = { types: "expanded selected" };
+		opts['persist'] = { types: "expanded focus selected" };
 
 		// Activate the tree
 		$(this).fancytree(opts);
