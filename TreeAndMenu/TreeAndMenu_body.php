@@ -68,18 +68,13 @@ class TreeAndMenu {
 		$parser = array_shift( $args );
 		$bullets = array_pop( $args );
 
-		// Convert other args (except class, id, root) into named opts to pass to JS (repeated names are made into arrays)
+		// Convert other args (except class, id, root) into named opts to pass to JS (JSON values are allowed, name-only treated as bool)
 		$opts = array();
 		$atts = array();
 		foreach( $args as $arg ) {
 			if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $arg, $m ) ) {
 				if( $m[1] == 'class' || $m[1] == 'id' || $m[1] == 'root' ) $atts[$m[1]] = $m[2];
-				else {
-					if( array_key_exists( $m[1], $opts ) ) {
-						$cur = $opts[$m[1]];
-						if( is_array( $cur ) ) array_push( $opts[$m[1]], $m[2] ); else $opts[$m[1]] = array( $cur, $m[2] );
-					} else $opts[$m[1]] = $m[2];
-				}
+				else $opts[$m[1]] = preg_match( '|^\[\{|', $m[2] ) ) ? json_decode( $m[2] ) : $m[2];
 			} else $opts[$opt] = true;
 		}
 
