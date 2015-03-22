@@ -21,7 +21,7 @@ define( 'TREEANDMENU_MENU', 2 );
 $wgExtensionCredits['parserhook'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'TreeAndMenu',
-	'author'         => array( '[http://www.organicdesign.co.nz/aran Aran Dunkley]' ),
+	'author'         => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
 	'url'            => 'http://www.mediawiki.org/wiki/Extension:TreeAndMenu',
 	'descriptionmsg' => 'treeandmenu-desc',
 	'version'        => TREEANDMENU_VERSION,
