@@ -74,7 +74,7 @@ class TreeAndMenu {
 		foreach( $args as $arg ) {
 			if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $arg, $m ) ) {
 				if( $m[1] == 'class' || $m[1] == 'id' || $m[1] == 'root' ) $atts[$m[1]] = $m[2];
-				else $opts[$m[1]] = preg_match( '|^\[\{|', $m[2] ) ) ? json_decode( $m[2] ) : $m[2];
+				else $opts[$m[1]] = preg_match( '|^\[\{|', $m[2] ) ? json_decode( $m[2] ) : $m[2];
 			} else $opts[$opt] = true;
 		}
 
