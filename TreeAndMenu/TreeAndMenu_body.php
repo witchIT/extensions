@@ -102,7 +102,7 @@ class TreeAndMenu {
 				// Mark the structure as tree data, wrap in an unclosable top level if root arg passed
 				$tree = '<ul id="treeData" style="display:none">';
 				if( array_key_exists( 'root', $atts ) ) {
-					$html = $tree . '<li>' . $atts['root'] . '</li>' . $html . '</ul>';
+					$html = $tree . '<li>' . $atts['root'] . $html . '</li></ul>';
 					$opts['minExpandLevel'] = 2;
 				} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
