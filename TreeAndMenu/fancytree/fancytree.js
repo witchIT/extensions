@@ -4,6 +4,7 @@ $(document).ready(function(){
 
 		// Get options passed to the parser-function from span
 		var div = $('div.opts', $(this));
+		alert(div.text());
 		var opts = $.parseJSON(div.text());
 		div.remove();
 
