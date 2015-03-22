@@ -1,12 +1,22 @@
 $(document).ready(function(){
 
-	var opts = {
-		focusOnSelect: false,
-	}
-	$('.fancytree').fancytree(opts);
+	$('.fancytree').each(function() {
 
-	opts['extensions'] = ["persist"];
-	$('.fancytree-persist').fancytree(opts);
+		// Todo: get parser-function opts
+		var opts = {
+			activate: function(event, data) {
+				var node = data.node;
+				if(node.data.href) window.open(node.data.href);
+			}
+		}
+
+		// Add persist extension if opt sent
+		if( $(this).hasClass('persist') ) opts['extensions'] = ["persist"];
+
+		// Activate the tree
+		$(this).fancytree(opts);
+
+	});
 });
 
 // Preload the tree icons and loader
