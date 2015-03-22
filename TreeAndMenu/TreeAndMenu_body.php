@@ -83,6 +83,9 @@ class TreeAndMenu {
 			} else $opts[$opt] = true;
 		}
 
+		// If root arg sent, parse it
+		$root = array_key_exists( 'root', $atts ) ? $parser->parse( $atts['root'], $parser->getTitle(), $parser->getOptions(), true, false )->getText() : '';
+
 		// Sanitise the bullet structure (remove empty lines and empty bullets) and parse it to html
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
@@ -101,8 +104,8 @@ class TreeAndMenu {
 
 				// Mark the structure as tree data, wrap in an unclosable top level if root arg passed
 				$tree = '<ul id="treeData" style="display:none">';
-				if( array_key_exists( 'root', $atts ) ) {
-					$html = $tree . '<li>' . $atts['root'] . $html . '</li></ul>';
+				if( $root ) {
+					$html = $tree . "<li>$root$html</li></ul>";
 					$opts['minExpandLevel'] = 2;
 				} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
