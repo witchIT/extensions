@@ -4,9 +4,11 @@ $(document).ready(function(){
 
 		// Get options passed to the parser-function from span
 		var div = $('div.opts', $(this));
-		alert(div.text());
-		var opts = $.parseJSON(div.text());
-		div.remove();
+		var opts = {};
+		if(div.length > 0) {
+			opts = $.parseJSON(div.text());
+			div.remove();
+		}
 
 		// Need to make links in nodes function normally
 		opts['activate'] = function(event, data) {
