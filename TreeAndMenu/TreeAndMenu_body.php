@@ -19,14 +19,13 @@ class TreeAndMenu {
 		// Add the Fancy Tree scripts and styles
 		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ ) . '/fancytree';
 		$wgResourceModules['ext.fancytree'] = array(
-			'scripts'        => array( 'jquery.fancytree.js', 'jquery.fancytree.persist.js', 'fancytree.js' ),
+			'scripts'        => array( 'jquery.fancytree.js', 'jquery.fancytree.persist.js' ),
 			'dependencies'   => array( 'jquery.effects.blind', 'jquery.cookie' ),
 			'remoteBasePath' => $path,
 			'localBasePath'  => __DIR__,
 		);
 		$wgOut->addModules( 'ext.fancytree' );
 		$wgOut->addStyle( "$path/fancytree.css" );
-		$wgOut->addJsConfigVars( 'fancytree_path', $path );
 
 		// Add the Suckerfish scripts and styles
 		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ ) . '/suckerfish';
@@ -37,6 +36,18 @@ class TreeAndMenu {
 		);
 		$wgOut->addModules( 'ext.suckerfish' );
 		$wgOut->addStyle( "$path/suckerfish.css" );
+
+		// Add the TreeAndMenu scripts and styles
+		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
+		$wgResourceModules['ext.treeandmenu'] = array(
+			'scripts'        => array( 'treeandmenu.js' ),
+			'dependencies'   => array( 'ext.fancytree' ),
+			'remoteBasePath' => $path,
+			'localBasePath'  => __DIR__,
+		);
+		$wgOut->addModules( 'ext.treeandmenu' );
+		$wgOut->addJsConfigVars( 'fancytree_path', $path );
+
 	}
 
 	/**
