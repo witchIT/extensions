@@ -2,16 +2,16 @@ $(document).ready(function(){
 
 	$('.fancytree').each(function() {
 
-		// Todo: get parser-function opts
-		var opts = {
-			activate: function(event, data) {
-				var node = data.node;
-				if(node.data.href) window.open(node.data.href, '_self');
-			}
-		}
+		// Get options passed to the parser-function from span
+		var div = $('div.opts', $(this));
+		var opts = $.getJSON(div.html());
+		div.remove();
 
-		// Add persist extension if opt sent
-		if( $(this).hasClass('persist') ) opts['extensions'] = ["persist"];
+		// Need to make links in nodes function normally
+		opts['activate'] = function(event, data) {
+			var node = data.node;
+			if(node.data.href) window.open(node.data.href, '_self');
+		};
 
 		// Activate the tree
 		$(this).fancytree(opts);

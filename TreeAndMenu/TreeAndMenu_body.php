@@ -58,16 +58,30 @@ class TreeAndMenu {
 	/**
 	 * Render a bullet list for either a tree or menu structure
 	 */
-	private function expandTreeAndMenu( $class, $opts ) {
+	private function expandTreeAndMenu( $class, $args ) {
 
 		// Keep a record of recursive tree depth
 		static $depth = 0;
 		$depth++;
 
-		// First arg is parser, last is the structure, convert others to named options
-		$parser = array_shift( $opts );
-		$bullets = array_pop( $opts );
-		foreach( $opts as $opt ) if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $opt, $m ) ) $opts[$m[1]] = $m[2]; else $opts[$opt] = true;
+		// First arg is parser, last is the structure
+		$parser = array_shift( $args );
+		$bullets = array_pop( $args );
+
+		// Convert other args (except class, id, root) into named opts to pass to JS (repeated names are made into arrays)
+		$opts = array();
+		$atts = array();
+		foreach( $args as $arg ) {
+			if ( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $arg, $m ) ) {
+				if( $m[1] == 'class' || $m[1] == 'id' || $m[1] == 'root' ) $atts[$m[1]] = $m[2];
+				else {
+					if( array_key_exists( $m[1], $opts ) ) {
+						$cur = $opts[$m[1]];
+						if( is_array( $cur ) ) array_push( $opts[$m[1]], $m[2] ); else $opts[$m[1]] = array( $cur, $m[2] );
+					} else $opts[$m[1]] = $m[2];
+				}
+			} else $opts[$opt] = true;
+		}
 
 		// Sanitise the structure: remove empty lines and empty bullets
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
@@ -76,13 +90,25 @@ class TreeAndMenu {
 		// Parse the bullet structure
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
 
-		// Add the class, id and div, but only if this is not a nested tree
+		// Just keep it as a ul structure if it's within another tree
 		if( $depth == 1 ) {
-			if( array_key_exists( 'persist', $opts ) ) $class .= ' persist';
-			if( array_key_exists( 'class', $opts ) ) $class .= ' ' . $opts['class'];
-			$id = array_key_exists( 'id', $opts ) ? ' id="' . $opts['id'] . '"' : '';
-			$html = preg_replace( '|<ul>|', "<ul id=\"treeData\" style=\"display:none\">", $html, 1 );
-			$html = "<div class=\"$class\"$id>$html</div>";
+
+			// Add the class and id attributes if any
+			if( array_key_exists( 'class', $atts ) ) $class .= ' ' . $atts['class'];
+			$id = array_key_exists( 'id', $atts ) ? ' id="' . $atts['id'] . '"' : '';
+
+			// Mark the structure as tree data, wrap in a top level if root arg passed
+			$tree = '<ul id="treeData" style="display:none">';
+			if( array_key_exists( 'root', $atts ) ) {
+				$html = $tree . '<li>' . $atts['root'] . '</li>' . $html . '</ul>';
+				$opts['minLevels'] = 1;
+			} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
+
+			// Incorporate options as json encoded data in a div
+			$opts = count( $opts ) > 0 ? '<div class="opts">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
+
+			// Assemble it all into a single div
+			$html = "<div class=\"$class\"$id>$opts$html</div>";
 		}
 
 		$depth--;
