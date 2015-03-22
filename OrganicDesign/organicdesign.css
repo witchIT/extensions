@@ -421,8 +421,9 @@ body.blog-item #catlinks {
     font-size: 12px;
     line-height: 10px;
 }
-span.fancytree-focused span.fancytree-title {
-	outline: none;
+ul.fancytree-container {
+  outline: 0;
+  border: none;
 }
 .fancytree p {
 	display: none;
