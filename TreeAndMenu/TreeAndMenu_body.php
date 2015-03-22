@@ -103,7 +103,7 @@ class TreeAndMenu {
 				$tree = '<ul id="treeData" style="display:none">';
 				if( array_key_exists( 'root', $atts ) ) {
 					$html = $tree . '<li>' . $atts['root'] . '</li>' . $html . '</ul>';
-					$opts['minLevels'] = 1;
+					$opts['minExpandLevel'] = 2;
 				} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
 				// Incorporate options as json encoded data in a div
