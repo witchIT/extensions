@@ -136,7 +136,7 @@ pre, .mw-code {
 	list-style-image: none;
 	margin-left: 0;
 }
-#recent-activity h3, $sidebartree h3 {
+#recent-activity h3, #sidebartree h3 {
 	margin: 0.3em 0.5em 0 0;
 }
 
