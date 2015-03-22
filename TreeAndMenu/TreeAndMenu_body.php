@@ -83,11 +83,9 @@ class TreeAndMenu {
 			} else $opts[$opt] = true;
 		}
 
-		// Sanitise the structure: remove empty lines and empty bullets
+		// Sanitise the bullet structure (remove empty lines and empty bullets) and parse it to html
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
-
-		// Parse the bullet structure
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
 
 		// Just keep it as a ul structure if it's within another tree
@@ -97,18 +95,25 @@ class TreeAndMenu {
 			if( array_key_exists( 'class', $atts ) ) $class .= ' ' . $atts['class'];
 			$id = array_key_exists( 'id', $atts ) ? ' id="' . $atts['id'] . '"' : '';
 
-			// Mark the structure as tree data, wrap in a top level if root arg passed
-			$tree = '<ul id="treeData" style="display:none">';
-			if( array_key_exists( 'root', $atts ) ) {
-				$html = $tree . '<li>' . $atts['root'] . '</li>' . $html . '</ul>';
-				$opts['minLevels'] = 1;
-			} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
+			// If its a tree, we need to add some code to the ul structure
+			if( $class == 'fancytree' ) {
 
-			// Incorporate options as json encoded data in a div
-			$opts = count( $opts ) > 0 ? '<div class="opts">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
+				// Mark the structure as tree data, wrap in an unclosable top level if root arg passed
+				$tree = '<ul id="treeData" style="display:none">';
+				if( array_key_exists( 'root', $atts ) ) {
+					$html = $tree . '<li>' . $atts['root'] . '</li>' . $html . '</ul>';
+					$opts['minLevels'] = 1;
+				} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
-			// Assemble it all into a single div
-			$html = "<div class=\"$class\"$id>$opts$html</div>";
+				// Incorporate options as json encoded data in a div
+				$opts = count( $opts ) > 0 ? '<div class="opts">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
+
+				// Assemble it all into a single div
+				$html = "<div class=\"$class\"$id>$opts$html</div>";
+			}
+
+			// If its a menu, just add the class and id to the ul
+			else $html = preg_replace( '|<ul>|', "<ul class=\"$class\"$id>", $html, 1 );
 		}
 
 		$depth--;
