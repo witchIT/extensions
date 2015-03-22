@@ -6,7 +6,7 @@ $(document).ready(function(){
 		var opts = {
 			activate: function(event, data) {
 				var node = data.node;
-				if(node.data.href) window.open(node.data.href);
+				if(node.data.href) window.open(node.data.href, '_self');
 			}
 		}
 
