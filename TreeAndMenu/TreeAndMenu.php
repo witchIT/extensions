@@ -15,6 +15,8 @@
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'TREEANDMENU_VERSION','4.0.0, 2015-03-19' );
+define( 'TREEANDMENU_TREE', 1 );
+define( 'TREEANDMENU_MENU', 2 );
 
 $wgExtensionCredits['parserhook'][] = array(
 	'path'           => __FILE__,

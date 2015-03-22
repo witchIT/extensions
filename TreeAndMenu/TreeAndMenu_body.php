@@ -44,7 +44,7 @@ class TreeAndMenu {
 	 */
 	public function expandTree() {
 		$args = func_get_args();
-		return $this->expandTreeAndMenu( 'fancytree', $args );
+		return $this->expandTreeAndMenu( TREEANDMENU_TREE, $args );
 	}
 
 	/**
@@ -52,13 +52,13 @@ class TreeAndMenu {
 	 */
 	public function expandMenu() {
 		$args = func_get_args();
-		return $this->expandTreeAndMenu( 'suckerfish', $args );
+		return $this->expandTreeAndMenu( TREEANDMENU_MENU, $args );
 	}
 
 	/**
 	 * Render a bullet list for either a tree or menu structure
 	 */
-	private function expandTreeAndMenu( $class, $args ) {
+	private function expandTreeAndMenu( $type, $args ) {
 
 		// Keep a record of recursive tree depth
 		static $depth = 0;
@@ -91,12 +91,13 @@ class TreeAndMenu {
 		// Just keep it as a ul structure if it's within another tree
 		if( $depth == 1 ) {
 
-			// Add the class and id attributes if any
+			// Determine the class and id attributes
+			$class = $type == TREEANDMENU_TREE ? 'fancytree' : 'suckerfish';
 			if( array_key_exists( 'class', $atts ) ) $class .= ' ' . $atts['class'];
 			$id = array_key_exists( 'id', $atts ) ? ' id="' . $atts['id'] . '"' : '';
 
 			// If its a tree, we need to add some code to the ul structure
-			if( $class == 'fancytree' ) {
+			if( $type == TREEANDMENU_TREE ) {
 
 				// Mark the structure as tree data, wrap in an unclosable top level if root arg passed
 				$tree = '<ul id="treeData" style="display:none">';
@@ -112,7 +113,7 @@ class TreeAndMenu {
 				$html = "<div class=\"$class\"$id>$opts$html</div>";
 			}
 
-			// If its a menu, just add the class and id to the ul
+			// If its a menu, just add the class and id attributes to the ul
 			else $html = preg_replace( '|<ul>|', "<ul class=\"$class\"$id>", $html, 1 );
 		}
 
