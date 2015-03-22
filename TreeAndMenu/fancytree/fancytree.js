@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 		// Get options passed to the parser-function from span
 		var div = $('div.opts', $(this));
-		var opts = $.getJSON(div.html());
+		var opts = $.parseJSON(div.text());
 		div.remove();
 
 		// Need to make links in nodes function normally
