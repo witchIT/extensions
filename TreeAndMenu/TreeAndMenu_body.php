@@ -107,7 +107,7 @@ class TreeAndMenu {
 				} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
 				// Incorporate options as json encoded data in a div
-				$opts = count( $opts ) > 0 ? '<div class="opts">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
+				$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
 
 				// Assemble it all into a single div
 				$html = "<div class=\"$class\"$id>$opts$html</div>";
