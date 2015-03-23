@@ -41,15 +41,15 @@
 	cursor:
 }
 #ajaxcomment-like {
-	background: #999 url( http://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Farm-Fresh_thumb_up.png/16px-Farm-Fresh_thumb_up.png ) no-repeat 15px 0;
+	background: #999 url( img/thumb_up.png ) no-repeat 15px 0;
 }
 #ajaxcomment-dislike {
-	background: #999 url( http://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Farm-Fresh_thumb_down.png/16px-Farm-Fresh_thumb_down.png ) no-repeat 15px 3px;
+	background: #999 url( img/thumb_down.png ) no-repeat 15px 3px;
 }
 .ajaxcomment-active {
 	cursor: pointer;
 }
 .ajaxcomments-loader {
-	background: url( ajax-loader.gif ) no-repeat center center;
+	background: url( img/ajax-loader.gif ) no-repeat center center;
 	height: 75px;
 }
