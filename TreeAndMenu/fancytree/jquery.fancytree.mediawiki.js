@@ -59,7 +59,7 @@ $.ui.fancytree.registerExtension({
 			};
 
 			// Mustn't store active state because it triggers links to open again
-			opts.persist = { types: "expanded focus selected" };
+			tree.options.persist = { types: "expanded focus selected" };
 
 		// Init the tree
 		return this._superApply(arguments);
