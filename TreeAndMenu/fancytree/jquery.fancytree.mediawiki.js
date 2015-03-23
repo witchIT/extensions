@@ -52,14 +52,12 @@ $.ui.fancytree.registerExtension({
 			local = this._local,
 			instOpts = this.options.mediawiki;
 
-			/* Make links in nodes function normally
-			opts.activate = function(event, data) {
-				var node = data.node;
-				if(node.data.href) window.open(node.data.href, '_self');
-			};*/
-
-			// Mustn't store active state because it triggers links to open again
-			//tree.options.persist = { types: "expanded focus selected" };
+		// Make links in nodes function normally
+		opts.click = function(event, data) {
+			var node = data.node;
+			//if(node.data.href) window.open(node.data.href, '_self');
+			$(node.li).css('border','1px solid red');
+		};
 
 		// Init the tree
 		return this._superApply(arguments);
