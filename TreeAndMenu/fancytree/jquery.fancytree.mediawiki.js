@@ -52,11 +52,11 @@ $.ui.fancytree.registerExtension({
 			local = this._local,
 			instOpts = this.options.mediawiki;
 
-			// Make links in nodes function normally
+			/* Make links in nodes function normally
 			opts.activate = function(event, data) {
 				var node = data.node;
 				if(node.data.href) window.open(node.data.href, '_self');
-			};
+			};*/
 
 			// Mustn't store active state because it triggers links to open again
 			//tree.options.persist = { types: "expanded focus selected" };
