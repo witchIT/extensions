@@ -49,3 +49,7 @@
 .ajaxcomment-active {
 	cursor: pointer;
 }
+.ajaxcomments-loader {
+	background: url( ajax-loader.gif ) no-repeat center center;
+	height: 75px;
+}

@@ -243,10 +243,6 @@ li#pt-userpage {
 	width: 600px;
 	height: 100px;
 }
-.ajaxcomments-loader {
-	background: url( /wiki/skins/common/images/ajax-loader.gif ) no-repeat center center;
-	height: 75px;
-}
 .ajaxcomment-icon {
 	float: left;
 	margin: 10px 5px 5px 0;
