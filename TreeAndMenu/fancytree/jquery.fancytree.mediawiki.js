@@ -24,11 +24,11 @@ var _assert = $.ui.fancytree.assert;
 /**
  * Open the tree to the node containing the passed title, or current page if none supplied
  */
-$.ui.fancytree._FancytreeClass.prototype.openPage = function(page) {
+$.ui.fancytree._FancytreeClass.prototype.makeTitleVisible = function(title) {
 	var local = this.ext.mediawiki;
-	if(typeof(page) === 'undefined') page = mw.config.get('wgTitle');
+	if(typeof(title) === 'undefined') title = mw.config.get('wgTitle');
 	this.visit(function(node) {
-		if(node.title == page) {
+		if(node.title == title) {
 			node.makeVisible({ noAnimation: true, noEvents: true, scrollIntoView: false });
 			node.setActive({ noEvents: true });
 			return false;
