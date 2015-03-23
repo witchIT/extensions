@@ -27,7 +27,7 @@ var _assert = $.ui.fancytree.assert;
 $.ui.fancytree._FancytreeClass.prototype.openPage = function(page) {
 	var local = this.ext.mediawiki;
 	if(typeof(page) === 'undefined') page = mw.config.get('wgTitle');
-	this.visit( function(node) {
+	this.visit(function(node) {
 		if(node.title == page) {
 			node.makeVisible({ noAnimation: true, noEvents: true, scrollIntoView: false });
 			node.setActive({ noEvents: true });
@@ -52,12 +52,15 @@ $.ui.fancytree.registerExtension({
 			local = this._local,
 			instOpts = this.options.mediawiki;
 
-		// Make links in nodes function normally
-		opts.click = function(event, data) {
-			var node = data.node;
-			//if(node.data.href) window.open(node.data.href, '_self');
-			$(node.li).css('border','1px solid red');
-		};
+		// Make nodes with hrefs back into normal links
+		tree.visit(function(node) {
+			var url = node.data.href;
+			if(url) {
+				var span = $('span:first', node.li);
+				var title = span.html();
+				span.html('<a href="' + url + '" title="' + title + '">' + title + '</a>');
+			}
+		});
 
 		// Init the tree
 		return this._superApply(arguments);
