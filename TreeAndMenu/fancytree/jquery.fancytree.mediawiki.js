@@ -57,7 +57,8 @@ $.ui.fancytree.registerExtension({
 		opts.renderNode = function(event, data) {
 			var node = data.node;
 			if(node.data.href) {
-				$(node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
+				console.log($(node.span).html());
+				//$(node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 			}
 		};
 
