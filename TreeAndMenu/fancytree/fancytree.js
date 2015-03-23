@@ -10,14 +10,8 @@ $(document).ready(function(){
 			div.remove();
 		}
 
-		// Need to make links in nodes function normally
-		opts['activate'] = function(event, data) {
-			var node = data.node;
-			if(node.data.href) window.open(node.data.href, '_self');
-		};
-
-		// Mustn't store active state because it triggers links to open again
-		opts['persist'] = { types: "expanded focus selected" };
+		// Add the mediawiki extension
+		opts['extensions'].push('mediawiki');
 
 		// Activate the tree
 		$(this).fancytree(opts);
