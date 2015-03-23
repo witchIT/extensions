@@ -54,11 +54,9 @@ $.ui.fancytree.registerExtension({
 
 		// Make nodes with hrefs back into normal links
 		opts.renderTitle = function(event, data) {
-			var url = data.node.data.href;
-			if(url) {
-				var span = $(data.node.span);
-				var title = span.text();
-				span.html('<a href="' + url + '" title="' + title + '">' + title + '</a>');
+			var node = data.node;
+			if(node.href) {
+				$(node.span).html('<a href="' + node.href + '" title="' + node.title + '">' + node.title + '</a>');
 			}
 		};
 
