@@ -53,12 +53,11 @@ $.ui.fancytree.registerExtension({
 			instOpts = this.options.mediawiki;
 
 		// Make nodes with hrefs back into normal links
-		// - see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
+		// - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
 		opts.renderTitle = function(event, data) {
 			var node = data.node;
-			console.log(node.title + ',' + node.span + ',' + node.data.href);
-			if(node.href) {
-				$(node.span).html('<a href="' + node.href + '" title="' + node.title + '">' + node.title + '</a>');
+			if(node.data.href) {
+				$(node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 			}
 		};
 
