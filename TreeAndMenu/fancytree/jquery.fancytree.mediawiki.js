@@ -54,7 +54,7 @@ $.ui.fancytree.registerExtension({
 
 		// Make nodes with hrefs back into normal links
 		// - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
-		opts.renderTitle = function(event, data) {
+		opts.renderNode = function(event, data) {
 			var node = data.node;
 			if(node.data.href) {
 				$(node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
