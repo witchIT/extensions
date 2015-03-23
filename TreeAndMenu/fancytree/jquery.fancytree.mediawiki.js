@@ -26,28 +26,14 @@ var _assert = $.ui.fancytree.assert;
  */
 $.ui.fancytree._FancytreeClass.prototype.openPage = function(page) {
 	var local = this.ext.mediawiki;
-
-	// Use current page if nothing specified
 	if(typeof(page) === 'undefined') page = mw.config.get('wgTitle');
-
-	// Function that actually opens the tree
-	function _openPage(event) {
-		var cNode = false;
-		this.visit( function(node) {
-			if(node.title == page) {
-				node.makeVisible({ noAnimation: true, noEvents: true, scrollIntoView: false });
-				node.setActive({ noEvents: true });
-				return false;
-			}
-		});
-	}
-
-	// Open the tree to the page now if it's initialised
-	if(local.initialised) _openPage();
-
-	// Otherwise do it on the init event
-	else this.$div.bind('fancytreeinit', _openPage);
-
+	this.visit( function(node) {
+		if(node.title == page) {
+			node.makeVisible({ noAnimation: true, noEvents: true, scrollIntoView: false });
+			node.setActive({ noEvents: true });
+			return false;
+		}
+	});
 };
 
 $.ui.fancytree.registerExtension({
@@ -57,7 +43,6 @@ $.ui.fancytree.registerExtension({
 
 	// Default options for this extension.
 	options: {
-		initialised: false,
 	},
 
 	// When a tree is initialised, do some modifications appropriate to mediawiki trees
@@ -75,9 +60,6 @@ $.ui.fancytree.registerExtension({
 
 			// Mustn't store active state because it triggers links to open again
 			this.options.persist = { types: "expanded focus selected" };
-
-		// Mark tree as initialised
-		instOpts.initialised = true;
 
 		// Init the tree
 		return this._superApply(arguments);
