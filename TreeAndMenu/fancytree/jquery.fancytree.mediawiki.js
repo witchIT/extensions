@@ -53,13 +53,8 @@ $.ui.fancytree.registerExtension({
 			instOpts = this.options.mediawiki;
 
 		// Make nodes with hrefs back into normal links
-		tree.visit(function(node) {
-			var url = node.data.href;
-			if(url) {
-				var span = $('span:first', node.li);
-				var title = span.html();
-				span.html('<a href="' + url + '" title="' + title + '">' + title + '</a>');
-			}
+		tree.renderTitle(function(title) {
+			console.log('info: '+title);
 		});
 
 		// Init the tree
