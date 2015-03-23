@@ -13,6 +13,9 @@ $(document).ready(function(){
 		// Add the mediawiki extension
 		opts['extensions'].push('mediawiki');
 
+		// Mustn't store active state because it triggers links to open again
+		opts['persist'] = { types: "expanded focus selected" };
+
 		// Activate the tree
 		$(this).fancytree(opts);
 
