@@ -41,21 +41,8 @@ class OrganicDesign {
 	}
 
 	function setup() {
-		global $wgOut, $wgExtensionAssetsPath, $wgUser, $wgCommandLineMode;
+		global $wgOut, $wgExtensionAssetsPath, $wgResourceModules, $wgUser, $wgCommandLineMode;
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
-
-		// Add the OD monobook modification styles and js
-		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
-		$wgResourceModules['ext.organicdesign'] = array(
-			'scripts'        => array( 'organicdesign.js' ),
-			'remoteBasePath' => $path,
-			'localBasePath'  => __DIR__,
-		);
-		$wgOut->addModules( 'ext.organicdesign' );
-		$wgOut->addStyle( "$path/organicdesign.css" );
-
-		// Force the recentchanges to the JS format
-		$wgUser->setOption( 'usenewrc', 1 );
 
 		if( !$wgCommandLineMode ) {
 
@@ -101,6 +88,20 @@ class OrganicDesign {
 				}
 			}
 		}
+
+		// Add the OD monobook modification styles and js
+		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
+		$wgResourceModules['ext.organicdesign'] = array(
+			'scripts'        => array( 'organicdesign.js' ),
+			'remoteBasePath' => $path,
+			'localBasePath'  => __DIR__,
+		);
+		$wgOut->addModules( 'ext.organicdesign' );
+		$wgOut->addStyle( "$path/organicdesign.css" );
+
+		// Force the recentchanges to the JS format
+		$wgUser->setOption( 'usenewrc', 1 );		
+
 	}
 
 	/**
