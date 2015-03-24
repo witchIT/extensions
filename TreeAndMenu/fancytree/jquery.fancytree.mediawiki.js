@@ -65,6 +65,7 @@ $.ui.fancytree.registerExtension({
 		// NOTE - move to render?
 		opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
 		tree.visit(function(node) {
+			if(node.title == 'bar') alert(node.data.keys());
 			if('ajax' in node.data) {
 				alert(node.data.ajax);
 				node.lazy = true;
