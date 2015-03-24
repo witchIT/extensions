@@ -127,7 +127,7 @@ class TreeAndMenu {
 
 			// Append script to prepare this tree or menu after page is ready
 			$func = TREEANDMENU_TREE ? 'Tree' : 'Menu';
-			$html .= "<script type=\"$wgJsMimeType\">$(document).ready(function() { prepare$func('.tam-uid-$uid'); });</script>";
+			$html .= "<script type=\"$wgJsMimeType\">$(document).ready(function() { window.prepare$func('.tam-uid-$uid'); });</script>";
 		}
 
 		$depth--;
