@@ -1,3 +1,7 @@
+/**
+ * This code pre-processes trees and menus to integrate the third-party code into mediawiki without changing it
+ */
+
 $(document).ready(function(){
 
 	/**
