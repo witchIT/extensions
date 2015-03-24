@@ -63,13 +63,13 @@ $.ui.fancytree.registerExtension({
 
 		// Make nodes with titles starting with Ajax: into ajax loading nodes
 		tree.visit(function(node) {
-			//if(node.title.substr(5) == 'ajax:') { load as text
+			if(node.title.substr(5) == 'ajax:') { //load as text
 				//     source: title?action=render...
 				//         success: 
 				//                  determine whether ul data (with div removed if necessary) or JSON
 				//                  children = tree.parseHtml(html) for ul, or loop adding nodes for JSON
 				//                  add children to node
-			//}
+			}
 		});
 
 		// Init the tree
