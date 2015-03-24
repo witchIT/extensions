@@ -106,7 +106,7 @@ table.od-message { margin-top: 3em; }
 pre, .mw-code {
     background: none;
     border: none;
-    line-height: auto;
+    line-height: 1.7em;
 }
 
 /**
