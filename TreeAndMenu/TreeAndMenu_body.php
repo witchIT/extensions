@@ -125,13 +125,8 @@ class TreeAndMenu {
 			// If its a menu, just add the class and id attributes to the ul
 			else $html = preg_replace( '|<ul>|', "<ul class=\"$class todo\"$id>", $html, 1 );
 
-			// Append script to prepare this tree or menu after page is ready
-			$func = TREEANDMENU_TREE ? 'Tree' : 'Menu';
-			$html .= "<script type=\"$wgJsMimeType\">/*<![CDATA[*/
-					$(document).ready(function() {
-						if('prepareTAM' in window) window.prepareTAM();
-					}
-				/*]]>*/</script>";
+			// Append script to prepare this tree or menu if page is already loaded
+			$html .= "<script type=\"$wgJsMimeType\">if('prepareTAM' in window) window.prepareTAM();</script>";
 		}
 
 		$depth--;
