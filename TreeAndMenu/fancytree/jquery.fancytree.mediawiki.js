@@ -65,7 +65,8 @@ $.ui.fancytree.registerExtension({
 		// NOTE - move to render?
 		tree.visit(function(node) {
 			if('ajax' in node.data) {
-				alert(node.data.href);
+				node.lazy = true;
+				node.children = null;
 			}
 		});
 
