@@ -48,13 +48,13 @@
 	width: 12px;
 	height: 15px;
 	float: right;
-	background: url(/wiki/skins/common/images/Arr_r.png) 0 3px no-repeat;
+	background: url(img/Arr_r.png) 0 3px no-repeat;
 }
 .suckerfish li.even .submenu {
 	width: 12px;
 	height: 15px;
 	float: right;
-	background: url(/wiki/skins/common/images/Arr_r.png) 0 3px no-repeat;
+	background: url(img/Arr_r.png) 0 3px no-repeat;
 }
 .suckerfish li.odd {
 	background: #E9EDF4;
