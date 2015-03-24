@@ -5,7 +5,7 @@
 $(document).ready(function(){
 
 	/**
-	 * Initialise trees
+	 * Prepare trees
 	 */
 	$('.fancytree').each(function() {
 
@@ -26,7 +26,7 @@ $(document).ready(function(){
 	});
 
 	/**
-	 * Initialise menus
+	 * Prepare menus (add even and odd classes)
 	 */
 	$('.suckerfish li').each(function() {
 		var li = $(this);

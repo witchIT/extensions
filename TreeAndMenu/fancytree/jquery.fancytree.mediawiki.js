@@ -62,6 +62,7 @@ $.ui.fancytree.registerExtension({
 		};
 
 		// Make nodes with titles starting with Ajax: into ajax loading nodes
+		// NOTE - move to render?
 		tree.visit(function(node) {
 			if(node.title.substr(5) == 'ajax:') { //load as text
 				//     source: title?action=render...
