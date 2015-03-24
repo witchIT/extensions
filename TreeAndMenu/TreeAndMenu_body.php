@@ -112,7 +112,7 @@ class TreeAndMenu {
 
 				// Replace any json: markup in nodes into the li
 				$html = preg_replace( '|<li(>\s*json:\{.*?class:\s*"(.+?)")|', "<li class='$2'$1", $html );
-				//$html = preg_replace( '|<(li.*?)(>\s*json:\{.*?id:\s*"(.+?)")|', "<$1 id='$3' $2", $html );
+				$html = preg_replace( '|<(li.*?)(>\s*json:\{.*?id:\s*"(.+?)")|', "<$1 id='$3'$2", $html );
 				$html = preg_replace( '|<(li.*?)>\s*json:(\{.+\})\s*|', "<$1 data-json='$2'>", $html );
 
 				// Incorporate options as json encoded data in a div
