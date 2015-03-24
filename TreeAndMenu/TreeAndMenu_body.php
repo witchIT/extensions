@@ -119,19 +119,18 @@ class TreeAndMenu {
 				$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
 
 				// Assemble it all into a single div
-				$html = "<div class=\"$class tam-uid-$uid\"$id>$opts$html</div>";
+				$html = "<div class=\"$class todo\"$id>$opts$html</div>";
 			}
 
 			// If its a menu, just add the class and id attributes to the ul
-			else $html = preg_replace( '|<ul>|', "<ul class=\"$class\"$id>", $html, 1 );
+			else $html = preg_replace( '|<ul>|', "<ul class=\"$class todo\"$id>", $html, 1 );
 
 			// Append script to prepare this tree or menu after page is ready
 			$func = TREEANDMENU_TREE ? 'Tree' : 'Menu';
 			$html .= "<script type=\"$wgJsMimeType\">/*<![CDATA[*/
 					$(document).ready(function() {
-					if('prepare$func' in window) window.prepare$func('.tam-uid-$uid'); });
-					else if('tamPrepare' in window) window.tamPrepare['.tam-uid-$uid']='$func';
-					else window.tamPrepare = {'.tam-uid-$uid': '$func'};
+						if('prepareTAM' in window) window.prepareTAM();
+					}
 				/*]]>*/</script>";
 		}
 

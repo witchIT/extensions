@@ -1,42 +1,50 @@
 /**
  * This code pre-processes trees and menus to integrate the third-party code into mediawiki without changing it
- * - I added script after each tree to call its prepare function rather than iterating over the elements so that ones that load later work too
  */
 
-$(document).ready(function() {
+$(document).ready(function(){
 
-	// Prepare the passed tree element
-	window.prepareTree = function(s) {
-		var tree = $(s);
+	// This can be called again later and any unprepared trees and menus will get prepared
+	window.prepareTAM = function() {
 
-		// Get options passed to the parser-function from span
-		var div = $('div.opts', tree);
-		var opts = {};
-		if(div.length > 0) {
-			opts = $.parseJSON(div.text());
-			div.remove();
-		}
+		/**
+		 * Prepare trees
+		 */
+		$('.fancytree.todo').each(function() {
 
-		// Add the mediawiki extension
-		if('extensions' in opts) opts['extensions'].push('mediawiki');
-		else opts['extensions'] = ['mediawiki'];
+			// Remove the todo class from this tree (allows new trees laoded via ajax to be processed too)
+			$(this).removeClass('todo');
 
-		// Activate the tree
-		tree.fancytree(opts);
+			// Get options passed to the parser-function from span
+			var div = $('div.opts', $(this));
+			var opts = {};
+			if(div.length > 0) {
+				opts = $.parseJSON(div.text());
+				div.remove();
+			}
+
+			// Add the mediawiki extension
+			if('extensions' in opts) opts['extensions'].push('mediawiki');
+			else opts['extensions'] = ['mediawiki'];
+
+			// Activate the tree
+			$(this).fancytree(opts);
+		});
+
+		/**
+		 * Prepare menus (add even and odd classes)
+		 */
+		$('.suckerfish.todo').each(function() {
+			$(this).removeClass('todo');
+			$('li', this).each(function() {
+				var li = $(this);
+				li.addClass( (li.index()&1) ? 'odd' : 'even' );
+			});
+		});
 	};
 
-
-	// Prepare the passed menu element (add even and odd classes)
-	window.prepareMenu = function(s) {
-		var li = $(s + ' li');
-		li.addClass( (li.index()&1) ? 'odd' : 'even' );
-	};
-
-	// If there are pending trees and menus to process, do them now
-	if('tamPrepare' in window) {
-		for( var s in window.tamPrepare ) window['prepare'+window.tamPrepare[s]](s);
-	}
-
+	// Prepare any trees and menus loaded in page that need preparing now
+	window.prepareTAM();
 
 });
 
