@@ -63,6 +63,11 @@ class TreeAndMenu {
 	 * Render a bullet list for either a tree or menu structure
 	 */
 	private function expandTreeAndMenu( $type, $args ) {
+		global $wgJsMimeType;
+
+		// Unique id for each tree and menu
+		static $uid = 0;
+		$uid++;
 
 		// Keep a record of recursive tree depth
 		static $depth = 0;
@@ -114,11 +119,15 @@ class TreeAndMenu {
 				$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
 
 				// Assemble it all into a single div
-				$html = "<div class=\"$class\"$id>$opts$html</div>";
+				$html = "<div class=\"$class tam-uid-$uid\"$id>$opts$html</div>";
 			}
 
 			// If its a menu, just add the class and id attributes to the ul
 			else $html = preg_replace( '|<ul>|', "<ul class=\"$class\"$id>", $html, 1 );
+
+			// Append script to prepare this tree or menu after page is ready
+			$func = TREEANDMENU_TREE ? 'Tree' : 'Menu';
+			$html .= "<script type=\"$wgJsMimeType\">$(document).ready(function() { prepare$func('.tam-uid-$uid'); });</script>";
 		}
 
 		$depth--;
