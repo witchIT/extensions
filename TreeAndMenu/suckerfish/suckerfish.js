@@ -5,8 +5,7 @@
 $(document).ready(function() {
 
 	// IE has problems with title attribute in suckerfish menus
-	alert($.client.profile().name);
-	//if($.browser.msie) $('.suckerfish a').removeAttr('title');
+	if($.client.profile().name == 'msie') $('.suckerfish a').removeAttr('title');
 
 	// Suckerfish hover fix
 	if(window.attachEvent) {
