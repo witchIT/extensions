@@ -11,7 +11,8 @@ $(document).ready(function(){
 		}
 
 		// Add the mediawiki extension
-		opts['extensions'].push('mediawiki');
+		if('extensions' in opts) opts['extensions'].push('mediawiki');
+		else opts['extensions'] = ['mediawiki'];
 
 		// Activate the tree
 		$(this).fancytree(opts);

@@ -61,6 +61,15 @@ $.ui.fancytree.registerExtension({
 			}
 		};
 
+		// Make nodes with titles starting with Ajax: into ajax loading nodes
+		tree.visit(function(node) {
+			//if(node.title.substr(5) == 'ajax:') {
+				//     source: title?action=render...
+				//         success: children = tree.parseHtml(html)
+				//                  add children to node
+			//}
+		});
+
 		// Init the tree
 		return this._superApply(arguments);
 	},
