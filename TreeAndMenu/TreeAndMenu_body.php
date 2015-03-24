@@ -35,6 +35,7 @@ class TreeAndMenu {
 		$path  = $wgExtensionAssetsPath . '/' . basename( __DIR__ ) . '/suckerfish';
 		$wgResourceModules['ext.suckerfish'] = array(
 			'scripts'        => array( 'suckerfish.js' ),
+			'dependencies'   => array( 'jquery.client' ),
 			'remoteBasePath' => $path,
 			'localBasePath'  => __DIR__ . '/suckerfish',
 		);
