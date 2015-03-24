@@ -1,5 +1,8 @@
 $(document).ready(function(){
 
+	/**
+	 * Initialise trees
+	 */
 	$('.fancytree').each(function() {
 
 		// Get options passed to the parser-function from span
@@ -16,8 +19,16 @@ $(document).ready(function(){
 
 		// Activate the tree
 		$(this).fancytree(opts);
-
 	});
+
+	/**
+	 * Initialise menus
+	 */
+	$('.suckerfish li').each(function() {
+		var li = $(this);
+		li.addClass( (li.index()&1) ? 'odd' : 'even' );
+	});
+
 });
 
 // Preload the tree icons and loader
