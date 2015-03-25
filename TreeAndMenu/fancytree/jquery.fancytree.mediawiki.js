@@ -71,6 +71,8 @@ var _assert = $.ui.fancytree.assert;
 				local = this._local,
 				instOpts = this.options.mediawiki;
 
+			alert('executed create');
+
 			// Make nodes with titles starting with Ajax: into ajax loading nodes
 			// NOTE - move to render?
 			opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
