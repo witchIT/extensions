@@ -60,6 +60,16 @@ $.ui.fancytree.registerExtension({
 				$('.fancytree-title',node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 			}
 		};
+		// Init the tree
+		return this._superApply(arguments);
+	},
+
+	// When a tree is initialised, do some modifications appropriate to mediawiki trees
+	treeCreate: function(ctx) {
+		var tree = ctx.tree,
+			opts = ctx.options,
+			local = this._local,
+			instOpts = this.options.mediawiki;
 
 		// Make nodes with titles starting with Ajax: into ajax loading nodes
 		// NOTE - move to render?
