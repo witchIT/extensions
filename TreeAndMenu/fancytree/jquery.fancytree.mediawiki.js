@@ -64,7 +64,7 @@ $.ui.fancytree.registerExtension({
 		// Make nodes with titles starting with Ajax: into ajax loading nodes
 		// NOTE - move to render?
 		opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
-		tree.visit(function(node) {
+		this.visit(function(node) {
 			if(node.title == 'bar') alert(node.data.keys());
 			if('ajax' in node.data) {
 				alert(node.data.ajax);
