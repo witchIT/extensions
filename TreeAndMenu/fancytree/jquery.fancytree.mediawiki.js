@@ -60,23 +60,12 @@ var _assert = $.ui.fancytree.assert;
 					$('.fancytree-title',node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 				}
 			};
-			// Init the tree
-			return this._superApply(arguments);
-		},
-
-		// When a tree is initialised, do some modifications appropriate to mediawiki trees
-		treeCreate: function(ctx) {
-			var tree = ctx.tree,
-				opts = ctx.options,
-				local = this._local,
-				instOpts = this.options.mediawiki;
-
-			alert('executed create');
 
 			// Make nodes with titles starting with Ajax: into ajax loading nodes
 			// NOTE - move to render?
 			opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
 			this.visit(function(node) {
+				alert(node.title);
 				if(node.title == 'bar') alert(node.data.keys());
 				if('ajax' in node.data) {
 					alert(node.data.ajax);
@@ -84,6 +73,9 @@ var _assert = $.ui.fancytree.assert;
 					node.children = null;
 				}
 			});
+
+			// Init the tree
+			return this._superApply(arguments);
 		},
 
 	});
