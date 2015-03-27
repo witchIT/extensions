@@ -111,9 +111,9 @@ class TreeAndMenu {
 				} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
 				// Replace any json: markup in nodes into the li
-				$html = preg_replace( '|<li(>\s*json:\{.*?class:\s*"(.+?)")|', "<li class='$2'$1", $html );
-				$html = preg_replace( '|<(li.*?)(>\s*json:\{.*?id:\s*"(.+?)")|', "<$1 id='$3'$2", $html );
-				$html = preg_replace( '|<(li.*?)>\s*json:(\{.+\})\s*|', "<$1 data-json='$2'>", $html );
+				$html = preg_replace( '|<li(>\s*\{.*?class:\s*"(.+?)")|', "<li class='$2'$1", $html );
+				$html = preg_replace( '|<(li.*?)(>\s*\{.*?id:\s*"(.+?)")|', "<$1 id='$3'$2", $html );
+				$html = preg_replace( '|<(li.*?)>\s*(\{.+\})\s*|', "<$1 data-json='$2'>", $html );
 
 				// Incorporate options as json encoded data in a div
 				$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
