@@ -66,12 +66,13 @@ var _assert = $.ui.fancytree.assert;
 
 			// Lazy load event to collect child data from the supplied URL via ajax
 			opts.lazyLoad = function(event, data) {
-				$.ajax({
+				console.log('ajax: '+data.node.data.ajax);
+				data.result = {
 					type: 'GET',
 					url: data.node.data.ajax,
+					data: data.node.data.ajax.data,
 					dataType: 'text',
 					success: function(children) {
-						var nodes;
 						if(children.substr(1) == '[') data.result = $.parseJSON( children );
 						else {
 							var $ul = $(children.match(/^.*?(<ul.+<\/ul>)/i)[1]);
