@@ -66,6 +66,7 @@ var _assert = $.ui.fancytree.assert;
 
 			// Lazy load event to collect child data from the supplied URL via ajax
 			opts.lazyLoad = function(event, data) {
+				/*
 				console.log('ajax: '+data.node.data.ajax);
 				data.result = {
 					type: 'GET',
@@ -80,6 +81,7 @@ var _assert = $.ui.fancytree.assert;
 						}
 					}
 				});
+				*/
 			};
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
