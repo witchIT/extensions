@@ -65,10 +65,9 @@ var _assert = $.ui.fancytree.assert;
 			var ret = this._superApply(arguments);
 
 			// Make nodes with titles starting with Ajax: into ajax loading nodes
-			opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
+			opts.lazyLoad = function(event, data) { console.log(data.ajax);data.result = [{title: "node1"}, {title: "node2"}]; };
 			tree.visit(function(node) {
 				if('ajax' in node.data) {
-					console.log(node.data.ajax);
 					node.lazy = true;
 					node.children = null;
 				}
