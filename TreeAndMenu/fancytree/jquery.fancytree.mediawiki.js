@@ -61,13 +61,12 @@ var _assert = $.ui.fancytree.assert;
 				}
 			};
 
-			var x = this._superApply(arguments);
+			// Execute the parent context to initialise the tree
+			var ret = this._superApply(arguments);
 
 			// Make nodes with titles starting with Ajax: into ajax loading nodes
-			// NOTE - move to render?
 			opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
 			tree.visit(function(node) {
-				alert(node.title);
 				if(node.title == 'bar') alert(node.data.keys());
 				if('ajax' in node.data) {
 					alert(node.data.ajax);
@@ -76,8 +75,8 @@ var _assert = $.ui.fancytree.assert;
 				}
 			});
 
-			// Init the tree
-			return x;
+			// Return the value from tree initialisation
+			return ret;
 		},
 
 	});
