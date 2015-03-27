@@ -64,8 +64,25 @@ var _assert = $.ui.fancytree.assert;
 			// Execute the parent context to initialise the tree
 			var ret = this._superApply(arguments);
 
-			// Make nodes with titles starting with Ajax: into ajax loading nodes
-			opts.lazyLoad = function(event, data) { console.log(data.node.data.ajax);data.result = [{title: "node1"}, {title: "node2"}]; };
+			// Lazy load event to collect child data from the supplied URL via ajax
+			opts.lazyLoad = function(event, data) {
+				$.ajax({
+					type: 'GET',
+					url: data.node.data.ajax,
+					dataType: 'text',
+					success: function(children) {
+						var nodes;
+						if(children.substr(1) == '[') data.result = $.parseJSON( children );
+						else {
+							var $ul = $(children);
+							if(children.substr(4) == '<div') $ul = $($('div:first', $ul).html());
+							data.result = $.ui.fancytree.parseHtml($ul);
+						}
+					}
+				});
+			};
+
+			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
 			tree.visit(function(node) {
 				if('ajax' in node.data) {
 					node.lazy = true;
