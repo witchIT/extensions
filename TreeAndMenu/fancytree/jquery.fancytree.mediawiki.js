@@ -68,7 +68,7 @@ var _assert = $.ui.fancytree.assert;
 			opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
 			tree.visit(function(node) {
 				if(node.title == 'bar') {
-					console.log(JSON.stringify(node.data));
+					console.log(node.data);
 					node.lazy = true;
 					node.children = null;
 				}
