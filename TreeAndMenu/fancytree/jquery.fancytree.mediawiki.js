@@ -74,8 +74,7 @@ var _assert = $.ui.fancytree.assert;
 						var nodes;
 						if(children.substr(1) == '[') data.result = $.parseJSON( children );
 						else {
-							var $ul = $(children);
-							if(children.substr(4) == '<div') $ul = $($('div:first', $ul).html());
+							var $ul = $(children.match(/^.*?(<ul.+<\/ul>)/si)[1]);
 							data.result = $.ui.fancytree.parseHtml($ul);
 						}
 					}
