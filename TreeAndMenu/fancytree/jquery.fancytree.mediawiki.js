@@ -61,10 +61,12 @@ var _assert = $.ui.fancytree.assert;
 				}
 			};
 
+			var x = this._superApply(arguments);
+
 			// Make nodes with titles starting with Ajax: into ajax loading nodes
 			// NOTE - move to render?
 			opts.lazyLoad = function(event, data) { alert('lazy');data.result = [{title: "node1"}, {title: "node2"}]; };
-			ctx.visit(function(node) {
+			tree.visit(function(node) {
 				alert(node.title);
 				if(node.title == 'bar') alert(node.data.keys());
 				if('ajax' in node.data) {
@@ -75,7 +77,7 @@ var _assert = $.ui.fancytree.assert;
 			});
 
 			// Init the tree
-			return this._superApply(arguments);
+			return x;
 		},
 
 	});
