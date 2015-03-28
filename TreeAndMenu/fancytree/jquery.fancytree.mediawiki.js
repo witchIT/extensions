@@ -85,6 +85,8 @@ var _assert = $.ui.fancytree.assert;
 					data.result.data = { title: url, action: 'render' };
 				}
 
+				console.log(data.result);
+
 			};
 
 			// Parse the data collected from the Ajax response and make it into child nodes
