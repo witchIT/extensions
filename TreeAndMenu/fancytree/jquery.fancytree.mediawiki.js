@@ -36,7 +36,6 @@
 
 		// Default options for this extension.
 		options: {
-			ajax: { dataType: 'text' }
 		},
 
 		// When a tree is initialised, do some modifications appropriate to mediawiki trees
@@ -78,13 +77,12 @@
 					data.result.url = mw.util.wikiScript();
 					data.result.data = { title: url, action: 'render' };
 				}
-
-				console.log(data.result);
-
 			};
 
 			// Parse the data collected from the Ajax response and make it into child nodes
 			opts.postProcess = function(event, data) {
+
+				console.log(data.response);
 
 				// If the returned data starts with a square bracket, treat it as a JSON list of node data
 				if(children.substr(1) == '[') data.result = $.parseJSON(data.response);

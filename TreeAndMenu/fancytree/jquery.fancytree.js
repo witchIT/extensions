@@ -3782,7 +3782,7 @@ $.widget("ui.fancytree",
 			type: "GET",
 			cache: false, // false: Append random '_' argument to the request url to prevent caching.
 //          timeout: 0, // >0: Make sure we get an ajax error if server is unreachable
-			dataType: "text" // Expect json format and pass json object to callbacks.
+			dataType: "json" // Expect json format and pass json object to callbacks.
 		},  //
 		aria: false, // TODO: default to true
 		autoActivate: true,
