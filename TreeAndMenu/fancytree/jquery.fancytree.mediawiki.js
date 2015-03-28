@@ -43,6 +43,7 @@ var _assert = $.ui.fancytree.assert;
 
 		// Default options for this extension.
 		options: {
+			ajax: { dataType: 'text' }
 		},
 
 		// When a tree is initialised, do some modifications appropriate to mediawiki trees
