@@ -66,7 +66,7 @@
 				data.result = {
 					type: 'GET',
 					dataType: 'text',
-					dataFilter: function(data) { console.log(data); }
+					dataFilter: function(data) { return [data]; } // Hack to prevent FancyTree from raising an exception due to it being a string
 				};
 
 				// If the ajax option is an URL, split it into main part and query-string
@@ -86,8 +86,11 @@
 			// Parse the data collected from the Ajax response and make it into child nodes
 			opts.postProcess = function(event, data) {
 
+				// Returned data was put in an array by $.ajax's dataFilter callback above
+				data = data[0];
+
 				// If the returned data starts with a square bracket, treat it as a JSON list of node data
-				if(children.substr(1) == '[') data.result = $.parseJSON(data.response);
+				if(data.response.substr(1) == '[') data.result = $.parseJSON(data.response);
 
 				// Otherwise treat it as HTML and parse the UL section
 				else data.result = $.ui.fancytree.parseHtml($(data.response.match(/^.*?(<ul.+<\/ul>)/i)[1]));
