@@ -66,7 +66,7 @@
 				data.result = {
 					type: 'GET',
 					dataType: 'text',
-					done: function(data) { console.log(data); }
+					dataFilter: function(data) { console.log(data); }
 				};
 
 				// If the ajax option is an URL, split it into main part and query-string
