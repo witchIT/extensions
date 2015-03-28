@@ -66,22 +66,23 @@ var _assert = $.ui.fancytree.assert;
 
 			// Lazy load event to collect child data from the supplied URL via ajax
 			opts.lazyLoad = function(event, data) {
-				/*
-				console.log('ajax: '+data.node.data.ajax);
+				var parts = data.node.data.ajax.split('?');
 				data.result = {
 					type: 'GET',
-					url: data.node.data.ajax,
-					data: data.node.data.ajax.data,
+					url: parts[0],
+					data: parts[1],
 					dataType: 'text',
-					success: function(children) {
-						if(children.substr(1) == '[') data.result = $.parseJSON( children );
-						else {
-							var $ul = $(children.match(/^.*?(<ul.+<\/ul>)/i)[1]);
-							data.result = $.ui.fancytree.parseHtml($ul);
-						}
-					}
 				});
-				*/
+			};
+
+			// Parse the data collected from the Ajax response and make it into child nodes
+			opts.postProcess = function(event, data) {
+
+				// If the returned data starts with a square bracket, treat it as a JSON list of node data
+				if(children.substr(1) == '[') data.result = $.parseJSON(data.response);
+
+				// Otehrwise treat it as HTML and parse the UL section
+				else data.result = $.ui.fancytree.parseHtml($(data.response.match(/^.*?(<ul.+<\/ul>)/i)[1]));
 			};
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
