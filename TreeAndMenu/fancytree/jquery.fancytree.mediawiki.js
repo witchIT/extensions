@@ -50,7 +50,8 @@ var _assert = $.ui.fancytree.assert;
 			var tree = ctx.tree,
 				opts = ctx.options,
 				local = this._local,
-				instOpts = this.options.mediawiki;
+				instOpts = this.options.mediawiki,
+				ret;
 
 			// Make nodes with hrefs back into normal links
 			// - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
@@ -62,17 +63,28 @@ var _assert = $.ui.fancytree.assert;
 			};
 
 			// Execute the parent context to initialise the tree
-			var ret = this._superApply(arguments);
+			ret = this._superApply(arguments);
 
 			// Lazy load event to collect child data from the supplied URL via ajax
 			opts.lazyLoad = function(event, data) {
-				var parts = data.node.data.ajax.split('?');
-				data.result = {
-					type: 'GET',
-					url: parts[0],
-					data: parts[1],
-					dataType: 'text',
-				});
+				var url = data.node.data.ajax;
+
+				// Set result to a jQuery ajax options object
+				data.result = { type: 'GET', dataType: 'text' };
+
+				// If the ajax option is an URL, split it into main part and query-string
+				if(url.match(/^(https?:\/\/|\/)/)) {
+					var parts = url.split('?');
+					data.result.url = parts[0];
+					data.result.data = parts[1];
+				}
+				
+				// Otherwise treat it as an article title to be read with action=render
+				else {
+					data.result.url = mw.util.wikiScript();
+					data.result.data = { title: url, action: 'render' };
+				}
+
 			};
 
 			// Parse the data collected from the Ajax response and make it into child nodes
@@ -81,7 +93,7 @@ var _assert = $.ui.fancytree.assert;
 				// If the returned data starts with a square bracket, treat it as a JSON list of node data
 				if(children.substr(1) == '[') data.result = $.parseJSON(data.response);
 
-				// Otehrwise treat it as HTML and parse the UL section
+				// Otherwise treat it as HTML and parse the UL section
 				else data.result = $.ui.fancytree.parseHtml($(data.response.match(/^.*?(<ul.+<\/ul>)/i)[1]));
 			};
 
