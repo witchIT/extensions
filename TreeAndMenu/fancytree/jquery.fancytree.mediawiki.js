@@ -35,19 +35,27 @@
 		version: "0.0.1",
 
 		// Default options for this extension.
-		// - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
 		options: {
+		},
+
+		// When a tree is initialised, do some modifications appropriate to mediawiki trees
+		treeInit: function(ctx) {
+			var tree = ctx.tree, opts = ctx.options;
+
+			// Execute the parent context to initialise the tree first
+			var ret = this._superApply(arguments);
 
 			// Make nodes with hrefs back into normal links
-			renderNode: function(event, data) {
+			// - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
+			opts.renderNode = function(event, data) {
 				var node = data.node;
 				if(node.data.href) {
 					$('.fancytree-title',node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 				}
-			},
+			};
 
 			// Lazy load event to collect child data from the supplied URL via ajax
-			lazyLoad: function(event, data) {
+			opts.lazyLoad = function(event, data) {
 				var url = data.node.data.ajax;
 
 				// Set result to a jQuery ajax options object
@@ -69,10 +77,10 @@
 					data.result.url = mw.util.wikiScript();
 					data.result.data = { title: url, action: 'render' };
 				}
-			},
+			};
 
 			// Parse the data collected from the Ajax response and make it into child nodes
-			postProcess: function(event, data) {
+			opts.postProcess = function(event, data) {
 
 				// Returned data was put in an array by $.ajax's dataFilter callback above
 				var response = data.response[0];
@@ -85,24 +93,17 @@
 					var m = response.match(/^.*?(<ul[\s\S]+<\/ul>)/i);
 					data.result = m ? $.ui.fancytree.parseHtml($(m[1])) : [];
 				}
-			},
-		},
-
-		// When a tree is initialised, do some modifications appropriate to mediawiki trees
-		treeInit: function(ctx) {
-
-			// Execute the parent context to initialise the tree
-			var ret = this._superApply(arguments);
+			};
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
-			ctx.tree.visit(function(node) {
+			tree.visit(function(node) {
 				if('ajax' in node.data) {
 					node.lazy = true;
 					node.children = null;
 				}
 			});
 
-			// Return the value from parent initialisation
+			// Return the value from tree parent initialisation
 			return ret;
 		},
 
