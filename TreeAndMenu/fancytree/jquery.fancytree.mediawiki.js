@@ -63,7 +63,11 @@
 				var url = data.node.data.ajax;
 
 				// Set result to a jQuery ajax options object
-				data.result = { type: 'GET', dataType: 'text' };
+				data.result = {
+					type: 'GET',
+					dataType: 'text',
+					done: { function(data) { console.log(data); } }
+				};
 
 				// If the ajax option is an URL, split it into main part and query-string
 				if(url.match(/^(https?:\/\/|\/)/)) {
@@ -81,8 +85,6 @@
 
 			// Parse the data collected from the Ajax response and make it into child nodes
 			opts.postProcess = function(event, data) {
-
-				console.log(data.response);
 
 				// If the returned data starts with a square bracket, treat it as a JSON list of node data
 				if(children.substr(1) == '[') data.result = $.parseJSON(data.response);
