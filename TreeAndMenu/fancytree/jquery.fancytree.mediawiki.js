@@ -87,13 +87,13 @@
 			opts.postProcess = function(event, data) {
 
 				// Returned data was put in an array by $.ajax's dataFilter callback above
-				data = data[0];
+				var response = data.response[0];
 
 				// If the returned data starts with a square bracket, treat it as a JSON list of node data
-				if(data.response.substr(1) == '[') data.result = $.parseJSON(data.response);
+				if(response.substr(1) == '[') data.result = $.parseJSON(response);
 
 				// Otherwise treat it as HTML and parse the UL section
-				else data.result = $.ui.fancytree.parseHtml($(data.response.match(/^.*?(<ul.+<\/ul>)/i)[1]));
+				else data.result = $.ui.fancytree.parseHtml($(response.match(/^.*?(<ul.+<\/ul>)/i)[1]));
 			};
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
