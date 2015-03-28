@@ -20,6 +20,7 @@
  */
 var _assert = $.ui.fancytree.assert;
 
+	$.ui.fancytree.options.ajax.dataType = 'text';
 
 	/**
 	 * Open the tree to the node containing the passed title, or current page if none supplied
