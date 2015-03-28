@@ -89,15 +89,14 @@
 				// Returned data was put in an array by $.ajax's dataFilter callback above
 				var response = data.response[0];
 
-				console.log(response);
-
 				// If the returned data starts with a square bracket, treat it as a JSON list of node data
 				if(response.substr(1) == '[') data.result = $.parseJSON(response);
 
 				// Otherwise treat it as HTML and parse the UL section
 				else {
 					var m = response.match(/^.*?(<ul.+<\/ul>)/i);
-					data.result = m ? $.ui.fancytree.parseHtml($(m[1])) : null;
+					console.log(m[1]);
+					data.result = m ? $.ui.fancytree.parseHtml($(m[1])) : [];
 				}
 			};
 
