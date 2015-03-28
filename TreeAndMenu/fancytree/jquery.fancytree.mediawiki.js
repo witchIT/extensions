@@ -94,7 +94,7 @@
 
 				// Otherwise treat it as HTML and parse the UL section
 				else {
-					var m = response.match(/^.*?(<ul.+<\/ul>)/i);
+					var m = response.match(/^.*?(<ul[\s\S]+<\/ul>)/i);
 					console.log(m[1]);
 					data.result = m ? $.ui.fancytree.parseHtml($(m[1])) : [];
 				}
