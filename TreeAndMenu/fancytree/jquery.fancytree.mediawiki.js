@@ -10,17 +10,9 @@
  *
  */
 
-;(function($, window, document, mw, undefined) {
+(function($, window, document, mw, undefined) {
 
-"use strict";
-
-
-/**
- * Private functions and variables
- */
-var _assert = $.ui.fancytree.assert;
-
-	$.ui.fancytree.options.ajax.dataType = 'text';
+	"use strict";
 
 	/**
 	 * Open the tree to the node containing the passed title, or current page if none supplied

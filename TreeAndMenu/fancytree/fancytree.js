@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 			// Get options passed to the parser-function from span
 			var div = $('div.opts', $(this));
-			var opts = {};
+			var opts = { ajax: { dataType: 'text' } };
 			if(div.length > 0) {
 				opts = $.parseJSON(div.text());
 				div.remove();
