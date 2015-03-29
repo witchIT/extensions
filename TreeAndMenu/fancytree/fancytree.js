@@ -11,6 +11,7 @@ $(document).ready(function(){
 		 * Sanitise the structures (remove the nested divs and any paragraphs or comments)
 		 */
 		$('.fancytree p, .suckerfish p').remove();
+		$('.fancytree, .suckerfish').contents().filter(function() { return this.nodeType == 8; }).remove();
 		var inner = $('.fancytree .fancytree, .suckerfish .suckerfish');
 		inner.replaceWith(inner.html());
 
