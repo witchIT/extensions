@@ -14,7 +14,7 @@ $(document).ready(function(){
 		$('.fancytree, .suckerfish').contents().filter(function() { return this.nodeType == 8; }).remove();
 		var inner = $('div.fancytree div.fancytree');
 		inner.replaceWith(inner.html());
-		$('ul.suckerfish ul.suckerfish').removeAttribute('class');
+		//$('ul.suckerfish ul.suckerfish').removeAttribute('class');
 		console.log($('#foo').html());
 
 		/**
