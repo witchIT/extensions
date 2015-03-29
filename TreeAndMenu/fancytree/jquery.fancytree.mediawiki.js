@@ -81,6 +81,7 @@
 
 			// Parse the data collected from the Ajax response and make it into child nodes
 			opts.postProcess = function(event, data) {
+				console.log('dataType2:'+data.dataType);
 
 				// Returned data was put in an array by $.ajax's dataFilter callback above
 				//var response = data.response[0];

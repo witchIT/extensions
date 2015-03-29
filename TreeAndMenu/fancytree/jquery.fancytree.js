@@ -2652,7 +2652,7 @@ $.extend(Fancytree.prototype,
 			source = new $.Deferred();
 			dfd.done(function (data, textStatus, jqXHR) {
 				var errorObj, res;
-				console.log(this.dataType);
+				console.log('dataType1:'+this.dataType);
 				if(this.dataType == "json" && typeof data === "string"){
 					$.error("Ajax request returned a string (did you get the JSON dataType wrong?).");
 				}
