@@ -62,7 +62,7 @@
 				data.result = {
 					type: 'GET',
 					//dataType: 'text',
-					dataFilter: function(data) { return []; } // Hack to prevent FancyTree from raising an exception due to it being a string
+					dataFilter: function(data) { return '[]'; } // Hack to prevent FancyTree from raising an exception due to it being a string
 				};
 
 				// If the ajax option is an URL, split it into main part and query-string
