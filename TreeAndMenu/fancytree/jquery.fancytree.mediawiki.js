@@ -81,20 +81,25 @@
 
 			// Parse the data collected from the Ajax response and make it into child nodes
 			opts.postProcess = function(event, data) {
+				var m;
 				console.log('dataType2:'+data.dataType);
 
 				// Returned data was put in an array by $.ajax's dataFilter callback above
 				//var response = data.response[0];
 				var response = data.response;
 
-				// If the returned data starts with a square bracket, treat it as a JSON list of node data
-				if(response.substr(1) == '[') data.result = $.parseJSON(response);
-
-				// Otherwise treat it as HTML and parse the UL section
-				else {
-					var m = response.match(/^.*?(<ul[\s\S]+<\/ul>)/i);
-					data.result = m ? $.ui.fancytree.parseHtml($(m[1])) : [];
+				// If there's a UL section in it, parse it into nodes
+				if(m = response.match(/^.*?(<ul[\s\S]+<\/ul>)/i)) {
+					data.result = $.ui.fancytree.parseHtml($(m[1]));
 				}
+
+				// Otherwise see if it's as a JSON list of node data (need to extract as MediaWiki adds parser info)
+				else if(m = response.match(/^.*?(\[[\s\S]+\])/i)) {
+					data.result = $.parseJSON(m[1]);
+				}
+
+				// Otherwise just return an empty node set (should raise an error)
+				else data.result = [];
 			};
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
