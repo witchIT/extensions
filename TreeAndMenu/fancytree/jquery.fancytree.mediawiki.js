@@ -61,8 +61,8 @@
 				// Set result to a jQuery ajax options object
 				data.result = {
 					type: 'GET',
-					//dataType: 'text',
-					dataFilter: function(data) { return '[]'; } // Hack to prevent FancyTree from raising an exception due to it being a string
+					dataType: 'text',
+					//dataFilter: function(data) { return '[]'; } // Hack to prevent FancyTree from raising an exception due to it being a string
 				};
 
 				// If the ajax option is an URL, split it into main part and query-string
@@ -82,7 +82,7 @@
 			// Parse the data collected from the Ajax response and make it into child nodes
 			opts.postProcess = function(event, data) {
 				var m;
-return data.result = [];
+
 				// Returned data was put in an array by $.ajax's dataFilter callback above
 				//var response = data.response[0];
 				var response = data.response;
