@@ -61,7 +61,7 @@
 				// Set result to a jQuery ajax options object
 				data.result = {
 					type: 'GET',
-					//dataType: 'text',
+					dataType: 'text',
 					//dataFilter: function(data) { return [data]; } // Hack to prevent FancyTree from raising an exception due to it being a string
 				};
 
