@@ -8,18 +8,18 @@ $(document).ready(function(){
 	window.prepareTAM = function() {
 
 		/**
-		 * Sanitise the structures (remove the nested divs and any paragraphs or comments)
+		 * Prepare trees
 		 */
+
+		// Sanitise the structures (remove the nested divs and any paragraphs or comments)
 		$('.fancytree p, .suckerfish p').remove();
 		$('.fancytree, .suckerfish').contents().filter(function() { return this.nodeType == 8; }).remove();
 		var inner = $('div.fancytree div.fancytree');
+		$('ul#treeData', inner).removeAttr('id').removeAttr('style');
 		inner.replaceWith(inner.html());
-		//$('ul.suckerfish ul.suckerfish').removeAttribute('class');
 		console.log($('#foo').html());
 
-		/**
-		 * Prepare trees
-		 */
+		// Prepare each tree and pass to FancyTree
 		$('.fancytree.todo').each(function() {
 
 			// Remove the todo class from this tree (allows new trees laoded via ajax to be processed too)
@@ -44,6 +44,7 @@ $(document).ready(function(){
 		/**
 		 * Prepare menus (add even and odd classes)
 		 */
+		//$('ul.suckerfish ul.suckerfish').removeAttribute('class');
 		$('.suckerfish.todo').each(function() {
 			$(this).removeClass('todo');
 			$('li', this).each(function() {
