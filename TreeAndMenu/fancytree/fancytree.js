@@ -12,8 +12,10 @@ $(document).ready(function(){
 		 */
 		$('.fancytree p, .suckerfish p').remove();
 		$('.fancytree, .suckerfish').contents().filter(function() { return this.nodeType == 8; }).remove();
-		var inner = $('.fancytree .fancytree, .suckerfish .suckerfish');
+		var inner = $('div.fancytree div.fancytree');
 		inner.replaceWith(inner.html());
+		$('ul.suckerfish ul.suckerfish').removeAttribute('class');
+		console.log($('#foo').html());
 
 		/**
 		 * Prepare trees
