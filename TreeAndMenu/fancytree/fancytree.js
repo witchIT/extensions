@@ -1,10 +1,10 @@
 /**
  * This code pre-processes trees and menus to integrate the third-party code into mediawiki without changing it
  */
-
 $(document).ready(function(){
 
 	// This can be called again later and any unprepared trees and menus will get prepared
+	// - this was done so that trees and menus can work when received via Ajax such as in a live preview
 	window.prepareTAM = function() {
 
 		/**

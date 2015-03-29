@@ -9,7 +9,6 @@
  * Released under the GNU General Public Licence 2.0 or later
  *
  */
-
 (function($, window, document, mw, undefined) {
 
 	"use strict";
@@ -29,14 +28,14 @@
 		});
 	};
 
+	/**
+	 * Register the extension and set the lazy-loading up in a MediaWiki-friendly way
+	 */
 	$.ui.fancytree.registerExtension({
 
 		name: "mediawiki",
-		version: "0.0.1",
-
-		// Default options for this extension.
-		options: {
-		},
+		version: "1.0.0",
+		options: {},
 
 		// When a tree is initialised, do some modifications appropriate to mediawiki trees
 		treeInit: function(ctx) {
@@ -62,7 +61,6 @@
 				data.result = {
 					type: 'GET',
 					dataType: 'text',
-					//dataFilter: function(data) { return '[]'; } // Hack to prevent FancyTree from raising an exception due to it being a string
 				};
 
 				// If the ajax option is an URL, split it into main part and query-string
@@ -81,21 +79,13 @@
 
 			// Parse the data collected from the Ajax response and make it into child nodes
 			opts.postProcess = function(event, data) {
-				var m;
-
-				// Returned data was put in an array by $.ajax's dataFilter callback above
-				//var response = data.response[0];
-				var response = data.response;
+				var response = data.response, m;
 
 				// If there's a UL section in it, parse it into nodes
-				if(m = response.match(/^.*?(<ul[\s\S]+<\/ul>)/i)) {
-					data.result = $.ui.fancytree.parseHtml($(m[1]));
-				}
+				if(m = response.match(/^.*?(<ul[\s\S]+<\/ul>)/i)) data.result = $.ui.fancytree.parseHtml($(m[1]));
 
 				// Otherwise see if it's as a JSON list of node data (need to extract as MediaWiki adds parser info)
-				else if(m = response.match(/^.*?(\[[\s\S]+\])/i)) {
-					data.result = $.parseJSON(m[1]);
-				}
+				else if(m = response.match(/^.*?(\[[\s\S]+\])/i)) data.result = $.parseJSON(m[1]);
 
 				// Otherwise just return an empty node set (should raise an error)
 				else data.result = [];
@@ -112,7 +102,6 @@
 			// Return the value from tree parent initialisation
 			return ret;
 		},
-
 	});
 
 }(jQuery, window, document, mw));
