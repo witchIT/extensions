@@ -65,14 +65,6 @@ class TreeAndMenu {
 	private function expandTreeAndMenu( $type, $args ) {
 		global $wgJsMimeType;
 
-		// Unique id for each tree and menu
-		static $uid = 0;
-		$uid++;
-
-		// Keep a record of recursive tree depth
-		static $depth = 0;
-		$depth++;
-
 		// First arg is parser, last is the structure
 		$parser = array_shift( $args );
 		$bullets = array_pop( $args );
@@ -91,45 +83,40 @@ class TreeAndMenu {
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
-print "$depth\n<br>";
-		// Just keep it as a ul structure if it's within another tree
-		if( $depth == 1 ) {
 
-			// Determine the class and id attributes
-			$class = $type == TREEANDMENU_TREE ? 'fancytree' : 'suckerfish';
-			if( array_key_exists( 'class', $atts ) ) $class .= ' ' . $atts['class'];
-			$id = array_key_exists( 'id', $atts ) ? ' id="' . $atts['id'] . '"' : '';
+		// Determine the class and id attributes
+		$class = $type == TREEANDMENU_TREE ? 'fancytree' : 'suckerfish';
+		if( array_key_exists( 'class', $atts ) ) $class .= ' ' . $atts['class'];
+		$id = array_key_exists( 'id', $atts ) ? ' id="' . $atts['id'] . '"' : '';
 
-			// If its a tree, we need to add some code to the ul structure
-			if( $type == TREEANDMENU_TREE ) {
+		// If its a tree, we need to add some code to the ul structure
+		if( $type == TREEANDMENU_TREE ) {
 
-				// Mark the structure as tree data, wrap in an unclosable top level if root arg passed
-				$tree = '<ul id="treeData" style="display:none">';
-				if( array_key_exists( 'root', $atts ) ) {
-					$html = $tree . '<li>' . $atts['root'] . $html . '</li></ul>';
-					$opts['minExpandLevel'] = 2;
-				} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
+			// Mark the structure as tree data, wrap in an unclosable top level if root arg passed
+			$tree = '<ul id="treeData" style="display:none">';
+			if( array_key_exists( 'root', $atts ) ) {
+				$html = $tree . '<li>' . $atts['root'] . $html . '</li></ul>';
+				$opts['minExpandLevel'] = 2;
+			} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
-				// Replace any json: markup in nodes into the li
-				$html = preg_replace( '|<li(>\s*\{.*?\"class\":\s*"(.+?)")|', "<li class='$2'$1", $html );
-				$html = preg_replace( '|<(li.*?)(>\s*\{.*?\"id\":\s*"(.+?)")|', "<$1 id='$3'$2", $html );
-				$html = preg_replace( '|<(li.*?)>\s*(\{.+\})\s*|', "<$1 data-json='$2'>", $html );
+			// Replace any json: markup in nodes into the li
+			$html = preg_replace( '|<li(>\s*\{.*?\"class\":\s*"(.+?)")|', "<li class='$2'$1", $html );
+			$html = preg_replace( '|<(li.*?)(>\s*\{.*?\"id\":\s*"(.+?)")|', "<$1 id='$3'$2", $html );
+			$html = preg_replace( '|<(li.*?)>\s*(\{.+\})\s*|', "<$1 data-json='$2'>", $html );
 
-				// Incorporate options as json encoded data in a div
-				$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
+			// Incorporate options as json encoded data in a div
+			$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
 
-				// Assemble it all into a single div
-				$html = "<div class=\"$class todo\"$id>$opts$html</div>";
-			}
-
-			// If its a menu, just add the class and id attributes to the ul
-			else $html = preg_replace( '|<ul>|', "<ul class=\"$class todo\"$id>", $html, 1 );
-
-			// Append script to prepare this tree or menu if page is already loaded
-			$html .= "<script type=\"$wgJsMimeType\">if('prepareTAM' in window) window.prepareTAM();</script>";
+			// Assemble it all into a single div
+			$html = "<div class=\"$class todo\"$id>$opts$html</div>";
 		}
 
-		$depth--;
+		// If its a menu, just add the class and id attributes to the ul
+		else $html = preg_replace( '|<ul>|', "<ul class=\"$class todo\"$id>", $html, 1 );
+
+		// Append script to prepare this tree or menu if page is already loaded
+		$html .= "<script type=\"$wgJsMimeType\">if('prepareTAM' in window) window.prepareTAM();</script>";
+
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 }

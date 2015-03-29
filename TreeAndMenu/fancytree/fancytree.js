@@ -8,6 +8,13 @@ $(document).ready(function(){
 	window.prepareTAM = function() {
 
 		/**
+		 * Sanitise the structures (remove the nested divs and any paragraphs or comments)
+		 */
+		$('.fancytree p, .suckerfish p').remove();
+		var inner = $('.fancytree .fancytree, .suckerfish .suckerfish');
+		inner.replaceWith(inner.html());
+
+		/**
 		 * Prepare trees
 		 */
 		$('.fancytree.todo').each(function() {
