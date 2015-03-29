@@ -62,7 +62,7 @@
 				data.result = {
 					type: 'GET',
 					dataType: 'text',
-					dataFilter: function(data) { return [data]; } // Hack to prevent FancyTree from raising an exception due to it being a string
+					//dataFilter: function(data) { return [data]; } // Hack to prevent FancyTree from raising an exception due to it being a string
 				};
 
 				// If the ajax option is an URL, split it into main part and query-string
@@ -83,7 +83,8 @@
 			opts.postProcess = function(event, data) {
 
 				// Returned data was put in an array by $.ajax's dataFilter callback above
-				var response = data.response[0];
+				//var response = data.response[0];
+				var response = data.response;
 
 				// If the returned data starts with a square bracket, treat it as a JSON list of node data
 				if(response.substr(1) == '[') data.result = $.parseJSON(response);
