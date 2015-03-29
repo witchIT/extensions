@@ -91,7 +91,7 @@ class TreeAndMenu {
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
-
+print "$depth\n<br>";
 		// Just keep it as a ul structure if it's within another tree
 		if( $depth == 1 ) {
 
