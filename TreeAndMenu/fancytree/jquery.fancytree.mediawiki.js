@@ -41,9 +41,6 @@
 		treeInit: function(ctx) {
 			var tree = ctx.tree, opts = ctx.options;
 
-			// Execute the parent context to initialise the tree first
-			var ret = this._superApply(arguments);
-
 			// Make nodes with hrefs back into normal links
 			// - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
 			opts.renderNode = function(event, data) {
@@ -90,6 +87,9 @@
 				// Otherwise just return an empty node set (should raise an error)
 				else data.result = [];
 			};
+
+			// Execute the parent context to initialise the tree first
+			var ret = this._superApply(arguments);
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
 			tree.visit(function(node) {
