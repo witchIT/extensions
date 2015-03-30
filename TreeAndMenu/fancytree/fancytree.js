@@ -6,20 +6,11 @@ $(document).ready(function(){
 	// This can be called again later and any unprepared trees and menus will get prepared
 	// - this was done so that trees and menus can work when received via Ajax such as in a live preview
 	window.prepareTAM = function() {
+		var inner;
 
 		/**
 		 * Prepare trees
 		 */
-
-		// Sanitise the structures (remove the nested divs and any paragraphs or comments)
-		$('.fancytree p, .suckerfish p').remove();
-		$('.fancytree, .suckerfish').contents().filter(function() { return this.nodeType == 8; }).remove();
-		var inner = $('div.fancytree div.fancytree');
-		$('ul#treeData', inner).removeAttr('id').removeAttr('style');
-		inner.replaceWith(inner.html());
-		console.log($('#foo').html());
-
-		// Prepare each tree and pass to FancyTree
 		$('.fancytree.todo').each(function() {
 
 			// Remove the todo class from this tree (allows new trees laoded via ajax to be processed too)
@@ -44,7 +35,6 @@ $(document).ready(function(){
 		/**
 		 * Prepare menus (add even and odd classes)
 		 */
-		//$('ul.suckerfish ul.suckerfish').removeAttribute('class');
 		$('.suckerfish.todo').each(function() {
 			$(this).removeClass('todo');
 			$('li', this).each(function() {
