@@ -88,7 +88,7 @@
 				else data.result = [];
 			};
 
-			// Execute the parent context to initialise the tree first
+			// Execute the parent render the tree (this must be after adding renderNode hook, but before tree.visit is called
 			var ret = this._superApply(arguments);
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
