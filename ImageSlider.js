@@ -8,7 +8,7 @@ $(document).ready(function() {
 	/**
 	 * Initialise all image-slider elements in the page and start them sliding
 	 */
-	$('div.image-slider').each(function() {
+	$('div.image-slider').each(function() {		
 		var div = $(this), w, h, src, thumb, img, prev, next;
 
 		// Initialise data structure in this slider element
@@ -21,43 +21,47 @@ $(document).ready(function() {
 			height: 0,
 		});
 
-		// If the slider has class "thumbs" then add another div that will have the thumbs in it
-		if(div.hasClass('thumbs')) thumb = $('<div />').addClass('thumbs');
+		$('img:first',div).load(function() {
 
-		// Store the image urls found in this slider div in its data and preload them, and add thumbs if set
-		$('img', div).css('display','none').each(function() {
-			src = $(this).attr('src');
-			img = $('<img />').attr('src', src);
-			div.data('images').push(src);
-			div.data('width', w = img.width());
-			div.data('height', h = img.height());
-			if(thumb) {
-				img.width(thumbWidth);
-				img.height(h*thumbWidth/w);
-				img.css({float: 'left', cursor: 'pointer'});
-				img.data('index',div.data('images').length - 1);
-				img.click(function() {
-					slide($('div.image-slider').has(this), 1, $(this).data('index'));
-				});
-				thumb.append(img);
-			}
+			div.data('width', w = $(this).width());
+			div.data('height', h = $(this).height());
+console.log(w,h);
+			// If the slider has class "thumbs" then add another div that will have the thumbs in it
+			if(div.hasClass('thumbs')) thumb = $('<div />').addClass('thumbs');
+
+			// Store the image urls found in this slider div in its data and preload them, and add thumbs if set
+			$('img', div).css('display','none').each(function() {
+				src = $(this).attr('src');
+				img = $('<img />').attr('src', src);
+				div.data('images').push(src);
+				if(thumb) {
+					img.width(thumbWidth);
+					img.height(h*thumbWidth/w);
+					img.css({float: 'left', cursor: 'pointer'});
+					img.data('index',div.data('images').length - 1);
+					img.click(function() {
+						slide($('div.image-slider').has(this), 1, $(this).data('index'));
+					});
+					thumb.append(img);
+				}
+			});
+
+			// Restructure the content of this sliders div into layered divs with prev/next buttons
+			prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
+			next = '<a class="is-next" href="javascript:">next &gt;</a>';
+			div.html( '<div class="is-img1"><div class="is-img2">' + prev + next + '</div></div>' );
+			if(thumb) div.append(thumb);
+			$('.is-prev', div).click(function() { slide($('div.image-slider').has(this), -1); });
+			$('.is-next', div).click(function() { slide($('div.image-slider').has(this), 1); });
+
+			// Set the container size to the image size and other css styles
+			$('div',div).css({ padding: 0, width: w, height: h });
+			$('.is-prev',div).css({ float: 'left', 'margin-top': h/2 });
+			$('.is-next',div).css({ float: 'right', 'margin-top': h/2 });
+
+			// Start the sliding process
+			slide(div, 1);
 		});
-
-		// Restructure the content of this sliders div into layered divs with prev/next buttons
-		prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
-		next = '<a class="is-next" href="javascript:">next &gt;</a>';
-		div.html( '<div class="is-img1"><div class="is-img2">' + prev + next + '</div></div>' );
-		if(thumb) div.append(thumb);
-		$('.is-prev', div).click(function() { slide($('div.image-slider').has(this), -1); });
-		$('.is-next', div).click(function() { slide($('div.image-slider').has(this), 1); });
-
-		// Set the container size to the image size and other css styles
-		$('div',div).css({ padding: 0, width: w, height: h });
-		$('.is-prev',div).css({ float: 'left', 'margin-top': h/2 });
-		$('.is-next',div).css({ float: 'right', 'margin-top': h/2 });
-
-		// Start the sliding process
-		slide(div, 1);
 	});
 
 	/**
