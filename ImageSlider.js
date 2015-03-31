@@ -6,7 +6,7 @@ $(document).ready(function() {
 	var thumbWidth = 100;
 
 	/**
-	 * Initialise all image-slider elements i the page and start them sliding
+	 * Initialise all image-slider elements in the page and start them sliding
 	 */
 	$('div.image-slider').each(function() {
 		var div = $(this), w, h, src, thumb, img, prev, next;
@@ -29,8 +29,8 @@ $(document).ready(function() {
 			src = $(this).attr('src');
 			img = $('<img />').attr('src', src);
 			div.data('images').push(src);
-			div.data('width', w = $(this).width());
-			div.data('height', h = $(this).height());
+			div.data('width', w = img.width());
+			div.data('height', h = img.height());
 			if(thumb) {
 				img.width(thumbWidth);
 				img.height(h*thumbWidth/w);
