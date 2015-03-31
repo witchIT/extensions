@@ -15,20 +15,19 @@ $(document).ready( function() {
 			var src = $(this).attr('src');
 			var image = $('<img />').attr('src', src);
 			div.data('images').push(src);
-			div.data('w', $(this).attr('width'));
-			div.data('h', $(this).attr('height'));
+			div.data('w', $(this).width());
+			div.data('h', $(this).height());
 		});
 
 		// Restructure the content of this sliders div into a table with prev/next buttons
 		var prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
 		var next = '<a class="is-next" href="javascript:">next &gt;</a>';
-		div.html( '<table><tr><th><table><tr><td>' + prev + next + '</td></tr></table></th></tr></table>' );
+		div.html( '<div class="outer"><div class="inner">' + prev + next + '</div></div>' );
 		$('.is-prev', div).click(function() { slide($('div.image-slider').has(this), -1 ); });
 		$('.is-next', div).click(function() { slide($('div.image-slider').has(this), 1 ); });
 
 		// Set the cell size to the image size and other css styles
-		$('table',div).css({ background: 'transparent', width: div.data('w'), height: div.data('h'), 'border-collapse': 'collapse' });
-		$('td,th',div).css({ padding: 0, 'vertical-align': 'middle' });
+		$('div',div).css({ padding: 0, width: div.data('w'), height: div.data('h'), 'vertical-align': 'middle' });
 		$('.is-prev',div).css({ float: 'left' });
 		$('.is-next',div).css({ float: 'right' });
 
@@ -62,19 +61,12 @@ $(document).ready( function() {
 				var offset = -(div.data('dir') * fx.pos * div.data('w'));
 
 				// Set the URL and position for the current image
-				$('th', div).css('background', 'transparent url("'
-					+ div.data('images')[image]
-					+ '") no-repeat '
-					+ (offset + div.data('w') * dir)
-					+ 'px center'
-				);
+				$('.outer', div).css( 'background', 'transparent url("' + div.data('images')[image] 
+					+ '") no-repeat ' + (offset + div.data('w') * dir) + 'px center' );
 
 				// Set the URL and position for the next image
-				$('td', div).css('background', 'transparent url("'
-					+ div.data('images')[next] + '") no-repeat '
-					+ offset
-					+ 'px center'
-				);
+				$('.inner', div).css( 'background', 'transparent url("'
+					+ div.data('images')[next] + '") no-repeat ' + offset + 'px center' );
 			},
 			complete: function(now, fx) {
 				$(this).data('dir', 0); // mark current slider as no longer animating
