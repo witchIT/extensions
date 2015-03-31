@@ -19,17 +19,17 @@ $(document).ready( function() {
 			div.data('h', $(this).height());
 		});
 
-		// Restructure the content of this sliders div into a table with prev/next buttons
+		// Restructure the content of this sliders div into layered divs with prev/next buttons
 		var prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
 		var next = '<a class="is-next" href="javascript:">next &gt;</a>';
-		div.html( '<div class="outer"><div class="inner">' + prev + next + '</div></div>' );
+		div.html( '<div class="is-img1"><div class="is-img2">' + prev + next + '</div></div>' );
 		$('.is-prev', div).click(function() { slide($('div.image-slider').has(this), -1 ); });
 		$('.is-next', div).click(function() { slide($('div.image-slider').has(this), 1 ); });
 
 		// Set the cell size to the image size and other css styles
-		$('div',div).css({ padding: 0, width: div.data('w'), height: div.data('h'), 'vertical-align': 'middle' });
-		$('.is-prev',div).css({ float: 'left' });
-		$('.is-next',div).css({ float: 'right' });
+		$('div',div).css({ padding: 0, width: div.data('w'), height: div.data('h') });
+		$('.is-prev',div).css({ float: 'left', 'margin-top': div.data('h')/2 });
+		$('.is-next',div).css({ float: 'right', 'margin-top': div.data('h')/2 });
 
 		// Initialise the table's images to first image with zero offset
 		slide(div, 0);
@@ -61,11 +61,11 @@ $(document).ready( function() {
 				var offset = -(div.data('dir') * fx.pos * div.data('w'));
 
 				// Set the URL and position for the current image
-				$('.outer', div).css( 'background', 'transparent url("' + div.data('images')[image] 
+				$('.is-img1', div).css( 'background', 'transparent url("' + div.data('images')[image] 
 					+ '") no-repeat ' + (offset + div.data('w') * dir) + 'px center' );
 
 				// Set the URL and position for the next image
-				$('.inner', div).css( 'background', 'transparent url("'
+				$('.is-img2', div).css( 'background', 'transparent url("'
 					+ div.data('images')[next] + '") no-repeat ' + offset + 'px center' );
 			},
 			complete: function(now, fx) {
