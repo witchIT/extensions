@@ -21,11 +21,13 @@ $(document).ready(function() {
 			height: 0,
 		});
 
+		// Only continue initualising this slider after the first image has loaded so we can get the dimensions
 		$('img:first',div).load(function() {
 
+			// Store the image dimentions in our slider div element's data
 			div.data('width', w = $(this).width());
 			div.data('height', h = $(this).height());
-console.log(w,h);
+
 			// If the slider has class "thumbs" then add another div that will have the thumbs in it
 			if(div.hasClass('thumbs')) thumb = $('<div />').addClass('thumbs');
 
