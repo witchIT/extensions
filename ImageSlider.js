@@ -23,8 +23,8 @@ $(document).ready( function() {
 		var prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
 		var next = '<a class="is-next" href="javascript:">next &gt;</a>';
 		div.html( '<table><tr><th><table><tr><td>' + prev + next + '</td></tr></table></th></tr></table>' );
-		$('.is-prev', div).click(function() { slide($(this), -1 ); });
-		$('.is-next', div).click(function() { slide($(this), 1 ); });
+		$('.is-prev', div).click(function() { slide($('div.image-slider').has(this), -1 ); });
+		$('.is-next', div).click(function() { slide($('div.image-slider').has(this), 1 ); });
 
 		// Set the cell size to the image size and other css styles
 		$('table',div).css({ background: 'transparent', width: div.data('w'), height: div.data('h'), 'border-collapse': 'collapse' });
@@ -41,11 +41,11 @@ $(document).ready( function() {
 		// Set the new image and animate to it (bail if already animating)
 		if(div.data('dir')) return;
 		div.data('image', div.data('image') + dir);
-		div.data('dir') = dir;
+		div.data('dir', dir);
 
 		// Show next image on regular interval
 		if(div.data('timer')) clearTimeout(div.data('timer'));
-		div.data('timer') = setTimeout(function() { slide(div,1); }, delay * 1000);
+		div.data('timer', setTimeout(function() { slide(div,1); }, delay * 1000));
 
 		// Play an animation from the current image to the next
 		div.animate({ t: 1 }, {
@@ -65,7 +65,7 @@ $(document).ready( function() {
 				$('th', div).css('background', 'transparent url("'
 					+ div.data('images')[image]
 					+ '") no-repeat '
-					+ (offset + data.w * dir)
+					+ (offset + div.data('w') * dir)
 					+ 'px center'
 				);
 
