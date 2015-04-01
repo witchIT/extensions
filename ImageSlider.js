@@ -2,51 +2,54 @@ $(document).ready(function() {
 
 	"use strict";
 
-	var delay = 2;
-	var thumbWidth = 100;
-
 	/**
 	 * Initialise all image-slider elements in the page and start them sliding
 	 */
 	$('div.image-slider').each(function() {		
-		var div = $(this), w, h, src, thumb, img, prev, next;
+		var div = $(this), w, h, fImg, img, thumb, prev, next;
 
 		// Initialise data structure in this slider element
 		div.data({
-			image: 1,
-			last: 0,
-			dir: 0,
-			images: [],
-			width: 0,
-			height: 0,
+			images: [],  // array of all the images in this slider (preloaded)
+			image:  1,   // the currently displaying image in this slider
+			last:   0,   // the previous image transitioning out
+			dir:    0,   // the direction of the current transition (-1 or +1)
+			width:  0,   // width of this sliders images
+			height: 0,   // height of this sliders images
 		});
 
-		// Only continue initualising this slider after the first image has loaded so we can get the dimensions
-		$('img:first',div).load(function() {
+		// Set config defaults if not supplied in html data
+		if(!div.data('delay')) div.data('delay', 5);
+		if(!div.data('direction')) div.data('direction', 1);
+		if(!div.data('thumbs')) div.data('thumbs', 0);
+
+		// Preload the images and store them in the slider element's data
+		$('img', div).css('display','none').each(fyunction() {
+			div.data('images').push($('<img />').attr('src', $(this).attr('src')));
+		});
+
+		// Only continue initialising this slider after the first image has loaded so we can get the dimensions
+		div.data('images')[0].load(function() {
 
 			// Store the image dimentions in our slider div element's data
 			div.data('width', w = $(this).width());
 			div.data('height', h = $(this).height());
 
-			// If the slider has class "thumbs" then add another div that will have the thumbs in it
-			if(div.hasClass('thumbs')) thumb = $('<div />').addClass('thumbs');
-
-			// Store the image urls found in this slider div in its data and preload them, and add thumbs if set
-			$('img', div).css('display','none').each(function() {
-				src = $(this).attr('src');
-				img = $('<img />').attr('src', src);
-				div.data('images').push(src);
-				if(thumb) {
-					img.width(thumbWidth);
-					img.height(h*thumbWidth/w);
+			// If the slider has class "thumbs" then add another div with clickable thumbs in it
+			if(div.data('thumbs') > 0) {
+				thumb = $('<div />').addClass('thumbs').css('height','auto');
+				$('img', div).each(function() {
+					img = $('<img />').attr('src', $(this).attr('src'));
+					img.width(div.data('thumbs'));
+					img.height(h*div.data('thumbs')/w);
 					img.css({float: 'left', cursor: 'pointer'});
 					img.data('index',div.data('images').length - 1);
 					img.click(function() {
 						slide($('div.image-slider').has(this), 1, $(this).data('index'));
 					});
 					thumb.append(img);
-				}
-			});
+				});
+			}
 
 			// Restructure the content of this sliders div into layered divs with prev/next buttons
 			prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
@@ -58,11 +61,11 @@ $(document).ready(function() {
 
 			// Set the container size to the image size and other css styles
 			$('div',div).css({ padding: 0, width: w, height: h });
-			$('.is-prev',div).css({ float: 'left', 'margin-top': h/2 });
-			$('.is-next',div).css({ float: 'right', 'margin-top': h/2 });
+			$('.is-prev',div).css({ float: 'left', 'margin-top': h / 2 });
+			$('.is-next',div).css({ float: 'right', 'margin-top': h / 2 });
 
 			// Start the sliding process
-			slide(div, 1);
+			slide(div, div.data('direction'));
 		});
 	});
 
@@ -72,7 +75,8 @@ $(document).ready(function() {
 	 * - n allows the new image to be specified rather than just next/prev (it will scroll upward)
 	 */
 	function slide(div, dir, n) {
-		var l = div.data('images').length,
+		var nx = n === undefined,
+		    l = div.data('images').length,
 			w = div.data('width'),
 			h = div.data('height'),
 			img1, img2;
@@ -82,13 +86,13 @@ $(document).ready(function() {
 
 		// Set the new image either to the next according to the passed direction, or to n if passed
 		div.data('last', div.data('image'));
-		div.data('image', n === undefined ? (div.data('image') + dir + l) % l : n);
-		img1 = div.data('images')[div.data('image')];
-		img2 = div.data('images')[div.data('last')];
+		div.data('image', nx ? (div.data('image') + dir + l) % l : n);
+		img1 = div.data('images')[div.data('image')].attr('src');
+		img2 = div.data('images')[div.data('last')].attr('src');
 
 		// Show next image on regular interval
 		if(div.data('timer')) clearTimeout(div.data('timer'));
-		div.data('timer', setTimeout(function() { slide(div, 1); }, delay * 1000));
+		div.data('timer', setTimeout(function() { slide(div, 1); }, div.data('delay') * 1000));
 
 		// Play an animation from the current image to the next
 		div.animate({ t: 1 }, {
@@ -97,13 +101,13 @@ $(document).ready(function() {
 				var div = $(fx.elem), offset, x1, y1, x2, y2;
 
 				// Set an offset in pixels for the transition between the current and last image
-				offset = -div.data('dir') * fx.pos * (n === undefined ? w : h);
+				offset = -div.data('dir') * fx.pos * (nx ? w : h);
 
 				// Calculate the positions of the current and last image (images specified with n scroll upward)
-				x1 = n === undefined ? offset + w * dir : 0;
-				x2 = n === undefined ? offset : 0;
-				y1 = n === undefined ? 0 : offset + h * dir;
-				y2 = n === undefined ? 0 : offset;
+				x1 = nx ? offset + w * dir : 0;
+				x2 = nx ? offset : 0;
+				y1 = nx ? 0 : offset + h * dir;
+				y2 = nx ? 0 : offset;
 
 				// Set the positions of the images with CSS
 				$('.is-img1', div).css( 'background', 'url("' + img1 + '") no-repeat ' + x1 + 'px ' + y1 + 'px' );
