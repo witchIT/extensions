@@ -6,7 +6,7 @@ $(document).ready(function() {
 	 * Initialise all image-slider elements in the page and start them sliding
 	 */
 	$('div.image-slider').each(function() {		
-		var div = $(this), w, h, fImg, img, thumb, prev, next;
+		var div = $(this), i, j, w, h, img, thumb, prev, next;
 
 		// Initialise data structure in this slider element
 		div.data({
@@ -21,12 +21,16 @@ $(document).ready(function() {
 		// Set config defaults if not supplied in html data
 		if(!div.data('delay')) div.data('delay', 5);
 		if(!div.data('direction')) div.data('direction', 1);
+		if(!div.data('duration')) div.data('duration', 1000);
 		if(!div.data('thumbs')) div.data('thumbs', 0);
 
-		// Preload the images and store them in the slider element's data
-		$('img', div).css('display','none').each(fyunction() {
-			div.data('images').push($('<img />').attr('src', $(this).attr('src')));
-		});
+		// Store the images in the slider element's data
+		j = $('img', div).get();
+		for( i = 0; i < j.length; i++ ) {
+			img = $(j[i]);
+			img.css('display','none');
+			div.data('images').push(img);
+		}
 
 		// Only continue initialising this slider after the first image has loaded so we can get the dimensions
 		div.data('images')[0].load(function() {
@@ -35,20 +39,20 @@ $(document).ready(function() {
 			div.data('width', w = $(this).width());
 			div.data('height', h = $(this).height());
 
-			// If the slider has class "thumbs" then add another div with clickable thumbs in it
+			// If the slider has thumbs set then add another div with clickable thumbs in it (using the original images for the thumbs)
 			if(div.data('thumbs') > 0) {
-				thumb = $('<div />').addClass('thumbs').css('height','auto');
-				$('img', div).each(function() {
-					img = $('<img />').attr('src', $(this).attr('src'));
+				thumb = $('<div />').addClass('thumbs').css({height: 'auto'});
+				for( i = 0; i < div.data('images').length; i++ ) {
+					img = div.data('images')[i];
 					img.width(div.data('thumbs'));
 					img.height(h*div.data('thumbs')/w);
-					img.css({float: 'left', cursor: 'pointer'});
-					img.data('index',div.data('images').length - 1);
+					img.css({float: 'left', cursor: 'pointer', display: ''});
+					img.data('index', i);
 					img.click(function() {
 						slide($('div.image-slider').has(this), 1, $(this).data('index'));
 					});
 					thumb.append(img);
-				});
+				}
 			}
 
 			// Restructure the content of this sliders div into layered divs with prev/next buttons
@@ -92,11 +96,11 @@ $(document).ready(function() {
 
 		// Show next image on regular interval
 		if(div.data('timer')) clearTimeout(div.data('timer'));
-		div.data('timer', setTimeout(function() { slide(div, 1); }, div.data('delay') * 1000));
+		div.data('timer', setTimeout(function() { slide(div, div.data('direction')); }, div.data('delay') * 1000));
 
 		// Play an animation from the current image to the next
 		div.animate({ t: 1 }, {
-			duration: 1000,
+			duration: div.data('duration'),
 			step: function(now, fx) {
 				var div = $(fx.elem), offset, x1, y1, x2, y2;
 
