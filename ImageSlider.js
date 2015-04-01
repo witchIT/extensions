@@ -16,7 +16,7 @@ $(document).ready(function() {
 	/**
 	 * Initialise all image-slider elements in the page and start them sliding
 	 */
-	$('div.image-slider').each(function() {		
+	$('div.image-slider').each(function() {
 		var div = $(this), i, j, w, h, img, thumb, prev, next;
 
 		// Initialise data structure in this slider element
