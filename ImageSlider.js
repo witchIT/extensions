@@ -112,7 +112,7 @@ $(document).ready(function() {
 		if(div.data('timer')) clearTimeout(div.data('timer'));
 		div.data('timer', setTimeout(function() { slide(div, div.data('direction')); }, div.data('delay') * 1000));
 
-		// Play an animation from the current image to the next
+		// Animation the last image out and the new current image in
 		div.animate({ t: 1 }, {
 			duration: div.data('duration'),
 			step: function(now, fx) {
