@@ -95,9 +95,9 @@ $(document).ready(function() {
 	function slide(div, dir, n) {
 		var nx = n === undefined,
 		    l = div.data('images').length,
-			w = div.data('width'),
-			h = div.data('height'),
-			url1, url2;
+		    w = div.data('width'),
+		    h = div.data('height'),
+		    url1, url2;
 
 		// Bail if already animating, else set animation to start
 		if(div.data('dir')) return; else div.data('dir', dir);
