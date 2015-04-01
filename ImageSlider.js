@@ -41,7 +41,7 @@ $(document).ready(function() {
 
 			// If the slider has thumbs set then add another div with clickable thumbs in it (using the original images for the thumbs)
 			if(div.data('thumbs') > 0) {
-				thumb = $('<div />').addClass('thumbs').css({height: 'auto'});
+				thumb = $('<div class="thumbs" />');
 				for( i = 0; i < div.data('images').length; i++ ) {
 					img = div.data('images')[i];
 					img.width(div.data('thumbs'));
@@ -59,7 +59,10 @@ $(document).ready(function() {
 			prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
 			next = '<a class="is-next" href="javascript:">next &gt;</a>';
 			div.html( '<div class="is-img1"><div class="is-img2">' + prev + next + '</div></div>' );
-			if(thumb) div.append(thumb);
+			if(thumb) {
+				div.append(thumb);
+				$('thumbs', div).css({height: 'auto'});
+			}
 			$('.is-prev', div).click(function() { slide($('div.image-slider').has(this), -1); });
 			$('.is-next', div).click(function() { slide($('div.image-slider').has(this), 1); });
 
