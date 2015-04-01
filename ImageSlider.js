@@ -1,4 +1,4 @@
-/*!
+/**
  * ImageSlider.js
  *
  * Converts div elements containing sequences of images into a sliding image display
