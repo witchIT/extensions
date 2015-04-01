@@ -50,7 +50,7 @@ $(document).ready(function() {
 			div.data('width', w = $(this).width());
 			div.data('height', h = $(this).height());
 
-			// If the slider has thumbs set then add another div with clickable thumbs in it (using the original images for the thumbs)
+			// If the slider has thumbs set then create another div with clickable thumbs in it (using the original images for the thumbs)
 			if(div.data('thumbs') > 0) {
 				thumb = $('<div class="thumbs" />');
 				for( i = 0; i < div.data('images').length; i++ ) {
@@ -66,19 +66,16 @@ $(document).ready(function() {
 				}
 			}
 
-			// Restructure the content of this sliders div into layered divs with prev/next buttons
+			// Restructure the content of this sliders div into layered divs with prev/next buttons and thumbs below
 			prev = '<a class="is-prev" href="javascript:">&lt; prev</a>';
 			next = '<a class="is-next" href="javascript:">next &gt;</a>';
 			div.html( '<div class="is-img1"><div class="is-img2">' + prev + next + '</div></div>' );
-			if(thumb) {
-				div.append(thumb);
-				$('thumbs', div).css({height: 'auto'});
-			}
+			if(thumb) div.append(thumb);
 			$('.is-prev', div).click(function() { slide($('div.image-slider').has(this), -1); });
 			$('.is-next', div).click(function() { slide($('div.image-slider').has(this), 1); });
 
 			// Set the container size to the image size and other css styles
-			$('div',div).css({ padding: 0, width: w, height: h });
+			$('.is-img1,.is-img2',div).css({ padding: 0, width: w, height: h });
 			$('.is-prev',div).css({ float: 'left', 'margin-top': h / 2 });
 			$('.is-next',div).css({ float: 'right', 'margin-top': h / 2 });
 
