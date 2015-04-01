@@ -1,3 +1,14 @@
+/*!
+ * ImageSlider.js
+ *
+ * Converts div elements containing sequences of images into a sliding image display
+ * - requires jQuery
+ *
+ * Copyright (c) 2015, Aran Dunkley (http://www.organicdesign.co.nz/aran)
+ *
+ * Released under the GNU General Public Licence 2.0 or later
+ *
+ */
 $(document).ready(function() {
 
 	"use strict";
@@ -86,7 +97,7 @@ $(document).ready(function() {
 		    l = div.data('images').length,
 			w = div.data('width'),
 			h = div.data('height'),
-			img1, img2;
+			url1, url2;
 
 		// Bail if already animating, else set animation to start
 		if(div.data('dir')) return; else div.data('dir', dir);
@@ -94,8 +105,8 @@ $(document).ready(function() {
 		// Set the new image either to the next according to the passed direction, or to n if passed
 		div.data('last', div.data('image'));
 		div.data('image', nx ? (div.data('image') + dir + l) % l : n);
-		img1 = div.data('images')[div.data('image')].attr('src');
-		img2 = div.data('images')[div.data('last')].attr('src');
+		url1 = div.data('images')[div.data('image')].attr('src');
+		url2 = div.data('images')[div.data('last')].attr('src');
 
 		// Show next image on regular interval
 		if(div.data('timer')) clearTimeout(div.data('timer'));
@@ -117,8 +128,8 @@ $(document).ready(function() {
 				y2 = nx ? 0 : offset;
 
 				// Set the positions of the images with CSS
-				$('.is-img1', div).css( 'background', 'url("' + img1 + '") no-repeat ' + x1 + 'px ' + y1 + 'px' );
-				$('.is-img2', div).css( 'background', 'url("' + img2 + '") no-repeat ' + x2 + 'px ' + y2 + 'px' );
+				$('.is-url1', div).css( 'background', 'url("' + url1 + '") no-repeat ' + x1 + 'px ' + y1 + 'px' );
+				$('.is-url2', div).css( 'background', 'url("' + url2 + '") no-repeat ' + x2 + 'px ' + y2 + 'px' );
 			},
 			complete: function(now, fx) {
 				$(this).data('dir', 0); // mark current slider as no longer animating
