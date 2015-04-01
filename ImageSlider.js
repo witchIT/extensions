@@ -125,8 +125,8 @@ $(document).ready(function() {
 				y2 = nx ? 0 : offset;
 
 				// Set the positions of the images with CSS
-				$('.is-url1', div).css( 'background', 'url("' + url1 + '") no-repeat ' + x1 + 'px ' + y1 + 'px' );
-				$('.is-url2', div).css( 'background', 'url("' + url2 + '") no-repeat ' + x2 + 'px ' + y2 + 'px' );
+				$('.is-img1', div).css( 'background', 'url("' + url1 + '") no-repeat ' + x1 + 'px ' + y1 + 'px' );
+				$('.is-img2', div).css( 'background', 'url("' + url2 + '") no-repeat ' + x2 + 'px ' + y2 + 'px' );
 			},
 			complete: function(now, fx) {
 				$(this).data('dir', 0); // mark current slider as no longer animating
