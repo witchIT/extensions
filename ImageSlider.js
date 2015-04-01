@@ -4,7 +4,7 @@
  * Converts div elements containing sequences of images into a sliding image display
  * - requires jQuery
  *
- * Copyright (c) 2015, Aran Dunkley (http://www.organicdesign.co.nz/aran)
+ * Copyright (c) 2012-2015, Aran Dunkley (http://www.organicdesign.co.nz/aran)
  *
  * Released under the GNU General Public Licence 2.0 or later
  *
