@@ -65,7 +65,7 @@
 					data.result.url = parts[0];
 					data.result.data = parts[1];
 				}
-				
+
 				// Otherwise treat it as an article title to be read with action=render
 				else {
 					data.result.url = mw.util.wikiScript();
