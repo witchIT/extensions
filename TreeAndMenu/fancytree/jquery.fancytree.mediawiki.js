@@ -71,6 +71,7 @@
 					data.result.url = mw.util.wikiScript();
 					data.result.data = { title: url, action: 'render' };
 				}
+				console.log(data);
 			};
 
 			// Parse the data collected from the Ajax response and make it into child nodes
