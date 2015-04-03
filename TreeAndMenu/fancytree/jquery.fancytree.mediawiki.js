@@ -42,7 +42,7 @@
 		treeInit: function(ctx) {
 			var tree = ctx.tree, opts = ctx.options;
 
-			// Put the full HTML content of the node back
+			// Put the full HTML content of the node back by referring to it's original LI element
 			opts.renderNode = function(event, data) {
 				var li = $($('#' + data.node.data.li).html());
 				$('ul', li).remove();

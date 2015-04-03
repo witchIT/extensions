@@ -20,8 +20,8 @@ $(document).ready(function(){
 
 			// Give the LI an id and store it in the node's data so it can refer to it after the tree renders
 			$('li',this).each(function() {
-				var i = 'tam-li-' + id++;
-				li.attr('id', i).attr('data-li', i);
+				var li = 'tam-li-' + id++;
+				$(this).attr('id', li).attr('data-li', li);
 			});
 
 			// Get options passed to the parser-function from span
