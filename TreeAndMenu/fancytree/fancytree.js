@@ -16,8 +16,9 @@ $(document).ready(function(){
 			// Remove the todo class from this tree (allows new trees laoded via ajax to be processed too)
 			$(this).removeClass('todo');
 
+			// Preserve the full text of the node in its data
 			$('a',this).each(function() {
-				var li = $('li').has(this);
+				var li = $(this).parent();
 				li.attr('data-text',li.text());
 			});
 
