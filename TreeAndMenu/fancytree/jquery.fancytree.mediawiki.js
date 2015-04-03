@@ -42,18 +42,23 @@
 		treeInit: function(ctx) {
 			var tree = ctx.tree, opts = ctx.options;
 
-			// Put the full HTML content of the node back by referring to it's original LI element if available, otherwise just make href link properly
+			// Render the node with HTML content and process any unprocessed ajax nodes
 			opts.renderNode = function(event, data) {
 				var node = data.node;
+
+				// If the original LI element is supplied render the node with that content
 				if(node.data.li) {
 					var li = $('#' + node.data.li).clone();
 					$('ul', li).remove();
 					$('.fancytree-title', node.span).html(li.html());
 				}
+
+				// Otherwise just use the href if any
 				else if(node.data.href) {
 					$('.fancytree-title', node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 				}
 
+				// If there's "ajax" in the data, then it the node needs to be marked as lazy and the "ajax" removed
 				if('ajax' in node.data) {
 					node.lazy = true;
 					node.children = null;
@@ -62,7 +67,6 @@
 					node.data.url = node.data.ajax;
 					delete node.data.ajax;
 				}
-
 			};
 
 			// Lazy load event to collect child data from the supplied URL via ajax
@@ -103,22 +107,7 @@
 				else data.result = [];
 			};
 
-			// Execute the parent render the tree (this must be after adding renderNode hook, but before tree.visit is called
-			var ret = this._superApply(arguments);
-
-			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
-/*			tree.visit(function(node) {
-				if('ajax' in node.data) {
-					node.lazy = true;
-					node.children = null;
-					node.setFocus(true);
-					node.setFocus(false);
-					delete node.data.ajax;
-				}
-			});
-*/
-			// Return the value from tree parent initialisation
-			return ret;
+			return this._superApply(arguments);
 		},
 	});
 
