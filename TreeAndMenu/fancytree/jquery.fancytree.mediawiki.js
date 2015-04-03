@@ -46,7 +46,7 @@
 			opts.renderNode = function(event, data) {
 				var li = $($('#' + data.node.data.li).html());
 				$('ul', li).remove();
-				$('.fancytree-title', node.span).html(li.html());
+				$('.fancytree-title', data.node.span).html(li.html());
 			};
 
 			// Lazy load event to collect child data from the supplied URL via ajax
