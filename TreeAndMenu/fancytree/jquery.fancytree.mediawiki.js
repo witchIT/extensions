@@ -53,6 +53,15 @@
 				else if(node.data.href) {
 					$('.fancytree-title', node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 				}
+
+				if('ajax' in node.data) {
+					node.lazy = true;
+					node.children = null;
+					node.setFocus(true);
+					node.setFocus(false);
+					delete node.data.ajax;
+				}
+
 			};
 
 			// Lazy load event to collect child data from the supplied URL via ajax
@@ -97,15 +106,16 @@
 			var ret = this._superApply(arguments);
 
 			// Set all nodes in the tree marked as ajax to lazy with null children (so they trigger the lazyLoad event when opened)
-			tree.visit(function(node) {
+/*			tree.visit(function(node) {
 				if('ajax' in node.data) {
 					node.lazy = true;
 					node.children = null;
 					node.setFocus(true);
 					node.setFocus(false);
+					delete node.data.ajax;
 				}
 			});
-
+*/
 			// Return the value from tree parent initialisation
 			return ret;
 		},
