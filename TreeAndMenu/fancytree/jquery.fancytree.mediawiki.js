@@ -3,6 +3,7 @@
  *
  * Add mediawiki-specific ajax loading and some mediawiki helper functions
  * (Extension module for jquery.fancytree.js: https://github.com/mar10/fancytree/)
+ * - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
  *
  * Copyright (c) 2015, Aran Dunkley (http://www.organicdesign.co.nz/aran)
  *
@@ -41,14 +42,9 @@
 		treeInit: function(ctx) {
 			var tree = ctx.tree, opts = ctx.options;
 
-			// Make nodes with hrefs back into normal links
-			// - for samples of all events, see https://github.com/mar10/fancytree/blob/master/demo/sample-events.html
+			// Put the full HTML content of the node back
 			opts.renderNode = function(event, data) {
-				var node = data.node, html;
-				if(node.data.href) {
-					var html = node.data.text.replace(node.title, '<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
-					$('.fancytree-title',node.span).html(html);
-				}
+				$('.fancytree-title', node.span).html(data.node.data.html);
 			};
 
 			// Lazy load event to collect child data from the supplied URL via ajax
