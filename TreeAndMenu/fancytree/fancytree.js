@@ -16,7 +16,10 @@ $(document).ready(function(){
 			// Remove the todo class from this tree (allows new trees laoded via ajax to be processed too)
 			$(this).removeClass('todo');
 
-			$('a',this).removeAttr('title');
+			$('a',this).each(function() {
+				var li = $('li').has(this);
+				li.attr('data-text',li.text());
+			});
 
 			// Get options passed to the parser-function from span
 			var div = $('div.opts', $(this));
