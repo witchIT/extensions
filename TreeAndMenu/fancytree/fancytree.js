@@ -3,6 +3,8 @@
  */
 $(document).ready(function(){
 
+	var id = 0; // unique ID for all tree LI elements
+
 	// This can be called again later and any unprepared trees and menus will get prepared
 	// - this was done so that trees and menus can work when received via Ajax such as in a live preview
 	window.prepareTAM = function() {
@@ -16,10 +18,10 @@ $(document).ready(function(){
 			// Remove the todo class from this tree (allows new trees laoded via ajax to be processed too)
 			$(this).removeClass('todo');
 
-			// Preserve the full html of the node in its data
-			$('a',this).each(function() {
-				var li = $(this).parent();
-				li.attr('data-text',li.html());
+			// Give the LI an id and store it in the node's data so it can refer to it after the tree renders
+			$('li',this).each(function() {
+				var i = 'tam-li-' + id++;
+				li.attr('id', i).attr('data-li', i);
 			});
 
 			// Get options passed to the parser-function from span

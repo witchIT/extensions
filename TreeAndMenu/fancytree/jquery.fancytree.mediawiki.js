@@ -44,7 +44,9 @@
 
 			// Put the full HTML content of the node back
 			opts.renderNode = function(event, data) {
-				$('.fancytree-title', node.span).html(data.node.data.html);
+				var li = $($('#' + data.node.data.li).html());
+				$('ul', li).remove();
+				$('.fancytree-title', node.span).html(li.html());
 			};
 
 			// Lazy load event to collect child data from the supplied URL via ajax
