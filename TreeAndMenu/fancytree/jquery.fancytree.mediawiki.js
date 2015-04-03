@@ -46,9 +46,8 @@
 			opts.renderNode = function(event, data) {
 				var node = data.node, html;
 				if(node.data.href) {
-					var text = node.data.text;
-					text.replace(node.title, '<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
-					$('.fancytree-title',node.span).html(text);
+					var html = node.data.text.replace(node.title, '<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
+					$('.fancytree-title',node.span).html(html);
 				}
 			};
 
