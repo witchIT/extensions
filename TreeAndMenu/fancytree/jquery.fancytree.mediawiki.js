@@ -96,6 +96,7 @@
 					node.lazy = true;
 					node.children = null;
 					node.setFocus(true);
+					node.setFocus(false);
 				}
 			});
 
