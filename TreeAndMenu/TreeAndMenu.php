@@ -14,9 +14,11 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'TREEANDMENU_VERSION','4.0.8, 2015-04-03' );
+define( 'TREEANDMENU_VERSION','4.0.9, 2015-04-03' );
 define( 'TREEANDMENU_TREE', 1 );
 define( 'TREEANDMENU_MENU', 2 );
+
+$wgTreeAndMenuPersistIfId = false; // Makes trees with id attributes have persistent state
 
 $wgExtensionCredits['parserhook'][] = array(
 	'path'           => __FILE__,

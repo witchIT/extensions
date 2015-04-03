@@ -63,7 +63,7 @@ class TreeAndMenu {
 	 * Render a bullet list for either a tree or menu structure
 	 */
 	private function expandTreeAndMenu( $type, $args ) {
-		global $wgJsMimeType;
+		global $wgJsMimeType, $wgTreeAndMenuPersistIfId;
 
 		// First arg is parser, last is the structure
 		$parser = array_shift( $args );
@@ -82,6 +82,12 @@ class TreeAndMenu {
 		// If root option used, parse it as wikitext
 		if( array_key_exists( 'root', $atts ) ) {
 			$atts['root'] = $parser->parse( $atts['root'], $parser->getTitle(), $parser->getOptions(), false, false )->getText();
+		}
+
+		// If the $wgTreeAndMenuPersistIfId global is set and an ID is present, add the persist extension
+		if( array_key_exists( 'id', $atts ) && $wgTreeAndMenuPersistIfId ) {
+			if( array_key_exists( 'extensions', $opts ) ) $opts['extensions'][] = 'persist';
+			else $opts['extensions'] = array( 'persist' );
 		}
 
 		// Sanitise the bullet structure (remove empty lines and empty bullets) and parse it to html
