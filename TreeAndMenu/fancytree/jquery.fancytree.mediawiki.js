@@ -95,7 +95,7 @@
 				if('ajax' in node.data) {
 					node.lazy = true;
 					node.children = null;
-					node.setFocus(false);
+					node.reactivate(true);
 				}
 			});
 
