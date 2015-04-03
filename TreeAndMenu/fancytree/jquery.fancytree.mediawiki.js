@@ -44,7 +44,7 @@
 
 			// Put the full HTML content of the node back by referring to it's original LI element
 			opts.renderNode = function(event, data) {
-				var li = $($('#' + data.node.data.li).html());
+				var li = $('#' + data.node.data.li).clone();
 				$('ul', li).remove();
 				$('.fancytree-title', data.node.span).html(li.html());
 			};
