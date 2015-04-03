@@ -79,10 +79,15 @@ class TreeAndMenu {
 			} else $opts[$arg] = true;
 		}
 
+		// If root option used, parse it as wikitext
+		if( array_key_exists( 'root', $atts ) ) {
+			$atts['root'] = $parser->parse( $atts['root'], $parser->getTitle(), $parser->getOptions(), false, false )->getText();
+		}
+
 		// Sanitise the bullet structure (remove empty lines and empty bullets) and parse it to html
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
-		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();		
+		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
 
 		// Determine the class and id attributes
 		$class = $type == TREEANDMENU_TREE ? 'fancytree' : 'suckerfish';
