@@ -59,6 +59,7 @@
 					node.children = null;
 					node.setFocus(true);
 					node.setFocus(false);
+					node.data.url = node.data.ajax;
 					delete node.data.ajax;
 				}
 
@@ -66,7 +67,7 @@
 
 			// Lazy load event to collect child data from the supplied URL via ajax
 			opts.lazyLoad = function(event, data) {
-				var url = data.node.data.ajax;
+				var url = data.node.data.url;
 
 				// Set result to a jQuery ajax options object
 				data.result = {
