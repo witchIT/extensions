@@ -42,11 +42,17 @@
 		treeInit: function(ctx) {
 			var tree = ctx.tree, opts = ctx.options;
 
-			// Put the full HTML content of the node back by referring to it's original LI element
+			// Put the full HTML content of the node back by referring to it's original LI element if available, otherwise just make href link properly
 			opts.renderNode = function(event, data) {
-				var li = $('#' + data.node.data.li).clone();
-				$('ul', li).remove();
-				$('.fancytree-title', data.node.span).html(li.html());
+				var node = data.node;
+				if(node.data.li) {
+					var li = $('#' + node.data.li).clone();
+					$('ul', li).remove();
+					$('.fancytree-title', node.span).html(li.html());
+				}
+				else if(node.data.href) {
+					$('.fancytree-title', node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
+				}
 			};
 
 			// Lazy load event to collect child data from the supplied URL via ajax
