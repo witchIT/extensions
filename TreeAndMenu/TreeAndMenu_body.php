@@ -115,8 +115,8 @@ class TreeAndMenu {
 			} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
 			// Replace any json: markup in nodes into the li
-			$html = preg_replace( '|<li(>\s*\{.*?\"class\":\s*"(.+?)")|', "<li class='$2'$1", $html );
-			$html = preg_replace( '|<(li.*?)(>\s*\{.*?\"id\":\s*"(.+?)")|', "<$1 id='$3'$2", $html );
+			//$html = preg_replace( '|<li(>\s*\{.*?\"class\":\s*"(.+?)")|', "<li class='$2'$1", $html );
+			//$html = preg_replace( '|<(li.*?)(>\s*\{.*?\"id\":\s*"(.+?)")|', "<$1 id='$3'$2", $html );
 			$html = preg_replace( '|<(li.*?)>\s*(.+?)\s*(\{.+\})\s*|', "<$1 data-json='$3'>$2", $html );
 print "\n====\n$html\n====\n";
 
