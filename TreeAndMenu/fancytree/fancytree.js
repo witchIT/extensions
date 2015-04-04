@@ -17,13 +17,13 @@ $(document).ready(function(){
 
 			// Remove the todo class from this tree (allows new trees laoded via ajax to be processed too)
 			$(this).removeClass('todo');
-
+/*
 			// Give the LI an id and store it in the node's data so it can refer to it after the tree renders
 			$('li',this).each(function() {
 				var li = 'tam-li-' + id++;
 				$(this).attr('id', li).attr('data-li', li);
 			});
-
+*/
 			// Get options passed to the parser-function from span
 			var div = $('div.opts', $(this));
 			var opts = {};

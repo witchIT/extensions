@@ -88,6 +88,7 @@ class TreeAndMenu {
 		// Sanitise the bullet structure (remove empty lines and empty bullets) and parse it to html
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
+		if( $type == TREEANDMENU_TREE ) $bullets = preg_replace( '|^(\*+)(.+?)$|m', '$1<span>$2</span>', $bullets );
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
 
 		// Determine the class and id attributes

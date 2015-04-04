@@ -45,7 +45,7 @@
 			// Render the node with HTML content and process any unprocessed ajax nodes
 			opts.renderNode = function(event, data) {
 				var node = data.node;
-
+/*
 				// If the original LI element is supplied render the node with that content
 				if(node.data.li) {
 					var li = $('#' + node.data.li).clone();
@@ -57,7 +57,7 @@
 				else if(node.data.href) {
 					$('.fancytree-title', node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
 				}
-
+*/
 				// If there's "ajax" in the data, then it the node needs to be marked as lazy and the "ajax" removed
 				if('ajax' in node.data) {
 					node.lazy = true;
