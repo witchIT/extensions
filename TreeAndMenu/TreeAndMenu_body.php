@@ -94,9 +94,10 @@ class TreeAndMenu {
 			$bullets = preg_replace( '|^(\*+)(.+?)$|m', '$1<span>$2</span>', $bullets );
 			$bullets = preg_replace( '|^(.*?)(\{.+\})|m', '$1<nowiki>$2</nowiki>', $bullets );
 		}
-print $bullets;
+
 		// Parse the bullets to HTML
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
+print $html;
 
 		// Determine the class and id attributes
 		$class = $type == TREEANDMENU_TREE ? 'fancytree' : 'suckerfish';
