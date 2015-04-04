@@ -97,7 +97,8 @@ class TreeAndMenu {
 
 		// Parse the bullets to HTML
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
-print $html;
+		//$html = preg_replace( '|</li[^>]+>|', '</li>', $html ); // Strange quirk in parser causing bad closing li's
+		print "\n====\n$html\n====\n";
 
 		// Determine the class and id attributes
 		$class = $type == TREEANDMENU_TREE ? 'fancytree' : 'suckerfish';
