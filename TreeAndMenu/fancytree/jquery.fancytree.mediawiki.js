@@ -42,23 +42,9 @@
 		treeInit: function(ctx) {
 			var tree = ctx.tree, opts = ctx.options;
 
-			// Render the node with HTML content and process any unprocessed ajax nodes
+			// If there's "ajax" in this nodes data, then it needs to be marked as lazy and the "ajax" removed
 			opts.renderNode = function(event, data) {
 				var node = data.node;
-/*
-				// If the original LI element is supplied render the node with that content
-				if(node.data.li) {
-					var li = $('#' + node.data.li).clone();
-					$('ul', li).remove();
-					$('.fancytree-title', node.span).html(li.html());
-				}
-
-				// Otherwise just use the href if any
-				else if(node.data.href) {
-					$('.fancytree-title', node.span).html('<a href="' + node.data.href + '" title="' + node.title + '">' + node.title + '</a>');
-				}
-*/
-				// If there's "ajax" in the data, then it the node needs to be marked as lazy and the "ajax" removed
 				if('ajax' in node.data) {
 					node.lazy = true;
 					node.children = null;

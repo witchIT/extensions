@@ -85,10 +85,14 @@ class TreeAndMenu {
 			else $opts['extensions'] = array( 'persist' );
 		}
 
-		// Sanitise the bullet structure (remove empty lines and empty bullets) and parse it to html
+		// Sanitise the bullet structure (remove empty lines and empty bullets)
 		$bullets = preg_replace( '|^\*+\s*$|m', '', $bullets );
 		$bullets = preg_replace( '|\n+|', "\n", $bullets );
-		if( $type == TREEANDMENU_TREE ) $bullets = preg_replace( '|^(\*+)(.+?)$|m', '$1<span>$2</span>', $bullets );
+
+		// If it's a tree wrap the item in a span so FancyTree treats it as HTML (preserve any JSON properties outside the span in nowiki tags)
+		if( $type == TREEANDMENU_TREE ) $bullets = preg_replace( '|^(\*+)(\{.+?\})?(.+?)$|m', '$1<nowiki>$2</nowiki><span>$2</span>', $bullets );
+
+		// Parse the bullets to HTML
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
 
 		// Determine the class and id attributes
