@@ -97,8 +97,6 @@ class TreeAndMenu {
 
 		// Parse the bullets to HTML
 		$html = $parser->parse( $bullets, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
-		//$html = preg_replace( '|</li[^>]+>|', '</li>', $html ); // Strange quirk in parser causing bad closing li's
-		print "\n====\n$html\n====\n";
 
 		// Determine the class and id attributes
 		$class = $type == TREEANDMENU_TREE ? 'fancytree' : 'suckerfish';
@@ -120,6 +118,7 @@ class TreeAndMenu {
 			$html = preg_replace( '|<li(>\s*\{.*?\"class\":\s*"(.+?)")|', "<li class='$2'$1", $html );
 			$html = preg_replace( '|<(li.*?)(>\s*\{.*?\"id\":\s*"(.+?)")|', "<$1 id='$3'$2", $html );
 			$html = preg_replace( '|<(li.*?)>\s*(.+?)\s*(\{.+\})\s*|', "<$1 data-json='$3'>$2", $html );
+print "\n====\n$html\n====\n";
 
 			// Incorporate options as json encoded data in a div
 			$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
