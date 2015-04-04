@@ -114,12 +114,10 @@ class TreeAndMenu {
 				$opts['minExpandLevel'] = 2;
 			} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
-print "\n====1\n$html\n====\n";
 			// Replace any json: markup in nodes into the li
-			//$html = preg_replace( '|<li(>\s*\{.*?\"class\":\s*"(.+?)")|', "<li class='$2'$1", $html );
-			//$html = preg_replace( '|<(li.*?)(>\s*\{.*?\"id\":\s*"(.+?)")|', "<$1 id='$3'$2", $html );
+			$html = preg_replace( '|<li(>\s*\{.*?\"class\":\s*"(.+?)")|', "<li class='$2'$1", $html );
+			$html = preg_replace( '|<(li[^>]*)(>\s*\{.*?\"id\":\s*"(.+?)")|', "<$1 id='$3'$2", $html );
 			$html = preg_replace( '|<(li[^>]*)>\s*(.+?)\s*(\{.+\})\s*|', "<$1 data-json='$3'>$2", $html );
-print "\n====2\n$html\n====\n";
 
 			// Incorporate options as json encoded data in a div
 			$opts = count( $opts ) > 0 ? '<div class="opts" style="display:none">' . json_encode( $opts, JSON_NUMERIC_CHECK ) . '</div>' : '';
