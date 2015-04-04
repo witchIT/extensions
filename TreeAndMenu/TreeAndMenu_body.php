@@ -79,11 +79,6 @@ class TreeAndMenu {
 			} else $opts[$arg] = true;
 		}
 
-		// If root option used, parse it as wikitext
-		if( array_key_exists( 'root', $atts ) ) {
-			$atts['root'] = $parser->parse( $atts['root'], $parser->getTitle(), $parser->getOptions(), false, false )->getText();
-		}
-
 		// If the $wgTreeAndMenuPersistIfId global is set and an ID is present, add the persist extension
 		if( array_key_exists( 'id', $atts ) && $wgTreeAndMenuPersistIfId ) {
 			if( array_key_exists( 'extensions', $opts ) ) $opts['extensions'][] = 'persist';
@@ -103,10 +98,11 @@ class TreeAndMenu {
 		// If its a tree, we need to add some code to the ul structure
 		if( $type == TREEANDMENU_TREE ) {
 
-			// Mark the structure as tree data, wrap in an unclosable top level if root arg passed
+			// Mark the structure as tree data, wrap in an unclosable top level if root arg passed (and parse root content)
 			$tree = '<ul id="treeData" style="display:none">';
 			if( array_key_exists( 'root', $atts ) ) {
-				$html = $tree . '<li>' . $atts['root'] . $html . '</li></ul>';
+				$root = $parser->parse( $atts['root'], $parser->getTitle(), $parser->getOptions(), false, false )->getText();
+				$html = $tree . '<li class="root">' . $root . $html . '</li></ul>';
 				$opts['minExpandLevel'] = 2;
 			} else $html = preg_replace( '|<ul>|', $tree, $html, 1 );
 
