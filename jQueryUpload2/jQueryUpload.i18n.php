@@ -21,4 +21,5 @@ $messages['en'] = array(
 	'jqueryupload-start' => "Start upload",
 	'jqueryupload-cancel' => "Cancel",
 	'jqueryupload-fileuploadsummary' => "File uploaded by jQueryUpload extension",
+	'jqueryupload-catformat' => "File uploaded to $1",
 );

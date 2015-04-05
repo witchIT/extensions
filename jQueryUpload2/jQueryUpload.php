@@ -18,14 +18,9 @@
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 define( 'JQU_VERSION', "2.0.0, 2014-11-23" );
 
-$wgJQUploadIconPrefix = dirname( __FILE__ ) . '/icons/Farm-Fresh_file_extension_';
-$wgJQUploadFileMagic = 'file';
-$wgHooks['LanguageGetMagic'][] = 'jQueryUpload::onLanguageGetMagic';
-$wgJQUploadFileLinkPopup = true;
+$wgJQUploadIconPrefix = __DIR__ . '/icons/Farm-Fresh_file_extension_';
 
 $wgAjaxExportList[] = 'jQueryUpload::server';
-
-$wgExtensionFunctions[] = 'wfJQueryUploadSetup';
 $wgSpecialPages['jQueryUpload'] = 'jQueryUpload';
 $wgSpecialPageGroups['jQueryUpload'] = 'media';
 $wgExtensionCredits['other'][] = array(
@@ -37,20 +32,11 @@ $wgExtensionCredits['other'][] = array(
 	'version'        => JQU_VERSION
 );
 
-// If the query-string arg mwaction is supplied, rename action and change mwaction to action
-// - this hack was required because the jQueryUpload module uses the name "action" too
-if( array_key_exists( 'mwaction', $_REQUEST ) ) {
-	$wgJQUploadAction = array_key_exists( 'action', $_REQUEST ) ? $_REQUEST['action'] : false;
-	$_REQUEST['action'] = $_GET['action'] = $_POST['action'] = $_REQUEST['mwaction'];
-}
+// Include dependencies
+$wgExtensionMessagesFiles['jQueryUpload'] = __DIR__ . '/jQueryUpload.i18n.php';
+$wgExtensionMessagesFiles['jQueryUploadAlias'] = __DIR__ . '/jQueryUpload.alias.php';
+require( __DIR__ . '/upload/server/php/upload.class.php' );
+require( __DIR__ . '/jQueryUpload_body.php' );
 
-$dir = dirname( __FILE__ );
-$wgExtensionMessagesFiles['jQueryUpload'] = "$dir/jQueryUpload.i18n.php";
-$wgExtensionMessagesFiles['jQueryUploadAlias'] = "$dir/jQueryUpload.alias.php";
-require( "$dir/upload/server/php/upload.class.php" );
-require( "$dir/jQueryUpload_body.php" );
-
-function wfJQueryUploadSetup() {
-	global $wgJQueryUpload;
-	$wgJQueryUpload = new jQueryUpload();
-}
+// Instantiate the main class
+new jQueryUpload();

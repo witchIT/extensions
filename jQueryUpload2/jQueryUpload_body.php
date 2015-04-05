@@ -11,21 +11,34 @@
  */
 class jQueryUpload extends SpecialPage {
 
-	var $id = 0;
+	private var $id = 0;
+	private var $action = false;
+	public static $dir;
 	public static $desc = array();
 
 	function __construct() {
-		global $wgOut, $wgResourceModules, $wgHooks, $wgParser, $wgJQUploadFileMagic;
+		global $wgExtensionFunctions;
 
-		// Initialise the special page
+		// Add the setup function to be called at extension setup time
+		$wgExtensionFunctions[] = array( $this, 'setup' );
+
+		// If the query-string arg mwaction is supplied, rename action and change mwaction to action
+		// - this hack was required because the jQueryUpload module uses the name "action" too
+		if( array_key_exists( 'mwaction', $_REQUEST ) ) {
+			self::$action = array_key_exists( 'action', $_REQUEST ) ? $_REQUEST['action'] : false;
+			$_REQUEST['action'] = $_GET['action'] = $_POST['action'] = array_key_exists( 'mwaction', $_REQUEST ) ? $_REQUEST['mwaction'] : '';
+		}
+
+		// Call the special page constructor in the parent class
 		parent::__construct( 'jQueryUpload', 'upload' );
+	}
+
+	function setup() {
+		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgHooks;
 
 		// Get article ID if the page is an article
 		if( $title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false )
 			$this->id = $title->getArticleID();
-
-		// Set up the #file parser-function
-		$wgParser->setFunctionHook( $wgJQUploadFileMagic, array( $this, 'expandFile' ), SFH_NO_HASH );
 
 		// Allow overriding of the file ID
 		wfRunHooks( 'jQueryUploadSetId', array( $title, &$this->id ) );
@@ -39,22 +52,22 @@ class jQueryUpload extends SpecialPage {
 			$wgHooks['BeforePageDisplay'][] = $this;
 		}
 
-		// Add the extensions own js
+		// Add the extensions own JS and CSS
+		self::$dir = $wgExtensionAssetsPath . '/' . basename( __DIR__ )
 		$wgResourceModules['ext.jqueryupload'] = array(
 			'scripts'       => array( 'jqueryupload.js' ),
-			'styles'        => array( 'jqueryupload.css' ),
 			'dependencies'  => array( 'mediawiki.util', 'jquery.ui.dialog' ),
-			'localBasePath' => dirname( __FILE__ ),
-			'remoteExtPath' => basename( dirname( __FILE__ ) )
+			'localBasePath' => __DIR__,
+			'remoteBasePath' => self::$dir,
 		);
 		$wgOut->addModules( 'ext.jqueryupload' );
-
+		$wgOut->addStyle( self::$dir . '/jqueryupload.css' );
 	}
 
 	/**
 	 * Render the special page
 	 */
-	function execute( $param ) {
+	public function execute( $param ) {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath;
 		$this->setHeaders();
 		$this->head();
@@ -66,7 +79,7 @@ class jQueryUpload extends SpecialPage {
 	/**
 	 * Render scripts and form into an article
 	 */
-	function onBeforePageDisplay( $out, $skin ) {
+	public function onBeforePageDisplay( $out, $skin ) {
 		$out->addHtml( '<h2 class="jqueryupload">' . wfMsg( 'jqueryupload-attachments' ) . '</h2>' );
 		$out->addHtml( $this->form() );
 		$out->addHtml( $this->templates() );
@@ -96,73 +109,9 @@ class jQueryUpload extends SpecialPage {
 	}
 
 	/**
-	 * Expand the #file parser-function
-	 */
-	function expandFile( $parser, $filename, $anchor = false ) {
-		global $wgJQUploadFileLinkPopup;
-		$class = '';
-		$href = false;
-		$info = '';
-		if( $anchor === false ) $anchor = $filename;
-
-		// Check if the file is a locally uploaded one
-		$img = wfLocalFile( $filename );
-		if( $img->exists() ) {
-			global $wgLang;
-			$href = $img->getUrl();
-			$class = ' local-file';
-			if( $wgJQUploadFileLinkPopup ) {
-				$title = $img->getTitle();
-				$article = new Article( $title );
-				$info = $parser->parse( $article->getContent(), $parser->getTitle(), new ParserOptions(), false, false )->getText();
-				if( !empty( $info ) ) $info = '<span class="file-desc">' . $info . '</span>';
-				$date = wfMsg( 'jqueryupload-uploadinfo', $img->user_text, $wgLang->date( $img->timestamp, true ) );
-				$info = '<span class="file-info">' . $date . '</span><br />' . $info;
-			}
-		}
-
-		// Not local, check if it's a jQuery one
-		if( $href === false ) {
-			global $wgUploadDirectory, $wgScript;
-			if( $glob = glob( "$wgUploadDirectory/jquery_upload_files/*/$filename" ) ) {
-				if( preg_match( "|jquery_upload_files/(\d+)/|", $glob[0], $m ) ) {
-					$path = $m[1];
-					$class = ' jquery-file';
-					$href = "$wgScript?action=ajax&rs=jQueryUpload::server&rsargs[]=$path&rsargs[]=" . urlencode( $filename );
-					if( $wgJQUploadFileLinkPopup ) {
-						$meta = "$wgUploadDirectory/jquery_upload_files/$path/meta/$filename";
-						if( file_exists( $meta ) ) {
-							$data = unserialize( file_get_contents( $meta ) );
-							$info = '<span class="file-info">' . MWUploadHandler::renderData( $data ) . '</span>';
-							if( $data[2] ) $info .= '<br /><span class="file-desc">' . $data[2] . '</span>';
-						}
-					}
-				}
-			}
-		}
-
-		if( $href === false ) {
-			$class = ' redlink';
-		}
-
-		//$title = empty( $info ) ? " title=\"$filename\"" : '';
-		if( !empty( $info ) ) $info = "<span style=\"display:none\">$info</span>";
-		return "<span class=\"jqu-span\"><span class=\"plainlinks$class\" title=\"$href\">$anchor$info</span></span>";
-	}
-
-	/**
-	 * Register #file magic word
-	 */
-	public static function onLanguageGetMagic( &$magicWords, $langCode = 0 ) {
-		global $wgJQUploadFileMagic;
-		$magicWords[$wgJQUploadFileMagic] = array( 0, $wgJQUploadFileMagic );
-		return true;
-	}
-
-	/**
 	 * Upload the passed file from the request
 	 */
-	static function uploadFile( $param, $desiredDestName, $comment = false ) {
+	private static function uploadFile( $param, $desiredDestName, $comment = false ) {
 		global $wgRequest, $wgUser;
 		$handler = new UploadFromFile();
 		$upload = $wgRequest->getUpload( $param );
@@ -183,8 +132,10 @@ class jQueryUpload extends SpecialPage {
 	 * Ajax handler encapsulate jQueryUpload server-side functionality
 	 */
 	public static function server() {
-		global $wgScript, $wgUploadDirectory, $wgJQUploadAction, $wgRequest, $wgFileExtensions;
-		if( $wgJQUploadAction ) $_REQUEST['action'] = $wgJQUploadAction;
+		global $wgUser, $wgScript, $wgUploadDirectory, $wgRequest, $wgFileExtensions;
+
+		// Put jQueryUpload's action back into the request
+		if( self::$action ) $_REQUEST['action'] = self::$action;
 
 		// So that meaningful errors can be sent back to the client
 		error_reporting( E_ALL | E_STRICT );
@@ -196,12 +147,9 @@ class jQueryUpload extends SpecialPage {
 		header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 
 		// If there are args, then this is a file or thumbnail request
+		// TODO: file and thumbnails should be deferred to thumb.php
 		if( $n = func_num_args() ) {
-			global $wgUser;
 			$a = func_get_args();
-
-			// Only return the file if the user is logged in
-			if( !$wgUser->isLoggedIn() ) return false;
 
 			// Get the file or thumb location
 			if( $a[0] == 'thumb' ) {
@@ -227,6 +175,7 @@ class jQueryUpload extends SpecialPage {
 			return '';
 		}
 
+		// Prepare to process one of the other available actions
 		header( 'Content-Disposition: inline; filename="files.json"' );
 		header( 'X-Content-Type-Options: nosniff' );
 		header( 'Access-Control-Allow-Origin: *' );
@@ -234,6 +183,7 @@ class jQueryUpload extends SpecialPage {
 		header( 'Access-Control-Allow-Headers: X-File-Name, X-File-Type, X-File-Size' );
 
 		// Process the rename and desc text inputs added to the upload form rows
+		// TODO: rename only works for attachments, not for special page, it must do a move on the file article
 		if( array_key_exists( 'upload_rename_from', $_REQUEST ) && array_key_exists( 'files', $_FILES ) ) {
 			foreach( $_REQUEST['upload_rename_from'] as $i => $from ) {
 				if( false !== $j = array_search( $from, $_FILES['files']['name'] ) ) {
@@ -284,13 +234,6 @@ class jQueryUpload extends SpecialPage {
 				$upload_handler->get();
 				break;
 			case 'POST':
-
-				// Create the directories if they don't exist (we do it here so they're not created for every dir read)
-				if( !is_dir( "$wgUploadDirectory/jquery_upload_files" ) ) mkdir( "$wgUploadDirectory/jquery_upload_files" );
-				if( !is_dir( $dir ) ) mkdir( $dir );
-				if( !is_dir( $thm ) ) mkdir( $thm );
-				if( !is_dir( $meta ) ) mkdir( $meta );
-
 				$upload_handler->post();
 				break;
 			default:
@@ -300,16 +243,10 @@ class jQueryUpload extends SpecialPage {
 		return '';
 	}
 
-	function head() {
-		global $wgOut, $wgExtensionAssetsPath;
-		$base = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) );
-		$css = "$base/upload/css";
+	private function head() {
+		global $wgOut;
+		$css = self::$dir . '/upload/css';
 
-		// Bootstrap CSS Toolkit styles
-//		$wgOut->addStyle( "$base/jqueryupload.css", 'screen' );
-
-		// Bootstrap styles for responsive website layout, supporting different screen sizes
-		//$wgOut->addStyle( 'http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css', 'screen' );
 		// CSS to style the file input field as button and adjust the Bootstrap progress bars
 		$wgOut->addStyle( "$css/jquery.fileupload-ui.css", 'screen' );
 
@@ -323,11 +260,9 @@ class jQueryUpload extends SpecialPage {
 		$wgOut->addJsConfigVars( 'jQueryUploadID', $this->id );
 	}
 
-	function scripts() {
-		global $wgExtensionAssetsPath;
-		$base = $wgExtensionAssetsPath . '/' . basename( dirname( __FILE__ ) );
-		$js = "$base/upload/js";
-		$blueimp = "$base/blueimp";
+	private function scripts() {
+		$js = self::$dir . '/upload/js';
+		$blueimp = self::$dir . '/blueimp';
 		$script = "<script src=\"$js/vendor/jquery.ui.widget.js\"></script>\n";
 
 		// The Templates plugin is included to render the upload/download listings
@@ -377,7 +312,7 @@ class jQueryUpload extends SpecialPage {
 		return $script;
 	}
 
-	function form() {
+	private function form() {
 		global $wgScript, $wgTitle;
 		if( $this->id === false ) $this->id = $wgTitle->getArticleID();
 		$path = ( is_object( $wgTitle ) && $this->id ) ? "<input type=\"hidden\" name=\"path\" value=\"{$this->id}\" />" : '';
@@ -425,7 +360,7 @@ class jQueryUpload extends SpecialPage {
 		</form>';
 	}
 
-	function templates() {
+	private function templates() {
 		return '<!-- The template to display files available for upload -->
 		<script id="template-upload" type="text/x-tmpl">
 		{% for (var i=0, file; file=o.files[i]; i++) { %}
@@ -493,7 +428,6 @@ class jQueryUpload extends SpecialPage {
 		{% } %}
 		</script>';
 	}
-
 }
 
 /**
@@ -513,6 +447,8 @@ class MWUploadHandler extends UploadHandler {
 
 	/**
 	 * We override the thumbnail creation to return a filetype icon when files can't be scaled as an image
+	 * TODO: this needs to get a thumb of an MW uploaded file now (or a filetype icon if not an image)
+	 * these images can't be stored tho...?
 	 */
 	protected function create_scaled_image( $file, $options ) {
 		if( $result = parent::create_scaled_image( $file, $options ) ) return $result;
@@ -534,27 +470,6 @@ class MWUploadHandler extends UploadHandler {
 		// Call the parent method to create the file object
 		$file = parent::get_file_object( $file_name );
 
-		// Add the meta data to the object
-		if( is_object( $file ) ) {
-			$meta = $this->options['upload_dir'] . 'meta/' . $file_name;
-			$file->info = $file->desc = "";
-
-			// If the meta data file exists, extract and render the content
-			if( is_file( $meta ) ) {
-				$data = unserialize( file_get_contents( $meta ) );
-				$file->info = self::renderData( $data );
-				$file->desc = array_key_exists(2, $data) ? $data[2] : '';
-			}
-			
-			// If the file is a symlink to a file uploaded in the wiki, get the metadata from the wiki file instead
-			elseif( is_link( $this->options['upload_dir'] . $file_name ) ) {
-				$title = Title::newFromText( $file_name, NS_FILE );
-				if( is_object( $title ) && $title->exists() ) {
-					list( $uid, $ts, $file->desc ) = self::getUploadedFileInfo( $title );
-					$file->info = self::renderData( array( $uid, wfTimestamp( TS_UNIX, $ts ) ) );
-				}
-			}
-		}
 		return $file;
 	}
 
@@ -570,24 +485,8 @@ class MWUploadHandler extends UploadHandler {
 	}
 
 	/**
-	 * Get the description, name and upload time of the passed wiki file
-	 */
-	public static function getUploadedFileInfo( $title ) {
-		$article = new Article( $title );
-		$desc = $article->getContent();
-		$dbr = wfGetDB( DB_SLAVE );
-		$row = $dbr->selectRow(
-			'revision',
-			array( 'rev_user', 'rev_timestamp' ),
-			array( 'rev_page' => $title->getArticleID() ),
-			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp','LIMIT' => 1 )
-		);
-		return array( $row->rev_user, $row->rev_timestamp, $desc );
-	}
-
-	/**
 	 * We should remove the unused directory after deleting a file
+	 * TODO: this will only remove it from the category if it's linked to from elsewhere, otherwise deletes the file
 	 */
 	public function delete() {
 		parent::delete();
@@ -604,6 +503,7 @@ class MWUploadHandler extends UploadHandler {
 
 	/**
 	 * We add a meta-data file for the upload in the meta dir
+	 * TODO: probly delete this since uploaded files will have their own metadata now
 	 */
 	protected function handle_file_upload( $uploaded_file, $name, $size, $type, $error, $index = null ) {
 		$file = parent::handle_file_upload( $uploaded_file, $name, $size, $type, $error, $index );
