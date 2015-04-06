@@ -10,7 +10,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '1.2.3, 2015-03-15' );
+define( 'AJAXCOMMENTS_VERSION', '1.2.4, 2015-04-06' );
 define( 'AJAXCOMMENTS_USER', 1 );
 define( 'AJAXCOMMENTS_DATE', 2 );
 define( 'AJAXCOMMENTS_TEXT', 3 );
@@ -52,13 +52,13 @@ class AjaxComments {
 
 		// Create a hook to allow external condition for whether comments can be added or replied to (default is just user logged in)
 		$this->canComment = $wgUser->isLoggedIn();
-		wfRunHooks( 'AjaxCommentsCheckWritable', array( $title, &$this->canComment ) );
+		Hooks::run( 'AjaxCommentsCheckWritable', array( $title, &$this->canComment ) );
 
 		// Redirect talk pages with AjaxComments to the comments
 		if( is_object( $title ) && $title->getNamespace() > 0 && ($title->getNamespace()&1) ) {
 			$title = Title::newFromText( $title->getText(), $title->getNamespace() - 1 );
 			$ret = true;
-			wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
+			Hooks::run( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 			if( $ret ) {
 				$wgOut->disable();
 				wfResetOutputBuffers();
@@ -97,7 +97,7 @@ class AjaxComments {
 		$ret = true;
 		if( !is_object( $title ) ) $title = Title::newFromText( $title );
 		if( !is_object( $title ) || $title->getArticleID() == 0 || $title->isRedirect() || ($title->getNamespace()&1) ) $ret = false;
-		else wfRunHooks( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
+		else Hooks::run( 'AjaxCommentsCheckTitle', array( $title, &$ret ) );
 		return $ret;
 	}
 
