@@ -1,0 +1,12 @@
+This extension creates a live bidirectional connection between all the wiki clients and the server, and between all clients via the server.
+
+- The extension ensures that the WebSocket daemon is running
+- Each client is given a unique ID if they don't already have one
+- URL rewriting can route WS requests to the daemon so that the port doesn't need to be public
+- Clients include their ID in WS requests
+- The service ID is zero and default
+- Messages are in the form (type, body, clients = array(0) )
+- when a message arrives at the client or server an event of the type is raised
+
+It may use the Python Bitgroup code, or perhaps this Perl library which looks very simple:
+https://metacpan.org/pod/Net::WebSocket::Server
