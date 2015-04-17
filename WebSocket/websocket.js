@@ -39,9 +39,8 @@ window.webSocket = (function($, mw, undefined) {
 			// url depends on rewrite and port
 			var port = mw.config.get('wsPort');
 			var rewrite = mw.config.get('wsRewrite');
-			var url = rewrite
-				? mw.config.get('wgServer') + '/websocket/'
-				: mw.config.get('wgServer').replace(/^https?/,'ws') + ':' + port;
+			var url = mw.config.get('wgServer').replace(/^https?/,'ws') + ( rewrite ? '/websocket' + ':' + port : ':' + port );
+			console.info('Connecting to WebSocket server at ' + url);
 
 			ws = new WebSocket(url);
 			if(ws) active = true;
@@ -52,6 +51,8 @@ window.webSocket = (function($, mw, undefined) {
 			ws.onclose = onClose;
 			ws.onmessage = onMessage;
 			ws.onerror = onError;
+
+			return active;
 		},
 
 		send: function(type, msg, to) {
@@ -60,7 +61,4 @@ window.webSocket = (function($, mw, undefined) {
 		},
 	}
 }(jQuery, mw));
-
-// Initialise the WebSocket when document is ready
-$(document).ready(webSocket.connect);
 

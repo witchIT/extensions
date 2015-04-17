@@ -16,8 +16,8 @@ define( 'WEBSOCKET_VERSION','0.0.0, 2015-04-14' );
 
 
 WebSocket::$port = 1729;               # Port the WebSocket daemon will run on
-WebSocket::$rewrite = false;           # Configure URL rewriting so that the WebSocket port doesn't need to be public
-WebSocket::$perl = '/usr/bin/perl';    # Loation of the Perl interpreter
+WebSocket::$rewrite = true;           # Configure URL rewriting so that the WebSocket port doesn't need to be public
+WebSocket::$perl = '/usr/bin/perl';    # Location of the Perl interpreter
 
 
 $wgExtensionCredits['other'][] = array(

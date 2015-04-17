@@ -44,15 +44,15 @@ Net::WebSocket::Server->new(
 					$from = $1;
 					$::clients{$from} = $conn;
 				}
-
-				# TODO: How do we detect a client closing?
+				
+				else { $conn->disconnect() }
 
 				# TODO: If recipients were listed, forward message to each
 				
 				# No recipients, broadcast message to all clients
 				foreach( keys %::clients ) {
 					$c = $::clients{$_};
-					if( defined $c ) { $c->send_utf8( $msg ) }
+					if( defined $c and $c->{socket}->connected ) { $c->send_utf8( $msg ) }
 					else { delete $::clients{$_} }
 				}
             },
