@@ -2,11 +2,13 @@ window.webSocket = (function($, mw, undefined) {
 
 	// Private vars
 	var ws = false;
+	var id = false;
 	var active = false;
 	var connected = false;
 
 	function onOpen(e) {
 		console.info('WebSocket connected');
+		ws.send(JSON.stringify({type: 'Register', from: id}));
 		connected = true;
 	}
 
@@ -18,7 +20,7 @@ window.webSocket = (function($, mw, undefined) {
 	function onMessage(e) {
 		console.info('WebSocket message received');
 		var data = $.parseJSON(e.data);
-		$.event.trigger({type: 'ws' + data.type, args: {msg: data.msg, to: data.to}});
+		$.event.trigger({type: 'ws_' + data.type, args: {msg: data.msg, to: data.to}});
 	}
 
 	function onError(e) {
@@ -37,13 +39,13 @@ window.webSocket = (function($, mw, undefined) {
 			// url depends on rewrite and port
 			var port = mw.config.get('wsPort');
 			var rewrite = mw.config.get('wsRewrite');
-			var id = mw.config.get('wsClientID');
 			var url = rewrite
-				? mw.config.get('wgServer') + '/websocket/' + id
-				: mw.config.get('wgServer').replace(/^https?/,'ws') + ':' + port + '/' + id;
+				? mw.config.get('wgServer') + '/websocket/'
+				: mw.config.get('wgServer').replace(/^https?/,'ws') + ':' + port;
 
 			ws = new WebSocket(url);
 			if(ws) active = true;
+			id = mw.config.get('wsClientID');
 			console.info('WebSocket active');
 
 			ws.onopen = onOpen;
@@ -54,7 +56,7 @@ window.webSocket = (function($, mw, undefined) {
 
 		send: function(type, msg, to) {
 			if(to === undefined) to = [0];
-			ws.send(JSON.stringify({type: type, msg: msg, to: to}));
+			ws.send(JSON.stringify({type: type, msg: msg, from: id, to: to}));
 		},
 	}
 }(jQuery, mw));

@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use IO::Poll;
+use IO::Async::Loop;
 use Net::Async::WebSocket::Client;
 use Data::Dumper;
 
