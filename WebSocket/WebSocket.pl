@@ -14,7 +14,7 @@ use Data::Dumper;
 use File::Basename;
 use Cwd qw(realpath);
 $::basedir = realpath( dirname( __FILE__ ) );
-$::log = "/var/log/syslog";
+$::log = "/var/www/dcs/wiki-settings/jobs/jobs.log";
 $::port = $ARGV[0];
 
 # Fork off and die
@@ -44,9 +44,6 @@ Net::WebSocket::Server->new(
 					$from = $1;
 					$::clients{$from} = $conn;
 				}
-
-				# If no "from" ID in message, disconnect the client
-				else { $conn->disconnect() }
 
 				# TODO: If recipients were listed, forward message to each
 				
