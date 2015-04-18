@@ -16,6 +16,7 @@ use Cwd qw(realpath);
 $::basedir = realpath( dirname( __FILE__ ) );
 $::port = $ARGV[0];
 $::log = $ARGV[1];
+$::rewrite = $ARGV[2];
 
 # Fork off and die
 defined ( my $pid = fork ) or die "Can't fork: $!";
@@ -47,22 +48,32 @@ Net::WebSocket::Server->new(
             utf8 => sub {
                 my ($conn, $msg) = @_;
 				my $from = 0;
-				print LOG "Message received: $msg\n" if $::log;
+				my $peeraddr = join( '.', unpack( 'C4', $conn->{socket}->peeraddr() ) );
 
-				# If this client sent an ID, store them in the client hash
-				if( $msg =~ /"from"\s*:\s*"(.+?)"/s ) {
-					$from = $1;
-					$::clients{$from} = $conn;
-					print LOG "From: $from\n" if $::log;
+				# Disconnect the client if in rewrite mode and this is not local
+				if( $::rewrite and $peeraddr ne '127.0.0.1' ) {
+					print LOG "Disconnecting non-local client\n" if $::log;
+					$conn->disconnect();
 				}
 
-				# TODO: If recipients were listed, forward message to each
-				
-				# No recipients, broadcast message to all clients
-				foreach( keys %::clients ) {
-					$c = $::clients{$_};
-					if( defined $c and $c->{socket}->connected ) { $c->send_utf8( $msg ) }
-					else { delete $::clients{$_} }
+				else {
+					print LOG "Message received ($peeraddr): $msg\n" if $::log;
+
+					# If this client sent an ID, store them in the client hash
+					if( $msg =~ /"from"\s*:\s*"(.+?)"/s ) {
+						$from = $1;
+						$::clients{$from} = $conn;
+						print LOG "From: $from\n" if $::log;
+					}
+
+					# TODO: If recipients were listed, forward message to each
+					
+					# No recipients, broadcast message to all clients
+					foreach( keys %::clients ) {
+						$c = $::clients{$_};
+						if( defined $c and $c->{socket}->connected ) { $c->send_utf8( $msg ) }
+						else { delete $::clients{$_} }
+					}
 				}
             },
         );

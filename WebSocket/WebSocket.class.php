@@ -16,7 +16,9 @@ class WebSocket {
 
 		// Ensure WebSocket.py is running
 		if( empty( shell_exec( "ps ax|grep '[W]ebSocket.pl'" ) ) ) {
-			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . ( self::$log ? ' ' . self::$log : '' ) );
+			$log = self::$log ? ' ' . self::$log : '';
+			$rewrite = self::$rewrite ? ' 1' : ''
+			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite );
 		}
 
 		// Give this client an ID or use that supplied in request
@@ -42,7 +44,7 @@ class WebSocket {
 	}
 
 	/**
-	 * TODO: Send a message to WebSocket clients
+	 * Send a message to WebSocket clients
 	 */
 	public static function send( $type, $msg, $to = false ) {
 		$ws = new WebSocketClient( '127.0.0.1', self::$port );
