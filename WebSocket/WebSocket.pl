@@ -14,8 +14,8 @@ use Data::Dumper;
 use File::Basename;
 use Cwd qw(realpath);
 $::basedir = realpath( dirname( __FILE__ ) );
-$::log = "/var/www/dcs/wiki-settings/jobs/jobs.log";
 $::port = $ARGV[0];
+$::log = $ARGV[1];
 
 # Fork off and die
 defined ( my $pid = fork ) or die "Can't fork: $!";
@@ -25,6 +25,14 @@ open STDOUT, '>>', $::log;
 binmode STDOUT, ':utf-8';
 open STDERR, '>>', $::log;
 binmode STDERR, ':utf-8';
+setsid or die "Can't start a new session: $!";
+umask 0;
+$0 = 'WebSocket.pl:1729';
+
+# Open log file if supplied
+open LOG, '>>', $::log if $::log;
+binmode LOG, ':utf-8';
+print LOG "WebSocket daemon starting on port $::port\n" if $::log;
 
 # Keep a record of client instances associated with their IDs
 %::clients = {};
@@ -38,11 +46,13 @@ Net::WebSocket::Server->new(
             utf8 => sub {
                 my ($conn, $msg) = @_;
 				my $from = 0;
+				print LOG "Message received: $msg\n" if $::log;
 
 				# If this client sent an ID, store them in the client hash
 				if( $msg =~ /"from"\s*:\s*"(.+?)"/s ) {
 					$from = $1;
 					$::clients{$from} = $conn;
+					print LOG "From: $from\n" if $::log;
 				}
 
 				# TODO: If recipients were listed, forward message to each
@@ -57,4 +67,3 @@ Net::WebSocket::Server->new(
         );
     },
 )->start;
-

@@ -55,6 +55,10 @@ window.webSocket = (function($, mw, undefined) {
 			return active;
 		},
 
+		subscribe: function(type, callback) {
+			$(document).on( 'ws_' + type, callback );
+		},
+
 		send: function(type, msg, to) {
 			if(to === undefined) to = [0];
 			ws.send(JSON.stringify({type: type, msg: msg, from: id, to: to}));
