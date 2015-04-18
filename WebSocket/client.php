@@ -7,36 +7,65 @@ $ws->close();
 
 class WebSocketClient {
 
-	var $sock;
-	var $host;
-	var $port;
-	var $err;
-	var $errno;
+	private $sock;
+	private $host;
+	private $port;
 
 	function __construct( $host, $port ) {
 		$this->host = $host;
 		$this->port = $port;
-		$this->sock = fsockopen( $host, $port, $this->errno, $this->err, 2 );
-		stream_set_timeout($this->sock, 0, 1000);
-	}
 
-	function close() {
-		return fclose( $this->sock );
-	}
+		# Create a socket
+		if( !( $this->sock = socket_create( AF_INET, SOCK_STREAM, 0 ) ) ) {
+			$errorcode = socket_last_error();
+			$errormsg = socket_strerror( $errorcode );
+			die( "Couldn't create socket: [$errorcode] $errormsg \n" );
+		}
 
-	function send( $data ) {
+		# Connect the socket to the WebSocket daemon
+		if( !socket_connect( $this->sock , $this->host , $this->port ) ) {
+			$errorcode = socket_last_error();
+			$errormsg = socket_strerror( $errorcode );
+			die( "Could not connect: [$errorcode] $errormsg \n" );
+		}
+
+		# Construct a WebSocket message header
 		$head = "GET / HTTP/1.1\r\n" 
 			. "Upgrade: WebSocket\r\n"
 			. "Connection: Upgrade\r\n"
-			. "Origin: 127.0.0.1\r\n"
 			. "Host: {$this->host}\r\n"
-			. "Sec-WebSocket-Key: asdasdaas76da7sd6asd6as7d\r\n"
+			. "Sec-WebSocket-Key: " . base64_encode( uniqid() ) . "\r\n"
 			. "Sec-WebSocket-Version: 10\r\n"
-			. "Content-Length: " . strlen($data) . "\r\n\r\n";
-		fwrite( $this->sock, $head ) or die( "Error: {$this->err} ({$this->errno})" );
-		$headers = fread( $this->sock, 2000 );
-		fwrite( $this->sock, $this->encode( $data ) ) or die( "Error: {$this->err} ({$this->errno})" );
-		$wsdata = fread( $this->sock, 2000 );
+			. "Content-Length: 0\r\n\r\n";
+
+		# Connect to the daemon
+		if( !socket_send( $this->sock , $head, strlen( $head ) , 0 ) ) {
+			$errorcode = socket_last_error();
+			$errormsg = socket_strerror($errorcode);
+			die( "Could not send data: [$errorcode] $errormsg \n" );
+		}
+
+		# Receive the header
+		$res = socket_read( $this->sock, 2000 );
+
+		# Close and die if not accepted
+		if( !preg_match( '/Sec-WebSocket-Accept:/', $res ) ) {
+			$this->close();
+			die( "Connection was not accepted!\n" );
+		}
+	}
+
+	function close() {
+		return socket_close( $this->sock );
+	}
+
+	function send( $data ) {
+		$data = $this->encode( $data );
+		if( !socket_send( $this->sock , $data, strlen( $data ) , 0 ) ) {
+			$errorcode = socket_last_error();
+			$errormsg = socket_strerror($errorcode);
+			die( "Could not send data: [$errorcode] $errormsg \n" );
+		}
 	}
 
 	function decode( $data ) {
