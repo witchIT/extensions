@@ -32,6 +32,7 @@ $0 = 'WebSocket.pl:1729';
 # Open log file if supplied
 open LOG, '>>', $::log if $::log;
 binmode LOG, ':utf-8';
+autoflush LOG 1;
 print LOG "WebSocket daemon starting on port $::port\n" if $::log;
 
 # Keep a record of client instances associated with their IDs
