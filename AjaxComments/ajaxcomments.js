@@ -1,3 +1,5 @@
+var ws = false; // Whether WebSocket is available
+
 $(document).ready( function() {
 	var poll = mw.config.get('wgAjaxCommentsPollServer');
 
@@ -24,24 +26,29 @@ $(document).ready( function() {
 		});
 	}
 
-	// If server polling is enabled, set up a regular ajax request
-	if(poll > 0) {
-		setInterval( function() {
-
-			// Ask the server for the rendered comments if they've changed
-			$.ajax({
-				type: 'GET',
-				url: mw.util.wikiScript(),
-				data: { action: 'ajaxcomments', title: mw.config.get('wgPageName'), ts: $('#ajaxcomment-timestamp').html() },
-				dataType: 'html',
-				success: function(html) {
-					if(html) $('#ajaxcomments').html(html);
-				}
-			});
-
-		}, poll * 1000);
+	// Ask the server for the rendered comments if they've changed
+	function updateComments() {
+		$.ajax({
+			type: 'GET',
+			url: mw.util.wikiScript(),
+			data: { action: 'ajaxcomments', title: mw.config.get('wgPageName'), ts: $('#ajaxcomment-timestamp').html() },
+			dataType: 'html',
+			success: function(html) {
+				if(html) $('#ajaxcomments').html(html);
+			}
+		});
 	}
 
+	// If WebSocket is available, connect it and set updating to occur when notified
+	if(poll == 0 && 'webSocket' in window) {
+		ws = webSocket.connect();
+		webSocket.subscribe('updateComments', updateComments);
+	}
+
+	// If server polling is enabled and no websocket, set up a regular ajax request
+	if(poll > 0 && !('webSocket' in window && window.webSocket.active())) {
+		setInterval(updateComments, poll * 1000);
+	}
 });
 
 /**
@@ -90,6 +97,7 @@ window.ajaxcomment_del = function(id) {
 			dataType: 'html',
 			success: function(html) {
 				this.replaceWith(html);
+				if(ws) webSocket.send('updateComments');
 			}
 		});
 		$(this).dialog('close');
@@ -123,6 +131,7 @@ window.ajaxcomment_source = function(id, target) {
 		success: function(json) {
 			this.val(json.text);
 			this.attr('disabled',false);
+			if(ws) webSocket.send('updateComments');
 		}
 	});
 };
@@ -151,6 +160,7 @@ window.ajaxcomment_like = function(id, val) {
 			if(html) {
 				$('#ajaxcomment-like',this).first().remove();
 				$('#ajaxcomment-dislike',this).first().replaceWith(html);
+				if(ws) webSocket.send('updateComments');
 			}
 		}
 	});
@@ -229,7 +239,7 @@ window.ajaxcomment_submit = function(e, cmd) {
 		success: function(html) {
 			this.replaceWith(html);
 			ajaxcomment_cancel();
+			if(ws) webSocket.send('updateComments');
 		}
 	});
-
 };
