@@ -14,6 +14,8 @@ if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'WEBSOCKET_VERSION', '1.0.1, 2015-04-18' );
 
+require( __DIR__ . '/WebSocket.class.php' );
+require( __DIR__ . '/WebSocketClient.class.php' );
 
 WebSocket::$port = 1729;               # Port the WebSocket daemon will run on
 WebSocket::$rewrite = false;           # Configure URL rewriting so that the WebSocket port doesn't need to be public
@@ -31,8 +33,5 @@ $wgExtensionCredits['other'][] = array(
 );
 
 $wgExtensionMessagesFiles['WebSocket'] = __DIR__ . '/WebSocket.i18n.php';
-
-require( __DIR__ . '/WebSocket.class.php' );
-require( __DIR__ . '/WebSocketClient.class.php' );
 
 new WebSocket();

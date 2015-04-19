@@ -14,22 +14,21 @@ class WebSocket {
 		// Extension setup hook
 		$wgExtensionFunctions[] = 'WebSocket::setup';
 
-		// Ensure WebSocket.py is running
-		if( empty( shell_exec( "ps ax|grep '[W]ebSocket.pl'" ) ) ) {
-			$log = self::$log ? ' ' . self::$log : '';
-			$rewrite = self::$rewrite ? ' 1' : ''
-			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite );
-		}
-
 		// Give this client an ID or use that supplied in request
 		self::$clientID = array_key_exists( 'clientID', $_REQUEST ) ? $_REQUEST['clientID'] : uniqid( 'WS' );
 	}
 
-	/**
-	 * Add the JS, styles and messages for the special page
-	 */
 	public static function setup() {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath;
+
+		// Ensure WebSocket daemon is running
+		if( empty( shell_exec( "ps ax|grep '[W]ebSocket.pl'" ) ) ) {
+			$log = self::$log ? ' ' . self::$log : '';
+			$rewrite = self::$rewrite ? ' 1' : '';
+			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite );
+		}
+
+		// Add the JS, styles and messages for the special page
 		$path = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
 		$wgResourceModules['ext.websocket'] = array(
 			'scripts'        => array( 'websocket.js' ),

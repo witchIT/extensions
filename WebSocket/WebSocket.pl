@@ -68,11 +68,13 @@ Net::WebSocket::Server->new(
 
 					# TODO: If recipients were listed, forward message to each
 					
-					# No recipients, broadcast message to all clients
+					# No recipients, broadcast message to all clients (except sender)
 					foreach( keys %::clients ) {
-						$c = $::clients{$_};
-						if( defined $c and $c->{socket}->connected ) { $c->send_utf8( $msg ) }
-						else { delete $::clients{$_} }
+						if( $_ ne $from ) {
+							$c = $::clients{$_};
+							if( defined $c and $c->{socket}->connected ) { $c->send_utf8( $msg ) }
+							else { delete $::clients{$_} }
+						}
 					}
 				}
             },

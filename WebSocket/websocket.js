@@ -60,6 +60,7 @@ window.webSocket = (function($, mw, undefined) {
 		},
 
 		send: function(type, msg, to) {
+			if(msg === undefined) msg = '';
 			if(to === undefined) to = [0];
 			ws.send(JSON.stringify({type: type, msg: msg, from: id, to: to}));
 		},
