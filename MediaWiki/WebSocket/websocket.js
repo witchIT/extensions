@@ -39,7 +39,7 @@ window.webSocket = (function($, mw, undefined) {
 			// url depends on rewrite and port
 			var port = mw.config.get('wsPort');
 			var rewrite = mw.config.get('wsRewrite');
-			var url = mw.config.get('wgServer').replace(/^https?/,'ws') + ( rewrite ? '/websocket' + ':' + port : ':' + port );
+			var url = mw.config.get('wgServer').replace(/^http/,'ws') + ( rewrite ? '/websocket' + ':' + port : ':' + port );
 			console.info('Connecting to WebSocket server at ' + url);
 
 			ws = new WebSocket(url);
