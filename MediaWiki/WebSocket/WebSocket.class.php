@@ -5,6 +5,8 @@ class WebSocket {
 	public static $rewrite;
 	public static $perl;
 	public static $log;
+	public static $ssl_cert;
+	public static $ssl_key;
 
 	private static $clientID = false;
 	
@@ -25,7 +27,8 @@ class WebSocket {
 		if( empty( shell_exec( "ps ax|grep '[W]ebSocket.pl'" ) ) ) {
 			$log = self::$log ? ' ' . self::$log : '';
 			$rewrite = self::$rewrite ? ' 1' : '';
-			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite );
+			$ssl = ( $_SERVER['HTTPS'] && self::$ssl_cert && self::$ssl_key ) ? " \"$ssl_cert\" \"$ssl_key\"" : '';
+			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite . $ssl );
 		}
 
 		// Add the JS, styles and messages for the special page

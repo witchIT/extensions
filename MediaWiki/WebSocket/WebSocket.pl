@@ -13,10 +13,12 @@ use Net::WebSocket::Server;   # See https://metacpan.org/pod/Net::WebSocket::Ser
 use Data::Dumper;
 use File::Basename;
 use Cwd qw(realpath);
-$::basedir = realpath( dirname( __FILE__ ) );
-$::port = $ARGV[0];
-$::log = $ARGV[1];
-$::rewrite = $ARGV[2];
+$::basedir  = realpath( dirname( __FILE__ ) );
+$::port     = $ARGV[0];
+$::log      = $ARGV[1];
+$::rewrite  = $ARGV[2];
+$::ssl_cert = $ARGV[3];
+$::ssl_key  = $ARGV[4];
 
 # Fork off and die
 defined ( my $pid = fork ) or die "Can't fork: $!";
@@ -28,20 +30,33 @@ open STDERR, '>>', $::log;
 binmode STDERR, ':utf-8';
 setsid or die "Can't start a new session: $!";
 umask 0;
-$0 = 'WebSocket.pl:1729';
+$0 = "WebSocket.pl:$::port";
 
 # Open log file if supplied
 open LOG, '>>', $::log if $::log;
 binmode LOG, ':utf-8';
 autoflush LOG 1;
-print LOG "WebSocket daemon starting on port $::port\n" if $::log;
+$sslmsg = $::ssl_cert ? ' (using SSL)' : '';
+print LOG "WebSocket daemon starting on port $::port$sslmsg\n" if $::log;
 
 # Keep a record of client instances associated with their IDs
 %::clients = {};
 
+# Use an SSL socket instead of port for listen parameter if SSL enabled
+my $listen = $::port;
+if( $::ssl_cert ) {
+	$listen = IO::Socket::SSL->new(
+	  Listen        => 5,
+	  LocalPort     => $::port,
+	  Proto         => 'tcp',
+	  SSL_cert_file => $::ssl_cert,
+	  SSL_key_file  => $::ssl_key,
+	) or die "failed to listen: $!";
+}
+
 # Set up the WebSocket listerner
 Net::WebSocket::Server->new(
-    listen => $::port,
+    listen => $listen,
     on_connect => sub {
         my ($serv, $conn) = @_;
         $conn->on(
