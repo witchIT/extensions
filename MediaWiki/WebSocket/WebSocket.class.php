@@ -25,7 +25,7 @@ class WebSocket {
 
 		// Ensure WebSocket daemon is running
 		if( empty( shell_exec( "ps ax|grep '[W]ebSocket.pl'" ) ) ) {
-			$log = self::$log ? ' ' . self::$log : '';
+			$log = self::$log ? ' "' . self::$log . '"' : '';
 			$rewrite = self::$rewrite ? ' 1' : '';
 			$ssl = ( $_SERVER['HTTPS'] && self::$ssl_cert && self::$ssl_key ) ? ' "' . self::$ssl_cert . '" "' . self::$ssl_key . '"' : '';
 			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite . $ssl );

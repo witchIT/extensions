@@ -8,6 +8,7 @@
 # Copyright © 2015 Aran Dunkley
 # Licence: GNU General Public Licence 2.0 or later
 #
+use IO::Socket::SSL;
 use IO::Async::Loop;
 use Net::WebSocket::Server;   # See https://metacpan.org/pod/Net::WebSocket::Server
 use Data::Dumper;
@@ -26,18 +27,17 @@ exit if $pid;
 open STDIN, '/dev/null';
 open STDOUT, '>>', $::log;
 binmode STDOUT, ':utf-8';
+autoflush STDOUT 1;
 open STDERR, '>>', $::log;
 binmode STDERR, ':utf-8';
+autoflush STDERR 1;
 setsid or die "Can't start a new session: $!";
 umask 0;
 $0 = "WebSocket.pl:$::port";
 
-# Open log file if supplied
-open LOG, '>>', $::log if $::log;
-binmode LOG, ':utf-8';
-autoflush LOG 1;
+# Log startup
 $sslmsg = $::ssl_cert ? ' (using SSL)' : '';
-print LOG "WebSocket daemon starting on port $::port$sslmsg\n" if $::log;
+print "WebSocket daemon starting on port $::port$sslmsg\n" if $::log;
 
 # Keep a record of client instances associated with their IDs
 %::clients = {};
@@ -58,27 +58,27 @@ if( $::ssl_cert ) {
 Net::WebSocket::Server->new(
     listen => $listen,
     on_connect => sub {
-        my ($serv, $conn) = @_;
+        my( $serv, $conn ) = @_;
         $conn->on(
             utf8 => sub {
-                my ($conn, $msg) = @_;
+                my( $conn, $msg ) = @_;
 				my $from = 0;
 				my $peeraddr = join( '.', unpack( 'C4', $conn->{socket}->peeraddr() ) );
 
 				# Disconnect the client if in rewrite mode and this is not local
 				if( $::rewrite and $peeraddr ne '127.0.0.1' ) {
-					print LOG "Disconnecting non-local client\n" if $::log;
+					print "Disconnecting non-local client ($peeraddr)\n" if $::log;
 					$conn->disconnect();
 				}
 
 				else {
-					print LOG "Message received ($peeraddr): $msg\n" if $::log;
+					print "Message received ($peeraddr): $msg\n" if $::log;
 
 					# If this client sent an ID, store them in the client hash
 					if( $msg =~ /"from"\s*:\s*"(.+?)"/s ) {
 						$from = $1;
 						$::clients{$from} = $conn;
-						print LOG "From: $from\n" if $::log;
+						print "From: $from\n" if $::log;
 					}
 
 					# TODO: If recipients were listed, forward message to each
