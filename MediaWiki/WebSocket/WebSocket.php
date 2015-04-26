@@ -21,7 +21,8 @@ WebSocket::$port = 1729;               # Port the WebSocket daemon will run on
 WebSocket::$rewrite = false;           # Configure URL rewriting so that the WebSocket port doesn't need to be public
 WebSocket::$perl = '/usr/bin/perl';    # Location of the Perl interpreter
 WebSocket::$log = false;               # Set a file location to log WebSocket daemon events and errors
-
+WebSocket::$ssl_cert = false;          # If the wiki uses SSL, then the WebSocket will need to know the certificate file,
+WebSocket::$ssl_key = false;           # and the SSL key file
 
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
