@@ -1,4 +1,4 @@
-window.webSocket = (function($, mw, undefined) {
+window.webSocket = (function($, document, mw, undefined) {
 
 	// Private vars
 	var ws = false;
@@ -65,5 +65,5 @@ window.webSocket = (function($, mw, undefined) {
 			ws.send(JSON.stringify({type: type, msg: msg, from: id, to: to}));
 		},
 	}
-}(jQuery, mw));
+}(jQuery, document, mw));
 
