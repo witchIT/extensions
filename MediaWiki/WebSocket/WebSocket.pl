@@ -46,22 +46,22 @@ print "WebSocket daemon starting on port $::port$sslmsg\n" if $::log;
 my $listen = $::port;
 if( $::ssl_cert ) {
 	$listen = IO::Socket::SSL->new(
-	  Listen        => 5,
-	  LocalPort     => $::port,
-	  Proto         => 'tcp',
-	  SSL_cert_file => $::ssl_cert,
-	  SSL_key_file  => $::ssl_key,
+		Listen        => 5,
+		LocalPort     => $::port,
+		Proto         => 'tcp',
+		SSL_cert_file => $::ssl_cert,
+		SSL_key_file  => $::ssl_key,
 	) or die "failed to listen: $!";
 }
 
 # Set up the WebSocket listerner
 Net::WebSocket::Server->new(
-    listen => $listen,
-    on_connect => sub {
-        my( $serv, $conn ) = @_;
-        $conn->on(
-            utf8 => sub {
-                my( $conn, $msg ) = @_;
+	listen => $listen,
+		on_connect => sub {
+			my( $serv, $conn ) = @_;
+			$conn->on(
+			utf8 => sub {
+				my( $conn, $msg ) = @_;
 				my $from = 0;
 				my $peeraddr = join( '.', unpack( 'C4', $conn->{socket}->peeraddr() ) );
 
@@ -92,7 +92,7 @@ Net::WebSocket::Server->new(
 						}
 					}
 				}
-            },
-        );
-    },
+			},
+		);
+	},
 )->start;
