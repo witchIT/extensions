@@ -9,7 +9,8 @@ class WebSocket {
 	public static $ssl_key;
 
 	private static $clientID = false;
-	
+	private static $ssl = false;
+
 	function __construct() {
 		global $wgExtensionFunctions;
 		
@@ -18,16 +19,19 @@ class WebSocket {
 
 		// Give this client an ID or use that supplied in request
 		self::$clientID = array_key_exists( 'clientID', $_REQUEST ) ? $_REQUEST['clientID'] : uniqid( 'WS' );
+
+		// Are we doing SSL WebSocket connections?
+		self::$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] && self::$ssl_cert && self::$ssl_key;
 	}
 
 	public static function setup() {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath;
 
 		// Ensure WebSocket daemon is running
-		if( empty( shell_exec( "ps ax|grep '[W]ebSocket.pl'" ) ) ) {
+		if( empty( shell_exec( "ps ax|grep '[W]ebSocket:'" ) ) ) {
 			$log = self::$log ? ' "' . self::$log . '"' : '';
 			$rewrite = self::$rewrite ? ' 1' : '';
-			$ssl = ( $_SERVER['HTTPS'] && self::$ssl_cert && self::$ssl_key ) ? ' "' . self::$ssl_cert . '" "' . self::$ssl_key . '"' : '';
+			$ssl = self::$ssl ? ' "' . self::$ssl_cert . '" "' . self::$ssl_key . '"' : '';
 			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite . $ssl );
 		}
 
@@ -49,13 +53,14 @@ class WebSocket {
 	 * Send a message to WebSocket clients
 	 */
 	public static function send( $type, $msg, $to = false ) {
-		$ws = new WebSocketClient( '127.0.0.1', self::$port );
+		$proto = self::$ssl ? 'wss' : 'ws';
+		$ws = new WebSocketClient( "$proto://localhost:" . self::$port );
 		$ws->send( json_encode( array(
 			'type' => $type,
 			'from' => self::$clientID,
 			'msg'  => $msg,
 			'to'   => $to
 		) ) );
-		$ws->close();		
+		$ws->close();
 	}
 }

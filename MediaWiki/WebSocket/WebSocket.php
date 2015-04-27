@@ -12,7 +12,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'WEBSOCKET_VERSION', '1.1.0, 2015-04-25' );
+define( 'WEBSOCKET_VERSION', '1.2.0, 2015-04-27' );
 
 require( __DIR__ . '/WebSocket.class.php' );
 require( __DIR__ . '/WebSocketClient.class.php' );

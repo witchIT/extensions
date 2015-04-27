@@ -5,23 +5,17 @@ class WebSocketClient {
 	private $host;
 	private $port;
 
-	function __construct( $host, $port ) {
-		$this->host = $host;
-		$this->port = $port;
+	function __construct( $url ) {
+
+		# Extract the protocol, host and port from the passed URL, use tcp/ssl transport not ws/wss
+		$url = parse_url( $url );
+		$proto = $url['scheme'] == 'ws' ? 'tcp' : 'ssl';
+		$this->host = $url['host'];
+		$this->port = $url['port'];
 
 		# Create a socket
-		if( !( $this->sock = socket_create( AF_INET, SOCK_STREAM, 0 ) ) ) {
-			$errorcode = socket_last_error();
-			$errormsg = socket_strerror( $errorcode );
-			die( "Couldn't create socket: [$errorcode] $errormsg \n" );
-		}
-
-		# Connect the socket to the WebSocket daemon
-		if( !socket_connect( $this->sock , $this->host , $this->port ) ) {
-			$errorcode = socket_last_error();
-			$errormsg = socket_strerror( $errorcode );
-			die( "Could not connect: [$errorcode] $errormsg \n" );
-		}
+		$this->sock = fsockopen( $proto . '://' . $this->host, $this->port, $errno, $err );
+		if( $errno ) die( "Couldn't create socket: [$errorno] $err\n" );
 
 		# Construct a WebSocket message header
 		$head = "GET / HTTP/1.1\r\n" 
@@ -33,14 +27,10 @@ class WebSocketClient {
 			. "Content-Length: 0\r\n\r\n";
 
 		# Connect to the daemon
-		if( !socket_send( $this->sock , $head, strlen( $head ) , 0 ) ) {
-			$errorcode = socket_last_error();
-			$errormsg = socket_strerror($errorcode);
-			die( "Could not send data: [$errorcode] $errormsg \n" );
-		}
+		fwrite( $this->sock , $head );
 
-		# Receive the header
-		$res = socket_read( $this->sock, 2000 );
+		# Receive the response header
+		$res = fread( $this->sock, 2000 );
 
 		# Close and die if not accepted
 		if( !preg_match( '/Sec-WebSocket-Accept:/', $res ) ) {
@@ -50,16 +40,11 @@ class WebSocketClient {
 	}
 
 	function close() {
-		return socket_close( $this->sock );
+		return fclose( $this->sock );
 	}
 
 	function send( $data ) {
-		$data = $this->encode( $data );
-		if( !socket_send( $this->sock , $data, strlen( $data ) , 0 ) ) {
-			$errorcode = socket_last_error();
-			$errormsg = socket_strerror($errorcode);
-			die( "Could not send data: [$errorcode] $errormsg \n" );
-		}
+		fwrite( $this->sock , $this->encode( $data ) );
 	}
 
 	function decode( $data ) {

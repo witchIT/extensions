@@ -1,17 +1,20 @@
 #!/usr/bin/perl
 use AnyEvent::WebSocket::Client;
  
-my $client = AnyEvent::WebSocket::Client->new(ssl_no_verify => 1);
-my $connected = AnyEvent->condvar;
-$client->connect("wss://localhost:1729")->cb(sub {
-	our $connection = eval { shift->recv };
+# Connect to the WebSocket server
+my $client = AnyEvent::WebSocket::Client->new( ssl_no_verify => 1 );
+my $ready = AnyEvent->condvar;
+$client->connect( 'wss://localhost:1729' )->cb(sub {
+	our $ws = eval { shift->recv };
 	die $@ if $@;
-	$connected->send;
+	$ready->send;
 });
-$connected->recv();
+$ready->recv();
 
-$connection->send('foo');
-$connection->send('bar');
-$connection->send('baz');
+# Send some messages
+$ws->send('foo');
+$ws->send('bar');
+$ws->send('baz');
 
-$connection->close;
+# Close the connection
+$ws->close;
