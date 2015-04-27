@@ -10,7 +10,6 @@
 #
 use IO::Socket::SSL;
 use IO::Socket::INET;
-use IO::Async::Loop;
 use Net::WebSocket::Server;   # See https://metacpan.org/pod/Net::WebSocket::Server
 use Data::Dumper;
 use File::Basename;
