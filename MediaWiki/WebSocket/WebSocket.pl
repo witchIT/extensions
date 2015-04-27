@@ -9,6 +9,7 @@
 # Licence: GNU General Public Licence 2.0 or later
 #
 use IO::Socket::SSL;
+use IO::Socket::INET;
 use IO::Async::Loop;
 use Net::WebSocket::Server;   # See https://metacpan.org/pod/Net::WebSocket::Server
 use Data::Dumper;
@@ -49,6 +50,7 @@ if( $::ssl_cert ) {
 		Listen        => 5,
 		LocalPort     => $::port,
 		Proto         => 'tcp',
+		Domain        => AF_INET,
 		SSL_cert_file => $::ssl_cert,
 		SSL_key_file  => $::ssl_key,
 	) or die "failed to listen: $!";
