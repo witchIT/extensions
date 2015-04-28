@@ -52,7 +52,7 @@ class WebSocket {
 		$wgOut->addJsConfigVars( 'wsPort', self::$port );
 		$wgOut->addJsConfigVars( 'wsRewrite', self::$rewrite );
 		$wgOut->addJsConfigVars( 'wsClientID', self::$clientID );
-		$wgOut->addJsConfigVars( 'wsWikiID', ':' . $wgDBname . ($wgDBprefix ? ":$wgDBprefix" : '') . ':' );
+		$wgOut->addJsConfigVars( 'wsWikiID', "$wgDBprefix$wgDBname:" );
 	}
 
 	/**
