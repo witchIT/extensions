@@ -20,18 +20,21 @@ class WebSocket {
 		// Give this client an ID or use that supplied in request
 		self::$clientID = array_key_exists( 'clientID', $_REQUEST ) ? $_REQUEST['clientID'] : uniqid( 'WS' );
 
-		// Are we doing SSL WebSocket connections?
-		self::$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] && self::$ssl_cert && self::$ssl_key;
+		// Is this an SSL connection?
+		self::$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'];
 	}
 
 	public static function setup() {
-		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath;
+		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgDBname, $wgDBprefix;
+
+		// If using SSL but no creds supplied, die
+		if( self::$ssl && !(self::$ssl_cert && self::$ssl_key) ) die( wfMessage( 'websocket-nosslcreds' )->text() );
 
 		// Ensure WebSocket daemon is running
-		if( empty( shell_exec( "ps ax|grep '[W]ebSocket:'" ) ) ) {
+		if( empty( shell_exec( "ps ax|grep '[W]ebSocket:" . self::$port . "'" ) ) ) {
 			$log = self::$log ? ' "' . self::$log . '"' : '';
 			$rewrite = self::$rewrite ? ' 1' : '';
-			$ssl = self::$ssl ? ' "' . self::$ssl_cert . '" "' . self::$ssl_key . '"' : '';
+			$ssl = self::$ssl_cert ? ' "' . self::$ssl_cert . '" "' . self::$ssl_key . '"' : '';
 			exec( self::$perl . ' "' . __DIR__ . '/WebSocket.pl" ' . self::$port . $log . $rewrite . $ssl );
 		}
 
@@ -44,16 +47,20 @@ class WebSocket {
 			'messages'       => array(),
 		);
 		$wgOut->addModules( 'ext.websocket' );
+
+		// Send some additional config info to the client side
 		$wgOut->addJsConfigVars( 'wsPort', self::$port );
 		$wgOut->addJsConfigVars( 'wsRewrite', self::$rewrite );
 		$wgOut->addJsConfigVars( 'wsClientID', self::$clientID );
+		$wgOut->addJsConfigVars( 'wsWikiID', ':' . $wgDBname . ($wgDBprefix ? ":$wgDBprefix" : '') . ':' );
 	}
 
 	/**
-	 * Send a message to WebSocket clients
+	 * Send a message to WebSocket clients (use port + 1 for SSL connections)
 	 */
 	public static function send( $type, $msg, $to = false ) {
 		$proto = self::$ssl ? 'wss' : 'ws';
+		$port = self::$ssl ? self::$port + 1 : self::$port;
 		$ws = new WebSocketClient( "$proto://localhost:" . self::$port );
 		$ws->send( json_encode( array(
 			'type' => $type,

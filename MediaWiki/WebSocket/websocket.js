@@ -36,10 +36,11 @@ window.webSocket = (function($, document, mw, undefined) {
 		connect: function() {
 			if(ws) return;
 
-			// url depends on rewrite and port
-			var port = mw.config.get('wsPort');
+			// url depends on rewrite, port and SSL
+			var server = mw.config.get('wgServer');
+			var port = server.match(/https:/) ? mw.config.get('wsPort') + 1 : mw.config.get('wsPort');
 			var rewrite = mw.config.get('wsRewrite');
-			var url = mw.config.get('wgServer').replace(/^http/,'ws') + ( rewrite ? '/websocket' + ':' + port : ':' + port );
+			var url = server.replace(/^http/,'ws') + ( rewrite ? '/websocket' + ':' + port : ':' + port );
 			console.info('Connecting to WebSocket server at ' + url);
 
 			ws = new WebSocket(url);
