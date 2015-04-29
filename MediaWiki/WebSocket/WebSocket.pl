@@ -29,6 +29,9 @@ autoflush STDERR 1;
 setsid or die "Can't start a new session: $!";
 umask 0;
 
+# Output the command that ran this instance
+print "WebSocket.pl $port $log $rewrite $ssl_cert $ssl_key\n";
+
 # Set up the non-SSL WebSocket listener on $port
 my $sock = IO::Socket::INET->new(
 	Listen    => 5,
