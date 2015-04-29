@@ -5,6 +5,8 @@ window.webSocket = (function($, document, mw, undefined) {
 	var id = false;
 	var active = false;
 	var connected = false;
+	var disconnectedCallback = false;
+	var subscribers = {};
 
 	function onOpen(e) {
 		console.info('WebSocket connected');
@@ -15,16 +17,22 @@ window.webSocket = (function($, document, mw, undefined) {
 	function onClose() {
 		console.info('WebSocket disconnected');
 		connected = false;
+		ws = false;
+		if(disconnectedCallback) disconnectedCallback();
 	}
 
 	function onMessage(e) {
-		console.info('WebSocket message received');
-		var data = $.parseJSON(e.data);
-		$.event.trigger({type: 'ws_' + data.type, args: {msg: data.msg, to: data.to}});
+		var i, data = $.parseJSON(e.data);
+		console.info('WebSocket "' + data.type + '" message received (subscibers notified: ' + subscribers[data.type].length + ')');
+		for( i = 0; i < subscribers[data.type].length; i++ ) subscribers[data.type][i](data);
 	}
 
 	function onError(e) {
 		console.log('WebSocket error: ' + e);
+	}
+
+	function checkConnection() {
+		if(!connected) webSocket.connect();
 	}
 
 	// Return public API
@@ -36,33 +44,49 @@ window.webSocket = (function($, document, mw, undefined) {
 		connect: function() {
 			if(ws) return;
 
-			// url depends on rewrite, port and SSL
+			// Set this client's unique ID to be used in registration and the "from" field of sent messages
+			id = mw.config.get('wsClientID');
+
+			// Url depends on rewrite, port and SSL
 			var server = mw.config.get('wgServer');
 			var port = server.match(/https:/) ? mw.config.get('wsPort') + 1 : mw.config.get('wsPort');
 			var rewrite = mw.config.get('wsRewrite');
 			var url = server.replace(/^http/,'ws') + ( rewrite ? '/websocket' + ':' + port : ':' + port );
 			console.info('Connecting to WebSocket server at ' + url);
 
+			// Connect the WebSocket
 			ws = new WebSocket(url);
 			if(ws) active = true;
-			id = mw.config.get('wsClientID');
 			console.info('WebSocket active');
 
+			// Conect the WebSocket's events to our private handlers
 			ws.onopen = onOpen;
 			ws.onclose = onClose;
 			ws.onmessage = onMessage;
 			ws.onerror = onError;
 
+			// Check the connection evert 5 seconds to see if a reconnection needs to be tried
+			if(active) setInterval(ws.checkConnection, 5000);
+
 			return active;
 		},
 
-		subscribe: function(type, callback) {
-			$(document).on( 'ws_' + type, callback );
+		// Pass a callback to execute when the socket disconnects
+		disconnected: function(callback) {
+			disconnectedCallback = callback;
 		},
 
+		// Pass a callback to execute when messages of the specified type are received
+		subscribe: function(type, callback) {
+			if(type in subscribers) subscribers[type].push(callback);
+			else subscribers[data.type] = [callback];
+			console.info('Subscribed to "' + type + '"');
+		},
+
+		// Send a message of the specified type to the specified recipient(s) (or broadcast if none specified)
 		send: function(type, msg, to) {
 			if(msg === undefined) msg = '';
-			if(to === undefined) to = [0];
+			if(to === undefined) to = '';
 			ws.send(JSON.stringify({type: type, msg: msg, from: id, to: to}));
 		},
 	}
