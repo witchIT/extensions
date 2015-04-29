@@ -31,7 +31,8 @@ class WebSocket {
 		if( self::$ssl && !(self::$ssl_cert && self::$ssl_key) ) die( wfMessage( 'websocket-nosslcreds' )->text() );
 
 		// Ensure WebSocket daemon is running
-		if( empty( shell_exec( "ps ax|grep '[W]ebSocket:" . self::$port . "'" ) ) ) {
+		$processes = shell_exec( "ps ax|grep '[W]ebSocket:" . self::$port . "'" );
+		if( empty( $processes ) ) {
 			$log = self::$log ? ' "' . self::$log . '"' : '';
 			$rewrite = self::$rewrite ? ' 1' : '';
 			$ssl = self::$ssl_cert ? ' "' . self::$ssl_cert . '" "' . self::$ssl_key . '"' : '';
