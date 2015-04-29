@@ -150,7 +150,7 @@ sub processMessage {
 
 	# Disconnect the client if in rewrite mode and this is not local
 	if( $rewrite and $peeraddr ne '127.0.0.1' ) {
-		print "Disconnecting non-local$ssl client ($peeraddr)\n" if $log;
+		print "Disconnecting non-local client ($peeraddr$ssl)\n" if $log;
 		$conn->disconnect();
 	}
 
