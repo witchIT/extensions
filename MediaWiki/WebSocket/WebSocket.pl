@@ -29,9 +29,6 @@ autoflush STDERR 1;
 setsid or die "Can't start a new session: $!";
 umask 0;
 
-# Set the program name so the PHP can test if it needs to be run
-$0 = "WebSocket:$port";
-
 # Set up the non-SSL WebSocket listener on $port
 my $sock = IO::Socket::INET->new(
 	Listen    => 5,
