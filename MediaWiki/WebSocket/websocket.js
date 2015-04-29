@@ -42,7 +42,7 @@ window.webSocket = (function($, document, mw, undefined) {
 		connected: function() { return connected; },
 
 		connect: function() {
-			if(ws) return;
+			if(connected) return;
 
 			// Set this client's unique ID to be used in registration and the "from" field of sent messages
 			id = mw.config.get('wsClientID');
@@ -79,7 +79,7 @@ window.webSocket = (function($, document, mw, undefined) {
 		// Pass a callback to execute when messages of the specified type are received
 		subscribe: function(type, callback) {
 			if(type in subscribers) subscribers[type].push(callback);
-			else subscribers[data.type] = [callback];
+			else subscribers[type] = [callback];
 			console.info('Subscribed to "' + type + '"');
 		},
 

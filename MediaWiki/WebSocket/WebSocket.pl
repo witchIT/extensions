@@ -156,21 +156,21 @@ sub processMessage {
 
 	else {
 		my $type = $msg =~ /"type"\s*:\s*"(.+?)"/s ? $1 : '';
-		my $typemsg = $type ? "$type " : '';
-		print "Message received ($typemsg$peeraddr$ssl): $msg\n" if $log;
+		my $typemsg = $type ? "$type," : '';
+		print "Message received ($typemsg$peeraddr$ssl)\n" if $log;
 
 		# If this client sent an ID, store them in the client hash
 		if( $msg =~ /"from"\s*:\s*"(.+?)"/s ) {
 			$from = $1;
 			$clients{$from} = $conn;
-			print "From: $from\n" if $log;
+			print "\tFrom: $from\n" if $log;
 		}
 
 		# Only forward message if it's not a registration
 		if( $type ne 'Register' ) {
 
 			# Extract recipients
-			my $to = $msg =~ /"to"\s*:\s*"(.+?)"/s ? $1 : '';
+			my $to = $msg =~ /"to"\s*:\s*"(.*?)"/s ? $1 : '';
 			my @recipients = ();
 			if( $to ) {
 				$to =~ s/[^0-9,]//;
@@ -179,10 +179,12 @@ sub processMessage {
 
 			# Send to recipients, or roadcast message if none specified
 			foreach my $k ( keys %clients ) {
-				if( $k ne $from and ( $to and grep { $_ eq $k } @recipients ) ) {
+				if( $k ne $from and ( $to eq '' or grep { $_ eq $k } @recipients ) ) {
 					$client = $clients{$k};
-					if( defined $client and $client->{socket}->connected ) { $client->send_utf8( $msg ) }
-					else { delete $clients{$k} }
+					if( defined $client and $client->{socket}->connected ) {
+						print "\tForwarding to $k\n" if $log;
+						$client->send_utf8( $msg )
+					} else { delete $clients{$k} }
 				}
 			}
 		}
