@@ -7,7 +7,7 @@
  * @package MediaWiki
  * @subpackage Extensions
  * @author [http://www.organicdesign.co.nz/nad Nad]
- * @copyright © 2013 [http://www.organicdesign.co.nz/nad Nad]
+ * @copyright © 2013-2015 [http://www.organicdesign.co.nz/aran Aran Dunkley]
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
@@ -20,7 +20,7 @@ $wgBlikiDefaultCat = 'Blog items';
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
 	'name'        => 'Bliki',
-	'author'      => '[http://www.organicdesign.co.nz/User:Nad Aran Dunkley]',
+	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
 	'url'         => 'http://www.organicdesign.co.nz/bliki',
 	'description' => 'Adds [[Bliki]] (blog in a wiki) functionality',
 	'version'     => BLIKI_VERSION
