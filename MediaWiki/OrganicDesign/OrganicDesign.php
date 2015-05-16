@@ -44,48 +44,16 @@ class OrganicDesign {
 		global $wgOut, $wgExtensionAssetsPath, $wgResourceModules, $wgUser, $wgCommandLineMode;
 		self::$title = array_key_exists( 'title', $_REQUEST ) ? Title::newFromText( $_REQUEST['title'] ) : false;
 
+		// Bounce to the https www (if they're not https or not www)
 		if( !$wgCommandLineMode ) {
-
-			// Bounce requests to https for sysops and non-https for non-sysops, and force www prefix
-			// - conditions must be such that redirects only happen if something needs to change
-			// - works for standard ports 80 & 443 (scheme://od/uri) and 8080/8989 (scheme://od:port/uri)
 			$host = preg_match( "|^(.+):\d+$|", $_SERVER['HTTP_HOST'], $m ) ? $m[1] : $_SERVER['HTTP_HOST'];
 			$uri = $_SERVER['REQUEST_URI'];
 			$ssl = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on';
-			$port = isset( $_SERVER['SERVER_PORT'] ) ? $_SERVER['SERVER_PORT'] : '';
-			if( $port == 80 || $port == 443 ) $port = ''; else $port = ":$port";
 			$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
 			$www = $m[1] ? $m[1] : 'www';
-
-			// Sysop logins
-			if( in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
-
-				// Bounce to the https www (if they're not https or not www)
-				if( !$od || !$ssl ) {
-					if( $port ) $port = ':8989';
-					header( "Location: https://$www.organicdesign.co.nz$port$uri", true, 301 );
-					exit;
-				}
-			}
-
-			// Non-sysops
-			else {
-
-				// Login or API requests bounce to the https www (if they're not https or not www)
-				if( strpos( $uri, '/api.php' ) !== false || ( array_key_exists( 'title', $_REQUEST ) && $_REQUEST['title'] == 'Special:UserLogin' ) ) {
-					if( !$od || !$ssl ) {
-						if( $port ) $port = ':8989';
-						header( "Location: https://$www.organicdesign.co.nz$port$uri", true, 301 );
-						exit;
-					}
-				}
-
-				// Non-login pages bounce to non-https www (if they're https or they're not www)
-				else if( $ssl || !$od ) {
-					if( $port ) $port = ':8080';
-					header( "Location: http://$www.organicdesign.co.nz$port$uri", true, 301 );
-					exit;
-				}
+			if( !$od || !$ssl ) {
+				header( "Location: https://$www.organicdesign.co.nz$uri", true, 301 );
+				exit;
 			}
 		}
 
