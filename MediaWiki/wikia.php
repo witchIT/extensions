@@ -22,11 +22,11 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 ini_set( 'memory_limit', '128M' );
 
 // Need to turn of strict warnings as too many third-party extensions raise errors
-ini_set('display_errors', 'Off'); 
-error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
+ini_set( 'display_errors', 'Off' ); 
+error_reporting( E_ALL & ~E_STRICT & ~E_NOTICE );
 
 // Constants
-define( 'WIKIA_VERSION', '1.2.18, 2014-12-23' );
+define( 'WIKIA_VERSION', '1.2.19, 2015-05-17' );
 
 // Read the DB access and bot name info from wikid.conf
 $wgWikidAddr = '127.0.0.1';
@@ -119,6 +119,7 @@ $extensions               = dirname( __FILE__ );
 if( $wgCommandLineMode ) {
 	$wgDBadminuser = $wgDBuser;
 	$wgDBadminpassword = $wgDBpassword;
+	if( preg_match( '/--domain=([a-z0-9_.-]+)/', implode( ' ', $argv ), $m ) ) $domain = $m[1];
 	$root = "$domains/$domain";
 }
 
