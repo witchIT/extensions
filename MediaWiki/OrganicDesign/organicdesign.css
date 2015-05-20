@@ -432,3 +432,9 @@ span.fancytree-title {
 span.fancytree-title a {
 	color: black;
 }
+
+/* imageTable */
+.imageTable {
+	float: left;
+	padding: 2px;
+}
