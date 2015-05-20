@@ -48,7 +48,7 @@ class OrganicDesign {
 		if( !$wgCommandLineMode ) {
 			$host = preg_match( "|^(.+):\d+$|", $_SERVER['HTTP_HOST'], $m ) ? $m[1] : $_SERVER['HTTP_HOST'];
 			$uri = $_SERVER['REQUEST_URI'];
-			$ssl = isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on';
+			$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'on';
 			$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
 			$www = $m[1] ? $m[1] : 'www';
 			if( !$od || !$ssl ) {
