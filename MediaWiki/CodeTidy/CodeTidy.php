@@ -28,12 +28,28 @@ $wgExtensionCredits['specialpage'][] = array(
 // Include the Organic Design CodeTidy class
 require( '/var/www/tools/tidy.php' );
 
+$wgExtensionMessagesFiles['CodeTidy'] = __DIR__ . '/CodeTidy.i18n.php';
+
 class SpecialCodeTidy extends SpecialPage {
 
 	function __construct() {
 		parent::__construct( 'CodeTidy', '' );
 	}
 
-	public function execute() {
+	public function execute( $param ) {
+		global $wgOut, $wgRequest;
+		$this->setHeaders();
+		if( $code = $wgRequest->getText( 'wpSource' ) ) $this->tidy( $code );
+		else {
+			$wgOut->addWikiText( '=== Enter your code here: ===' );
+			$wgOut->addHTML( '<form method="POST"><textarea name="wpSource" cols="50" rows="30"></textarea><input type="submit" value="Tidy!" /></form>' );
+		}
+	}
+
+	private function tidy( $code ) {
+		global $wgOut;
+		$tidy = CodeTidy::tidy( $code );
+		$wgOut->addWikiText( '=== Tidied code ===' );
+		$wgOut->addWikiText( "<php>$tidy</php>" );
 	}
 }
