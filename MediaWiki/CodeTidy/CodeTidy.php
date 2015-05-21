@@ -31,7 +31,7 @@ require( '/var/www/tools/tidy.php' );
 class SpecialCodeTidy extends SpecialPage {
 
 	function __construct() {
-		parent::__construct( 'SpecialCodeTidy', '' );
+		parent::__construct( 'CodeTidy', '' );
 	}
 
 	public function execute() {
