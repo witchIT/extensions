@@ -22,7 +22,7 @@ $wgExtensionCredits['specialpage'][] = array(
 	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
 	'url'         => 'http://www.mediawiki.org/wiki/Extension:CodeTidy',
 	'description' => 'Simple wrapper around the Organic Design [https://github.com/OrganicDesign/tools/blob/git-svn/tidy.php tidy.php utility] to make a web-based code tidier that matches the [https://www.mediawiki.org/wiki/Manual:Coding_conventions/PHP MediaWiki conventions]',
-	'version'     => AJAXCOMMENTS_VERSION
+	'version'     => CODETIDY_VERSION
 );
 
 // Include the Organic Design CodeTidy class
