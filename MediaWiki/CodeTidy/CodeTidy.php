@@ -15,7 +15,7 @@
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 define( 'CODETIDY_VERSION', '0.0.1, 2015-05-21' );
-
+$wgSpecialPages['CodeTidy'] = 'SpecialCodeTidy';
 $wgExtensionCredits['specialpage'][] = array(
 	'path'        => __FILE__,
 	'name'        => 'CodeTidy',
