@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-$wgHighlightJsStyle = 'github';
+$wgHighlightJsStyle = 'xcode';
 
 define( 'HIGHLIGHTJS_VERSION', '0.0.1, 2015-05-22' );
 
