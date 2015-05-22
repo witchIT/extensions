@@ -13,6 +13,8 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
+$wgHighlightJsStyle = 'github';
+
 define( 'HIGHLIGHTJS_VERSION', '0.0.1, 2015-05-22' );
 
 $wgExtensionCredits['other'][] = array(
@@ -33,7 +35,7 @@ class HighlightJS {
 	}
 
 	public function setup() {
-		global $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgExtensionAssetsPath, $wgUser;
+		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgHighlightJsStyle;
 
 		// Set up JavaScript and CSS resources
 		$path = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
@@ -43,7 +45,7 @@ class HighlightJS {
 			'remoteBasePath' => $path,
 		);
 		$wgOut->addModules( 'ext.highlightjs' );
-		$wgOut->addStyle( "$path/highlight/styles/default.css" );
+		$wgOut->addStyle( "$path/highlight/styles/$wgHighlightJsStyle.css" );
 	}
 
 	public function onParserFirstCallInit( Parser $parser ) {
