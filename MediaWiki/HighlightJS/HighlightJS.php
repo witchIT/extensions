@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-$wgHighlightJsStyle = 'xcode';
+$wgHighlightJsStyle = ''; // Set to the name of the preferred style from the highlight/styles directory
 
 define( 'HIGHLIGHTJS_VERSION', '0.0.1, 2015-05-22' );
 
@@ -45,7 +45,8 @@ class HighlightJS {
 			'remoteBasePath' => $path,
 		);
 		$wgOut->addModules( 'ext.highlightjs' );
-		$wgOut->addStyle( "$path/highlight/styles/$wgHighlightJsStyle.css" );
+		$css = $wgHighlightJsStyle ? "highlight/styles/$wgHighlightJsStyle.css" : 'highlight.css';
+		$wgOut->addStyle( "$path/$css" );
 	}
 
 	public function onParserFirstCallInit( Parser $parser ) {
