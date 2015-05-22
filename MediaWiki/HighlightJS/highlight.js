@@ -1,5 +1,9 @@
 $(document).ready(function() {
-	$('pre code').each(function(i, block) {
-		hljs.highlightBlock(block);
-	});
+	window.hljsGo = function() {
+		$('pre code.todo').each(function(i, block) {
+			$(block).removeClass('todo');
+			hljs.highlightBlock(block);
+		});
+	};
+	window.hljsGo();
 });
