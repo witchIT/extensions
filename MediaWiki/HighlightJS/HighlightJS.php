@@ -54,7 +54,8 @@ class HighlightJS {
 	}
 
 	public function source( $input, array $args, Parser $parser, PPFrame $frame ) {
-		$class = array_key_exists( 'lang', $args ) ? ' class="' . $args['lang'] . '"' : '';
+		if( !array_key_exists( 'lang', $args ) ) $args['lang'] = 'nohighlight';
+		$class = ' class="' . $args['lang'] . '"' : '';
 		return "<pre><code$class>" . htmlspecialchars( $input ) . "</code></pre>";
 	}
 }
