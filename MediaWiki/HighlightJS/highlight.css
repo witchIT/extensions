@@ -7,7 +7,7 @@
 .hljs {
   display: block;
   overflow-x: auto;
-  padding: 0.5em;
+  padding: 0;
   color: black;
   -webkit-text-size-adjust: none;
 }
