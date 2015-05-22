@@ -103,10 +103,10 @@ table.od-message { margin-top: 3em; }
 }
 #mw-hidden-catlinks { display:none; }
 
-pre, .mw-code {
-    background: none;
-    border: none;
-    line-height: 1.7em;
+pre, .mw-code, code {
+	background: #f4f4f4;
+	border: none;
+	line-height: 1.5em;
 }
 
 /**
