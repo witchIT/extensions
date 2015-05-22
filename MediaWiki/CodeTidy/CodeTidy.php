@@ -51,6 +51,6 @@ class SpecialCodeTidy extends SpecialPage {
 		global $wgOut;
 		$tidy = CodeTidy::tidy( $code );
 		$wgOut->addWikiText( '=== Tidied code ===' );
-		$wgOut->addWikiText( "<php>$tidy</php>" );
+		$wgOut->addWikiText( "<source lang=\"php\">$tidy</source>" );
 	}
 }
