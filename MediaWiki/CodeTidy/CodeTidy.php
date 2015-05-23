@@ -20,7 +20,7 @@ $wgExtensionCredits['specialpage'][] = array(
 	'path'        => __FILE__,
 	'name'        => 'CodeTidy',
 	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
-	'url'         => 'http://www.mediawiki.org/wiki/Extension:CodeTidy',
+	'url'         => 'http://www.organicdesign.co.nz/Extension:CodeTidy',
 	'description' => 'Simple wrapper around the Organic Design [https://github.com/OrganicDesign/tools/blob/git-svn/tidy.php tidy.php utility] to make a web-based code tidier that matches the [https://www.mediawiki.org/wiki/Manual:Coding_conventions/PHP MediaWiki conventions]',
 	'version'     => CODETIDY_VERSION
 );
@@ -39,10 +39,10 @@ class SpecialCodeTidy extends SpecialPage {
 	public function execute( $param ) {
 		global $wgOut, $wgRequest;
 		$this->setHeaders();
+		$wgOut->addWikiText( "See [[Extension:CodeTidy]] for information about this tool.\n\n" );
 		if( $code = $wgRequest->getText( 'wpSource' ) ) $this->tidy( $code );
 		else {
 			$wgOut->addWikiText( '=== Enter your code here: ===' );
-			$wgOut->addWikiText( "See [[Extension::CodeTidy]] for information about this tool.\n\n" );
 			$wgOut->addHTML( '<form method="POST"><textarea name="wpSource" cols="50" rows="30"></textarea><input type="submit" value="Tidy!" /></form>' );
 		}
 	}
@@ -51,6 +51,7 @@ class SpecialCodeTidy extends SpecialPage {
 		global $wgOut;
 		$tidy = CodeTidy::tidy( $code );
 		$wgOut->addWikiText( '=== Tidied code ===' );
+		$wgOut->addWikiText( '<a href="/Special:CodeTidy">&lt;&lt; Tidy again</a><br>' );
 		$wgOut->addWikiText( "<source lang=\"php\">$tidy</source>" );
 	}
 }
