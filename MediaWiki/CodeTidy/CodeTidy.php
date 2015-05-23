@@ -49,9 +49,9 @@ class SpecialCodeTidy extends SpecialPage {
 
 	private function tidy( $code ) {
 		global $wgOut;
+		$wgOut->addHTML( '<a href="/Special:CodeTidy">&lt;&lt; Tidy another</a><br>' );
 		$tidy = CodeTidy::tidy( $code );
 		$wgOut->addWikiText( '=== Tidied code ===' );
-		$wgOut->addWikiText( '<a href="/Special:CodeTidy">&lt;&lt; Tidy again</a><br>' );
 		$wgOut->addWikiText( "<source lang=\"php\">$tidy</source>" );
 	}
 }
