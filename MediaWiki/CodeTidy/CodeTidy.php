@@ -43,6 +43,7 @@ class SpecialCodeTidy extends SpecialPage {
 		if( $code = $wgRequest->getText( 'wpSource' ) ) $this->tidy( $code );
 		else {
 			$wgOut->addWikiText( '=== Enter your code here: ===' );
+			$wgOut->addWikiText( "''Remember to include a PHP delimeter if your testing a block of code\n''" );
 			$wgOut->addHTML( '<form method="POST"><textarea name="wpSource" cols="50" rows="30"></textarea><input type="submit" value="Tidy!" /></form>' );
 		}
 	}
