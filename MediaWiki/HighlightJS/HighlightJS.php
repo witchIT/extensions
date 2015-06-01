@@ -45,6 +45,8 @@ class HighlightJS {
 			'remoteBasePath' => $path,
 		);
 		$wgOut->addModules( 'ext.highlightjs' );
+
+		// Use the Organic Design highlight style if none of highlightjs's styles specified
 		$css = $wgHighlightJsStyle ? "highlight/styles/$wgHighlightJsStyle.css" : 'highlight.css';
 		$wgOut->addStyle( "$path/$css" );
 	}
