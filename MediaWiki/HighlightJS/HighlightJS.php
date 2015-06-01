@@ -31,7 +31,7 @@ class HighlightJS {
 	function __construct() {
 		global $wgExtensionFunctions, $wgHooks;
 		$wgExtensionFunctions[] = array( $this, 'setup' );
-		$wgHooks['ParserFirstCallInit'][] = $this;
+		Hooks::register( 'ParserFirstCallInit', $this );
 	}
 
 	public function setup() {
