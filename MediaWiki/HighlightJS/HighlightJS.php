@@ -49,11 +49,17 @@ class HighlightJS {
 		$wgOut->addStyle( "$path/$css" );
 	}
 
+	/**
+	 * Register the new tag function
+	 */
 	public function onParserFirstCallInit( Parser $parser ) {
 		$parser->setHook( 'source', array( $this, 'source' ) );
 		return true;
 	}
 
+	/**
+	 * Expand the new tag
+	 */
 	public function source( $input, array $args, Parser $parser, PPFrame $frame ) {
 		global $wgJsMimeType;
 		if( !array_key_exists( 'lang', $args ) ) $args['lang'] = 'nohighlight';
