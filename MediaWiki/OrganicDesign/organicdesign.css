@@ -104,12 +104,20 @@ table.od-message { margin-top: 3em; }
 #mw-hidden-catlinks { display:none; }
 
 pre, .mw-code, code {
-	background: #f4f4f4;
+	background: #f8f8f8;
 	border: none;
 	line-height: 1.7em;
 	-moz-tab-size: 4;
 	-o-tab-size: 4;
 	tab-size: 4;
+}
+
+pre {
+	border: 1px solid #e0efe0;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
 }
 
 /**
@@ -255,7 +263,6 @@ li#pt-userpage {
 	border: 1px solid #ccc;
 	margin: 5px 0;
 	padding: 5px;
-
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
