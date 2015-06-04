@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "2.0.3, 2015-03-20" );
+define( 'OD_VERSION', "2.0.4, 2015-06-04" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -116,21 +116,17 @@ class OrganicDesign {
 	}
 
 	public static function onBeforePageDisplay( $out, $skin ) {
-		global $wgUser, $wgParser;
-		if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
-		else { $psr = new Parser; $opt = NULL; }
-		if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 
 		// Add sidebar content
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new Article( $title );
-		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
+		$html = $out->parse( $article->getContent() );
 		$out->addHTML( "<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>" );
 
 		// Add footer content
 		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
 		$article = new Article( $title );
-		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
+		$html = $out->parse( $article->getContent() );
 		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"od-footer\">$html</div></div>" );
 
 		// Add the other items
@@ -165,16 +161,6 @@ class OrganicDesign {
 		<h5 id="btcbest">' . wfMessage( 'btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' )->plain() . '</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="1Aran5dJVJVz1UVU8mLAGdrxCjCpZgm1Mz" onmouseover="this.select()" />
-		</div>
-		<h5 id="nmccool">' . wfMessage( 'also' ) . ' <a href="/XCurrency">XC</a>, <a href="/Ripple">XRP</a> & <a href="/Stellar">STR</a></h5>
-		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/1/12/XC-icon.png) no-repeat 0px 4px;">
-			<input style="width:139px;margin-left:23px" readonly="1" value="XNDhYkgwvNXjiK6178r9i25U9hYCJvd43S" onmouseover="this.select()" />
-		</div>
-		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/2/23/Ripple.png) no-repeat 5px 2px;">
-			<input style="width:139px;margin-left:23px" readonly="1" value="rBSVzXKvPiRVKa4aBpr3SNqSem1RBDdhqy" onmouseover="this.select()" />
-		</div>
-		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/thumb/8/86/StellarLogo.png/30px-StellarLogo.png) no-repeat -1px 1px;">
-			<input style="width:139px;margin-left:23px" readonly="1" value="gHAcuAzTNXzq7wM74znnWsZ1N92mJTpNZ9" onmouseover="this.select()" />
 		</div></div></div>' );
 	}
 
