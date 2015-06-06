@@ -116,7 +116,6 @@ class OrganicDesign {
 	}
 
 	public static function onBeforePageDisplay( $out, $skin ) {
-		global $wgUser;
 
 		// Add sidebar content
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
@@ -133,7 +132,7 @@ class OrganicDesign {
 		// Add the other items
 		self::donations( $out );
 		self::languages( $out );
-		self::avatar( $out, $wgUser );
+		self::avatar( $out );
 
 		return true;
 	}
@@ -165,15 +164,15 @@ class OrganicDesign {
 		</div></div></div>' );
 	}
 
-	public static function avatar( $out, $user ) {
-		global $wgUploadDirectory, $wgUploadPath;
-		if( $user->isLoggedIn() ) {
+	public static function avatar( $out ) {
+		global $wgUploadDirectory, $wgUploadPath, $wgUser;
+		if( $wgUser->isLoggedIn() ) {
 			$out->addHTML( '<div id="avatar-wrapper" style="display:none"><div id="p-avatar">' );
-			$name  = $user->getName();
+			$name  = $wgUser->getName();
 			$img = wfLocalFile( "$name.png" );
 			if( is_object( $img  ) && $img->exists() ) {
 				$url = $img->transform( array( 'width' => 50 ) )->getUrl();
-				$out->addHTML( "<a href=\"" . $user->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>" );
+				$out->addHTML( "<a href=\"" . $wgUser->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>" );
 			} else {
 				$upload = Title::newFromText( 'Upload', NS_SPECIAL );
 				$url = $upload->getLocalUrl( "wpDestFile=$name.png" );
