@@ -1,8 +1,7 @@
 <?php
 /**
- * HighlightJS extension - wrapper for the highlight.js client-side syntax highlighter
- * - see https://highlightjs.org
- * - usage is the same as GeSHi, e.g. <source lang="html">.....</source>
+ * HighlightJS extension - wrapper for the highlightjs.org client-side syntax highlighter
+ * - usage is the same as the GeSHi extension, e.g. <source lang="html">.....</source>
  *
  * @file
  * @ingroup Extensions
@@ -24,7 +23,7 @@ $wgExtensionCredits['other'][] = array(
 	'name'        => 'HighlightJS',
 	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
 	'url'         => 'http://www.mediawiki.org/wiki/Extension:HighlightJS',
-	'description' => 'Adds syntax highlighting for code blocks using the highlight.js client-side syntax highlighter',
+	'description' => 'Adds syntax highlighting for code blocks using the highlightjs.org client-side syntax highlighter',
 	'version'     => HIGHLIGHTJS_VERSION
 );
 
