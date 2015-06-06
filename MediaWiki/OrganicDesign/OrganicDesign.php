@@ -116,6 +116,7 @@ class OrganicDesign {
 	}
 
 	public static function onBeforePageDisplay( $out, $skin ) {
+		global $wgUser;
 
 		// Add sidebar content
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
