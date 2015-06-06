@@ -15,7 +15,9 @@ if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 $wgHighlightJsStyle = ''; // Set to the name of the preferred style from the highlight/styles directory
 
-define( 'HIGHLIGHTJS_VERSION', '1.0.0, 2015-05-22' );
+$wgHighlightJsMagic = 'source'; // The name of the tag used to make highlighted code blocks
+
+define( 'HIGHLIGHTJS_VERSION', '1.0.1, 2015-06-06' );
 
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
@@ -55,14 +57,15 @@ class HighlightJS {
 	 * Register the new tag function
 	 */
 	public function onParserFirstCallInit( Parser $parser ) {
-		$parser->setHook( 'source', array( $this, 'source' ) );
+		global $wgHighlightJsMagic;
+		$parser->setHook( $wgHighlightJsMagic, array( $this, 'expandTag' ) );
 		return true;
 	}
 
 	/**
 	 * Expand the new tag
 	 */
-	public function source( $input, array $args, Parser $parser, PPFrame $frame ) {
+	public function expandTag( $input, array $args, Parser $parser, PPFrame $frame ) {
 		global $wgJsMimeType;
 		if( !array_key_exists( 'lang', $args ) ) $args['lang'] = 'nohighlight';
 		$class = ' class="' . $args['lang'] . ' todo"';
