@@ -29,8 +29,6 @@ $wgExtensionCredits['other'][] = array(
 
 class HighlightJS {
 
-	self::$path = null;
-
 	function __construct() {
 		global $wgExtensionFunctions, $wgHooks;
 		$wgExtensionFunctions[] = array( $this, 'setup' );
@@ -41,7 +39,7 @@ class HighlightJS {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgHighlightJsStyle;
 
 		// Set up JavaScript and CSS resources
-		$path = self::$path ? self::$path : $wgExtensionAssetsPath . '/' . basename( __DIR__ );
+		$path = preg_replace( '%^.+?/extensions(/.+$)%', '', "$wgExtensionAssetsPath$1", __DIR__ );
 		$wgResourceModules['ext.highlightjs'] = array(
 			'scripts'        => array( 'highlight/highlight.pack.js', 'highlight.js' ),
 			'localBasePath'  => __DIR__,
