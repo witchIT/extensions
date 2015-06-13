@@ -16,7 +16,7 @@ $wgHighlightJsStyle = ''; // Set to the name of the preferred style from the hig
 
 $wgHighlightJsMagic = 'source'; // The name of the tag used to make highlighted code blocks
 
-define( 'HIGHLIGHTJS_VERSION', '1.0.1, 2015-06-06' );
+define( 'HIGHLIGHTJS_VERSION', '1.0.2, 2015-06-13' );
 
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
@@ -29,6 +29,8 @@ $wgExtensionCredits['other'][] = array(
 
 class HighlightJS {
 
+	self::$path = null;
+
 	function __construct() {
 		global $wgExtensionFunctions, $wgHooks;
 		$wgExtensionFunctions[] = array( $this, 'setup' );
@@ -39,7 +41,7 @@ class HighlightJS {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgHighlightJsStyle;
 
 		// Set up JavaScript and CSS resources
-		$path = $wgExtensionAssetsPath . '/' . basename( __DIR__ );
+		$path = self::$path ? self::$path : $wgExtensionAssetsPath . '/' . basename( __DIR__ );
 		$wgResourceModules['ext.highlightjs'] = array(
 			'scripts'        => array( 'highlight/highlight.pack.js', 'highlight.js' ),
 			'localBasePath'  => __DIR__,
