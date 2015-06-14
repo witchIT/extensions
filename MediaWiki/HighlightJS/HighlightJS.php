@@ -12,11 +12,11 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-$wgHighlightJsStyle = ''; // Set to the name of the preferred style from the highlight/styles directory
-
+$wgHighlightJsStyle = '';       // Set to the name of the preferred style from the highlight/styles directory
 $wgHighlightJsMagic = 'source'; // The name of the tag used to make highlighted code blocks
+$wgHighlightJsPath  = false;    // Set the extension path manually (useful if it's a symlinked location)
 
-define( 'HIGHLIGHTJS_VERSION', '1.0.2, 2015-06-13' );
+define( 'HIGHLIGHTJS_VERSION', '1.0.3, 2015-06-14' );
 
 $wgExtensionCredits['other'][] = array(
 	'path'        => __FILE__,
@@ -36,10 +36,10 @@ class HighlightJS {
 	}
 
 	public function setup() {
-		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgHighlightJsStyle;
+		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgHighlightJsPath, $wgHighlightJsStyle;
 
 		// Set up JavaScript and CSS resources
-		$path = preg_replace( '%^.+?/extensions(/.+$)%', "$wgExtensionAssetsPath$1", __DIR__ );
+		$path = $wgHighlightJsPath ?: preg_replace( '%^.+?/extensions(/.+$)%', "$wgExtensionAssetsPath$1", __DIR__ );
 		$wgResourceModules['ext.highlightjs'] = array(
 			'scripts'        => array( 'highlight/highlight.pack.js', 'highlight.js' ),
 			'localBasePath'  => __DIR__,
