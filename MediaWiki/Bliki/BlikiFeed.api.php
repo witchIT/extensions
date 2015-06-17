@@ -47,7 +47,7 @@ class ApiBlikiFeed extends ApiBase {
 
 		$feedFormat = $this->params['feedformat'];
 		$formatter = $this->getFeedObject( $feedFormat );
-		$feedItems = self::getItems();
+		$feedItems = $this->getItems();
 		ApiFormatFeedWrapper::setResult( $this->getResult(), $formatter, $feedItems );
 	}
 
@@ -77,7 +77,7 @@ class ApiBlikiFeed extends ApiBase {
 			$title = Title::newFromId( $row->page_id );
 			$items[] = new FeedItem( // $title, $description, $url, $date = '', $author = '', $comments = ''
 				$title->getPrefixedText(),
-				BlikiChangesFeed::desc( $title ),
+				$this->desc( $title ),
 				$title->getFullUrl(),
 				$row->rev_timestamp,
 				$row->rev_user_text,
@@ -99,7 +99,7 @@ class ApiBlikiFeed extends ApiBase {
 			// Blog title & description
 			$q = $wgRequest->getVal( 'q', false );
 			$cat = $q ? Title::newFromText( $q )->getText() : false;
-			$tag = $cat ? self::inCat( 'Tags', $cat ) : false;
+			$tag = $cat ? $this->inCat( 'Tags', $cat ) : false;
 			$title = preg_replace( '% *wiki$%i', '', $wgSitename ) . ' blog';
 			$desc = $cat ? ( $tag ? "\"$cat\" posts" : lcfirst( $cat ) ) : 'posts';
 			$desc = wfMessage( 'bliki-desc', $desc, $wgSitename )->text();
@@ -118,7 +118,7 @@ class ApiBlikiFeed extends ApiBase {
 	/**
 	 * Return whether or not the passed title is a member of the passed cat
 	 */
-	public static function inCat( $cat, $title = false ) {
+	private function inCat( $cat, $title = false ) {
 		global $wgTitle;
 		if( $title === false ) $title = $wgTitle;
 		if( !is_object( $title ) ) $title = Title::newFromText( $title );
@@ -126,6 +126,23 @@ class ApiBlikiFeed extends ApiBase {
 		$dbr = wfGetDB( DB_SLAVE );
 		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
+	}
+
+	/**
+	 * Use the plain-text of the summary for the item description
+	 */
+	private function desc( $title ) {
+		global $wgParser;
+		$article = new Article( $title );
+		$content = $article->getContent();
+		$text = preg_match( "/^.+?1=(.+?)\|2=/s", $content, $m ) ? $m[1] : $title->getText();
+		$html = $wgParser->parse( trim( $text ), $title, new ParserOptions(), true, true )->getText();
+		$html = preg_replace( '|<a[^<]+<img .+?</a>|', '', $html );
+		$desc = strip_tags( $html, '<p><a><i><b><u><s>' );
+		$desc = preg_replace( "/[\r\n]+/", "", $desc );
+		$desc = preg_replace( "|<p></p>|", "", $desc );
+		$desc = trim( preg_replace( "|<p>|", "\n<p>", $desc ) );
+		return $desc;
 	}
 
 	public function getAllowedParams() {

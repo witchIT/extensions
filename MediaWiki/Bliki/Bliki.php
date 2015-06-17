@@ -28,7 +28,6 @@ $wgExtensionCredits['other'][] = array(
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['Bliki'] = $wgExtensionMessagesFiles['BlikiFeed'] = "$dir/Bliki.i18n.php";
-require( "$dir/BlikiFeed.php" );
 $wgAutoloadClasses['ApiBlikiFeed'] = __DIR__ . '/BlikiFeed.api.php';
 $wgAPIModules['blikifeed'] = 'ApiBlikiFeed';
 
