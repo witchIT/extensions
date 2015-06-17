@@ -67,7 +67,7 @@ class ApiBlikiFeed extends ApiBase {
 				'rev_deleted' => 0,
 				'rev_parent_id' => 0,
 				'cl_from=page_id',
-				'cl_to' => $cat
+				'cl_to' => $cat,
 			),
 			__METHOD__,
 			array( 'ORDER BY' => 'rev_timestamp DESC' ),
