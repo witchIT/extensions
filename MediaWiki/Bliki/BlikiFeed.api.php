@@ -28,21 +28,10 @@ class ApiBlikiFeed extends ApiBase {
 	 * as an RSS/Atom feed.
 	 */
 	public function execute() {
-		global $wgBlikiDefaultCat;
 		$this->params = $this->extractRequestParams();
 		$config = $this->getConfig();
 		if ( !$config->get( 'Feed' ) ) {
 			$this->dieUsage( 'Syndication feeds are not available', 'feed-unavailable' );
-		}
-
-		if( !array_key_exists( 'q', $this->params ) ) {
-			$this->getRequest()->setVal( 'q' , $this->params['q'] = array( $wgBlikiDefaultCat ) );
-		}
-		if( !array_key_exists( 'feed', $this->params ) ) {
-			$this->getRequest()->setVal( 'feed' , $this->params['feed'] = 'rss' );
-		}
-		if( !array_key_exists( 'days', $this->params ) ) {
-			$this->getRequest()->setVal( 'days' , $this->params['days'] = '5000' );
 		}
 
 		$feedClasses = $config->get( 'FeedClasses' );
@@ -58,11 +47,43 @@ class ApiBlikiFeed extends ApiBase {
 
 		$feedFormat = $this->params['feedformat'];
 		$formatter = $this->getFeedObject( $feedFormat );
-		$rc = new SpecialBlikiFeed();
-		$rows = $rc->getRows();
-		$feedItems = $rows ? ChangesFeed::buildItems( $rows ) : array();
-
+		$feedItems = self::getItems();
 		ApiFormatFeedWrapper::setResult( $this->getResult(), $formatter, $feedItems );
+	}
+
+	/**
+	 * Our query is on the whole revision table not just recent changes
+	 */
+	private function getItems() {
+		global $wgBlikiDefaultCat;
+		$dbr = wfGetDB( DB_SLAVE );
+		$cat = array_key_exists( 'q', $this->params ) ? $this->params['q'] : $wgBlikiDefaultCat;
+		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
+		$res = $dbr->select(
+			'page_id,rev_timestamp,rev_user_text',
+			array( 'page', 'revision', 'categorylinks' ),
+			array(
+				'pageid=rev_page',
+				'rev_deleted' => 0,
+				'rev_parent_id' => 0,
+				'cl_from=page_id',
+				'cl_to' => $cat
+			),
+			__METHOD__,
+			array( 'ORDER BY' => 'rev_timestamp DESC' ),
+		);
+		foreach( $res as $row ) {
+			$title = Title::newFromId( $row->page_id );
+			$items[] = new FeedItem(
+				$title->getPrefixedText(),
+				'',
+				$title->getFullUrl(),
+				$row->rev_timestamp,
+				$row->rev_user_text,
+				'',
+			);
+		}
+		return $items;
 	}
 
 	/**
