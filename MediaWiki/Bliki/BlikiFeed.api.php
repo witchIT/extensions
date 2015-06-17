@@ -20,7 +20,7 @@ class ApiBlikiFeed extends ApiBase {
 	 * @return ApiFormatFeedWrapper
 	 */
 	public function getCustomPrinter() {
-		return new ApiFormatFeedWrapper( $this->getMain() );
+		//return new ApiFormatFeedWrapper( $this->getMain() );
 	}
 
 	/**
@@ -57,30 +57,31 @@ class ApiBlikiFeed extends ApiBase {
 	private function getItems() {
 		global $wgBlikiDefaultCat;
 		$dbr = wfGetDB( DB_SLAVE );
-		$cat = array_key_exists( 'q', $this->params ) ? $this->params['q'] : $wgBlikiDefaultCat;
-		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
+		$cat = $this->params['q'] ?: $wgBlikiDefaultCat;
+		$cat = Title::newFromText( $cat, NS_CATEGORY )->getDBkey();
 		$res = $dbr->select(
-			'page_id,rev_timestamp,rev_user_text',
 			array( 'page', 'revision', 'categorylinks' ),
+			'page_id,rev_timestamp,rev_user_text',
 			array(
-				'pageid=rev_page',
-				'rev_deleted' => 0,
-				'rev_parent_id' => 0,
-				'cl_from=page_id',
-				'cl_to' => $cat,
+				'page_id = rev_page',
+				'rev_deleted = 0',
+				'rev_parent_id = 0',
+				'cl_from = page_id',
+				'cl_to' => $cat
 			),
 			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp DESC' ),
+			array( 'ORDER BY' => 'rev_timestamp DESC' )
 		);
+		$items = array();
 		foreach( $res as $row ) {
 			$title = Title::newFromId( $row->page_id );
-			$items[] = new FeedItem(
+			$items[] = new FeedItem( // $title, $description, $url, $date = '', $author = '', $comments = ''
 				$title->getPrefixedText(),
 				'',
 				$title->getFullUrl(),
 				$row->rev_timestamp,
 				$row->rev_user_text,
-				'',
+				''
 			);
 		}
 		return $items;
