@@ -1,6 +1,6 @@
 <?php
 /**
- * Our BlikiChanges special page uses this custom ChangesFeed
+ * Our BlikiChanges feed uses this custom ChangesFeed and custom selection query
  * which has the item description changed to the plain-text blog item summary instead of the usual diff/wikitext\
  *
  * See http://www.organicdesign.co.nz/bliki for more detail
@@ -11,6 +11,59 @@
  * @copyright © 2013-2015 [http://www.organicdesign.co.nz/aran Aran Dunkley]
  * @licence GNU General Public Licence 2.0 or later
  */
+class SpecialBlikiFeed extends SpecialRecentChanges {
+
+	// Construct special page with our new name, and force to feed type
+	public function __construct() {
+		Hooks::register( 'SpecialRecentChangesQuery', $this );
+		if( !$this->getRequest()->getVal( 'feed' ) ) $this->getRequest()->setVal( 'feed', 'rss' );
+		if( !$this->getRequest()->getVal( 'days' ) ) $this->getRequest()->setVal( 'days', 1000 );
+		parent::__construct( __CLASS__ );
+	}
+
+	// Inject a value into opts so we can know on the hook function that its a bliki feed
+	public function doMainQuery( $conds, $opts ) {
+		global $wgBlikiDefaultCat, $wgServer, $wgArticlePath, $wgScriptPath, $wgScript;
+		$opts->add( 'bliki', false );
+		$opts['bliki'] = array_key_exists( 'q', $_REQUEST ) ? $_REQUEST['q'] : $wgBlikiDefaultCat;
+
+		// Make all links absolute
+		$wgArticlePath = $wgServer.$wgArticlePath;
+		$wgScriptPath  = $wgServer.$wgScriptPath;
+		$wgScript      = $wgServer.$wgScript;
+
+		// Allow printing raw desc results
+		if(  array_key_exists( 'test', $_REQUEST ) ) {
+			$t = Title::newFromText( $_REQUEST['test'] );
+			print BlikiChangesFeed::desc( $t );
+			die;
+		}
+
+		// Add the rollback right to the user object so that the page join exists, because without it the new category join fails
+		$user = $this->getUser();
+		$rights = $user->mRights;
+		$user->mRights[] = 'rollback';
+ 		$res = parent::doMainQuery( $conds, $opts );
+		$user->mRights = $rights;
+
+		return $res;
+	}
+
+	// If it's a bliki list, filter the list to onlynew items and to the tag cat if q supplied
+	public static function onSpecialRecentChangesQuery( &$conds, &$tables, &$join_conds, $opts, &$query_options, &$fields ) {
+		if( $opts->validateName( 'bliki' ) ) {
+			$tables[] = 'categorylinks';
+			$conds[] = 'rc_new=1';
+			$dbr = wfGetDB( DB_SLAVE );
+			if( is_array( $opts['bliki'] ) ) {
+				foreach( $opts['bliki'] as $i => $cat ) $opts['bliki'][$i] = Title::newFromText( $cat )->getDBkey();
+				$catCond = 'cl_to IN (' . $dbr->makeList( $opts['bliki'] ) . ')';
+			} else $catCond = 'cl_to =' . $dbr->addQuotes( Title::newFromText( $opts['bliki'] )->getDBkey() );
+			$join_conds['categorylinks'] = array( 'RIGHT JOIN', "cl_from=page_id AND $catCond" );
+		}
+		return true;
+	}
+}
 
 class BlikiChangesFeed extends ChangesFeed {
 

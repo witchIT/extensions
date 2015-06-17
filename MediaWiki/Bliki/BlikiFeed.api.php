@@ -30,18 +30,6 @@ class ApiBlikiFeed extends ApiBase {
 	public function execute() {
 		global $wgBlikiDefaultCat;
 		$this->params = $this->extractRequestParams();
-
-		// Set default parameters (the feed system uses the args directly from the request, not the API params, but we'll set both)
-		if( !array_key_exists( 'categories', $this->params ) ) {
-			$this->getRequest()->setVal( 'categories' , $this->params['categories'] = array( $wgBlikiDefaultCat ) );
-		}
-		if( !array_key_exists( 'feed', $this->params ) ) {
-			$this->getRequest()->setVal( 'feed' , $this->params['feed'] = 'rss' );
-		}
-		if( !array_key_exists( 'days', $this->params ) ) {
-			$this->getRequest()->setVal( 'days' , $this->params['days'] = '1000' );
-		}
-
 		$config = $this->getConfig();
 		if ( !$config->get( 'Feed' ) ) {
 			$this->dieUsage( 'Syndication feeds are not available', 'feed-unavailable' );
@@ -58,10 +46,9 @@ class ApiBlikiFeed extends ApiBase {
 			$this->getMain()->setCacheMaxAge( 15 );
 		}
 
-		Hooks::register( 'SpecialRecentChangesQuery', $this );
 		$feedFormat = $this->params['feedformat'];
 		$formatter = $this->getFeedObject( $feedFormat );
-		$rc = new SpecialRecentchanges();
+		$rc = new SpecialBlikiFeed();
 		$rows = $rc->getRows();
 		$feedItems = $rows ? ChangesFeed::buildItems( $rows ) : array();
 
@@ -107,14 +94,6 @@ class ApiBlikiFeed extends ApiBase {
 		$dbr = wfGetDB( DB_SLAVE );
 		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
-	}
-
-	/**
-	 * Hook in to the changes query and add an option to ensure only new items are returned in the list
-	 */
-	public static function onSpecialRecentChangesQuery( &$conds, &$tables, &$join_conds, $opts, &$query_options, &$fields ) {
-		$conds[] = 'rc_new=1';
-		return true;
 	}
 
 	public function getAllowedParams() {
