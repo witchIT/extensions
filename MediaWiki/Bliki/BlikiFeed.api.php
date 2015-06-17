@@ -56,6 +56,7 @@ class ApiBlikiFeed extends ApiBase {
 	 */
 	private function getItems() {
 		global $wgBlikiDefaultCat;
+		$dbr = wfGetDB( DB_SLAVE );
 
 		// Make the query condition and options
 		$opts = array( 'ORDER BY' => 'rev_timestamp DESC' );
@@ -75,7 +76,6 @@ class ApiBlikiFeed extends ApiBase {
 		if( $this->params['limit'] ) $opts['LIMIT'] = (integer)$this->params['limit'];
 
 		// Do the query
-		$dbr = wfGetDB( DB_SLAVE );
 		$res = $dbr->select(
 			array( 'page', 'revision', 'categorylinks' ),
 			'page_id,rev_timestamp,rev_user_text',
