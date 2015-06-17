@@ -20,7 +20,7 @@ class ApiBlikiFeed extends ApiBase {
 	 * @return ApiFormatFeedWrapper
 	 */
 	public function getCustomPrinter() {
-		//return new ApiFormatFeedWrapper( $this->getMain() );
+		return new ApiFormatFeedWrapper( $this->getMain() );
 	}
 
 	/**
