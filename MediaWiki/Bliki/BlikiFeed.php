@@ -45,7 +45,8 @@ class SpecialBlikiFeed extends SpecialRecentChanges {
 		$user->mRights[] = 'rollback';
  		$res = parent::doMainQuery( $conds, $opts );
 		$user->mRights = $rights;
-
+$dbr = wfGetDB( DB_SLAVE );
+print $dbr->lastQuery();
 		return $res;
 	}
 

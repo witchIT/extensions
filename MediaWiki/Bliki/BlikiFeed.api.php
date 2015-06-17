@@ -42,7 +42,7 @@ class ApiBlikiFeed extends ApiBase {
 			$this->getRequest()->setVal( 'feed' , $this->params['feed'] = 'rss' );
 		}
 		if( !array_key_exists( 'days', $this->params ) ) {
-			$this->getRequest()->setVal( 'days' , $this->params['days'] = '1000' );
+			$this->getRequest()->setVal( 'days' , $this->params['days'] = '5000' );
 		}
 
 		$feedClasses = $config->get( 'FeedClasses' );
