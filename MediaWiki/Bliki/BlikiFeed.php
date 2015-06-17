@@ -55,7 +55,7 @@ class BlikiChangesFeed extends ChangesFeed {
 	}
 
 	// Use the plain-text of the summary for the item description
-	static function desc( $title ) {
+	public static function desc( $title ) {
 		global $wgParser;
 		$article = new Article( $title );
 		$content = $article->getContent();

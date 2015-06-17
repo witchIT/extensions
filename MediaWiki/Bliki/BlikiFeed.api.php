@@ -77,7 +77,7 @@ class ApiBlikiFeed extends ApiBase {
 			$title = Title::newFromId( $row->page_id );
 			$items[] = new FeedItem( // $title, $description, $url, $date = '', $author = '', $comments = ''
 				$title->getPrefixedText(),
-				'',
+				BlikiChangesFeed::desc( $title ),
 				$title->getFullUrl(),
 				$row->rev_timestamp,
 				$row->rev_user_text,
