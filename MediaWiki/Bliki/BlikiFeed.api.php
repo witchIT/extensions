@@ -65,7 +65,7 @@ class ApiBlikiFeed extends ApiBase {
 			global $wgRequest, $wgSitename;
 
 			// Blog title & description
-			$q = $wgRequest->getVal( 'categories', false );
+			$q = $wgRequest->getVal( 'q', false );
 			$cat = $q ? Title::newFromText( $q )->getText() : false;
 			$tag = $cat ? self::inCat( 'Tags', $cat ) : false;
 			$title = preg_replace( '% *wiki$%i', '', $wgSitename ) . ' blog';
@@ -74,7 +74,7 @@ class ApiBlikiFeed extends ApiBase {
 
 			// Blog URL
 			$blog = Title::newFromText( 'Blog' );
-			$url = $blog->getFullURL( $cat ? "categories=$cat" : '' );
+			$url = $blog->getFullURL( $cat ? "q=$cat" : '' );
 
 			// Instantiate our custom ChangesFeed class
 			$feed = new BlikiChangesFeed( $feedFormat, 'rcfeed' );
@@ -118,7 +118,7 @@ class ApiBlikiFeed extends ApiBase {
 			'from' => array(
 				ApiBase::PARAM_TYPE => 'timestamp',
 			),
-			'categories' => array(
+			'q' => array(
 				ApiBase::PARAM_TYPE => 'string',
 				ApiBase::PARAM_ISMULTI => true,
 			),
@@ -131,7 +131,7 @@ class ApiBlikiFeed extends ApiBase {
 			'days' => 'Days to limit the results to',
 			'limit' => 'Maximum number of results to return',
 			'from' => 'Show changes since then',
-			'categories' => 'Show only changes on pages in all of these categories',
+			'q' => 'Show only changes on pages in this category',
 		);
 	}
 
@@ -142,7 +142,7 @@ class ApiBlikiFeed extends ApiBase {
 	public function getExamples() {
 		return array(
 			'api.php?action=blikifeed',
-			'api.php?action=blikifeed&categories=CategoryName'
+			'api.php?action=blikifeed&q=CategoryName'
 		);
 	}
 }
