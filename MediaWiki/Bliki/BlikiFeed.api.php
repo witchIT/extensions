@@ -71,10 +71,10 @@ class ApiBlikiFeed extends ApiBase {
 		);
 
 		// Update the query condition and opts with the API params
-		if( $this->params['from'] > 0 ) $cond[] = 'rev_timestamp > ' . intval( $this->params['from'] );
-		elseif( $this->params['days'] > 0 ) $cond[] = 'rev_timestamp > ' . $dbr->timestamp( time() - intval( $this->params['days'] * 86400 ) );
-		if( $this->params['limit'] > 0 ) $opts['LIMIT'] = intval( $this->params['limit'] );
-print_r($this->params);
+		if( $this->params['from'] ) $cond[] = 'rev_timestamp > ' . intval( $this->params['from'] );
+		elseif( $this->params['days'] ) $cond[] = 'rev_timestamp > ' . $dbr->timestamp( time() - intval( $this->params['days'] * 86400 ) );
+		if( $this->params['limit'] ) $opts['LIMIT'] = intval( $this->params['limit'] );
+
 		// Do the query
 		$res = $dbr->select(
 			array( 'page', 'revision', 'categorylinks' ),
@@ -167,14 +167,9 @@ print_r($this->params);
 				ApiBase::PARAM_TYPE => $feedFormatNames,
 			),
 			'days' => array(
-				ApiBase::PARAM_DFLT => 7,
-				ApiBase::PARAM_MIN => 1,
 				ApiBase::PARAM_TYPE => 'integer',
 			),
 			'limit' => array(
-				ApiBase::PARAM_DFLT => 50,
-				ApiBase::PARAM_MIN => 1,
-				ApiBase::PARAM_MAX => $config->get( 'FeedLimit' ),
 				ApiBase::PARAM_TYPE => 'integer',
 			),
 			'from' => array(
