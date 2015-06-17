@@ -74,7 +74,7 @@ class ApiBlikiFeed extends ApiBase {
 		if( $this->params['from'] > 0 ) $cond[] = 'rev_timestamp > ' . intval( $this->params['from'] );
 		elseif( $this->params['days'] > 0 ) $cond[] = 'rev_timestamp > ' . $dbr->timestamp( time() - intval( $this->params['days'] * 86400 ) );
 		if( $this->params['limit'] > 0 ) $opts['LIMIT'] = intval( $this->params['limit'] );
-
+print_r($cond);
 		// Do the query
 		$res = $dbr->select(
 			array( 'page', 'revision', 'categorylinks' ),
