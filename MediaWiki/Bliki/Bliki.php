@@ -11,7 +11,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'BLIKI_VERSION','2.0.8, 2014-10-12' );
+define( 'BLIKI_VERSION','3.0.1, 2015-06-17' );
 
 $wgBlikiAddBodyClass = false;
 $wgBlikiPostGroup = 'sysop';
@@ -22,13 +22,15 @@ $wgExtensionCredits['other'][] = array(
 	'name'        => 'Bliki',
 	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
 	'url'         => 'http://www.organicdesign.co.nz/bliki',
-	'description' => 'Adds [[Bliki]] (blog in a wiki) functionality',
+	'description' => 'Adds "bliki" (blog in a wiki) functionality',
 	'version'     => BLIKI_VERSION
 );
 
 $dir = dirname( __FILE__ );
 $wgExtensionMessagesFiles['Bliki'] = $wgExtensionMessagesFiles['BlikiFeed'] = "$dir/Bliki.i18n.php";
-include( "$dir/BlikiFeed.php" );
+require( "$dir/BlikiFeed.php" );
+$wgAutoloadClasses['ApiBlikiFeed'] = __DIR__ . '/BlikiFeed.api.php';
+$wgAPIModules['blikifeed'] = 'ApiBlikiFeed';
 
 class Bliki {
 	
