@@ -109,7 +109,7 @@ class ApiBlikiFeed extends ApiBase {
 			$url = $blog->getFullURL( $cat ? "q=$cat" : '' );
 
 			// Instantiate our custom ChangesFeed class
-			$feed = new BlikiChangesFeed( $feedFormat, 'rcfeed' );
+			$feed = new ChangesFeed( $feedFormat, 'rcfeed' );
 			$feedObj = $feed->getFeedObject( $title, $desc, $url );
 
 			return $feedObj;
