@@ -35,6 +35,16 @@ class ApiBlikiFeed extends ApiBase {
 			$this->dieUsage( 'Syndication feeds are not available', 'feed-unavailable' );
 		}
 
+		if( !array_key_exists( 'q', $this->params ) ) {
+			$this->getRequest()->setVal( 'q' , $this->params['q'] = array( $wgBlikiDefaultCat ) );
+		}
+		if( !array_key_exists( 'feed', $this->params ) ) {
+			$this->getRequest()->setVal( 'feed' , $this->params['feed'] = 'rss' );
+		}
+		if( !array_key_exists( 'days', $this->params ) ) {
+			$this->getRequest()->setVal( 'days' , $this->params['days'] = '1000' );
+		}
+
 		$feedClasses = $config->get( 'FeedClasses' );
 		if ( !isset( $feedClasses[$this->params['feedformat']] ) ) {
 			$this->dieUsage( 'Invalid subscription feed type', 'feed-invalid' );
