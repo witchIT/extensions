@@ -152,7 +152,6 @@ class ApiBlikiFeed extends ApiBase {
 			),
 			'q' => array(
 				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_ISMULTI => true,
 			),
 		);
 	}
