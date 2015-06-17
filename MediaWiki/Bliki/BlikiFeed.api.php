@@ -56,22 +56,33 @@ class ApiBlikiFeed extends ApiBase {
 	 */
 	private function getItems() {
 		global $wgBlikiDefaultCat;
-		$dbr = wfGetDB( DB_SLAVE );
+
+		// Make the query condition
 		$cat = $this->params['q'] ?: $wgBlikiDefaultCat;
 		$cat = Title::newFromText( $cat, NS_CATEGORY )->getDBkey();
+		$cond = array(
+			'page_id = rev_page',
+			'rev_deleted = 0',
+			'rev_parent_id = 0',
+			'cl_from = page_id',
+			'cl_to' => $cat
+		);
+
+		// Query options
+		$opts = array( 'ORDER BY' => 'rev_timestamp DESC' );
+		if( $this->params['limit'] ) $opts['LIMIT'] = (integer)$this->params['limit'];
+
+		// Do the query
+		$dbr = wfGetDB( DB_SLAVE );
 		$res = $dbr->select(
 			array( 'page', 'revision', 'categorylinks' ),
 			'page_id,rev_timestamp,rev_user_text',
-			array(
-				'page_id = rev_page',
-				'rev_deleted = 0',
-				'rev_parent_id = 0',
-				'cl_from = page_id',
-				'cl_to' => $cat
-			),
+			$cond,
 			__METHOD__,
-			array( 'ORDER BY' => 'rev_timestamp DESC' )
+			$opts
 		);
+
+		// Build a list of feed items from the resulting article list
 		$items = array();
 		foreach( $res as $row ) {
 			$title = Title::newFromId( $row->page_id );
@@ -94,26 +105,26 @@ class ApiBlikiFeed extends ApiBase {
 	 * @return ChannelFeed
 	 */
 	public function getFeedObject( $feedFormat ) {
-			global $wgRequest, $wgSitename;
+		global $wgRequest, $wgSitename;
 
-			// Blog title & description
-			$q = $wgRequest->getVal( 'q', false );
-			$cat = $q ? Title::newFromText( $q )->getText() : false;
-			$tag = $cat ? $this->inCat( 'Tags', $cat ) : false;
-			$title = preg_replace( '% *wiki$%i', '', $wgSitename ) . ' blog';
-			$desc = $cat ? ( $tag ? "\"$cat\" posts" : lcfirst( $cat ) ) : 'posts';
-			$desc = wfMessage( 'bliki-desc', $desc, $wgSitename )->text();
+		// Blog title & description
+		$q = $wgRequest->getVal( 'q', false );
+		$cat = $q ? Title::newFromText( $q )->getText() : false;
+		$tag = $cat ? $this->inCat( 'Tags', $cat ) : false;
+		$title = preg_replace( '% *wiki$%i', '', $wgSitename ) . ' blog';
+		$desc = $cat ? ( $tag ? "\"$cat\" posts" : lcfirst( $cat ) ) : 'posts';
+		$desc = wfMessage( 'bliki-desc', $desc, $wgSitename )->text();
 
-			// Blog URL
-			$blog = Title::newFromText( 'Blog' );
-			$url = $blog->getFullURL( $cat ? "q=$cat" : '' );
+		// Blog URL
+		$blog = Title::newFromText( 'Blog' );
+		$url = $blog->getFullURL( $cat ? "q=$cat" : '' );
 
-			// Instantiate our custom ChangesFeed class
-			$feed = new ChangesFeed( $feedFormat, 'rcfeed' );
-			$feedObj = $feed->getFeedObject( $title, $desc, $url );
+		// No need for a custom class here as it's just for formatting the RSS etc
+		$feed = new ChangesFeed( $feedFormat, 'rcfeed' );
+		$feedObj = $feed->getFeedObject( $title, $desc, $url );
 
-			return $feedObj;
-		}
+		return $feedObj;
+	}
 
 	/**
 	 * Return whether or not the passed title is a member of the passed cat
