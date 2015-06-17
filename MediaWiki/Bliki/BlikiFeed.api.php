@@ -70,7 +70,8 @@ class ApiBlikiFeed extends ApiBase {
 		);
 
 		// Update the query condition and opts with the API params
-		if( $this->params['from'] ) $cond[] = 'rev_timestamp >= ' . (integer)$this->params['from'];
+		if( $this->params['from'] ) $cond[] = 'rev_timestamp >= ' . intval( $this->params['from'] );
+		if( $this->params['days'] ) $cond[] = 'rev_timestamp >= ' . $dbr->timestamp( time() - intval( $this->param['days'] * 86400 ) );
 		if( $this->params['limit'] ) $opts['LIMIT'] = (integer)$this->params['limit'];
 
 		// Do the query
@@ -188,10 +189,10 @@ class ApiBlikiFeed extends ApiBase {
 	public function getParamDescription() {
 		return array(
 			'feedformat' => 'The format of the feed',
-			'days' => 'Days to limit the results to',
-			'limit' => 'Maximum number of results to return',
-			'from' => 'Show changes since then',
-			'q' => 'Show only changes on pages in this category',
+			'days' => 'Only show posts since this number of days ago',
+			'limit' => 'Maximum number of posts to return',
+			'from' => 'Show posts since then',
+			'q' => 'Show only posts on pages in this category',
 		);
 	}
 
