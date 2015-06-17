@@ -70,7 +70,7 @@ class ApiBlikiFeed extends ApiBase {
 		);
 
 		// Update the query condition and opts with the API params
-		if( $this->params['from'] ) $conds[] = 'rev_timestamp >= ' . (integer)$this->params['from'];
+		if( $this->params['from'] ) $cond[] = 'rev_timestamp >= ' . (integer)$this->params['from'];
 		if( $this->params['limit'] ) $opts['LIMIT'] = (integer)$this->params['limit'];
 
 		// Do the query
