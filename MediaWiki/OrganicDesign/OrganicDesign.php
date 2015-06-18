@@ -120,13 +120,13 @@ class OrganicDesign {
 		// Add sidebar content
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new WikiPage( $title );
-		$html = $out->parse( $article->getContent() );
+		$html = $out->parse( $article->getContent()->getNativeData() );
 		$out->addHTML( "<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>" );
 
 		// Add footer content
 		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
 		$article = new WikiPage( $title );
-		$html = $out->parse( $article->getContent() );
+		$html = $out->parse( $article->getContent()->getNativeData() );
 		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"od-footer\">$html</div></div>" );
 
 		// Add the other items
