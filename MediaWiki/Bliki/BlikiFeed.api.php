@@ -147,7 +147,7 @@ class ApiBlikiFeed extends ApiBase {
 	private function desc( $title ) {
 		global $wgParser;
 		$article = new Article( $title );
-		$content = $article->getContent();
+		$content = $article->getPage()->getContent()->getNativeData();
 		$text = preg_match( "/^.+?1=(.+?)\|2=/s", $content, $m ) ? $m[1] : $title->getText();
 		$html = $wgParser->parse( trim( $text ), $title, new ParserOptions(), true, true )->getText();
 		$html = preg_replace( '|<a[^<]+<img .+?</a>|', '', $html );
