@@ -116,17 +116,21 @@ class OrganicDesign {
 	}
 
 	public static function onBeforePageDisplay( $out, $skin ) {
+		global $wgUser, $wgParser;
+		if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+		else { $psr = new Parser; $opt = NULL; }
+		if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
 
 		// Add sidebar content
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new Article( $title );
-		$html = $out->parse( $article->getContent() );
+		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
 		$out->addHTML( "<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>" );
 
 		// Add footer content
 		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
 		$article = new Article( $title );
-		$html = $out->parse( $article->getContent() );
+		$html = $psr->parse( $article->getContent(), $title, $opt, true, true )->getText();
 		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"od-footer\">$html</div></div>" );
 
 		// Add the other items
