@@ -1,76 +1,18 @@
 <?php
-/**
- * HighlightJS extension - wrapper for the highlightjs.org client-side syntax highlighter
- * - usage is the same as the GeSHi extension, e.g. <source lang="html">.....</source>
- *
- * @file
- * @ingroup Extensions
- * @author Aran Dunkley [http://www.organicdesign.co.nz/aran Aran Dunkley]
- * @copyright © 2015 Aran Dunkley
- * @licence GNU General Public Licence 2.0 or later
- * 
- */
-if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-
-$wgHighlightJsStyle = '';       // Set to the name of the preferred style from the highlight/styles directory
-$wgHighlightJsMagic = 'source'; // The name of the tag used to make highlighted code blocks
-$wgHighlightJsPath  = false;    // Set the extension path manually (useful if it's a symlinked location)
-
-define( 'HIGHLIGHTJS_VERSION', '1.0.3, 2015-06-14' );
-
-$wgExtensionCredits['other'][] = array(
-	'path'        => __FILE__,
-	'name'        => 'HighlightJS',
-	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
-	'url'         => 'http://www.mediawiki.org/wiki/Extension:HighlightJS',
-	'description' => 'Adds syntax highlighting for code blocks using the highlightjs.org client-side syntax highlighter',
-	'version'     => HIGHLIGHTJS_VERSION
-);
-
-class HighlightJS {
-
-	function __construct() {
-		global $wgExtensionFunctions, $wgHooks;
-		$wgExtensionFunctions[] = array( $this, 'setup' );
-		Hooks::register( 'ParserFirstCallInit', $this );
-	}
-
-	public function setup() {
-		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgHighlightJsPath, $wgHighlightJsStyle;
-
-		// Set up JavaScript and CSS resources
-		$path = $wgHighlightJsPath ?: preg_replace( '%^.+?/extensions(/.+$)%', "$wgExtensionAssetsPath$1", __DIR__ );
-		$wgResourceModules['ext.highlightjs'] = array(
-			'scripts'        => array( 'highlight/highlight.pack.js', 'highlight.js' ),
-			'localBasePath'  => __DIR__,
-			'remoteBasePath' => $path,
-		);
-		$wgOut->addModules( 'ext.highlightjs' );
-
-		// Use the Organic Design highlight style if none of highlightjs's styles specified
-		$css = $wgHighlightJsStyle ? "highlight/styles/$wgHighlightJsStyle.css" : 'highlight.css';
-		$wgOut->addStyle( "$path/$css" );
-	}
-
-	/**
-	 * Register the new tag function
-	 */
-	public function onParserFirstCallInit( Parser $parser ) {
-		global $wgHighlightJsMagic;
-		$parser->setHook( $wgHighlightJsMagic, array( $this, 'expandTag' ) );
-		return true;
-	}
-
-	/**
-	 * Expand the new tag
-	 */
-	public function expandTag( $input, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgJsMimeType;
-		if( !array_key_exists( 'lang', $args ) ) $args['lang'] = 'nohighlight';
-		$class = ' class="' . $args['lang'] . ' todo"';
-		$script = "<script type=\"$wgJsMimeType\">if('hljsGo' in window) window.hljsGo();</script>";
-		return "<pre><code$class>" . htmlspecialchars( trim( $input ) ) . "</code></pre>$script";
-	}
+if ( function_exists( 'wfLoadExtension' ) ) {
+	wfLoadExtension( 'FooBar' );
+	// Keep i18n globals so mergeMessageFileList.php doesn't break
+	$wgMessagesDirs['FooBar'] = __DIR__ . '/i18n';
+	$wgExtensionMessagesFiles['FooBar'] = __DIR__ . '/FooBar.alias.php';
+	wfWarn(
+		'Deprecated PHP entry point used for FooBar extension. Please use wfLoadExtension instead, ' .
+		'see https://www.mediawiki.org/wiki/Extension_registration for more details.'
+	);
+	return;
+} else {
+	die(
+		'<b>Fatal error:</b> This version of the FooBar extension requires MediaWiki 1.25+, ' .
+		'either <a href="https://mediawiki.org/wiki/Download">upgrade your MediaWiki</a> or download the extension code from the ' .
+		'<a href="https://github.com/OrganicDesign/extensions/tree/MediaWiki-1.24/MediaWiki">1.24 branch</a>.'
+	);
 }
-
-new HighlightJS();
