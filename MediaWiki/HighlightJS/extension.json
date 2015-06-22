@@ -6,7 +6,7 @@
 	"description": "Adds syntax highlighting for code blocks using the highlightjs.org client-side syntax highlighter",
 	"license-name": "[https://www.gnu.org/licenses/gpl-2.0.html GNU General Public Licence 2.0] or later",
 	"type": "parserhook",
-	"callback": "HighlightJS::onLoad",
+	"callback": "HighlightJS::onRegistration",
 	"config": {
 		"HighlightJsStyle": "",            "@": "Set to the name of the preferred style from the highlight/styles directory",
 		"HighlightJsMagic": "source",      "@": "The name of the tag used to make highlighted code blocks",
