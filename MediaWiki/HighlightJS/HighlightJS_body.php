@@ -13,15 +13,6 @@ class HighlightJS {
 	public static function setup() {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $IP, $wgAutoloadClasses, $wgHighlightJsPath, $wgHighlightJsStyle;
 
-		// Set up JavaScript and CSS resources
-		$path = $wgHighlightJsPath ?: preg_replace( '%^.+?/extensions(/.+$)%', "$wgExtensionAssetsPath$1", __DIR__ );
-		$wgResourceModules['ext.highlightjs'] = array(
-			'scripts'        => array( 'highlight/highlight.pack.js', 'highlight.js' ),
-			'localBasePath'  => __DIR__,
-			'remoteBasePath' => $path,
-		);
-		$wgOut->addModules( 'ext.highlightjs' );
-
 		// This gets the remote path even if it's a symlink (MW1.25+)
 		$path = $wgExtensionAssetsPath . str_replace( "$IP/extensions", '', dirname( $wgAutoloadClasses[__CLASS__] ) );
 		$wgResourceModules['ext.highlightjs']['remoteExtPath'] = $path;
