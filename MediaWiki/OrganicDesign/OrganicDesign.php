@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "2.0.4, 2015-06-04" );
+define( 'OD_VERSION', "2.0.5, 2015-06-27" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -53,6 +53,7 @@ class OrganicDesign {
 			$www = $m[1] ? $m[1] : 'www';
 			if( !$od || !$ssl ) {
 				header( "Location: https://$www.organicdesign.co.nz$uri", true, 301 );
+				MediaWiki::restInPeace();
 				exit;
 			}
 		}
