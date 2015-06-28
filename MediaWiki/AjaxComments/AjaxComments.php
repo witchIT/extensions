@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '2.1.1, 2015-06-18' );
+define( 'AJAXCOMMENTS_VERSION', '2.1.2, 2015-06-27' );
 define( 'AJAXCOMMENTS_TABLE', 'ajaxcomments' );
 define( 'AJAXCOMMENTS_DATATYPE_COMMENT', 1 );
 define( 'AJAXCOMMENTS_DATATYPE_LIKE', 2 );
@@ -75,6 +75,7 @@ class AjaxComments {
 			if( $ret ) {
 				$wgOut->disable();
 				wfResetOutputBuffers();
+				MediaWiki::restInPeace();
 				$url = $title->getLocalUrl();
 				header( "Location: $url#ajaxcomments" );
 				exit;
