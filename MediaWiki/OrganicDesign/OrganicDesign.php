@@ -53,7 +53,8 @@ class OrganicDesign {
 			$www = $m[1] ? $m[1] : 'www';
 			if( !$od || !$ssl ) {
 				header( "Location: https://$www.organicdesign.co.nz$uri", true, 301 );
-				MediaWiki::restInPeace();
+				global $mediaWiki;
+				if( is_object( $mediaWiki ) ) $mediaWiki->restInPeace();
 				exit;
 			}
 		}
