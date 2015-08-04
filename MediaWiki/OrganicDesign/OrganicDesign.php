@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "2.0.5, 2015-06-27" );
+define( 'OD_VERSION', "2.0.6, 2015-08-04" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -36,7 +36,7 @@ class OrganicDesign {
 		$wgHooks['BeforePageDisplay'][] = $this;
 
 		// Set language to pt if it's the pt domain
-		if( preg_match( "/^pt\./", $_SERVER['HTTP_HOST'] ) ) $wgLanguageCode = 'pt';
+		if( preg_match( "/^pt\./", $_SERVER['HTTP_HOST'] ) ) $wgLanguageCode = 'pt-br';
 
 	}
 
