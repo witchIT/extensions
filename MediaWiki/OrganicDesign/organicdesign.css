@@ -427,7 +427,7 @@ body.blog-item #catlinks {
 }
 
 /* trees */
-.fancytree ul {
+.fancytree ul.fancytree-container {
     background: none;
     border: none;
     font-size: 12px;
