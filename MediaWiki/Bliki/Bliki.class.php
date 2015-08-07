@@ -1,13 +1,7 @@
 <?php
 class Bliki {
 
-	function __construct() {
-		global $wgHooks, $wgBlikiAddBodyClass;
-		$wgHooks['UnknownAction'][] = $this;
-		if( $wgBlikiAddBodyClass ) $wgHooks['OutputPageBodyAttributes'][] = $this;
-	}
-
-	function onUnknownAction( $action, $article ) {
+	public static function onUnknownAction( $action, $article ) {
 		global $wgOut, $wgRequest, $wgUser, $wgParser, $wgBlikiPostGroup;
 		if( $action == 'blog' && in_array( $wgBlikiPostGroup, $wgUser->getEffectiveGroups() ) ) {
 			$newtitle = $wgRequest->getText( 'newtitle' );
@@ -66,7 +60,7 @@ class Bliki {
 		return true;
 	}
 
-	function preview( $heading, $title, $wikitext ) {
+	private static function preview( $heading, $title, $wikitext ) {
 		global $wgOut, $wgParser;
 		$wgOut->addWikitext( '<div class="previewnote">' . wfMsg( 'previewnote' ) . '</div>' );
 		$wgOut->addWikitext( "== $heading ==" );
@@ -77,15 +71,51 @@ class Bliki {
 	/**
 	 * Add a "blog-item" attribute to the body element of blog post pages
 	 */
-	function onOutputPageBodyAttributes( $out, $sk, &$bodyAttrs ) {
-		if( self::inCat( 'Blog_items' ) ) $bodyAttrs['class'] .= ' blog-item';
+	public static function onOutputPageBodyAttributes( $out, $sk, &$bodyAttrs ) {
+		global $wgBlikiDefaultCat, $wgBlikiAddBodyClass;
+		if( $wgBlikiAddBodyClass && self::inCat( $wgBlikiDefaultCat ) ) $bodyAttrs['class'] .= ' blog-item';
 		return true;
+	}
+
+	/**
+	 * Register parser-functions
+	 */
+	public static function ParserFirstCallInit( Parser $parser ) {
+		$parser->setFunctionHook( 'tags', array( $this, 'expandTags' ) );
+		$parser->setFunctionHook( 'nextpost', array( $this, 'expandNext' ) );
+		$parser->setFunctionHook( 'prevpost', array( $this, 'expandPrev' ) );
+		return true;
+	}
+
+	/**
+	 * Tags parser-function returns list of tags the passed post is in
+	 */
+	public function expandTags( $parser, $item ) {
+		return array( $html, 'isHTML' => true, 'noparse' => true );
+	}
+
+	/**
+	 * Nextpost parser-function returns the next post in the passed cat or blog-items cat
+	 */
+	public function expandNext( $parser, $item, $cat = false ) {
+		global $wgBlikiDefaultCat;
+		if( $cat == false ) $cat = $wgBlikiDefaultCat;
+		return array( $html, 'isHTML' => true, 'noparse' => true );
+	}
+
+	/**
+	 * Prevpost parser-function returns the previous post in the passed cat or blog-items cat
+	 */
+	public function expandPrev( $parser, $item, $cat = false ) {
+		global $wgBlikiDefaultCat;
+		if( $cat == false ) $cat = $wgBlikiDefaultCat;
+		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 
 	/**
 	 * Return whether or not the passed title is a member of the passed cat
 	 */
-	public function inCat( $cat, $title = false ) {
+	public static function inCat( $cat, $title = false ) {
 		global $wgTitle;
 		if( $title === false ) $title = $wgTitle;
 		if( !is_object( $title ) ) $title = Title::newFromText( $title );
@@ -94,4 +124,6 @@ class Bliki {
 		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
 	}
+
+
 }

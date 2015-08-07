@@ -12,9 +12,20 @@
 		"BlikiPostGroup": "sysop",        "@": "restrict posting blog items to this group",
 		"BlikiDefaultCat": "Blog items",  "@": "categorise all blog posts into this category"
 	},
+	"Hooks": {
+		"UnknownAction": ["Bliki::onUnknownAction"],
+		"OutputPageBodyAttributes": ["Bliki::onOutputPageBodyAttributes"],
+		"ParserFirstCallInit": ["Bliki::onParserFirstCallInit"],
+		"LanguageGetMagic": ["ExtraMagic::onLanguageGetMagic"],
+		"MagicWordwgVariableIDs": ["ExtraMagic::onMagicWordwgVariableIDs"],
+		"ParserGetVariableValueSwitch": ["ExtraMagic::onParserGetVariableValueSwitch"]
+	},
 	"AutoloadClasses": {
 		"Bliki": "Bliki.class.php",
 		"ApiBlikiFeed": "BlikiFeed.api.php"
+	},
+	"ExtensionMessagesFiles": {
+		"BlikiMagic": "Bliki.i18n.magic.php"
 	},
 	"MessagesDirs": {
 		"Bliki": ["i18n"]
