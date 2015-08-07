@@ -112,7 +112,7 @@ class ApiBlikiFeed extends ApiBase {
 		// Blog title & description
 		$q = $wgRequest->getVal( 'q', false );
 		$cat = $q ? Title::newFromText( $q )->getText() : false;
-		$tag = $cat ? $this->inCat( 'Tags', $cat ) : false;
+		$tag = $cat ? Bliki::inCat( 'Tags', $cat ) : false;
 		$title = preg_replace( '% *wiki$%i', '', $wgSitename ) . ' blog';
 		$desc = $cat ? ( $tag ? "\"$cat\" posts" : lcfirst( $cat ) ) : 'posts';
 		$desc = wfMessage( 'bliki-desc', $desc, $wgSitename )->text();
@@ -126,19 +126,6 @@ class ApiBlikiFeed extends ApiBase {
 		$feedObj = $feed->getFeedObject( $title, $desc, $url );
 
 		return $feedObj;
-	}
-
-	/**
-	 * Return whether or not the passed title is a member of the passed cat
-	 */
-	private function inCat( $cat, $title = false ) {
-		global $wgTitle;
-		if( $title === false ) $title = $wgTitle;
-		if( !is_object( $title ) ) $title = Title::newFromText( $title );
-		$id  = $title->getArticleID();
-		$dbr = wfGetDB( DB_SLAVE );
-		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
-		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
 	}
 
 	/**

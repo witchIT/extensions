@@ -1,0 +1,22 @@
+{
+	"name": "Bliki",
+	"version": "3.1.0, 2015-08-07",
+	"author": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"],
+	"url": "http://www.organicdesign.co.nz/bliki",
+	"descriptionmsg": "bliki-desc",
+	"license-name": "[https://www.gnu.org/licenses/gpl-2.0.html GNU General Public Licence 2.0] or later",
+	"type": "other",
+	"callback": "Bliki::onRegistration",
+	"config": {
+		"BlikiAddBodyClass": false,       "@": "add a \"blog-item\" class attribute to the body element for blog post pages",
+		"BlikiPostGroup": "sysop",        "@": "restrict posting blog items to this group",
+		"BlikiDefaultCat": "Blog items",  "@": "categorise all blog posts into this category"
+	},
+	"AutoloadClasses": {
+		"Bliki": "Bliki.class.php",
+		"ApiBlikiFeed": "BlikiFeed.api.php"
+	},
+	"MessagesDirs": {
+		"Bliki": ["i18n"]
+	}
+}

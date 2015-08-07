@@ -1,115 +1,17 @@
 <?php
-/**
- * Bliki extension - Adds "Bliki" (blog in a wiki) functionality
- * 
- * See http://www.organicdesign.co.nz/bliki for more detail
- *
- * @package MediaWiki
- * @subpackage Extensions
- * @author [http://www.organicdesign.co.nz/nad Nad]
- * @copyright © 2013-2015 [http://www.organicdesign.co.nz/aran Aran Dunkley]
- * @licence GNU General Public Licence 2.0 or later
- */
-if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'BLIKI_VERSION','3.0.2, 2015-06-18' );
-
-$wgBlikiAddBodyClass = false;
-$wgBlikiPostGroup = 'sysop';
-$wgBlikiDefaultCat = 'Blog items';
-
-$wgExtensionCredits['other'][] = array(
-	'path'        => __FILE__,
-	'name'        => 'Bliki',
-	'author'      => '[http://www.organicdesign.co.nz/aran Aran Dunkley]',
-	'url'         => 'http://www.organicdesign.co.nz/bliki',
-	'description' => 'Adds "bliki" (blog in a wiki) functionality',
-	'version'     => BLIKI_VERSION
-);
-
-$dir = dirname( __FILE__ );
-$wgExtensionMessagesFiles['Bliki'] = $wgExtensionMessagesFiles['BlikiFeed'] = "$dir/Bliki.i18n.php";
-$wgAutoloadClasses['ApiBlikiFeed'] = __DIR__ . '/BlikiFeed.api.php';
-$wgAPIModules['blikifeed'] = 'ApiBlikiFeed';
-
-class Bliki {
-	
-	function __construct() {
-		global $wgHooks, $wgBlikiAddBodyClass;
-		$wgHooks['UnknownAction'][] = $this;
-		if( $wgBlikiAddBodyClass ) $wgHooks['OutputPageBodyAttributes'][] = $this;
-	}
-
-	function onUnknownAction( $action, $article ) {
-		global $wgOut, $wgRequest, $wgUser, $wgParser, $wgBlikiPostGroup;
-		if( $action == 'blog' && in_array( $wgBlikiPostGroup, $wgUser->getEffectiveGroups() ) ) {
-			$newtitle = $wgRequest->getText( 'newtitle' );
-			$title = Title::newFromText( $newtitle );
-			$error = false;
-			if( !is_object( $title ) ) {
-				$wgOut->addWikitext( '<div class="previewnote">Error: Bad title!</div>' );
-				$error = true;
-			}
-			elseif( $title->exists() ) {
-				$wgOut->addWikitext( '<div class="previewnote">Error: Title already exists!</div>' );
-				$error = true;
-			}
-			if( !$error ) {
-				$summary = $wgRequest->getText( 'summary' );
-				$content = $wgRequest->getText( 'content' );
-				$user = $wgUser->getName();
-				$date = date('U');
-				$sig = '<div class="blog-sig">{{BlogSig|' . "$user|@$date" . '}}</div>';
-				$type = $wgRequest->getText( 'type' );
-				switch( $type ) {
-
-					// Preview the item
-					case "Full preview":
-						$wikitext = "$sig\n$summary\n\n$content";
-						self::preview( $type, $title, $wikitext );
-						$article->view();
-					break;
-
-					// Preview the item in news/blog format
-					case "Summary preview":
-						$wikitext = "{|class=\"blog\"\n|\n== [[Post a blog item|$newtitle]] ==\n|-\n!$sig\n|-\n|$summary\n|}__NOEDITSECTION__";
-						$title = Title::newFromText( 'Blog' );
-						self::preview( $type, $title, $wikitext );
-						$article->view();
-					break;
-
-					// Create the item with tags as category links
-					case "Post":
-						$wikitext = '{{' . "Blog|1=$summary|2=$content" . '}}';
-						$wikitext .= "<noinclude>[[Category:Blog items]][[Category:Posts by $user]]";
-						foreach( array_keys( $_POST ) as $k ) {
-							if( preg_match( "|^tag(.+)$|", $k, $m ) ) {
-								$wikitext .= '[[Category:' . str_replace( '_', ' ', $m[1] ) . ']]';
-							}
-						}
-						$wikitext .= "</noinclude>";
-						$article = new Article( $title );
-						$article->doEdit( $wikitext, 'Blog item created via post form', EDIT_NEW );
-						$wgOut->redirect( $title->getFullURL() );
-					break;
-				}
-			} else $article->view();
-			return false;
-		}
-		return true;
-	}
-
-	function preview( $heading, $title, $wikitext ) {
-		global $wgOut, $wgParser;
-		$wgOut->addWikitext( '<div class="previewnote">' . wfMsg( 'previewnote' ) . '</div>' );
-		$wgOut->addWikitext( "== $heading ==" );
-		$wgOut->addHTML( $wgParser->parse( $wikitext, $title, new ParserOptions(), true, true )->getText() );
-		$wgOut->addHTML( "<br /><hr /><br />" );
-	}
-
-	function onOutputPageBodyAttributes( $out, $sk, &$bodyAttrs ) {
-		if( SpecialBlikiFeed::inCat( 'Blog_items' ) ) $bodyAttrs['class'] .= ' blog-item';
-		return true;
-	}
+if ( function_exists( 'wfLoadExtension' ) ) {
+	wfLoadExtension( 'Bliki' );
+	// Keep i18n globals so mergeMessageFileList.php doesn't break
+	$wgMessagesDirs['Bliki'] = __DIR__ . '/i18n';
+	wfWarn(
+		'Deprecated PHP entry point used for FooBar extension. Please use wfLoadExtension instead, ' .
+		'see https://www.mediawiki.org/wiki/Extension_registration for more details.'
+	);
+	return;
+} else {
+	die(
+		'<b>Fatal error:</b> This version of the FooBar extension requires MediaWiki 1.25+, ' .
+		'either <a href="https://mediawiki.org/wiki/Download">upgrade your MediaWiki</a> or download the extension code from the ' .
+		'<a href="https://github.com/OrganicDesign/extensions/tree/MediaWiki-1.24/MediaWiki">1.24 branch</a>.'
+	);
 }
-
-new Bliki();
