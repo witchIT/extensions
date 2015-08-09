@@ -16,9 +16,6 @@ class LigminchaTemplate extends BaseTemplate {
 		$this->html( 'headelement' );
 		?><div id="globalWrapper">
 	<div class="header">
-		<a href="http://www.debtcompliance.com/">
-			<img class="lfloat bdr-0" src="<?php echo $logo; ?>" alt="Debt Compliance Services">
-		</a>
 		<div class="user_info">
 			<ul id="user_nav" class="dropdown_nav">
 			<?php
