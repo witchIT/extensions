@@ -13,19 +13,6 @@
 	"MessagesDirs": {
 		"LigminchaSkin": ["i18n"]
 	},
-	"ResourceModules": {
-		"skin.ligmincha": {
-			"styles": {
-				"styles/main.css": {
-					"media": "all"
-				}
-			}
-		}
-	},
-	"ResourceFileModulePaths": {
-		"localBasePath": "",
-		"remoteSkinPath": "Ligmincha"
-	},
 	"AutoloadClasses": {
 		"SkinLigmincha": "SkinLigmincha.php",
 		"LigminchaTemplate": "LigminchaTemplate.php"
