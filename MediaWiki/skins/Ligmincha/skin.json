@@ -24,7 +24,7 @@
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
-		"remoteSkinPath": "LigminchaSkin"
+		"remoteSkinPath": "Ligmincha"
 	},
 	"AutoloadClasses": {
 		"SkinLigmincha": "SkinLigmincha.php",
