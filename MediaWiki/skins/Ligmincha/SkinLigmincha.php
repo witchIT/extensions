@@ -34,7 +34,7 @@ class SkinLigmincha extends SkinTemplate {
 	 */
 	public function initPage( OutputPage $out ) {
 		global $wgExtensionAssetsPath;
-		$out->addStyle( $wgExtensionAssetsPath . '/LigminchaSkin/styles/main.css' );
+		$out->addStyle( $wgStylePath . '/Ligmincha/styles/main.css' );
 		parent::initPage( $out );
 	}
 
