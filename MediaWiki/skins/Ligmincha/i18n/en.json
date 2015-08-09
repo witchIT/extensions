@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"]
+	},
+	"skinname-ligmincha": "LigminchaSkin",
+	"ligminchaskin-desc": "Ligmincha MediaWiki skin desgined to match the Ligmincha Joomla! sites",
+	"ligminchaskin.css": "/* CSS placed here will affect users of the Ligmincha skin */",
+	"ligminchaskin.js": "/* Any JavaScript here will be loaded for users using the Ligmincha skin */"
+}

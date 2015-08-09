@@ -1,0 +1,33 @@
+{
+	"name": "LigminchaSkin",
+	"version": "0.0.1, 2015-08-09",
+	"author": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"],
+	"url": "http://ligmincha.odnz.co",
+	"type": "skin",
+	"descriptionmsg": "ligminchaskin-desc",
+	"license-name": "[http://www.debtcompliance.com Copyright © 2015 Ligmincha Brasil]",
+	"callback": "SkinLigmincha::onRegistration",
+	"ValidSkinNames": {
+		"ligmincha": "Ligmincha"
+	},
+	"MessagesDirs": {
+		"LigminchaSkin": ["i18n"]
+	},
+	"ResourceModules": {
+		"skin.ligmincha": {
+			"styles": {
+				"styles/main.css": {
+					"media": "all"
+				}
+			}
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteSkinPath": "LigminchaSkin"
+	},
+	"AutoloadClasses": {
+		"SkinLigmincha": "SkinLigmincha.php",
+		"LigminchaTemplate": "LigminchaTemplate.php"
+	}
+}

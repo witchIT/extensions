@@ -91,6 +91,14 @@ class Bliki {
 	 * Tags parser-function returns list of tags the passed post is in
 	 */
 	public function expandTags( $parser, $item ) {
+		$tags = array();
+		$dbr  = wfGetDB( DB_SLAVE );
+		$id   = Title::newFromText( $item )->getArticleID();
+		$res  = $dbr->select( 'categorylinks', 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
+		foreach( $res as $row ) {
+			$title = Title::newFromText( $row->cl_to );
+			if( self::inCat( 'Tags', $title ) ) $tags[] = $title;
+		}
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 
