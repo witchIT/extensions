@@ -81,16 +81,16 @@ class Bliki {
 	 * Register parser-functions
 	 */
 	public static function ParserFirstCallInit( Parser $parser ) {
-		$parser->setFunctionHook( 'tags', array( $this, 'expandTags' ) );
-		$parser->setFunctionHook( 'nextpost', array( $this, 'expandNext' ) );
-		$parser->setFunctionHook( 'prevpost', array( $this, 'expandPrev' ) );
+		$parser->setFunctionHook( 'tags', __CLASS__ . '::expandTags' ) );
+		$parser->setFunctionHook( 'nextpost', __CLASS__ . '::expandNext' ) );
+		$parser->setFunctionHook( 'prevpost', __CLASS__ . '::expandPrev' ) );
 		return true;
 	}
 
 	/**
 	 * Tags parser-function returns list of tags the passed post is in
 	 */
-	public function expandTags( $parser, $item ) {
+	public static function expandTags( $parser, $item ) {
 		$tags = array();
 		$dbr  = wfGetDB( DB_SLAVE );
 		$id   = Title::newFromText( $item )->getArticleID();
@@ -105,7 +105,7 @@ class Bliki {
 	/**
 	 * Nextpost parser-function returns the next post in the passed cat or blog-items cat
 	 */
-	public function expandNext( $parser, $item, $cat = false ) {
+	public static function expandNext( $parser, $item, $cat = false ) {
 		global $wgBlikiDefaultCat;
 		if( $cat == false ) $cat = $wgBlikiDefaultCat;
 		return array( $html, 'isHTML' => true, 'noparse' => true );
@@ -114,7 +114,7 @@ class Bliki {
 	/**
 	 * Prevpost parser-function returns the previous post in the passed cat or blog-items cat
 	 */
-	public function expandPrev( $parser, $item, $cat = false ) {
+	public static function expandPrev( $parser, $item, $cat = false ) {
 		global $wgBlikiDefaultCat;
 		if( $cat == false ) $cat = $wgBlikiDefaultCat;
 		return array( $html, 'isHTML' => true, 'noparse' => true );
