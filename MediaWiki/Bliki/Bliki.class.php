@@ -101,7 +101,7 @@ class Bliki {
 			if( self::inCat( 'Tags', $title ) ) {
 				$text = $title->getPrefixedText();
 				$url = Title::newFromText( $wgBlikiDefaultBlogPage )->getLocalUrl( "q=$text" );
-				$tags[] = "<a href=\"$url\" title=\"" . wfMessage( 'bliki-taglinktitle', $text ) . "\">$text</a>";
+				$tags[] = "<a href=\"$url\" title=\"" . wfMessage( 'bliki-taglinktitle', $text )->escaped() . "\">$text</a>";
 			}
 		}
 		return array( implode( ' | ', $tags ), 'isHTML' => true, 'noparse' => true );
