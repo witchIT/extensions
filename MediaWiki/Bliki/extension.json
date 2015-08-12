@@ -9,7 +9,8 @@
 	"config": {
 		"BlikiAddBodyClass": false,       "@": "add a \"blog-item\" class attribute to the body element for blog post pages",
 		"BlikiPostGroup": "sysop",        "@": "restrict posting blog items to this group",
-		"BlikiDefaultCat": "Blog items",  "@": "categorise all blog posts into this category"
+		"BlikiDefaultCat": "Blog items",  "@": "categorise all blog posts into this category",
+		"BlikiDefaultBlogPage": "Blog",   "@": "the main blog-roll article"
 	},
 	"Hooks": {
 		"ParserFirstCallInit": ["Bliki::onParserFirstCallInit"],

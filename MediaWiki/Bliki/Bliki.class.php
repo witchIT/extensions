@@ -91,15 +91,20 @@ class Bliki {
 	 * Tags parser-function returns list of tags the passed post is in
 	 */
 	public static function expandTags( $parser, $item ) {
+		global $wgBlikiDefaultBlogPage;
 		$tags = array();
 		$dbr  = wfGetDB( DB_SLAVE );
 		$id   = Title::newFromText( $item )->getArticleID();
 		$res  = $dbr->select( 'categorylinks', 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 		foreach( $res as $row ) {
 			$title = Title::newFromText( $row->cl_to );
-			if( self::inCat( 'Tags', $title ) ) $tags[] = $title;
+			if( self::inCat( 'Tags', $title ) ) {
+				$text = $title->getPrefixedText();
+				$url = Title::newFromText( $wgBlikiDefaultBlogPage )->getLocalUrl( "q=$text" );
+				$tags[] = "<a href=\"$url\" title=\"" . wfMessage( 'bliki-taglinktitle', $text ) . "\">$text</a>";
+			}
 		}
-		return array( $html, 'isHTML' => true, 'noparse' => true );
+		return array( implode( ' | ', $tags ), 'isHTML' => true, 'noparse' => true );
 	}
 
 	/**

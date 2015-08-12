@@ -6,5 +6,6 @@
 	},
 	"bliki-desc": "Adds \"bliki\" (blog in a wiki) functionality",
 	"blikifeed": "Bliki feed",
-	"bliki-desc": "Use this feed to track the most recent $1 at $2."
+	"bliki-desc": "Use this feed to track the most recent $1 at $2.",
+	"bliki-taglinktitle": "\"$1\" blog items"
 }
