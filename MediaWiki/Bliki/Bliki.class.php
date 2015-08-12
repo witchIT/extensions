@@ -80,7 +80,7 @@ class Bliki {
 	/**
 	 * Register parser-functions
 	 */
-	public static function ParserFirstCallInit( Parser $parser ) {
+	public static function onParserFirstCallInit( Parser $parser ) {
 		$parser->setFunctionHook( 'tags', __CLASS__ . '::expandTags' );
 		$parser->setFunctionHook( 'nextpost', __CLASS__ . '::expandNext' );
 		$parser->setFunctionHook( 'prevpost', __CLASS__ . '::expandPrev' );
