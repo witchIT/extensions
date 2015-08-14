@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>aran@organicdesign.co.nz</authorEmail>
 	<authorUrl>www.organicdesign.co.nz/aran</authorUrl>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<description>Automatically logs users in if they're logged in to the associated MediaWiki and are assigned to the specified MediaWiki group</description>
 	<files>
 		<filename plugin="mwsso">mwsso.php</filename>

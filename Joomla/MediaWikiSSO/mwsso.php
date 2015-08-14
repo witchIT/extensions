@@ -27,9 +27,8 @@ class plgSystemMwSSO extends JPlugin {
 		$group = $this->params->get( 'mw_group' );
 		$user = ucfirst( $this->params->get( 'juser' ) );
 
-		// load plugin params info
-		//$mwsso_group = $this->params->get('mwsso_group');
-		$mwsso_group = 'joomla';
+		// Check if we're in the admin site
+		$admin = preg_match( '|^/administrator/|', $_SERVER['REQUEST_URI'] );
 
 		// Get the MW user ID from the cookie, or bail if none
 		$cookie = $database . '_' . $prefix . 'UserID';
@@ -37,7 +36,7 @@ class plgSystemMwSSO extends JPlugin {
 
 		// If user not logged in to MW log out
 		if( $mwuser < 1 ) {
-			JFactory::getApplication()->enqueueMessage( "Please log in to the wiki" );
+			if( $admin ) JFactory::getApplication()->enqueueMessage( "Please log in to the wiki" );
 			$app->logout();
 			return;
 		}
@@ -63,7 +62,7 @@ class plgSystemMwSSO extends JPlugin {
 
 		// If MW user is not in the specified group, log out
 		if( !$db->loadRow() ) {
-			JFactory::getApplication()->enqueueMessage( "Your wiki user must be in the \"$group\" group." );
+			if( $admin ) JFactory::getApplication()->enqueueMessage( "Your wiki user must be in the \"$group\" group." );
 			$app->logout();
 			return;
 		}
@@ -76,7 +75,7 @@ class plgSystemMwSSO extends JPlugin {
 		$db->setQuery($query);
 		$row = $db->loadRow();
 		if( !$row ) {
-			JFactory::getApplication()->enqueueMessage( "Joomla user \"$user\" not found!" );
+			if( $admin ) JFactory::getApplication()->enqueueMessage( "Joomla user \"$user\" not found!" );
 			$app->logout();
 			return;
 		}
