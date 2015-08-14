@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system">
+	<name>plg_system_mwsso</name>
+	<author>Aran Dunkley</author>
+	<creationDate>August 2015</creationDate>
+	<copyright>Copyright (C) 2015 Aran Dunkley</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>aran@organicdesign.co.nz</authorEmail>
+	<authorUrl>www.organicdesign.co.nz/aran</authorUrl>
+	<version>1.0.1</version>
+	<description>Automatically logs users in if they're logged in to the associated MediaWiki and are assigned to the specified MediaWiki group</description>
+	<files>
+		<filename plugin="mwsso">mwsso.php</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="mw_prefix" type="text"
+					default="wiki_"
+					description="Database table prefix of the MediaWiki (must be in the same database as the Joomla)"
+					label="MediaWiki table prefix"
+					size="20"
+				/>
+				<field name="mw_group" type="text"
+					default="sysop"
+					description="The MediaWiki group users must be a member of to be granted automatic access to the Joomla"
+					label="MediaWiki group"
+					size="20"
+				/>
+				<field name="juser" type="text"
+					default="joomin"
+					description="The Joomla user that MediaWiki users will be logged in to this Joomla as"
+					label="Joomla user"
+					size="20"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
