@@ -520,7 +520,7 @@ padding: 6px 0 6px 10px;
 position:relative;
 line-height:1.2;
 }
-.moduletable_menu  h4 a:link, .moduletable_menu  h4 a:visited, .moduletable_menu  h4 a:hover {color: #fff;}
+.moduletable_menu h4 a:link, .moduletable_menu  h4 a:visited, .moduletable_menu  h4 a:hover {color: #fff;}
 .moduletable_menu ul {margin:0; padding:0; list-style:none;}
 .moduletable_menu li {
 	border-bottom:0px solid #ccc;
@@ -1092,7 +1092,7 @@ div.newsfeed ol li a{
 div.newsfeed ol li div a, div.newsfeed ol li div ol li a {
     font-weight: normal;
 }
-h5.feed-link {
+span.feed-link {
 font-size:1em;
 font-weight: normal;
 font-family: Arial, Helvetica, sans-serif;
