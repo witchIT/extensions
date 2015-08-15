@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 1.6//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
+<extension version="1.7" type="template" client="site">
+	<name>ligmincha</name>
+	<creationDate>2012-06-07</creationDate>
+	<author>ligmincha.org</author>
+	<authorEmail>webmaster@proaspecto.com</authorEmail>
+	<authorUrl>www.ligmincha.org</authorUrl>
+	<copyright>2011 Copyright ligmincha.org</copyright>
+	<license>Creative Commons</license>
+	<version>1.0</version>
+	<description>
+	<![CDATA[
+	<h1>Ligmincha</h1>
+	<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+	<img alt="Creative Commons License" style="border-width:0;" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a></p>
+	<p>This work by <a xmlns:cc="http://creativecommons.org/ns#" href="http://ligmincha.org" property="cc:attributionName" rel="cc:attributionURL">ligmincha.org</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-Noncommercial-Share Alike 3.0 Unported License</a>.</p>
+	<img src="../templates/ligmincha/template_thumbnail.png" align="left" style="margin-right:5px;" />
+	]]> 
+	</description>
+	<files>
+		<filename>index.php</filename>
+		<filename>index.html</filename>
+		<filename>templateDetails.xml</filename>
+		<filename>iepngfix.htc</filename>
+		<filename>template_thumbnail.png</filename>
+		<filename>template_preview.png</filename>
+		<filename>component.php</filename>
+		<folder>js</folder>
+		<folder>css</folder>
+		<folder>images</folder>
+		<folder>language</folder>
+	</files>
+	<positions>                          
+		<position>position-0</position>   
+		<position>position-1</position>
+		<position>position-2</position>
+		<position>position-4</position>		<position>position-6</position>
+		<position>position-7</position>
+		<position>position-12</position>		<position>position-13</position>
+		<position>position-14</position>		<position>position-15</position>
+		<position>user1</position>   
+		<position>user2</position>   
+		<position>user5</position>   
+		<position>user6</position>   
+		<position>banner</position>
+	</positions>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.tpl_a4joomla-ducklings-free.sys.ini</language>
+		<language tag="en-GB">en-GB/en-GB.tpl_a4joomla-ducklings-free.ini</language>
+		<language tag="en-GB">en-GB/en-GB.tpl_ligmincha.sys.ini</language>
+		<language tag="en-GB">en-GB/en-GB.tpl_ligmincha.ini</language>
+		<language tag="en-GB">en-GB/en-GB.general.ini</language>
+		<language tag="en-GB">en-GB/en-GB.system.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="logoText" type="text" default="LIGMINCHA" label="TPL_HEADER_FIELD_LOGOTEXT_LABEL" description="TPL_FIELD_LOGOTEXT_DESC" />
+				<field name="headerlogo" type="imagelist" default="ligmincha1.jpg" label="TPL_HEADER_FIELD_LOGOIMAGE_LABEL" description="TPL_LIGMINCHA_MYIMAGE_DESC" directory="templates/ligmincha/images/logo" exclude="" stripext="" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>
