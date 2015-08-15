@@ -1,4 +1,6 @@
-<?php // no direct access  // error_reporting(E_ALL);
+<?php // no direct access  //
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
 error_reporting(0);
 defined( '_JEXEC' ) or die( 'Restricted access now' . __FILE__ );
 $this->setMetaData('generator','');	## added to remove Meta tag info
@@ -18,7 +20,7 @@ $showControl = $this->params->get("showControl", "true");
 $display = $this->params->get("display","sequence");
 $arrowColor = $this->params->get("arrowColor","white");
 $conf =& JFactory::getConfig();
-$sitename = $conf->getValue('config.sitename');
+$sitename = $conf->get('config.sitename');
 $frontpagediv="0";
 if ($headerType == "0" || $headerType == "1") {
 	$lang =& JFactory::getLanguage();
@@ -128,15 +130,10 @@ JHTML::_('behavior.framework', true);
 	</div><!--end of topheader-->
 	<div id="wrap" class="gainlayout">
 		<div id="topmenuwrap" class="gainlayout">
-			<?php if($this->countModules('position-1')) { ?>
-				<div id="topmenu" class="gainlayout">
-					<?php /* <jdoc:include type="modules" name="position-1" style="xhtml" /> */ 
-					$menufile = 'http://www.ligmincha.org/menus/topmenu-'.$this->language.'.inc.php';
-					// if(file_exists($menufile)) {include($menufile);} else {echo $menufile;}
-					include($menufile);  ?>
-					<div class="clr"></div>
-				</div> 
-			<?php } ?>
+			<div id="topmenu" class="gainlayout">
+				<?php echo file_get_contents( __DIR__ . '/topmenu-' . $this->language . '.html' ); ?>
+				<div class="clr"></div>
+			</div>
 			<?php if($this->countModules('position-0')) { ?>
 				<div id="search" class="gainlayout">
 					<jdoc:include type="modules" name="position-0" style="xhtml" /> 
