@@ -1491,7 +1491,14 @@ div#content p.readmore	{text-align:right;margin-top:0;}
 
 /* VirtueMert */
 .product-price {
-        font-size: 200%;
-        float: right;
-        padding-right: 20px;
+	font-size: 150%;
+	float: right;
+	padding-right: 3px;
+}
+.product-price span {
+	color: #a00 !important;
+	font-weight: bold;
+}
+.spacer-buy-area .product-price {
+	padding-right: 21px;
 }
