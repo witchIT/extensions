@@ -1,8 +1,7 @@
-<?php // no direct access  //
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-//error_reporting(0);
+<?php
+// no direct access  //
 defined( '_JEXEC' ) or die( 'Restricted access now' . __FILE__ );
+
 $this->setMetaData('generator','');	## added to remove Meta tag info
 $showLeftColumn = (bool) $this->countModules('position-7');
 $showRightColumn = (bool) $this->countModules('position-6');
