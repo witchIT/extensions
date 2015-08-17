@@ -17,9 +17,9 @@
 	<media folder="images" destination="/images/stories/virtuemart/payment">
 		<filename>pagseguro.jpg</filename>
 	</media>
-	<config>
+	<vmconfig>
 		<fields name="params">
-			<fieldset name="basic">
+			<fieldset name="basic" addfieldpath="/administrator/components/com_virtuemart/fields">
 				<field name="payment_logos" type="vmfiles" label="LOGOTIPOS" description="VMPAYMENT_STANDARD_LOGOS_DESC" directory="/media/images/stories/virtuemart/payment" default="default" hide_default="1" hide_none="1" stripext="0" exclude="^_" />
 				<field type="text" name="pagseguro_email" size="55" label="EMAIL" default="informe seu e-mail cadastrado no PagSeguro" description="Para oferecer o PagSeguro em sua loja é preciso ter uma conta do tipo vendedor ou empresarial. Acesse o site www.pagseguro.com.br e crie uma conta grátis." />
 				<field type="text" name="pagseguro_token" size="55" label="TOKEN" default="informe seu token de segurança" description="Para utilizar qualquer serviço de integração do PagSeguro, é necessário ter um token de segurança. O token é um código único, gerado pelo PagSeguro. Caso não tenha um token, acesse o menu Integrações, em sua conta PagSeguro, para gerar um." />
@@ -43,5 +43,5 @@
 				<field name="status_cancelled" type="vmorderstate" default="X" label="CANCELADO" description="A transação foi cancelada sem ter sido finalizada." />
 			</fieldset>
 		</fields>
-	</config>
+	</vmconfig>
 </install>
