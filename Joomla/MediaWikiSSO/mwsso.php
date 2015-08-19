@@ -8,10 +8,8 @@
 defined('_JEXEC') or die;
 
 /**
- * LDAP Authentication Plugin
- *
  * @package		Joomla.Plugin
- * @subpackage	Authentication.mwsso
+ * @subpackage	System.mwsso
  * @since 2.5
  */
 class plgSystemMwSSO extends JPlugin {
