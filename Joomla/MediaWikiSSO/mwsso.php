@@ -67,7 +67,9 @@ class plgSystemMwSSO extends JPlugin {
 		$query->from( $db->quoteName( $prefix . 'user' ) );
 		$query->where( "user_id=$mwuser" );
 		$db->setQuery($query);
-		if( $token !== $db->loadRow() ) {
+		$db_token = $db->loadRow();
+		$db_token = $db_token ? $db_token[0] : false;
+		if( $token !== $db_token ) {
 			JFactory::getApplication()->enqueueMessage( "Invalid token!" );
 			$app->logout();
 			return;
