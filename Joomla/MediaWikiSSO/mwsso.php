@@ -41,9 +41,6 @@ class plgSystemMwSSO extends JPlugin {
 			return;
 		}
 
-		// TODO: need to validate the MW cookie so users can't simply create a cookie with the UserID in it
-		// (e.g. MW could set a cookie that is the hash of the user's password DB entry and the joomla's secret)
-
 		// Connect to the MediaWiki database using all the same access details as the Joomla except the table prefix
 		$option = array(
 			'driver'   => $config->get( 'dbtype' ),
@@ -54,13 +51,34 @@ class plgSystemMwSSO extends JPlugin {
 			'prefix'   => $prefix
 		);
 		$db = JDatabase::getInstance( $option );
+
+		// Get the user's token cookie
+		$cookie = $database . '_' . $prefix . 'Token';
+		$token = array_key_exists( $cookie, $_COOKIE ) ? $_COOKIE[$cookie] : false;
+		if( !$token ) {
+			JFactory::getApplication()->enqueueMessage( "No token!" );
+			$app->logout();
+			return;
+		}
+
+		// Ensure that the token cookie matches their database entry
+		$query = $db->getQuery (true );
+		$query->select( 'user_token' );
+		$query->from( $db->quoteName( $prefix . 'user' ) );
+		$query->where( "user_id=$mwuser" );
+		$db->setQuery($query);
+		if( $token !== $db->loadRow() ) {
+			JFactory::getApplication()->enqueueMessage( "Invalid token!" );
+			$app->logout();
+			return;
+		}
+
+		// If MW user is not in the specified group, log out
 		$query = $db->getQuery (true );
 		$query->select( '1' );
 		$query->from( $db->quoteName( $prefix . 'user_groups' ) );
 		$query->where( "ug_user=$mwuser AND ug_group='$group'" );
 		$db->setQuery($query);
-
-		// If MW user is not in the specified group, log out
 		if( !$db->loadRow() ) {
 			if( $admin ) JFactory::getApplication()->enqueueMessage( "Your wiki user must be in the \"$group\" group." );
 			$app->logout();
