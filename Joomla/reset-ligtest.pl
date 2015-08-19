@@ -4,11 +4,11 @@
 #
 
 # Database
-qx( /var/www/tools/prefix-admin.pl beth beth joomla_ --copy joomla3 joomla_ );
+qx( /var/www/tools/prefix-admin.pl root beth joomla_ --copy joomla3 joomla_ );
 
 # File structure
 $bak = '/home/nad/ligtest-' . time();
-qx( mv /var/www/domains/logtest $bak );
+qx( mv /var/www/domains/ligtest $bak );
 print "Backed up ligtest to $bak\n";
 qx( cp -pR /var/www/domains/ligmincha /var/www/domains/ligtest );
 qx( cp $bak/configuration.php /var/www/domains/ligtest/ );
