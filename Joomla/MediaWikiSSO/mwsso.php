@@ -24,6 +24,7 @@ class plgSystemMwSSO extends JPlugin {
 		$config = JFactory::getConfig();
 		$database = $config->get( 'db' );
 		$prefix = $this->params->get( 'mw_prefix' );
+		$cookie_prefix =  $database . '_' . $prefix;
 		$group = $this->params->get( 'mw_group' );
 		$user = ucfirst( $this->params->get( 'juser' ) );
 
@@ -31,7 +32,7 @@ class plgSystemMwSSO extends JPlugin {
 		$admin = preg_match( '|^/administrator/|', $_SERVER['REQUEST_URI'] );
 
 		// Get the MW user ID from the cookie, or bail if none
-		$cookie = $database . '_' . $prefix . 'UserID';
+		$cookie = $cookie_prefix . 'UserID';
 		$mwuser = array_key_exists( $cookie, $_COOKIE ) ? $_COOKIE[$cookie] : 0;
 
 		// If user not logged in to MW log out
@@ -53,7 +54,7 @@ class plgSystemMwSSO extends JPlugin {
 		$db = JDatabase::getInstance( $option );
 
 		// Get the user's token cookie
-		$cookie = $database . '_' . $prefix . 'Token';
+		$cookie = $cookie_prefix . 'Token';
 		$token = array_key_exists( $cookie, $_COOKIE ) ? $_COOKIE[$cookie] : false;
 		if( !$token ) {
 			JFactory::getApplication()->enqueueMessage( "No token!" );
