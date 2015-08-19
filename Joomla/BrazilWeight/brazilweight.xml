@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system">
+	<name>plg_system_brazilweight</name>
+	<author>Aran Dunkley</author>
+	<creationDate>August 2015</creationDate>
+	<copyright>Copyright (C) 2015 Aran Dunkley</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>aran@organicdesign.co.nz</authorEmail>
+	<authorUrl>www.organicdesign.co.nz/aran</authorUrl>
+	<version>0.0.1</version>
+	<description>Adds a new shipping weight price calculator to Joomshopping that calculates the shipping price through PagSeguro</description>
+	<files>
+		<filename plugin="brazilweight">brazilweight.php</filename>
+	</files>
+</extension>
