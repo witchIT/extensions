@@ -49,7 +49,7 @@ class sm_ligmincha_freight extends shippingextRoot {
 			case 'Carta Registrada':
 				$price = 0;
 				foreach( $weights as $w ) {
-					$i = 50*(int)($w/50);
+					$i = 50*(int)($w*20); // price divisions are in multiples of 50 grams
 					$price += plgSystemLigminchaFreight::$cartaPrices[$i];
 				}
 				$prices['shipping'] = $price;
@@ -92,6 +92,7 @@ class sm_ligmincha_freight extends shippingextRoot {
 	 * Check if any cache entry exists for these parameters
 	 */
 	private function getCache( $weight, $cep ) {
+		$weight *= 1000;
 		$db = JFactory::getDbo();
 		$tbl = '#__ligmincha_freight_cache';
 
@@ -111,6 +112,7 @@ class sm_ligmincha_freight extends shippingextRoot {
 	 * Create a cache entry for these parameters
 	 */
 	private function setCache( $weight, $cep, $costs ) {
+		$weight *= 1000;
 		$db = JFactory::getDbo();
 		$tbl = '#__ligmincha_freight_cache';
 
