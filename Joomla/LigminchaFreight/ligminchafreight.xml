@@ -16,7 +16,12 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic" label="PagSeguro account settings">
-				<field name="pagseguro_email" type="text"
+				<field name="pagseguro" type="spacer"
+					default="pagseguro"
+					label="&lt;b&gt;Detales por PagSeguro conta&lt;/b&gt;:"
+					description="Detales por PagSeguro conta"
+				/>
+ 				<field name="pagseguro_email" type="text"
 					default=""
 					description="Email address associated with the site's PagSeguro account"
 					label="PagSeguro account email"
@@ -27,6 +32,11 @@
 					description="The secure token for acessing the PagSeguro API"
 					label="pagseguro_token"
 					size="30"
+				/>
+				<field name="carta" type="spacer"
+					default="carta"
+					label="&lt;b&gt;Precos de Carta registrada&lt;/b&gt;:"
+					description="Precos de Carta Registrada"
 				/>
 				<field name="carta_track" type="text" default="1,80" description="Tracking price" label="Preço do tracking" size="10" />
 				<field name="carta100" type="text" default="2,55" description="Preço de 100 até 150 gramas" label="100g-150g" size="10" />
