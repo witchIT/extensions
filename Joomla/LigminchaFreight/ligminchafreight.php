@@ -9,10 +9,10 @@ defined('_JEXEC') or die;
 
 /**
  * @package		Joomla.Plugin
- * @subpackage	System.pagsegurofreight
+ * @subpackage	System.ligminchafreight
  * @since 2.5
  */
-class plgSystemPagseguroFreight extends JPlugin {
+class plgSystemLigminchaFreight extends JPlugin {
 
 	public function onExtensionAfterInstall() {
 
@@ -22,12 +22,12 @@ class plgSystemPagseguroFreight extends JPlugin {
 		$query = $db->getQuery( true );
 		$query->select( '1' );
 		$query->from( $tbl );
-		$query->where( "name='PagseguroFreight'" );
+		$query->where( "name='LigminchaFreight'" );
 		$db->setQuery( $query );
 		if( !$db->loadRow() ) {
 			$query = "INSERT INTO `$tbl` "
 				. "(`id`, `name`, `alias`, `description`, `params`, `shipping_method`, `published`, `ordering`) "
-				. "VALUES( 2, 'PagseguroFreight', 'sm_pagseguro_freight', 'PagseguroFreight', '', '', 1, 2 )";
+				. "VALUES( 2, 'LigminchaFreight', 'sm_ligmincha_freight', 'LigminchaFreight', '', '', 1, 2 )";
 			$db->setQuery( $query );
 		}
 

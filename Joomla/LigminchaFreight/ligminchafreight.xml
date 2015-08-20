@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="system">
-	<name>plg_system_pagsegurofreight</name>
+	<name>plg_system_ligminchafreight</name>
 	<author>Aran Dunkley</author>
 	<creationDate>August 2015</creationDate>
 	<copyright>Copyright (C) 2015 Aran Dunkley</copyright>
@@ -8,8 +8,8 @@
 	<authorEmail>aran@organicdesign.co.nz</authorEmail>
 	<authorUrl>www.organicdesign.co.nz/aran</authorUrl>
 	<version>0.0.1</version>
-	<description>Adds a new shipping weight price calculator to Joomshopping that calculates the shipping price through PagSeguro</description>
+	<description>Joomshopping shipping calculator for Ligmincha Brasil Loja</description>
 	<files>
-		<filename plugin="pagsegurofreight">pagsegurofreight.php</filename>
+		<filename plugin="ligminchafreight">ligminchafreight.php</filename>
 	</files>
 </extension>

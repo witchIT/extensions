@@ -3,7 +3,7 @@
 // No direct access
 defined('_JEXEC') or die;
 
-class sm_pagseguro_freight extends shippingextRoot {
+class sm_ligmincha_freight extends shippingextRoot {
 
 	var $version = 2;
 
