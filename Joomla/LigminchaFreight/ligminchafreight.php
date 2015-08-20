@@ -16,6 +16,7 @@ class plgSystemLigminchaFreight extends JPlugin {
 
 	public static $pagseguro_email;
 	public static $pagseguro_token;
+	public static $allbooks;
 
 	public function onAfterInitialise() {
 
@@ -79,5 +80,13 @@ class plgSystemLigminchaFreight extends JPlugin {
 		$file = 'sm_ligmincha_freight.php';
 		if( file_exists( "$path/$file" ) ) unlink( "$path/$file" );
 		if( is_dir( $path ) ) rmdir( $path );
+	}
+
+	/**
+	 * If the order is not all books, remove the Carta registrada option
+	 * (the $allbooks settings is updated in checkout by sm_ligmincha_freight class)
+	 */
+	public function onBeforeDisplayCheckoutStep4View( &$view ) {
+			if( !self::$allbooks ) unset( $view->shipping_methods[2] );
 	}
 }
