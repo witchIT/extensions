@@ -10,6 +10,6 @@
 	<version>0.0.1</version>
 	<description>Adds a new shipping weight price calculator to Joomshopping that calculates the shipping price through PagSeguro</description>
 	<files>
-		<filename plugin="pagsegurogreight">pagsegurofreight.php</filename>
+		<filename plugin="pagsegurofreight">pagsegurofreight.php</filename>
 	</files>
 </extension>
