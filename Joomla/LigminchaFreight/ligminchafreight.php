@@ -14,31 +14,32 @@ defined('_JEXEC') or die;
  */
 class plgSystemLigminchaFreight extends JPlugin {
 
-	public function onExtensionAfterInstall() {
+	public function onAfterInitialise() {
 
 		// Install our extended shipping type if not already there
+		// (should be done from onExtensionAfterInstall but can't get it to be called)
 		$db = JFactory::getDbo();
 		$tbl = '#__jshopping_shipping_ext_calc';
-		$query = $db->getQuery( true );
-		$query->select( '1' );
-		$query->from( $tbl );
-		$query->where( "name='LigminchaFreight'" );
-		$db->setQuery( $query );
-		if( !$db->loadRow() ) {
+		$db->setQuery( "SELECT 1 FROM `$tbl` WHERE `name`='LigminchaFreight'" );
+		$row = $db->loadRow();
+		if( !$row ) {
 			$query = "INSERT INTO `$tbl` "
-				. "(`id`, `name`, `alias`, `description`, `params`, `shipping_method`, `published`, `ordering`) "
-				. "VALUES( 2, 'LigminchaFreight', 'sm_ligmincha_freight', 'LigminchaFreight', '', '', 1, 2 )";
+				. "(`name`, `alias`, `description`, `params`, `shipping_method`, `published`, `ordering`) "
+				. "VALUES( 'LigminchaFreight', 'sm_ligmincha_freight', 'LigminchaFreight', '', '', 1, 1 )";
 			$db->setQuery( $query );
+			$db->query();
+			JFactory::getApplication()->enqueueMessage( "sm_ligmincha_script added into 'jshopping_shipping_ext_calc' database table." );
 		}
-
-		// Copy the script into the correct place
 
 	}
 
 	public function onExtensionAfterUnInstall() {
-		
+
 		// Remove our extended shipping type
-		
-		// Remove our shipping script
+		$db = JFactory::getDbo();
+		$tbl = '#__jshopping_shipping_ext_calc';
+		$db->setQuery( "DELETE FROM `$tbl` WHERE `name`='LigminchaFreight'" );
+		$db->query();
+		JFactory::getApplication()->enqueueMessage( "sm_ligmincha_script removed from 'jshopping_shipping_ext_calc' database table." );
 	}
 }
