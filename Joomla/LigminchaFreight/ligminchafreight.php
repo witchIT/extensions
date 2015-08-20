@@ -45,11 +45,11 @@ class plgSystemLigminchaFreight extends JPlugin {
 			$tbl = '#__ligmincha_freight_cache';
 			$query = "CREATE TABLE IF NOT EXISTS `$tbl` (
 				id     INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				type   INT UNSIGNED NOT NULL,
 				cep    INT UNSIGNED NOT NULL,
 				weight INT UNSIGNED NOT NULL,
 				time   INT UNSIGNED NOT NULL,
-				cost   DECIMAL(5,2) NOT NULL,
+				pac    DECIMAL(5,2) NOT NULL,
+				sedex  DECIMAL(5,2) NOT NULL,
 				PRIMARY KEY (id)
 			)";
 			$db->setQuery( $query );

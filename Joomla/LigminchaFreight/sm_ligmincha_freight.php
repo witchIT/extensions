@@ -64,32 +64,34 @@ class sm_ligmincha_freight extends shippingextRoot {
 		$vendor = JSFactory::getTable('vendor', 'jshop');
 		$vendor->loadMain();
 		$client = JSFactory::getUser();
+		$cep2 = preg_replace( '|[^\d]|', '', $client->d_zip ? $client->d_zip : $client->zip );
 
 		// Local cache
 		if( array_key_exists( $type, $this->cost ) ) return $this->cost[$type];
 
 		// DB cache
-		//$cost = $this->getCache( $weight, $type, $cep );
-		//if( $cost ) return $cost;
+		$cost = $this->getCache( $weight, $cep2 );
+		if( $cost ) {
+			return $cost[$type];
+		}
 
 		$cep1 = $vendor->zip;
-		$cep2 = preg_replace( '|[^\d]|', '', $client->d_zip ? $client->d_zip : $client->zip );
-		$weight /= 1000;
-		$url = "http://developers.agenciaideias.com.br/correios/frete/json/$cep1/$cep2/$weight/1.00";
+		$kg = $weight / 1000;
+		$url = "http://developers.agenciaideias.com.br/correios/frete/json/$cep1/$cep2/$kg/1.00";
 		$result = file_get_contents( $url );
 		if( preg_match( '|"sedex":"([\d.]+)","pac":"([\d.]+)"|', $result, $m ) ) {
 			$this->cost[1] = $m[2];
 			$this->cost[2] = $m[1];
 			$cost = $this->cost[$type];
+			$this->setCache( $weight, $cep2, $this->cost );
 		} else JError::raiseWarning( '', 'Failed to obtain freight price!' );
-		//$this->setCache( $weight, $type, $cep, $cost );
 		return $cost;
 	}
 
 	/**
 	 * Check if any cache entry exists for these parameters
 	 */
-	private function getCache( $weight, $type, $cep ) {
+	private function getCache( $weight, $cep ) {
 		$db = JFactory::getDbo();
 		$tbl = '#__ligmincha_freight_cache';
 
@@ -100,25 +102,27 @@ class sm_ligmincha_freight extends shippingextRoot {
 		$db->query();
 
 		// Load and return the item if any match our parameters
-		$db->setQuery( "SELECT cost FROM `$tbl` WHERE type=$type AND cep=$cep AND weight=$weight ORDER BY time DESC LIMIT 1" );
+		$db->setQuery( "SELECT pac,sedex FROM `$tbl` WHERE cep=$cep AND weight=$weight ORDER BY time DESC LIMIT 1" );
 		$row = $db->loadRow();
-		return $row ? $row[0] : 0;
+		return $row ? array( 1 => $row[0], 2 => $row[1] ) : false;
 	}
 
 	/**
 	 * Create a cache entry for these parameters
 	 */
-	private function setCache( $weight, $type, $cep, $cost ) {
+	private function setCache( $weight, $cep, $costs ) {
 		$db = JFactory::getDbo();
 		$tbl = '#__ligmincha_freight_cache';
 
 		// Delete any of the same parameters
-		$query = "DELETE FROM `$tbl` WHERE type=$type AND cep=$cep AND weight=$weight";
+		$query = "DELETE FROM `$tbl` WHERE cep=$cep AND weight=$weight";
 		$db->setQuery( $query );
 		$db->query();
 
 		// Insert new item with these parameters
-		$query = "INSERT INTO `$tbl` (type, cep, weight, time, cost) VALUES( $type, $cep, $weight, " . time() . ", $cost )";
+		$pac = $costs[1];
+		$sedex = $costs[2];
+		$query = "INSERT INTO `$tbl` (cep, weight, time, pac, sedex) VALUES( $cep, $weight, " . time() . ", $pac, $sedex )";
 		$db->setQuery( $query );
 		$db->query();
 	}
