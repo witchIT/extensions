@@ -12,4 +12,7 @@
 	<files>
 		<filename plugin="ligminchafreight">ligminchafreight.php</filename>
 	</files>
+	<files folder="site">
+		<folder>shippings</folder>
+	</files>
 </extension>
