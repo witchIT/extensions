@@ -16,23 +16,6 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic" label="PagSeguro account settings">
-				<field name="pagseguro" type="spacer"
-					default="pagseguro"
-					label="&lt;b&gt;Detales por PagSeguro conta&lt;/b&gt;:"
-					description="Detales por PagSeguro conta"
-				/>
- 				<field name="pagseguro_email" type="text"
-					default=""
-					description="Email address associated with the site's PagSeguro account"
-					label="PagSeguro account email"
-					size="30"
-				/>
-				<field name="pagseguro_token" type="text"
-					default=""
-					description="The secure token for acessing the PagSeguro API"
-					label="pagseguro_token"
-					size="30"
-				/>
 				<field name="carta" type="spacer"
 					default="carta"
 					label="&lt;b&gt;Precos de Carta registrada&lt;/b&gt;:"
