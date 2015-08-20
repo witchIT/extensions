@@ -9,29 +9,36 @@ defined('_JEXEC') or die;
 
 /**
  * @package		Joomla.Plugin
- * @subpackage	System.mwsso
+ * @subpackage	System.pagsegurofreight
  * @since 2.5
  */
+class plgSystemPagseguroFreight extends JPlugin {
 
-class plgSystemBrazilWeight extends JPlugin {
+	public function onExtensionAfterInstall() {
 
-	// Install our extension into the shipping_ext table if its not there
-	public function onAfterRoute() {
-/*
+		// Install our extended shipping type if not already there
 		$db = JFactory::getDbo();
 		$tbl = '#__jshopping_shipping_ext_calc';
 		$query = $db->getQuery( true );
 		$query->select( '1' );
 		$query->from( $tbl );
-		$query->where( "name='BrazilWeight'" );
+		$query->where( "name='PagseguroFreight'" );
 		$db->setQuery( $query );
 		if( !$db->loadRow() ) {
 			$query = "INSERT INTO `$tbl` "
 				. "(`id`, `name`, `alias`, `description`, `params`, `shipping_method`, `published`, `ordering`) "
-				. "VALUES (2, 'BrazilWeight', 'sm_brazil_weight', 'BrazilWeight', '', '', 1, 2)";
+				. "VALUES( 2, 'PagseguroFreight', 'sm_pagseguro_freight', 'PagseguroFreight', '', '', 1, 2 )";
 			$db->setQuery( $query );
 		}
+
+		// Copy the script into the correct place
+
 	}
-*/
-	require_once( __DIR__ . '/sm_brazil_weight.php' );
+
+	public function onExtensionAfterUnInstall() {
+		
+		// Remove our extended shipping type
+		
+		// Remove our shipping script
+	}
 }
