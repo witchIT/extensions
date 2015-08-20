@@ -14,10 +14,18 @@ defined('_JEXEC') or die;
  */
 class plgSystemLigminchaFreight extends JPlugin {
 
+	public static $pagseguro_email;
+	public static $pagseguro_token;
+
 	public function onAfterInitialise() {
+
+		// Make the pagseguro info available to the sm_ligmincha_freight class
+		self::$pagseguro_email = $this->params->get( 'pagseguro_email' );
+		self::$pagseguro_token = $this->params->get( 'pagseguro_token' );
 
 		// Install our extended shipping type if not already there
 		// (should be done from onExtensionAfterInstall but can't get it to be called)
+		// (or better, should be done from the xml with install/uninstall element, but couldn't get that to work either)
 		$db = JFactory::getDbo();
 		$tbl = '#__jshopping_shipping_ext_calc';
 		$db->setQuery( "SELECT 1 FROM `$tbl` WHERE `name`='LigminchaFreight'" );
@@ -28,7 +36,27 @@ class plgSystemLigminchaFreight extends JPlugin {
 				. "VALUES( 'LigminchaFreight', 'sm_ligmincha_freight', 'LigminchaFreight', '', '', 1, 1 )";
 			$db->setQuery( $query );
 			$db->query();
-			JFactory::getApplication()->enqueueMessage( "sm_ligmincha_script added into 'jshopping_shipping_ext_calc' database table." );
+
+			// Add our freight cost cache table
+			$tbl = '#__ligmincha_freight_cache';
+			$query = "CREATE TABLE IF NOT EXISTS `$tbl` (
+				id     INT UNSIGNED NOT NULL AUTO_INCREMENT,
+				type   INT UNSIGNED NOT NULL,
+				cep    INT UNSIGNED NOT NULL,
+				weight INT UNSIGNED NOT NULL,
+				time   INT UNSIGNED NOT NULL,
+				cost   DECIMAL(5,2) NOT NULL,
+				PRIMARY KEY (id)
+			)";
+			$db->setQuery( $query );
+			$db->query();
+
+			// Copy the sm_ligmincha_freight class into the proper place
+			// (there's probably a proper way to do this from the xml file)
+			$path = JPATH_ROOT . '/components/com_jshopping/shippings/sm_ligmincha_freight';
+			$file = 'sm_ligmincha_freight.php';
+			if( !is_dir( $path ) ) mkdir( $path );
+			copy( __DIR__ . "/$file", "$path/$file" );
 		}
 
 	}
@@ -40,6 +68,16 @@ class plgSystemLigminchaFreight extends JPlugin {
 		$tbl = '#__jshopping_shipping_ext_calc';
 		$db->setQuery( "DELETE FROM `$tbl` WHERE `name`='LigminchaFreight'" );
 		$db->query();
-		JFactory::getApplication()->enqueueMessage( "sm_ligmincha_script removed from 'jshopping_shipping_ext_calc' database table." );
+
+		// Remove our freight cost cache table
+		$tbl = '#__ligmincha_freight_cache';
+		$db->setQuery( "DROP TABLE IF EXISTS `$tbl`" );
+		$db->query();
+
+		// Remove the script
+		$path = JPATH_ROOT . '/components/com_jshopping/shippings/sm_ligmincha_freight';
+		$file = 'sm_ligmincha_freight.php';
+		if( file_exists( "$path/$file" ) ) unlink( "$path/$file" );
+		if( is_dir( $path ) ) rmdir( $path );
 	}
 }

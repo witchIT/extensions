@@ -11,8 +11,24 @@
 	<description>Joomshopping shipping calculator for Ligmincha Brasil Loja</description>
 	<files>
 		<filename plugin="ligminchafreight">ligminchafreight.php</filename>
+		<filename>sm_ligmincha_freight.php</filename>
 	</files>
-	<files folder="site">
-		<folder>shippings</folder>
-	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="pagseguro_email" type="text"
+					default=""
+					description="Email address associated with the site's PagSeguro account"
+					label="PagSeguro account email"
+					size="20"
+				/>
+				<field name="pagseguro_token" type="text"
+					default=""
+					description="The secure token for acessing the PagSeguro API"
+					label="pagseguro_token"
+					size="20"
+				/>
+			</fieldset>
+		</fields>
+	</config>
 </extension>
