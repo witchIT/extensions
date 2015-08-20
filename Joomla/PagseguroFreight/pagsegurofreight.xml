@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="system">
-	<name>plg_system_brazilweight</name>
+	<name>plg_system_pagsegurofreight</name>
 	<author>Aran Dunkley</author>
 	<creationDate>August 2015</creationDate>
 	<copyright>Copyright (C) 2015 Aran Dunkley</copyright>
@@ -10,6 +10,6 @@
 	<version>0.0.1</version>
 	<description>Adds a new shipping weight price calculator to Joomshopping that calculates the shipping price through PagSeguro</description>
 	<files>
-		<filename plugin="brazilweight">brazilweight.php</filename>
+		<filename plugin="pagsegurogreight">pagsegurofreight.php</filename>
 	</files>
 </extension>
