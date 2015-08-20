@@ -16,13 +16,21 @@ class plgSystemLigminchaFreight extends JPlugin {
 
 	public static $pagseguro_email;
 	public static $pagseguro_token;
+	public static $cartaPrices = array();
 	public static $allbooks;
 
 	public function onAfterInitialise() {
 
 		// Make the pagseguro info available to the sm_ligmincha_freight class
+		// (better, these values can be read without doing this using JRegistry)
 		self::$pagseguro_email = $this->params->get( 'pagseguro_email' );
 		self::$pagseguro_token = $this->params->get( 'pagseguro_token' );
+
+		// And the Carta registrada prices
+		$t = str_replace( ',', '.', $this->params->get( 'carta_track' ) );
+		foreach( array( 100, 150, 200, 250, 300, 350, 400, 450 ) as $d ) {
+				self::$cartaPrices[$d] = str_replace( ',', '.', $this->params->get( "carta$d" ) ) + $t;
+		}
 
 		// Install our extended shipping type if not already there
 		// (should be done from onExtensionAfterInstall but can't get it to be called)

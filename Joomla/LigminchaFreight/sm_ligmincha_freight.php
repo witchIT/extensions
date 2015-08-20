@@ -22,10 +22,12 @@ class sm_ligmincha_freight extends shippingextRoot {
 		$type->load( $id );
 		$type = $type->getProperties()['name_pt-BR'];
 
-		// Check if all products are books
+		// Check if all products are books and gather their weights
+		$weights = array();
 		plgSystemLigminchaFreight::$allbooks = true;
 		foreach( $cart->products as $item ) {
-			if( $item['category_id'] != 1 ) plgSystemLigminchaFreight::$allbooks = false;
+			if( $item['category_id'] == 1 ) $weights[] = $item['weight'];
+			else plgSystemLigminchaFreight::$allbooks = false;
 		}
 
 		// If it's one of ours, calculate the price
@@ -42,7 +44,12 @@ class sm_ligmincha_freight extends shippingextRoot {
 			break;
 
 			case 'Carta Registrada':
-				$prices['shipping'] = $prices['shipping'] * $cart->count_product;
+				$price = 0;
+				foreach( $weights as $w ) {
+						$i = 50*(int)($w/50);
+						$price += plgSystemLigminchaFreight::$cartaPrices[$i];
+				}
+				$prices['shipping'] = $price;
 				$prices['package'] = 0;
 			break;
 
