@@ -15,6 +15,10 @@ class sm_ligmincha_freight extends shippingextRoot {
 	function showConfigForm( $config, &$shipping_ext, &$template ) {
 	}
 
+	/**
+	 * This method is called for each of the shipping methods options in the checkout
+	 * (and also on subsequent pages for the chosen method)
+	 */
 	function getPrices( $cart, $params, $prices, &$shipping_ext_row, &$shipping_method_price ) {
 		$weight = $cart->getWeightProducts();
 
