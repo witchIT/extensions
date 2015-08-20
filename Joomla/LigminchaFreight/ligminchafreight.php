@@ -14,14 +14,12 @@ defined('_JEXEC') or die;
  */
 class plgSystemLigminchaFreight extends JPlugin {
 
-	public static $pagseguro_email;
-	public static $pagseguro_token;
-	public static $cartaPrices = array();
-	public static $allbooks;
+	public static $cartaPrices = array(); // the table of prices per weight for carta registrada
+	public static $allbooks;              // whether the order consists only of book or not (whether carta registrada is allowed or not)
 
 	public function onAfterInitialise() {
 
-		// And the Carta registrada prices
+		// And the Carta registrada prices (add the tracking price to each)
 		$t = str_replace( ',', '.', $this->params->get( 'carta_track' ) );
 		foreach( array( 100, 150, 200, 250, 300, 350, 400, 450 ) as $d ) {
 				self::$cartaPrices[$d] = str_replace( ',', '.', $this->params->get( "carta$d" ) ) + $t;
@@ -35,6 +33,8 @@ class plgSystemLigminchaFreight extends JPlugin {
 		$db->setQuery( "SELECT 1 FROM `$tbl` WHERE `name`='LigminchaFreight'" );
 		$row = $db->loadRow();
 		if( !$row ) {
+
+			// Add the shipping type extension
 			$query = "INSERT INTO `$tbl` "
 				. "(`name`, `alias`, `description`, `params`, `shipping_method`, `published`, `ordering`) "
 				. "VALUES( 'LigminchaFreight', 'sm_ligmincha_freight', 'LigminchaFreight', '', '', 1, 1 )";
@@ -65,6 +65,9 @@ class plgSystemLigminchaFreight extends JPlugin {
 
 	}
 
+	/**
+	 * Called on removal of the extension
+	 */
 	public function onExtensionAfterUnInstall() {
 
 		// Remove our extended shipping type
@@ -90,6 +93,6 @@ class plgSystemLigminchaFreight extends JPlugin {
 	 * (the $allbooks settings is updated in checkout by sm_ligmincha_freight class)
 	 */
 	public function onBeforeDisplayCheckoutStep4View( &$view ) {
-			if( !self::$allbooks ) unset( $view->shipping_methods[2] );
+			if( !self::$allbooks ) unset( $view->shipping_methods[2] ); // TODO: we should remove this by name not assume that it's id is 2
 	}
 }

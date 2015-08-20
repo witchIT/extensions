@@ -65,21 +65,23 @@ class sm_ligmincha_freight extends shippingextRoot {
 		return $prices;
 	}
 
+	/**
+	 * Return a single price given a weight and shipping type
+	 */
 	private function getFreightPrice( $weight, $type ) {
 		$vendor = JSFactory::getTable('vendor', 'jshop');
 		$vendor->loadMain();
 		$client = JSFactory::getUser();
 		$cep2 = preg_replace( '|[^\d]|', '', $client->d_zip ? $client->d_zip : $client->zip );
 
-		// Local cache
+		// Local cache (stores in an array so that no lookups are required for the same data in the same request)
 		if( array_key_exists( $type, $this->cost ) ) return $this->cost[$type];
 
-		// DB cache
+		// DB cache (costs for pac and sedex are stored in the database per weight and CEP for a day)
 		$cost = $this->getCache( $weight, $cep2 );
-		if( $cost ) {
-			return $cost[$type];
-		}
+		if( $cost ) return $cost[$type];
 
+		// Not cached locally or in the database, get price from the external API and store locally and in database
 		$cep1 = $vendor->zip;
 		$url = "http://developers.agenciaideias.com.br/correios/frete/json/$cep1/$cep2/$weight/1.00";
 		$result = file_get_contents( $url );
@@ -88,19 +90,19 @@ class sm_ligmincha_freight extends shippingextRoot {
 			$this->cost[2] = $m[1];
 			$cost = $this->cost[$type];
 			$this->setCache( $weight, $cep2, $this->cost );
-		} else JError::raiseWarning( '', 'Failed to obtain freight price!' );
+		} else JError::raiseWarning( '', "Error: $result" );
 		return $cost;
 	}
 
 	/**
-	 * Check if any cache entry exists for these parameters
+	 * Check if a database cache entry exists for this weight and destination
 	 */
 	private function getCache( $weight, $cep ) {
 		$weight *= 1000;
 		$db = JFactory::getDbo();
 		$tbl = '#__ligmincha_freight_cache';
 
-		// Delete any expired items after a day
+		// Only keep cache entries forr a day
 		$expire = time() - 86400;
 		$query = "DELETE FROM `$tbl` WHERE time < $expire";
 		$db->setQuery( $query );
@@ -113,7 +115,7 @@ class sm_ligmincha_freight extends shippingextRoot {
 	}
 
 	/**
-	 * Create a cache entry for these parameters
+	 * Create a database cache entry for this weight and destination
 	 */
 	private function setCache( $weight, $cep, $costs ) {
 		$weight *= 1000;
