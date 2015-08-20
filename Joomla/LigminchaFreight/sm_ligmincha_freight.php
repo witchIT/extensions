@@ -28,8 +28,9 @@ class sm_ligmincha_freight extends shippingextRoot {
 		$weights = array();
 		plgSystemLigminchaFreight::$allbooks = true;
 		foreach( $cart->products as $item ) {
-			if( $item['category_id'] == 1 ) $weights[] = $item['weight'];
-			else plgSystemLigminchaFreight::$allbooks = false;
+			if( $item['category_id'] == 1 ) {
+				for( $i = 0; $i < $item['quantity']; $i++ ) $weights[] = $item['weight'];
+			} else plgSystemLigminchaFreight::$allbooks = false;
 		}
 
 		// If it's one of ours, calculate the price
@@ -48,8 +49,8 @@ class sm_ligmincha_freight extends shippingextRoot {
 			case 'Carta Registrada':
 				$price = 0;
 				foreach( $weights as $w ) {
-						$i = 50*(int)($w/50);
-						$price += plgSystemLigminchaFreight::$cartaPrices[$i];
+					$i = 50*(int)($w/50);
+					$price += plgSystemLigminchaFreight::$cartaPrices[$i];
 				}
 				$prices['shipping'] = $price;
 				$prices['package'] = 0;
@@ -76,8 +77,7 @@ class sm_ligmincha_freight extends shippingextRoot {
 		}
 
 		$cep1 = $vendor->zip;
-		$kg = $weight / 1000;
-		$url = "http://developers.agenciaideias.com.br/correios/frete/json/$cep1/$cep2/$kg/1.00";
+		$url = "http://developers.agenciaideias.com.br/correios/frete/json/$cep1/$cep2/$weight/1.00";
 		$result = file_get_contents( $url );
 		if( preg_match( '|"sedex":"([\d.]+)","pac":"([\d.]+)"|', $result, $m ) ) {
 			$this->cost[1] = $m[2];
