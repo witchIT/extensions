@@ -35,7 +35,7 @@ class sm_pagseguro_freight extends shippingextRoot {
 				$prices['package'] = 0;
 			break;
 
-			case '':
+			case 'Carta Registrada':
 				$prices['shipping'] = 0;
 				$prices['package'] = 0;
 			break;
