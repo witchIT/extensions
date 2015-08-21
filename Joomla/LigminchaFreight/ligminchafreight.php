@@ -1,5 +1,8 @@
 <?php
 /**
+ * Modifies Joomshopping shipping types (PAC, SEDEX and Carta registrada) to calculate cost during checkout
+ * - see components/com_jshopping/controllers/checkout.php for relavent events
+ * 
  * @copyright	Copyright (C) 2015 Aran Dunkley
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */

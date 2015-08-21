@@ -2,6 +2,18 @@
 /**
  * @copyright	Copyright (C) 2015 Aran Dunkley
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * 
+ * Add the following to the MediaWiki settings to ensure that users always get a token
+ * 
+ * $wgExtensionFunctions[] = 'wfTokenAlways';
+ * function wfTokenAlways() {
+ *    global $wgUser, $wgCookiePrefix;
+ *    if( !array_key_exists( $cookiePrefix . 'Token', $_COOKIE ) ) {
+ *       $token = $wgUser->getToken( true );
+ *       WebResponse::setcookie( 'Token', $token );
+ *    }
+ * }
+ * 
  */
 
 // No direct access
