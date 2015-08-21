@@ -7,7 +7,7 @@ class sm_ligmincha_freight extends shippingextRoot {
 
 	var $version = 2;
 
-	var $cost = array();
+	var $cost = array(); // local cache of the shipping prices for this request
 
 	function showShippingPriceForm( $params, &$shipping_ext_row, &$template ) {
 	}
@@ -134,5 +134,4 @@ class sm_ligmincha_freight extends shippingextRoot {
 		$db->setQuery( $query );
 		$db->query();
 	}
-
 }
