@@ -7,8 +7,8 @@
  * 
  * $wgExtensionFunctions[] = 'wfTokenAlways';
  * function wfTokenAlways() {
- *    global $wgUser, $wgCookiePrefix;
- *    if( !array_key_exists( $cookiePrefix . 'Token', $_COOKIE ) ) {
+ *    global $wgUser, $wgRequest;
+ *    if( !$wgRequest->getCookie( 'Token' ) ) {
  *       $token = $wgUser->getToken( true );
  *       WebResponse::setcookie( 'Token', $token );
  *    }
