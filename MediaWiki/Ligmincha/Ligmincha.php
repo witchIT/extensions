@@ -89,7 +89,7 @@ function wfOldChanges() {
 $wgExtensionFunctions[] = 'wfTokenAlways';
 function wfTokenAlways() {
 	global $wgUser, $wgRequest;
-	if( !$wgRequest->getCookie( 'Token' ) ) {
+	if( $wgUser->isLoggedIn() && !$wgRequest->getCookie( 'Token' ) ) {
 		$token = $wgUser->getToken( true );
 		WebResponse::setcookie( 'Token', $token );
 	}
