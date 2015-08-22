@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system">
+	<name>plg_system_ligminchafreight</name>
+	<author>Aran Dunkley</author>
+	<creationDate>August 2015</creationDate>
+	<copyright>Copyright (C) 2015 Aran Dunkley</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>aran@organicdesign.co.nz</authorEmail>
+	<authorUrl>www.organicdesign.co.nz/aran</authorUrl>
+	<version>0.0.1</version>
+	<description>Joomshopping shipping calculator for Ligmincha Brasil Loja</description>
+	<files>
+		<filename plugin="ligminchafreight">ligminchafreight.php</filename>
+		<filename>sm_ligmincha_freight.php</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" label="PagSeguro account settings">
+				<field name="carta" type="spacer"
+					default="carta"
+					label="&lt;b&gt;Precos de Carta registrada&lt;/b&gt;:"
+					description="Precos de Carta Registrada"
+				/>
+				<field name="carta_track" type="text" default="1,80" description="Tracking price" label="Preço do tracking" size="10" />
+				<field name="carta100" type="text" default="2,55" description="Preço de 100 até 150 gramas" label="100g-150g" size="10" />
+				<field name="carta150" type="text" default="3,10" description="Preço de 150 até 200 gramas" label="150g-200g" size="10" />
+				<field name="carta200" type="text" default="3,65" description="Preço de 200 até 250 gramas" label="200g-250g" size="10" />
+				<field name="carta250" type="text" default="4,20" description="Preço de 250 até 300 gramas" label="250g-300g" size="10" />
+				<field name="carta300" type="text" default="4,70" description="Preço de 300 até 350 gramas" label="300g-350g" size="10" />
+				<field name="carta350" type="text" default="5,25" description="Preço de 350 até 400 gramas" label="350g-300g" size="10" />
+				<field name="carta400" type="text" default="5,80" description="Preço de 400 até 450 gramas" label="400g-450g" size="10" />
+				<field name="carta450" type="text" default="6,35" description="Preço de 450 até 500 gramas" label="450g-500g" size="10" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>
