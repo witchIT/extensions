@@ -1,6 +1,6 @@
 {
 	"name": "HighlighJS",
-	"version": "1.1.0, 2015-06-21",
+	"version": "1.1.2, 2015-09-04",
 	"author": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"],
 	"url": "http://www.mediawiki.org/wiki/Extension:HighlightJS",
 	"description": "Adds syntax highlighting for code blocks using the highlightjs.org client-side syntax highlighter",
@@ -10,7 +10,8 @@
 	"config": {
 		"HighlightJsStyle": "",            "@": "Set to the name of the preferred style from the highlight/styles directory",
 		"HighlightJsMagic": "source",      "@": "The name of the tag used to make highlighted code blocks",
-		"HighlightJsPath": false,          "@": "Set the extension path manually (useful if it's a symlinked location)"
+		"HighlightJsPath": false,          "@": "Set the extension path manually (useful if it's a symlinked location)",
+		"HighlightJsHighlightChr": "",     "@": "If this is set to a character, then highlighting terms is allowd with {xTextx} where x is the character"
 	},
 	"AutoloadClasses": {
 		"HighlightJS": "HighlightJS_body.php"

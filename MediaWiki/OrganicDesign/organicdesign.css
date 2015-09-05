@@ -456,14 +456,17 @@ span.fancytree-title a {
 /* Home page */
 body.page-Home #firstHeading { display:none }
 body.page-Home h2 {
-  font-size: 150%;
-  font-weight: bold;
-  margin: 3em 0 1em 0;
-  text-align: center;
+	font-size: 150%;
+	font-weight: bold;
+	margin: 3em 0 1em 0;
+	text-align: center;
 }
 body.anon.page-Home #p-cactions { display: none }
 body.page-Home div#content { padding: 0 }
 body.page-Home #bodyContent {
-  background: transparent url(/files/7/7e/Homepage.jpg) no-repeat scroll right bottom;
-  padding: 10px 10px 250px 10px;
+	background: transparent url(/files/7/7e/Homepage.jpg) no-repeat scroll right bottom;
+	padding: 10px 10px 250px 10px;
+}
+span.hljs-highlight {
+	background-color: #f5fd82;
 }

@@ -36,10 +36,14 @@ class HighlightJS {
 	 * Expand the new tag
 	 */
 	public static function expandTag( $input, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgJsMimeType;
+		global $wgJsMimeType, $wgHighlightJsHighlightChr;
 		if( !array_key_exists( 'lang', $args ) ) $args['lang'] = 'nohighlight';
 		$class = ' class="' . $args['lang'] . ' todo"';
 		$script = "<script type=\"$wgJsMimeType\">if('hljsGo' in window) window.hljsGo();</script>";
-		return "<pre><code$class>" . htmlspecialchars( trim( $input ) ) . "</code></pre>$script";
+		$code = htmlspecialchars( trim( $input ) );
+		if( $wgHighlightJsHighlightChr ) {
+			$code = preg_replace( "|\{$wgHighlightJsHighlightChr(.+?)$wgHighlightJsHighlightChr\}|s", '<span class="hljs-highlight">$1</span>', $code );
+		}
+		return "<pre><code$class>$code</code></pre>$script";
 	}
 }

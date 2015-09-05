@@ -7,18 +7,12 @@ class sm_ligmincha_freight extends shippingextRoot {
 
 	var $version = 2;
 
-	var $cost = array(); // local cache of the shipping prices for this request
-
 	function showShippingPriceForm( $params, &$shipping_ext_row, &$template ) {
 	}
 
 	function showConfigForm( $config, &$shipping_ext, &$template ) {
 	}
 
-	/**
-	 * This method is called for each of the shipping methods options in the checkout
-	 * (and also on subsequent pages for the chosen method)
-	 */
 	function getPrices( $cart, $params, $prices, &$shipping_ext_row, &$shipping_method_price ) {
 		$weight = $cart->getWeightProducts();
 
@@ -32,9 +26,8 @@ class sm_ligmincha_freight extends shippingextRoot {
 		$weights = array();
 		plgSystemLigminchaFreight::$allbooks = true;
 		foreach( $cart->products as $item ) {
-			if( $item['category_id'] == 1 ) {
-				for( $i = 0; $i < $item['quantity']; $i++ ) $weights[] = $item['weight'];
-			} else plgSystemLigminchaFreight::$allbooks = false;
+			if( $item['category_id'] == 1 ) $weights[] = $item['weight'];
+			else plgSystemLigminchaFreight::$allbooks = false;
 		}
 
 		// If it's one of ours, calculate the price
@@ -53,8 +46,8 @@ class sm_ligmincha_freight extends shippingextRoot {
 			case 'Carta Registrada':
 				$price = 0;
 				foreach( $weights as $w ) {
-					$i = 50*(int)($w*20); // price divisions are in multiples of 50 grams
-					$price += plgSystemLigminchaFreight::$cartaPrices[$i];
+						$i = 50*(int)($w/50);
+						$price += plgSystemLigminchaFreight::$cartaPrices[$i];
 				}
 				$prices['shipping'] = $price;
 				$prices['package'] = 0;
@@ -65,73 +58,108 @@ class sm_ligmincha_freight extends shippingextRoot {
 		return $prices;
 	}
 
-	/**
-	 * Return a single price given a weight and shipping type
-	 */
 	private function getFreightPrice( $weight, $type ) {
 		$vendor = JSFactory::getTable('vendor', 'jshop');
 		$vendor->loadMain();
 		$client = JSFactory::getUser();
-		$cep2 = preg_replace( '|[^\d]|', '', $client->d_zip ? $client->d_zip : $client->zip );
+		$cep = preg_replace( '|[^\d]|', '', $client->d_zip ? $client->d_zip : $client->zip );
+		$cost = $this->getCache( $weight, $type, $cep );
+		if( $cost ) return $cost;
+		$data = array(
+			'email' => plgSystemLigminchaFreight::$pagseguro_email,
+			'token' => plgSystemLigminchaFreight::$pagseguro_token,
+			'currency' => 'BRL',
+			'itemId1' => 1,
+			'itemDescription1' => 'Livros do Ligmincha Brasil Loja',
+			'itemAmount1' => '1.00',
+			'itemQuantity1' => 1,
+			'itemWeight1' => $weight,
+			'reference' => strtoupper( substr( uniqid( 'LB' ), 1, 6 ) ),
+			'senderName' => $vendor->shop_name,
+			'senderAreaCode' => $vendor->zip, // Note this setting must be a phone area code not a CEP
+			'senderEmail' => $vendor->email,
+			'shippingType' => $type,
+			'shippingAddressStreet' => $client->d_street ? $client->d_street : $client->street,
+			'shippingAddressNumber' => $client->d_street_nr ? $client->d_street_nr : $client->street_nr,
+			'shippingAddressPostalCode' => $cep,
+			'shippingAddressCity' => $client->d_city ? $client->d_city : $client->city,
+			'shippingAddressState' => $client->d_state ? $client->d_state : $client->state,
+			'shippingAddressCountry' => 'BRA'
+		);
 
-		// Local cache (stores in an array so that no lookups are required for the same data in the same request)
-		if( array_key_exists( $type, $this->cost ) ) return $this->cost[$type];
-
-		// DB cache (costs for pac and sedex are stored in the database per weight and CEP for a day)
-		$cost = $this->getCache( $weight, $cep2 );
-		if( $cost ) return $cost[$type];
-
-		// Not cached locally or in the database, get price from the external API and store locally and in database
-		$cep1 = $vendor->zip;
-		$url = "http://developers.agenciaideias.com.br/correios/frete/json/$cep1/$cep2/$weight/1.00";
-		$result = file_get_contents( $url );
-		if( preg_match( '|"sedex":"([\d.]+)","pac":"([\d.]+)"|', $result, $m ) ) {
-			$this->cost[1] = $m[2];
-			$this->cost[2] = $m[1];
-			$cost = $this->cost[$type];
-			$this->setCache( $weight, $cep2, $this->cost );
-		} else JError::raiseWarning( '', "Error: $result" );
+		$result = $this->post( 'https://ws.pagseguro.uol.com.br/v2/checkout/', $data );
+		$code = preg_match( '|<code>(.+?)</code>|', $result, $m ) ? $m[1] : false;
+		if( $code ) {
+			JFactory::getApplication()->enqueueMessage( "Code: $code" );
+			$html = file_get_contents( "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=$code" );
+			$cost = preg_match( '|"freightRow".+?R\$.+?([\d,]+)|s', $html, $m ) ? $m[1] : 0;
+			$cost = str_replace( ',', '.', $cost );
+		} else JError::raiseWarning( '', curl_error( $result ) );
+		if( $cost == 0 ) JError::raiseWarning( '', 'Failed to obtain freight price!' );
+		else $this->setCache( $weight, $type, $cep, $cost );
 		return $cost;
 	}
 
 	/**
-	 * Check if a database cache entry exists for this weight and destination
+	 * Send a POST requst using cURL
 	 */
-	private function getCache( $weight, $cep ) {
-		$weight *= 1000;
+	private function post( $url, $data ) {
+		$options = array(
+			CURLOPT_POST => 1,
+			CURLOPT_HEADER => 0,
+			CURLOPT_URL => $url,
+			CURLOPT_FRESH_CONNECT => 1,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_FORBID_REUSE => 1,
+			CURLOPT_TIMEOUT => 4,
+			CURLOPT_POSTFIELDS => http_build_query( $data )
+		);
+
+		$ch = curl_init();
+		curl_setopt_array( $ch, $options );
+
+		if( $result = curl_exec( $ch ) ) return $result;
+		else JError::raiseWarning( '', curl_error( $ch ) );
+
+		curl_close( $ch );
+		return $result;
+	}
+
+	/**
+	 * Check if any cache entry exists for these parameters
+	 */
+	private function getCache( $weight, $type, $cep ) {
 		$db = JFactory::getDbo();
 		$tbl = '#__ligmincha_freight_cache';
 
-		// Only keep cache entries forr a day
+		// Delete any expired items after a day
 		$expire = time() - 86400;
 		$query = "DELETE FROM `$tbl` WHERE time < $expire";
 		$db->setQuery( $query );
 		$db->query();
 
 		// Load and return the item if any match our parameters
-		$db->setQuery( "SELECT pac,sedex FROM `$tbl` WHERE cep=$cep AND weight=$weight ORDER BY time DESC LIMIT 1" );
+		$db->setQuery( "SELECT cost FROM `$tbl` WHERE type=$type AND cep=$cep AND weight=$weight ORDER BY time DESC LIMIT 1" );
 		$row = $db->loadRow();
-		return $row ? array( 1 => $row[0], 2 => $row[1] ) : false;
+		return $row ? $row[0] : 0;
 	}
 
 	/**
-	 * Create a database cache entry for this weight and destination
+	 * Create a cache entry for these parameters
 	 */
-	private function setCache( $weight, $cep, $costs ) {
-		$weight *= 1000;
+	private function setCache( $weight, $type, $cep, $cost ) {
 		$db = JFactory::getDbo();
 		$tbl = '#__ligmincha_freight_cache';
 
 		// Delete any of the same parameters
-		$query = "DELETE FROM `$tbl` WHERE cep=$cep AND weight=$weight";
+		$query = "DELETE FROM `$tbl` WHERE type=$type AND cep=$cep AND weight=$weight";
 		$db->setQuery( $query );
 		$db->query();
 
 		// Insert new item with these parameters
-		$pac = $costs[1];
-		$sedex = $costs[2];
-		$query = "INSERT INTO `$tbl` (cep, weight, time, pac, sedex) VALUES( $cep, $weight, " . time() . ", $pac, $sedex )";
+		$query = "INSERT INTO `$tbl` (type, cep, weight, time, cost) VALUES( $type, $cep, $weight, " . time() . ", $cost )";
 		$db->setQuery( $query );
 		$db->query();
 	}
+
 }
