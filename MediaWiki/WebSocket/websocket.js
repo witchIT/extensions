@@ -28,7 +28,8 @@ window.webSocket = (function($, document, mw, undefined) {
 	}
 
 	function onError(e) {
-		console.log('WebSocket error: ' + e);
+		console.log('WebSocket error');
+		console.log(e);
 	}
 
 	function checkConnection() {
