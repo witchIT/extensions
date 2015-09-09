@@ -91,9 +91,10 @@ class OrganicDesign {
 	}
 
 	/**
-	 * Return whether or now comments and uploads are allowed for the passed title
+	 * Return whether or not comments and uploads are allowed for the passed title
 	 */
 	function commentsAndUploads( $title ) {
+		if( !is_object( $title ) ) return false;
 		$ns = $title->getNamespace();
 		if( $ns == 2 || $ns == 8 || $ns == 10 ) return false;
 		return !self::inCat( 'No files or comments', $title );
