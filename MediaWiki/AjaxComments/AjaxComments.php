@@ -13,7 +13,7 @@
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
-define( 'AJAXCOMMENTS_VERSION', '2.1.3, 2015-07-06' );
+define( 'AJAXCOMMENTS_VERSION', '2.1.4, 2015-09-21' );
 define( 'AJAXCOMMENTS_TABLE', 'ajaxcomments' );
 define( 'AJAXCOMMENTS_DATATYPE_COMMENT', 1 );
 define( 'AJAXCOMMENTS_DATATYPE_LIKE', 2 );
@@ -46,6 +46,8 @@ $wgAPIModules['ajaxcomments'] = 'ApiAjaxComments';
 
 class AjaxComments {
 
+	private static $admin = false;
+
 	private $comments = array();
 	private $talk = false;
 	private $canComment = false;
@@ -56,7 +58,11 @@ class AjaxComments {
 	}
 
 	public function setup() {
-		global $wgOut, $wgResourceModules, $wgAjaxCommentsPollServer, $wgAjaxCommentsLikeDislike, $wgExtensionAssetsPath, $wgUser;
+		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $wgUser,
+			$wgAjaxCommentsAdmins, $wgAjaxCommentsPollServer, $wgAjaxCommentsLikeDislike;
+
+		// Determine if the current user is an admin for comments
+		self::$admin = count( array_intersect( $wgAjaxCommentsAdmins, $wgUser->getEffectiveGroups() ) ) > 0;
 
 		// Create a hook to allow external condition for whether there should be comments shown
 		$title = array_key_exists( 'title', $_GET ) ? Title::newFromText( $_GET['title'] ) : false;
@@ -116,6 +122,7 @@ class AjaxComments {
 		$wgOut->addJsConfigVars( 'ajaxCommentsPollServer', $wgAjaxCommentsPollServer );
 		$wgOut->addJsConfigVars( 'ajaxCommentsCanComment', $this->canComment );
 		$wgOut->addJsConfigVars( 'ajaxCommentsLikeDislike', $wgAjaxCommentsLikeDislike );
+		$wgOut->addJsConfigVars( 'ajaxCommentsAdmin', self::$admin );
 	}
 
 	/**
@@ -195,7 +202,7 @@ class AjaxComments {
 		$dbw = wfGetDB( DB_MASTER );
 
 		// Die if the comment is not owned by this user unless sysop
-		if( !in_array( 'sysop', $wgUser->getEffectiveGroups() ) ) {
+		if( !self::$admin ) {
 			$row = $dbw->selectRow( AJAXCOMMENTS_TABLE, 'ac_user', array( 'ac_id' => $id ) );
 			if( $uid->ac_user != $wgUser->getId() ) return "Only sysops can delete someone else's comment";
 		}
