@@ -21,6 +21,7 @@ define( 'AJAXCOMMENTS_DATATYPE_LIKE', 2 );
 $wgAjaxCommentsLikeDislike = true;        // add a like/dislike link to each comment
 $wgAjaxCommentsAvatars = true;            // use the gravatar service for users icons
 $wgAjaxCommentsPollServer = 0;            // poll the server to see if any changes to comments have been made and update if so
+$wgAjaxCommentsAdmins = array( 'sysop' ); // list of groups who have admin rights for comments
 
 // Add a new log type
 $wgLogTypes[]                       = 'ajaxcomments';
