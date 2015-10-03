@@ -15,11 +15,7 @@
 	"Hooks": {
 		"ParserFirstCallInit": ["Bliki::onParserFirstCallInit"],
 		"UnknownAction": ["Bliki::onUnknownAction"],
-		"OutputPageBodyAttributes": ["Bliki::onOutputPageBodyAttributes"],
-		"ParserFirstCallInit": ["Bliki::onParserFirstCallInit"],
-		"LanguageGetMagic": ["ExtraMagic::onLanguageGetMagic"],
-		"MagicWordwgVariableIDs": ["ExtraMagic::onMagicWordwgVariableIDs"],
-		"ParserGetVariableValueSwitch": ["ExtraMagic::onParserGetVariableValueSwitch"]
+		"OutputPageBodyAttributes": ["Bliki::onOutputPageBodyAttributes"]
 	},
 	"AutoloadClasses": {
 		"Bliki": "Bliki.class.php",
