@@ -60,7 +60,7 @@ $(document).ready( function() {
 			var html = '<div class="odmaps-info">';
 			html += '<h1>' + location.title + '</h1>';
 			if('image' in location) html += '<img src="' + location.image + '" />';
-			html += location.info.replace('/\n\n/g', '<br />');
+			html += location.info.replace(/\n\n/g, '<br />');
 			html += '</div>';
 			return html;
 		};
