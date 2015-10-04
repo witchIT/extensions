@@ -28,7 +28,7 @@ class ODMaps {
 		$wgOut->addJsConfigVars( 'odMapsPath', $path );
 
 		// Add the google maps API
-		$wgOut->addHeadScript( '<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places" type="text/javascript"></script>' );
+		$wgOut->addHeadItem( 'GoogleMaps', '<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places" type="text/javascript"></script>' );
 	}
 
 	/**
