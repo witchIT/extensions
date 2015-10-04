@@ -44,7 +44,7 @@ $(document).ready( function() {
 				if('info' in location) {
 					google.maps.event.addListener(location.marker, 'click', function() {
 						if(info) info.close();
-						info = new google.maps.InfoWindow({ content: renderInfo(location) });
+						info = new google.maps.InfoWindow({ content: renderInfo(location), maxWidth: 300 });
 						info.open(map, location.marker);
 					});
 				}
@@ -55,7 +55,12 @@ $(document).ready( function() {
 		 * Render the HTML for an info popup for the passed location
 		 */
 		function renderInfo(location) {
-			return '<h1>' + location.title + '</h1>' + location.info;
+			var html = '<div class="odmaps-info">';
+			html += '<h1>' + location.title + '</h1>';
+			if('image' in location) html += '<img src="' + location.image + '" />';
+			html += location.info;
+			html += '</div>';
+			return html;
 		};
 	});
 });
