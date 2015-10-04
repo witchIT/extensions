@@ -44,7 +44,8 @@ $(document).ready( function() {
 				if('info' in location) {
 					google.maps.event.addListener(location.marker, 'click', function() {
 						if(info) info.close();
-						info = new google.maps.InfoWindow({ content: renderInfo(location), maxWidth: 300 });
+						if(!('infow' in location)) location.infow = new google.maps.InfoWindow({ content: renderInfo(location), maxWidth: 300 });
+						info = location.infow;
 						info.open(map, location.marker);
 					});
 				}
