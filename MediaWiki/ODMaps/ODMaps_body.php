@@ -55,7 +55,7 @@ class ODMaps {
 				$k = strtolower( $m[1] );
 				$v = $m[2];
 				if( ( $k == 'width' || $k == 'height' ) && is_numeric( $v ) ) $v .= 'px';
-				if( $k == 'options' && substr( $v, 0, 1 ) == '{' ) $opt = array_merge( $opt, json_decode( $v, true ) );
+				if( $k == 'options' && substr( $v, 0, 1 ) == '{' ) $opt = array_merge( $opt, json_decode( str_replace( "\n\n", '<br />', $v ), true ) );
 				else $opt[$k] = $v;
 			}
 		}
