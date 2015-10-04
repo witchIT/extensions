@@ -34,7 +34,6 @@ $(document).ready( function() {
 		if('locations' in opt) {
 			for(i in opt.locations) {
 				location = opt.locations[i];
-				console.log(location);
 				location.marker = new google.maps.Marker({
 					title: location.title,
 					position: new google.maps.LatLng(location.lat,location.lon),
