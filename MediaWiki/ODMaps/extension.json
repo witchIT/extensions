@@ -1,0 +1,41 @@
+{
+	"name": "ODMaps",
+	"version": "0.0.1, 2015-10-03",
+	"author": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"],
+	"url": "https://www.organicdesign.co.nz/Extension:ODMaps",
+	"description": "Render maps with markers and overlays in articles",
+	"license-name": "[https://www.gnu.org/licenses/gpl-2.0.html GNU General Public Licence 2.0] or later",
+	"type": "parserhook",
+	"callback": "ODMaps::onRegistration",
+	"config": {
+		"ODMapsDefaultOpts": {
+			"type": "HYBRID",
+			"width": "300px",
+			"height": "200px",
+			"lat": 54,
+			"lon": -2,
+			"zoom": 5
+		}
+	},
+	"Hooks": {
+		"ParserFirstCallInit": ["ODMaps::onParserFirstCallInit"]
+	},
+	"AutoloadClasses": {
+		"ODMaps": "ODMaps_body.php"
+	},
+	"ExtensionMessagesFiles": {
+		"ODMapsMagic": "ODMaps.i18n.magic.php"
+	},
+	"MessagesDirs": {
+	},
+	"ResourceModules": {
+		"ext.odmaps": {
+			"scripts": ["modules/odmaps.js"]
+		}
+	},
+	"@": "The remote path will be populated later as it needs be calculated",
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": ""
+	}
+}

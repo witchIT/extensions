@@ -1,0 +1,75 @@
+.odmap {
+}
+
+/*
+ * Infobox popups
+ */
+.odmap-info {
+	position: absolute;
+	z-index: 10;
+	border: 1px solid black;
+	width: 250px;
+	background: #EAEFF2;
+	cursor: pointer;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+}
+.odmap-info-content {
+	padding: 5px 5px 5px 8px;
+}
+.odmap-info-content th {
+	vertical-align: top;
+	width: 140px;
+}
+.odmap-info-content td {
+	vertical-align: top;
+	width: 100%;
+}
+.odmap-info-top img {
+	float: right;
+	cursor: pointer;
+	margin: 1px;
+}
+.odmap-info-top div {
+	width: 230px;
+	padding: 3px 5px;
+}
+.odmap-info a {
+	font-size: 13px;
+	text-decoration: underline;
+	font-weight: bold;
+}
+.infobox-atts {
+	margin: 0;
+	padding: 0;
+}
+.infobox-atts img {
+	margin: 0 2px 0 0;
+}
+.odmap-info .close {
+	float: right;
+	width: 14px;
+	height: 16px;
+	padding: 0 0 2px 3px;
+	margin: -1px;
+	background-color: #ccc;
+	border: 1px solid #000;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: left;
+	vertical-align: bottom;
+	cursor: pointer;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+}
+.odmap-info .close:hover {
+	background-color: #fff;
+}
+.infobox-logo {
+	float: left;
+	margin-right: 3px;
+}
