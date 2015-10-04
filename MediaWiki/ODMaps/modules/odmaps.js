@@ -8,7 +8,7 @@ $(document).ready( function() {
 	 * Initialise the maps on the page
 	 */
 	$('div.odmap').each(function() {
-		var i, map, location, state, icon, json, opt, info,
+		var i, map, location, state, icon, json, opt, info, label,
 			images = mw.config.get('odMapsPath') + '/images',
 			canvas = $(this);
 
@@ -34,12 +34,15 @@ $(document).ready( function() {
 		if('locations' in opt) {
 			for(i in opt.locations) {
 				location = opt.locations[i];
-				location.marker = new google.maps.Marker({
+				location.marker = new MarkerWithLabel({
+					map: map,
 					title: location.title,
 					position: new google.maps.LatLng(location.lat,location.lon),
-					location: location
+					location: location,
+					labelContent: location.title,
+					labelAnchor: new google.maps.Point(-13, 38),
+					labelClass: 'odmaps-label odmaps-label' + i
 				});
-				location.marker.setMap(map);
 
 				if('info' in location) {
 					google.maps.event.addListener(location.marker, 'click', function() {

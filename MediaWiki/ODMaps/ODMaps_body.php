@@ -29,6 +29,7 @@ class ODMaps {
 
 		// Add the google maps API
 		$wgOut->addHeadItem( 'GoogleMaps', '<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places" type="text/javascript"></script>' );
+		$wgOut->addHeadItem( 'MarkerWithLabel', '<script src="' . $path . '/modules/markerwithlabel.js" type="text/javascript"></script>' );
 	}
 
 	/**

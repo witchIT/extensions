@@ -14,3 +14,15 @@
 	float: left;
 	padding: 0 5px 5px 0;
 }
+
+.odmaps-label {
+	color: black;
+	background-color: #ffc;
+	border: 1px solid black;
+	font-size: 9pt;
+	padding: 0px 3px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+}
