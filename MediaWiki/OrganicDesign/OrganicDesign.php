@@ -9,7 +9,7 @@
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( "Not an entry point." );
-define( 'OD_VERSION', "2.0.6, 2015-08-04" );
+define( 'OD_VERSION', "2.0.7, 2015-10-04" );
 
 // Allow cookies to work for either so that login pages can be HTTPS but the rest of the site HTTP
 $wgCookieSecure = false;
@@ -27,7 +27,9 @@ class OrganicDesign {
 	public static $title = false;
 
 	function __construct() {
-		global $wgExtensionFunctions, $wgHooks, $wgLanguageCode;
+		global $wgExtensionFunctions, $wgHooks, $wgLanguageCode, $wgGroupPermissions;
+
+		$wgGroupPermissions['family']['edit'] = true;
 
 		$wgExtensionFunctions[] = array( $this, 'setup' );
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
