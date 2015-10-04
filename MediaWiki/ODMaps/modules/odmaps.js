@@ -58,11 +58,26 @@ $(document).ready( function() {
 		function renderInfo(location) {
 			var html = '<div class="odmaps-info">';
 			html += '<h1>' + location.title + '</h1>';
-			if('image' in location) html += '<img src="' + location.image + '" />';
+			if('image' in location) html += makeImage(location.image);
 			html += location.info.replace(/\n\n/g, '<br />');
 			html += '</div>';
 			return html;
 		};
+
+		/**
+		 * Make an image element from the passed URL
+		 */
+		function makeImage(url) {
+			var img = '<img src="' + url + '" />';
+			var re = /^(.+?\/)thumb\/.+?\d+px-(.+?\.\w\w\w)$/;
+			var m = re.exec(url);
+			if(m) {
+				var title = m[2].replace(/_/g, ' ');
+				var href = mw.util.getUrl('File:' + m[2]);
+				return '<a href="' + href + '" title="' + title + '">' + img + '</a>';
+			}
+			return img;
+		}
 	});
 });
 
