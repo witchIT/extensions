@@ -37,16 +37,17 @@ $(document).ready( function() {
 				console.log(location);
 				location.marker = new google.maps.Marker({
 					title: location.title,
-					position: new google.maps.LatLng(location.lat,location.lon)
+					position: new google.maps.LatLng(location.lat,location.lon),
+					location: location
 				});
 				location.marker.setMap(map);
 
 				if('info' in location) {
 					google.maps.event.addListener(location.marker, 'click', function() {
 						if(info) info.close();
-						if(!('infow' in location)) location.infow = new google.maps.InfoWindow({ content: renderInfo(location), maxWidth: 300 });
-						info = location.infow;
-						info.open(map, location.marker);
+						if(!('infow' in this)) this.infow = new google.maps.InfoWindow({ content: renderInfo(this.location), maxWidth: 300 });
+						info = this.infow;
+						info.open(map, this);
 					});
 				}
 			}
