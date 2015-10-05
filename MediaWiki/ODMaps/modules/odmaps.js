@@ -4,12 +4,17 @@
  */
 $(document).ready( function() {
 
+	var images = mw.config.get('odMapsPath') + '/images';
+	var icon = new google.maps.MarkerImage(
+		images + '/marker.png', new google.maps.Size(33, 26), new google.maps.Point(0,0), new google.maps.Point(0,26)
+	);
+
+
 	/**
 	 * Initialise the maps on the page
 	 */
 	$('div.odmap').each(function() {
-		var i, map, location, state, icon, json, opt, info, label,
-			images = mw.config.get('odMapsPath') + '/images',
+		var map, json, opt, info,
 			canvas = $(this);
 
 		// Get the parameters for this map from the div and initialise it
@@ -23,35 +28,68 @@ $(document).ready( function() {
 		opt.mapTypeId = google.maps.MapTypeId[opt.type.toUpperCase()];
 		map = new google.maps.Map(this, opt);
 
-		// Popup an infobox with position when map clicked
+		// Popup an infobox with position and scale when map clicked
 		map.addListener('click', function(e) {
 			if(info) info.close();
-			info = new google.maps.InfoWindow({ content: e.latLng.toString(), position: e.latLng });
+			info = new google.maps.InfoWindow({ content: e.latLng.toString() + ', zoom=' + map.zoom, position: e.latLng });
 			info.open(map);
 		});
 
+		// Update the markers whenever the scale changes
+		map.addListener('zoom_changed', function() {
+			updateMarkers();
+		});
+
 		// Render the markers (if any)
-		if('locations' in opt) {
+		updateMarkers();
+
+		/**
+		 * Update the markers (dependent on zoom level)
+		 */
+		function updateMarkers() {
+			var i, location, show, visible;
 			for(i in opt.locations) {
 				location = opt.locations[i];
-				location.marker = new MarkerWithLabel({
-					map: map,
-					title: location.title,
-					position: new google.maps.LatLng(location.lat,location.lon),
-					location: location,
-					labelContent: location.title,
-					labelAnchor: new google.maps.Point(-13, 38),
-					labelClass: 'odmaps-label odmaps-label' + i
-				});
 
-				if('info' in location) {
-					google.maps.event.addListener(location.marker, 'click', function() {
-						if(info) info.close();
-						if(!('infow' in this)) this.infow = new google.maps.InfoWindow({ content: renderInfo(this.location), maxWidth: 300 });
-						info = this.infow;
-						info.open(map, this);
+				// If the marker doesn't currently exist, create it now
+				if(!('marker' in location)) {
+					location.marker = new MarkerWithLabel({
+						position: new google.maps.LatLng(location.lat,location.lon),
+						icon: icon,
+						location: location,
+						labelContent: location.title,
+						labelAnchor: new google.maps.Point(-28, 26),
+						labelClass: 'odmaps-label',
+						visible: false
 					});
+
+					// If the marker has any infobox content, build its infowindow now and add a click event to open it
+					if(('info' in location) || ('image' in location) || ('images' in location)) {
+						location.marker.infow = new google.maps.InfoWindow({ content: renderInfo(location), maxWidth: 300 });
+						google.maps.event.addListener(location.marker, 'click', function() {
+							if(info) info.close();
+							info = this.infow;
+							info.open(map, this);
+						});
+					}
 				}
+
+				// Deterime whether the marker should be shown depending on zoom
+				show = true;
+				if('whenScale' in location) {
+					var re = /^([<>])(\d+)$/;
+					var m = re.exec(location.whenScale);
+					if(m) {
+						if(m[1] == '<' && map.zoom >= m[2]) show = false;
+						if(m[1] == '>' && map.zoom <= m[2]) show = false;
+					}
+				}
+
+				// Add or remove the marker from the map
+				visible = location.marker.getVisible();
+				if(show && !location.marker.visible) location.marker.setMap(map);
+				if(!show && location.marker.visible) location.marker.setMap(null);
+				location.marker.visible = show;
 			}
 		}
 
@@ -59,16 +97,19 @@ $(document).ready( function() {
 		 * Render the HTML for an info popup for the passed location
 		 */
 		function renderInfo(location) {
-			var html = '<div class="odmaps-info">';
+			var i,html = '<div class="odmaps-info">';
 			html += '<h1>' + location.title + '</h1>';
 			if('image' in location) html += makeImage(location.image);
-			html += location.info.replace(/\n\n/g, '<br />');
+			if('images' in location) {
+				for(i in location.images) html += makeImage(location.images[i]);
+			}
+			if('info' in location) html += location.info.replace(/\n\n/g, '<br />');
 			html += '</div>';
 			return html;
 		};
 
 		/**
-		 * Make an image element from the passed URL
+		 * Make an image element from the passed URL (links to the full image if it's a wiki thumb URL)
 		 */
 		function makeImage(url) {
 			var img = '<img src="' + url + '" />';
