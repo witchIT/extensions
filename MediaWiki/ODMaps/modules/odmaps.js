@@ -102,7 +102,7 @@ $(document).ready( function() {
 			if('image' in location) html += makeImage(location.image);
 			if('images' in location) {
 				for(i in location.images) html += makeImage(location.images[i]);
-				html += '<div style-"clear:both"></div>';
+				html += '<div style="clear:both"></div>';
 			}
 			if('info' in location) html += location.info.replace(/\n\n/g, '<br />');
 			html += '</div>';
