@@ -5,14 +5,8 @@ class ODMaps {
 	private static $mapid = 1;
 
 	/**
-	 * Called when the extension is first loaded
+	 * Called if there is a map in the page
 	 */
-	public static function onRegistration() {
-		global $wgExtensionFunctions;
-		$wgExtensionFunctions[] = __CLASS__ . '::setup';
-		Hooks::register( 'ParserFirstCallInit', __CLASS__ . '::onParserFirstCallInit' );
-	}
-
 	public static function setup() {
 		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $IP, $wgAutoloadClasses;
 
@@ -49,6 +43,9 @@ class ODMaps {
 		global $wgODMapsDefaultOpts;
 		$opt = $wgODMapsDefaultOpts;
 		$opt['id'] = $id = self::$mapid++;
+
+		// Install the map scripts and styles
+		self::setup();
 
 		// Update options from parameters specified in parser-function
 		foreach( func_get_args() as $arg ) {

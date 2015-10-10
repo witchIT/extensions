@@ -1,12 +1,11 @@
 {
 	"name": "ODMaps",
-	"version": "0.0.1, 2015-10-03",
+	"version": "1.0.0, 2015-10-10",
 	"author": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"],
 	"url": "https://www.organicdesign.co.nz/Extension:ODMaps",
 	"description": "Render maps with markers and overlays in articles",
 	"license-name": "[https://www.gnu.org/licenses/gpl-2.0.html GNU General Public Licence 2.0] or later",
 	"type": "parserhook",
-	"callback": "ODMaps::onRegistration",
 	"config": {
 		"ODMapsDefaultOpts": {
 			"type": "HYBRID",
