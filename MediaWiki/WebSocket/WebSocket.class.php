@@ -7,8 +7,8 @@ class WebSocket {
 	public static $log;
 	public static $ssl_cert;
 	public static $ssl_key;
+	public static $clientID = false;
 
-	private static $clientID = false;
 	private static $ssl = false;
 
 	function __construct() {
