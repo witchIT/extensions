@@ -31,8 +31,7 @@ class WebSocket {
 		if( self::$ssl && !(self::$ssl_cert && self::$ssl_key) ) die( wfMessage( 'websocket-nosslcreds' )->text() );
 
 		// Ensure WebSocket daemon is running
-		$processes = shell_exec( "ps ax|grep '[W]ebSocket.pl'" );
-		if( empty( $processes ) ) {
+		if( !self::isActive() ) {
 			$log = self::$log ? ' "' . self::$log . '"' : '';
 			$rewrite = self::$rewrite ? ' 1' : '';
 			$ssl = self::$ssl_cert ? ' "' . self::$ssl_cert . '" "' . self::$ssl_key . '"' : '';
@@ -54,6 +53,13 @@ class WebSocket {
 		$wgOut->addJsConfigVars( 'wsRewrite', self::$rewrite );
 		$wgOut->addJsConfigVars( 'wsClientID', self::$clientID );
 		$wgOut->addJsConfigVars( 'wsWikiID', "$wgDBprefix$wgDBname:" );
+	}
+
+	/**
+	 * Return bool for whether or not the daemon is running
+	 */
+	public static function isActive() {
+		return !empty( shell_exec( "ps ax|grep '[W]ebSocket.pl'" ) );
 	}
 
 	/**
