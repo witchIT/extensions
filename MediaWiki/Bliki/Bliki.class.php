@@ -4,7 +4,7 @@ class Bliki {
 	// Register our ajax handler
 	public static function onRegistration() {
 		global $wgAPIModules;
-		$wgAPIModules['bliki'] = 'ApiBlikiFeed';
+		$wgAPIModules['blikifeed'] = 'ApiBlikiFeed';
 	}
 
 	public static function onUnknownAction( $action, $article ) {
