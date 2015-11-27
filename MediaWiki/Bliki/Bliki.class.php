@@ -1,6 +1,12 @@
 <?php
 class Bliki {
 
+	// Register our ajax handler
+	public static function onRegistration() {
+		global $wgAPIModules;
+		$wgAPIModules['bliki'] = 'ApiBlikiFeed';
+	}
+
 	public static function onUnknownAction( $action, $article ) {
 		global $wgOut, $wgRequest, $wgUser, $wgParser, $wgBlikiPostGroup;
 		if( $action == 'blog' && in_array( $wgBlikiPostGroup, $wgUser->getEffectiveGroups() ) ) {
@@ -137,6 +143,4 @@ class Bliki {
 		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
 	}
-
-
 }
