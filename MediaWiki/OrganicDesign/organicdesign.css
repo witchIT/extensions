@@ -76,6 +76,16 @@ h1 {
 }
 table.od-message { margin-top: 3em; }
 #searchInput { width: 15.5em; }
+
+/* Social */
+div#social {
+    margin-left: 0.45em;
+}
+div#social img {
+	padding-right: 0.1em;
+}
+
+/* Donations */
 #donations h2, #p-search h3 {
     position: static;
     font-size: 15px;
