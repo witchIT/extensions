@@ -151,13 +151,13 @@ class OrganicDesign {
 	}
 
 	public static function social( $out ) {
-		$social = '<div id="social">';
+		$social = '<div id="social-wrapper">';
 		$social .= '<a href="https://twitter.com/AranDunkley"><img src="/files/0/00/Twitter_32.png" alt="Twitter" /></a>';
 		$social .= '<a href="https://www.facebook.com/organicdesign.co.nz"><img src="/files/8/81/Facebook_32.png" alt="Facebook" /></a>';
 		$social .= '<a href="https://nz.linkedin.com/in/arandunkley"><img src="/files/9/95/Linkedin_32.png" alt="LinkedIn" /></a>';
 		$social .= '<a href="https://github.com/OrganicDesign"><img src="/files/c/c0/Github_32.png" alt="Github" /></a>';
-		$social .= '<a href="https://twitter.com/AranDunkley"><img src="/files/6/6d/Rss_32.png" alt="RSS" /></a>';
-		$social .= '<a href="https://twitter.com/AranDunkley"><img src="/files/e/e6/Email_32.png" alt="Email" /></a>';
+		$social .= '<a href="https://www.organicdesign.co.nz/wiki/api.php?action=blikifeed"><img src="/files/6/6d/Rss_32.png" alt="RSS" /></a>';
+		$social .= '<a href="https://www.organicdesign.co.nz/contact"><img src="/files/e/e6/Email_32.png" alt="Email" /></a>';
 		$social .= '</div>';
 		$out->addHTML( $social );
 	}

@@ -13,6 +13,10 @@ $(document).ready( function() {
 	$('#p-logo').after( item.html() );
 	item.html('');
 
+	var item = $('#social-wrapper');
+	$('#p-logo').after( item.html() );
+	item.html('');
+
 	var item = $('#avatar-wrapper');
 	$('#p-logo').after( item.html() );
 	item.html('');
