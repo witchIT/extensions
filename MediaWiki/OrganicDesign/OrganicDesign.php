@@ -135,6 +135,7 @@ class OrganicDesign {
 		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"od-footer\">$html</div></div>" );
 
 		// Add the other items
+		self::social( $out );
 		self::donations( $out );
 		self::languages( $out );
 		self::avatar( $out );
@@ -147,6 +148,18 @@ class OrganicDesign {
 			<a href="http://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="http://pt.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div></div>' );
+	}
+
+	public static function social( $out ) {
+		$social = '<div id="social">';
+		$social .= '<a href="https://twitter.com/AranDunkley"><img src="/files/0/00/Twitter_32.png" alt="Twitter" /></a>';
+		$social .= '<a href="https://www.facebook.com/organicdesign.co.nz"><img src="/files/8/81/Facebook_32.png" alt="Facebook" /></a>';
+		$social .= '<a href="https://nz.linkedin.com/in/arandunkley"><img src="/files/9/95/Linkedin_32.png" alt="LinkedIn" /></a>';
+		$social .= '<a href="https://github.com/OrganicDesign"><img src="/files/c/c0/Github_32.png" alt="Github" /></a>';
+		$social .= '<a href="https://twitter.com/AranDunkley"><img src="/files/6/6d/Rss_32.png" alt="RSS" /></a>';
+		$social .= '<a href="https://twitter.com/AranDunkley"><img src="/files/e/e6/Email_32.png" alt="Email" /></a>';
+		$social .= '</div>';
+		$out->addHTML( $social );
 	}
 
 	public static function donations( $out ) {
