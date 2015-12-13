@@ -22,10 +22,12 @@ window.webSocket = (function($, document, mw, undefined) {
 	}
 
 	function onMessage(e) {
-		var i, data = $.parseJSON(e.data);
-		var s = ( data.type in subscribers ) ? subscribers[data.type].length : 'none';
+		var i, s, data = $.parseJSON(e.data);
+		if( data.type in subscribers ) {
+			s = subscribers[data.type].length;
+			for( i = 0; i < s; i++ ) subscribers[data.type][i](data);
+		} else s = 'none';
 		console.info('WebSocket "' + data.type + '" message received (subscibers notified: ' + s + ')');
-		for( i = 0; i < subscribers[data.type].length; i++ ) subscribers[data.type][i](data);
 	}
 
 	function onError(e) {
