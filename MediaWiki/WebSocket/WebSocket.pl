@@ -85,9 +85,14 @@ print "WebSocket daemon starting with PID $$ on port $port$sslmsg\n" if $log;
 our %clients = {};
 
 # Set up a loop to listen on both sockets
+our $timeout = time;
 while(1) {
 	serverLoop( $tcp );
 	serverLoop( $ssl ) if $ssl;
+	if( time - $timeout > 15 * 60 ) {
+		print "Exiting due to no activity for 15 minutes\n" if $log;
+		exit 0;
+	}
 }
 
 
@@ -147,6 +152,9 @@ sub processMessage {
 	$ssl = $ssl ? ',SSL' : '';
 	my $from = 0;
 	my $peeraddr = join( '.', unpack( 'C4', $conn->{socket}->peeraddr() ) );
+
+	# Used to exit the script after 15min inactivity
+	$timeout = time;
 
 	# Disconnect the client if in rewrite mode and this is not local
 	if( $rewrite and $peeraddr ne '127.0.0.1' ) {
