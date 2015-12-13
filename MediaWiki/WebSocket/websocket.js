@@ -23,7 +23,8 @@ window.webSocket = (function($, document, mw, undefined) {
 
 	function onMessage(e) {
 		var i, data = $.parseJSON(e.data);
-		console.info('WebSocket "' + data.type + '" message received (subscibers notified: ' + subscribers[data.type].length + ')');
+		var s = ( data.type in subscribers ) ? subscribers[data.type].length : 'none';
+		console.info('WebSocket "' + data.type + '" message received (subscibers notified: ' + s + ')');
 		for( i = 0; i < subscribers[data.type].length; i++ ) subscribers[data.type][i](data);
 	}
 
