@@ -462,6 +462,9 @@ span.fancytree-title a {
 	float: left;
 	padding: 2px;
 }
+.imageTable img {
+	border: 1px solid #ddd;
+}
 
 /* Home page */
 body.page-Home #firstHeading { display:none }
