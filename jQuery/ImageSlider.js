@@ -17,7 +17,7 @@ $(document).ready(function() {
 	 * Initialise all image-slider elements in the page and start them sliding
 	 */
 	$('div.image-slider').each(function() {
-		var div = $(this), i, j, w, h, img, thumb, prev, next;
+		var div = $(this), i, j, w, h, img, first, thumb, prev, next;
 
 		// Initialise data structure in this slider element
 		div.data({
@@ -35,20 +35,21 @@ $(document).ready(function() {
 		if(!div.data('duration')) div.data('duration', 1000);
 		if(!div.data('thumbs')) div.data('thumbs', 0);
 
-		// Store the images in the slider element's data
+		// Store the images in the slider element's data, and preload each one
 		j = $('img', div).get();
 		for( i = 0; i < j.length; i++ ) {
 			img = $(j[i]);
 			img.css('display','none');
 			div.data('images').push(img);
+			$('<img />').attr('src', img.attr('src'));
 		}
 
-		// Only continue initialising this slider after the first image has loaded so we can get the dimensions
-		div.data('images')[0].load(function() {
+		// Function to initialise the div
+		function init() {
 
 			// Store the image dimentions in our slider div element's data
-			div.data('width', w = $(this).width());
-			div.data('height', h = $(this).height());
+			div.data('width', w = $(first).width());
+			div.data('height', h = $(first).height());
 
 			// If the slider has thumbs set then create another div with clickable thumbs in it (using the original images for the thumbs)
 			if(div.data('thumbs') > 0) {
@@ -81,7 +82,13 @@ $(document).ready(function() {
 
 			// Start the sliding process
 			slide(div, div.data('direction'));
-		});
+		}
+
+		// Only initialise this slider after the first image has loaded so we can get the dimensions
+		// (from https://gist.github.com/johnnygreen/4712200)
+		first = div.data('images')[0];
+		if(first.complete) init();
+		$('<img />').one('load readystatechange', function() { init(); } ).attr('src', first.attr('src'));
 	});
 
 	/**
