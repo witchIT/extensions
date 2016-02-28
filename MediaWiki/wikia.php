@@ -148,8 +148,7 @@ ga('send', 'pageview');
 // Parsoid settings
 $wgVirtualRestConfig['modules']['parsoid'] = array(
 	'url' => 'http://localhost:8142',
-	'domain' => $omain,
-	'prefix' => $omain,
+	'domain' => $domain,
 );
 
 // Include the LocalSettings file for the domain
