@@ -145,12 +145,6 @@ ga('send', 'pageview');
 	</script>" );
 }
 
-// Parsoid settings
-$wgVirtualRestConfig['modules']['parsoid'] = array(
-	'url' => 'http://localhost:8142',
-	'domain' => $domain,
-);
-
 // Include the LocalSettings file for the domain
 $wgUploadDirectory = "$root$wgUploadPath";
 include( "$root/LocalSettings.php" );
