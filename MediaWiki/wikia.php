@@ -149,10 +149,8 @@ ga('send', 'pageview');
 $wgVirtualRestConfig['modules']['parsoid'] = array(
 	'url' => 'http://localhost:8142',
 	'domain' => $omain,
+	'prefix' => $omain,
 );
-
-$wgVisualEditorParsoidURL = 'http://localhost:8142';
-$wgVisualEditorParsoidPrefix = $domain;
 
 // Include the LocalSettings file for the domain
 $wgUploadDirectory = "$root$wgUploadPath";
