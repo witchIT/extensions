@@ -146,9 +146,13 @@ ga('send', 'pageview');
 }
 
 // Parsoid settings
+$wgVirtualRestConfig['modules']['parsoid'] = array(
+	'url' => 'http://localhost:8142',
+	'domain' => $omain,
+);
+
 $wgVisualEditorParsoidURL = 'http://localhost:8142';
 $wgVisualEditorParsoidPrefix = $domain;
-$wgVisualEditorSupportedSkins[] = 'monobook';
 
 // Include the LocalSettings file for the domain
 $wgUploadDirectory = "$root$wgUploadPath";
