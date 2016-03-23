@@ -209,8 +209,10 @@ function odWikidAccess( &$user, &$result ) {
 
 // Return whether the request is local
 function odIsLocal() {
-	if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches ) && !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
-		return false;
+	if( array_key_exists( 'REMOTE_ADDR', $_SERVER ) ) {
+		if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches ) && !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
+			return false;
+		}
 	}
 	return true;
 }
