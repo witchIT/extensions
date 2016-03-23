@@ -207,6 +207,14 @@ function odWikidAccess( &$user, &$result ) {
 	return true;
 }
 
+// Return whether the request is local
+function odIsLocal() {
+	if( preg_match_all( "|inet6? addr:\s*([0-9a-f.:]+)|", `/sbin/ifconfig`, $matches ) && !in_array( $_SERVER['REMOTE_ADDR'], $matches[1] ) ) {
+		return false;
+	}
+	return true;
+}
+
 // Block problem users, bots and requests
 //$wgExtensionFunctions[] = 'odLogActivity';
 function odLogActivity() {
