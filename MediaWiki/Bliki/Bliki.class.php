@@ -195,7 +195,7 @@ class Bliki {
 			$page = $title->getPrefixedText();
 			$user = User::newFromID( $rev->rev_user )->getName();
 			$content .= 'ts = ' . $rev->rev_timestamp;
-			$link = Title::newFromText( $wgBlikiDefaultBlogPage )->getFullUrl( 'q=' . wfMessage( 'bliki-cat', $user )->text() );
+			$link = Title::newFromText( $wgBlikiDefaultBlogPage )->getFullUrl( 'q=' . urlencode( wfMessage( 'bliki-cat', $user )->text() ) );
 			$sig = wfMessage( 'bliki-sig', $link, $user, $wgLang->date( $rev->rev_timestamp, true ), $wgLang->time( $rev->rev_timestamp, true ) )->text();
 			$tags = 'foo';
 			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
