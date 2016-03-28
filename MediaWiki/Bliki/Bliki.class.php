@@ -193,7 +193,8 @@ class Bliki {
 
 			// Build the item
 			$page = $title->getPrefixedText();
-			$user = User::newFromID( $row->rev_user )->getName();
+			$user = User::newFromID( $rev->rev_user )->getName();
+			$content .= $rev->rev_timestamp;
 			$sig = wfMessage( 'bliki-sig', $user, $wgLang->date( $rev->rev_timestamp, true ), $wgLang->time( $rev->rev_timestamp, true ) )->text();
 			$tags = 'foo';
 			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
