@@ -267,9 +267,8 @@ class Bliki {
 		global $wgBlikiTagCat;
 		$allTags = self::getMembers( $wgBlikiTagCat );
 		$tags = array();
-		foreach( self::getCats( $title ) as $key ) {
-			//if( in_array( $tag, $allTags ) )
-			$tags[] = $tag;
+		foreach( self::getCats( $title ) as $tag ) {
+			if( in_array( $tag, $allTags ) ) $tags[] = $tag;
 		}
 		return $tags;
 	}
