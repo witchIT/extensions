@@ -90,6 +90,7 @@ class Bliki {
 		$parser->setFunctionHook( 'tags', __CLASS__ . '::expandTags' );
 		$parser->setFunctionHook( 'nextpost', __CLASS__ . '::expandNext' );
 		$parser->setFunctionHook( 'prevpost', __CLASS__ . '::expandPrev' );
+		$parser->setFunctionHook( 'blogroll', __CLASS__ . '::expandBlogroll' );
 		return true;
 	}
 
@@ -128,6 +129,77 @@ class Bliki {
 	public static function expandPrev( $parser, $item, $cat = false ) {
 		global $wgBlikiDefaultCat;
 		if( $cat == false ) $cat = $wgBlikiDefaultCat;
+		return array( $html, 'isHTML' => true, 'noparse' => true );
+	}
+
+	/**
+	 * Blogroll parser-function
+	 */
+	public static function expandBlogroll( $parser ) {
+		global $wgBlikiDefaultCat, $wgBlikiDefaultTemplate;
+
+		// Get args
+		$args = array();
+		foreach( func_get_args() as $arg ) {
+			if( !is_object( $arg ) ) {
+				if( preg_match( '/^(\\w+?)\\s*=\\s*(.+)$/s', $arg, $m ) ) {
+					$args[$m[1]] = $m[2];
+				} else $args[$arg] = true;
+			}
+		}
+
+		// Defaults
+		$limit = array_key_exists( 'limit', $args ) ? $args['limit'] : false;
+		$offset = array_key_exists( 'offset', $args ) ? $args['offset'] : false;
+		$desc = array_key_exists( 'desc', $args ) ? ' DESC' : '';
+		$tmpl = array_key_exists( 'template', $args ) ? $args['template'] : $wgBlikiDefaultTemplate;
+		$cat = array_key_exists( 'tag', $args ) ? $args['template'] : $wgBlikiDefaultCat;
+
+		// Convert args to SQL options
+		$options = array( 'ORDER BY' => "cl_timestamp$desc" );
+		if( $limit ) {
+			$options['LIMIT'] = $limit;
+			if( $offset ) $options['OFFSET'] = $offset;
+		}
+
+		// Do the query
+		$dbr = wfGetDB( DB_SLAVE );
+		$cat = Title::newFromText( $cat )->getDBkey();
+		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
+
+		// Render each item
+		$html = '';
+		foreach( $res as $row ) {
+
+			// Get the article title, user and creation date
+			$title = Title::newFromID( $row->cl_from );
+			$id = $title->getArticleID();
+			$row = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
+
+			// Get the article content
+			$item = new Article( $title );
+			$content = $article->getPage()->getContent( Revision::RAW );
+			$content = is_object( $content ) ? ContentHandler::getContentText( $content ) : $content;
+
+			// Remove any noincludes
+			$content = preg_replace( "|<noinclude>.*?</noinclude>|s", '', $content );
+
+			// Remove includeonly tags (not content)
+			$content = preg_replace( "|<\/?includeonly>|", '', $content );
+
+			// Remove all but onlyinclude if it exists
+			$content = preg_match( "|<onlyinclude>(.+?)</onlyinclude>|s", $content, $m ) ? $m[1] : $content;
+
+			// Replace the variables
+			$page = $title->getPrefixedText();
+			$date = $row->rev_timestamp;
+			$user = User::newFromID( $row->rev_user )->getName();
+			$content = $parser->replaceVariables( $content, array( $page, $date, $user ), true );
+
+			// Parse and output
+			$html .= $parser->parse( $content, $parser->getTitle(), $parser->getOptions(), false, false )->getText() . "\n\n";
+		}
+
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
 

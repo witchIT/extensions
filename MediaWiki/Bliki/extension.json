@@ -1,6 +1,6 @@
 {
 	"name": "Bliki",
-	"version": "3.1.1, 2015-11-27",
+	"version": "3.2.0, 2016-03-29",
 	"author": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"],
 	"url": "http://www.organicdesign.co.nz/bliki",
 	"descriptionmsg": "bliki-desc",
@@ -8,10 +8,11 @@
 	"type": "other",
 	"callback": "Bliki::onRegistration",
 	"config": {
-		"BlikiAddBodyClass": false,       "@": "add a \"blog-item\" class attribute to the body element for blog post pages",
-		"BlikiPostGroup": "sysop",        "@": "restrict posting blog items to this group",
-		"BlikiDefaultCat": "Blog items",  "@": "categorise all blog posts into this category",
-		"BlikiDefaultBlogPage": "Blog",   "@": "the main blog-roll article"
+		"BlikiAddBodyClass": false,         "@": "add a \"blog-item\" class attribute to the body element for blog post pages",
+		"BlikiPostGroup": "sysop",          "@": "restrict posting blog items to this group",
+		"BlikiDefaultCat": "Blog items",    "@": "categorise all blog posts into this category",
+		"BlikiDefaultBlogPage": "Blog",     "@": "the main blog-roll article",
+		"BlikiDefaultTemplate": "BlogItem", "@": "the template that blog items render through"
 	},
 	"Hooks": {
 		"ParserFirstCallInit": ["Bliki::onParserFirstCallInit"],
