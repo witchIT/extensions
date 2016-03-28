@@ -177,7 +177,7 @@ class Bliki {
 			$row = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
 
 			// Get the article content
-			$item = new Article( $title );
+			$article = new Article( $title );
 			$content = $article->getPage()->getContent( Revision::RAW );
 			$content = is_object( $content ) ? ContentHandler::getContentText( $content ) : $content;
 
