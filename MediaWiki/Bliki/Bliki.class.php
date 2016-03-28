@@ -167,7 +167,7 @@ class Bliki {
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
 		// Render each item
-		$roll = '__NOEDITSECTION__';
+		$roll = '__NOSECTIONEDIT__';
 		foreach( $res as $row ) {
 
 			// Get the article title, user and creation date
