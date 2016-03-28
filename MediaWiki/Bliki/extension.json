@@ -8,10 +8,11 @@
 	"type": "other",
 	"callback": "Bliki::onRegistration",
 	"config": {
-		"BlikiAddBodyClass": false,         "@": "add a \"blog-item\" class attribute to the body element for blog post pages",
-		"BlikiPostGroup": "sysop",          "@": "restrict posting blog items to this group",
-		"BlikiDefaultCat": "Blog items",    "@": "categorise all blog posts into this category",
-		"BlikiDefaultBlogPage": "Blog",     "@": "the main blog-roll article"
+		"BlikiAddBodyClass": false,      "@": "add a \"blog-item\" class attribute to the body element for blog post pages",
+		"BlikiPostGroup": "sysop",       "@": "restrict posting blog items to this group",
+		"BlikiDefaultCat": "Blog items", "@": "categorise all blog posts into this category",
+		"BlikiDefaultBlogPage": "Blog",  "@": "the main blog-roll article",
+		"BlikiTagCat": "Tags",           "@": "the category used to determine tag categories"
 	},
 	"Hooks": {
 		"ParserFirstCallInit": ["Bliki::onParserFirstCallInit"],

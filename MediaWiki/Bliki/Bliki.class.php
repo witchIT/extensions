@@ -173,15 +173,18 @@ class Bliki {
 		$roll = '';
 		foreach( $res as $row ) {
 
-			// Get the article title, user and creation date
+			// Get the title, article and first revision objects
 			$title = Title::newFromID( $row->cl_from );
 			$id = $title->getArticleID();
+			$article = new Article( $title );
 			$rev = $dbr->selectRow( 'revision', '*', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
 
 			// Get the tags for this item
+			$tags = array();
+			foreach( self::getTags( $title ) as $tag ) $tags[] = '[[:Category:$tag|$tag]]';
+			$tags = implode( ', ', $tags );
 
 			// Get the article content
-			$article = new Article( $title );
 			$content = $article->getPage()->getContent( Revision::RAW );
 			$content = is_object( $content ) ? ContentHandler::getContentText( $content ) : $content;
 
@@ -197,14 +200,12 @@ class Bliki {
 			// Build the item
 			$page = $title->getPrefixedText();
 			$user = User::newFromID( $rev->rev_user )->getName();
-			$content .= 'ts = ' . $rev->rev_timestamp;
 			$link = Title::newFromText( $wgBlikiDefaultBlogPage )->getFullUrl( 'q=' . urlencode( wfMessage( 'bliki-cat', $user )->text() ) );
 			$sig = wfMessage( 'bliki-sig', $link, $user, $wgLang->date( $rev->rev_timestamp, true ), $wgLang->time( $rev->rev_timestamp, true ) )->text();
-			$tags = 'foo';
 			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
 
 			// Parse the item and add to the roll
-			$roll .= $parser->parse( $content, $parser->getTitle(), $parser->getOptions(), false, false )->getText() . "\n\n";
+			$roll .= $parser->parse( $content, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
 		}
 
 		return array( $roll, 'isHTML' => true, 'noparse' => true );
@@ -221,5 +222,29 @@ class Bliki {
 		$dbr = wfGetDB( DB_SLAVE );
 		$cat = $dbr->addQuotes( Title::newFromText( $cat, NS_CATEGORY )->getDBkey() );
 		return $dbr->selectRow( 'categorylinks', '1', "cl_from = $id AND cl_to = $cat" );
+	}
+
+	/**
+	 * Return a list of titles that are members of the passed category
+	 */
+	public static function getMembers( $cat ) {
+		$list = array();
+		$dbr  = wfGetDB( DB_SLAVE );
+		$res  = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
+		foreach( $res as $row ) $list[] = Title::newFromID( $row->cl_from )->getText();
+		return $list;
+	}
+
+	/**
+	 * Return a list of tags the passed title is categorised in
+	 */
+	public static function getTags( $title ) {
+		global $wgBlikiTagCat;
+		$allTags = self::getMembers( $wgBlikiTagCat );
+		$tags = array();
+		foreach( self::getCats( $title ) as $key ) {
+			if( in_array( $tag, $allTags ) ) $tags[] = $tag;
+		}
+		return $tags;
 	}
 }
