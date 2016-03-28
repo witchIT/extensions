@@ -174,7 +174,7 @@ class Bliki {
 			$title = Title::newFromID( $row->cl_from );
 			$id = $title->getArticleID();
 			$rev = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
-
+print_r($rev);
 			// Get the tags for this item
 
 			// Get the article content
