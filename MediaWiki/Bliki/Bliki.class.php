@@ -136,7 +136,7 @@ class Bliki {
 	 * Blogroll parser-function
 	 */
 	public static function expandBlogroll( $parser ) {
-		global $wgBlikiDefaultCat;
+		global $wgLang, $wgBlikiDefaultCat;
 
 		// Get args
 		$args = array();
@@ -167,13 +167,15 @@ class Bliki {
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
 		// Render each item
-		$html = '';
+		$roll = '';
 		foreach( $res as $row ) {
 
 			// Get the article title, user and creation date
 			$title = Title::newFromID( $row->cl_from );
 			$id = $title->getArticleID();
 			$row = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
+
+			// Get the tags for this item
 
 			// Get the article content
 			$article = new Article( $title );
@@ -189,17 +191,19 @@ class Bliki {
 			// Remove all but onlyinclude if it exists
 			$content = preg_match( "|<onlyinclude>(.+?)</onlyinclude>|s", $content, $m ) ? $m[1] : $content;
 
-			// Replace the variables
+			// Build the item
 			$page = $title->getPrefixedText();
-			$date = $row->rev_timestamp;
+			$sig = wfMessage( 'bliki-sig', $user, $wgLang->date( $row->rev_timestamp, true ), $wgLang->time( $row->rev_timestamp, true ) )->text();
+			$tags = 'foo';
 			$user = User::newFromID( $row->rev_user )->getName();
-			$content = $parser->replaceVariables( $content, array( $page, $date, $user ), true );
+			$sig = wfMessage( 'bliki-sig', $user, $date );
+			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
 
-			// Parse and output
-			$html .= $parser->parse( $content, $parser->getTitle(), $parser->getOptions(), false, false )->getText() . "\n\n";
+			// Parse the item and add to the roll
+			$roll .= $parser->parse( $content, $parser->getTitle(), $parser->getOptions(), false, false )->getText() . "\n\n";
 		}
 
-		return array( $html, 'isHTML' => true, 'noparse' => true );
+		return array( $roll, 'isHTML' => true, 'noparse' => true );
 	}
 
 	/**

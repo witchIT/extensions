@@ -7,5 +7,6 @@
 	"bliki-desc": "Adds \"bliki\" (blog in a wiki) functionality",
 	"blikifeed": "Bliki feed",
 	"bliki-desc": "Use this feed to track the most recent $1 at $2.",
-	"bliki-taglinktitle": "\"$1\" blog items"
+	"bliki-taglinktitle": "\"$1\" blog items",
+	"bliki-sig": "Posted by [[User:$1|$1]] on $2 at $3"
 }
