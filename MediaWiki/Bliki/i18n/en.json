@@ -9,5 +9,6 @@
 	"bliki-desc": "Use this feed to track the most recent $1 at $2.",
 	"bliki-taglinktitle": "\"$1\" blog items",
 	"bliki-sig": "Posted by [$1 $2] on $3 at $4",
-	"bliki-cat": "Posts by $1"
+	"bliki-cat": "Posts by $1",
+	"bliki-tags": "This post has the following tags"
 }

@@ -182,7 +182,7 @@ class Bliki {
 			// Get the tags for this item
 			$tags = array();
 			foreach( self::getTags( $title ) as $tag ) $tags[] = '[[:Category:$tag|$tag]]';
-			$tags = implode( ', ', $tags );
+			$tags = wfMessage( 'bliki-tags' )->text() . ': ' . implode( ', ', $tags );
 
 			// Get the article content
 			$content = $article->getPage()->getContent( Revision::RAW );
