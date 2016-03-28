@@ -194,7 +194,7 @@ class Bliki {
 
 			// Make the tag line
 			$tags = array();
-			foreach( self::getTags( $title ) as $tag ) $tags[] = self::blogLink( $tag );
+			foreach( self::getTags( $title ) as $tag ) $tags[] = '[' . self::blogLink( $tag ) . ' ' . $tag . ']';
 			$tags = '<div class="taglist">' . wfMessage( 'bliki-tags' )->text() . ': ' . implode( ' | ', $tags ) . '</div>';
 
 			// Build the item
