@@ -173,7 +173,7 @@ class Bliki {
 			// Get the article title, user and creation date
 			$title = Title::newFromID( $row->cl_from );
 			$id = $title->getArticleID();
-			$row = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
+			$rev = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
 
 			// Get the tags for this item
 
@@ -194,7 +194,7 @@ class Bliki {
 			// Build the item
 			$page = $title->getPrefixedText();
 			$user = User::newFromID( $row->rev_user )->getName();
-			$sig = wfMessage( 'bliki-sig', $user, $wgLang->date( $row->rev_timestamp, true ), $wgLang->time( $row->rev_timestamp, true ) )->text();
+			$sig = wfMessage( 'bliki-sig', $user, $wgLang->date( $rev->rev_timestamp, true ), $wgLang->time( $rev->rev_timestamp, true ) )->text();
 			$tags = 'foo';
 			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
 
