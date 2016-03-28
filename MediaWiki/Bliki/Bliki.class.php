@@ -193,10 +193,9 @@ class Bliki {
 
 			// Build the item
 			$page = $title->getPrefixedText();
+			$user = User::newFromID( $row->rev_user )->getName();
 			$sig = wfMessage( 'bliki-sig', $user, $wgLang->date( $row->rev_timestamp, true ), $wgLang->time( $row->rev_timestamp, true ) )->text();
 			$tags = 'foo';
-			$user = User::newFromID( $row->rev_user )->getName();
-			$sig = wfMessage( 'bliki-sig', $user, $date );
 			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
 
 			// Parse the item and add to the roll
