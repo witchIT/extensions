@@ -239,22 +239,23 @@ class Bliki {
 		$list = array();
 		$dbr  = wfGetDB( DB_SLAVE );
 		$res  = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-		foreach( $res as $row ) $list[] = Title::newFromID( $row->cl_from )->getText();
+		foreach( $res as $row ) {
+			$list[] = Title::newFromID( $row->cl_from )->getText();
+		}
 		return $list;
 	}
 
 	/**
-	 * Return a list of categories the passed article belongs to (in DBkey format)
+	 * Return a list of categories the passed article belongs to
 	 */
-	public static function getCats( $title, $dbkey = false ) {
+	public static function getCats( $title ) {
 		if( !is_object( $title ) ) $title = Title::newFromText( $title );
 		$list = array();
 		$dbr  = wfGetDB( DB_SLAVE );
 		$id   = $title->getArticleID();
 		$res  = $dbr->select( 'categorylinks', 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 		foreach( $res as $row ) {
-			$v = $row->cl_to;
-			$list[] = $dbkey ? $v : Title::newFromDBkey( $v )->getText();
+			$list[] = Title::newFromDBkey( $row->cl_to )->getText();
 		}
 		return $list;
 	}
@@ -267,7 +268,8 @@ class Bliki {
 		$allTags = self::getMembers( $wgBlikiTagCat );
 		$tags = array();
 		foreach( self::getCats( $title ) as $key ) {
-			if( in_array( $tag, $allTags ) ) $tags[] = $tag;
+			//if( in_array( $tag, $allTags ) )
+			$tags[] = $tag;
 		}
 		return $tags;
 	}
