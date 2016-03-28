@@ -138,6 +138,9 @@ class Bliki {
 	public static function expandBlogroll( $parser ) {
 		global $wgLang, $wgBlikiDefaultCat, $wgBlikiDefaultBlogPage;
 
+		// No edit sections
+		$parser->getOptions()->setEditSection( false );
+
 		// Get args
 		$args = array();
 		foreach( func_get_args() as $arg ) {
@@ -167,7 +170,7 @@ class Bliki {
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
 		// Render each item
-		$roll = '__NOSECTIONEDIT__';
+		$roll = '';
 		foreach( $res as $row ) {
 
 			// Get the article title, user and creation date
