@@ -136,7 +136,7 @@ class Bliki {
 	 * Blogroll parser-function
 	 */
 	public static function expandBlogroll( $parser ) {
-		global $wgLang, $wgBlikiDefaultCat, $wgBlikiDefaultBlogPage;
+		global $wgLang, $wgBlikiDefaultCat;
 
 		// No edit sections
 		$parser->getOptions()->setEditSection( false );
@@ -179,11 +179,6 @@ class Bliki {
 			$article = new Article( $title );
 			$rev = $dbr->selectRow( 'revision', '*', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
 
-			// Get the tags for this item
-			$tags = array();
-			foreach( self::getTags( $title ) as $tag ) $tags[] = '[[:Category:$tag|$tag]]';
-			$tags = wfMessage( 'bliki-tags' )->text() . ': ' . implode( ', ', $tags );
-
 			// Get the article content
 			$content = $article->getPage()->getContent( Revision::RAW );
 			$content = is_object( $content ) ? ContentHandler::getContentText( $content ) : $content;
@@ -197,10 +192,15 @@ class Bliki {
 			// Remove all but onlyinclude if it exists
 			$content = preg_match( "|<onlyinclude>(.+?)</onlyinclude>|s", $content, $m ) ? $m[1] : $content;
 
+			// Make the tag line
+			$tags = array();
+			foreach( self::getTags( $title ) as $tag ) $tags[] = self::blogLink( $tag );
+			$tags = '<div class="taglist">' . wfMessage( 'bliki-tags' )->text() . ': ' . implode( ' | ', $tags ) . '</div>';
+
 			// Build the item
 			$page = $title->getPrefixedText();
 			$user = User::newFromID( $rev->rev_user )->getName();
-			$link = Title::newFromText( $wgBlikiDefaultBlogPage )->getFullUrl( 'q=' . urlencode( wfMessage( 'bliki-cat', $user )->text() ) );
+			$link = self::blogLink( wfMessage( 'bliki-cat', $user )->text() );
 			$sig = wfMessage( 'bliki-sig', $link, $user, $wgLang->date( $rev->rev_timestamp, true ), $wgLang->time( $rev->rev_timestamp, true ) )->text();
 			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
 
@@ -209,6 +209,14 @@ class Bliki {
 		}
 
 		return array( $roll, 'isHTML' => true, 'noparse' => true );
+	}
+
+	/**
+	 * Return an URL to the blog with the passed query
+	 */
+	public static function blogLink( $q ) {
+		global $wgBlikiDefaultBlogPage;
+		return Title::newFromText( $wgBlikiDefaultBlogPage )->getFullUrl( 'q=' . urlencode( $q ) );
 	}
 
 	/**
