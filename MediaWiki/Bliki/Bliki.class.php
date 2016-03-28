@@ -236,6 +236,22 @@ class Bliki {
 	}
 
 	/**
+	 * Return a list of categories the passed article belongs to (in DBkey format)
+	 */
+	public static function getCats( $title, $dbkey = false ) {
+		if( !is_object( $title ) ) $title = Title::newFromText( $title );
+		$list = array();
+		$dbr  = wfGetDB( DB_SLAVE );
+		$id   = $title->getArticleID();
+		$res  = $dbr->select( 'categorylinks', 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
+		foreach( $res as $row ) {
+			$v = $row->cl_to;
+			$list[] = $dbkey ? $v : Title::newFromDBkey( $v )->getText();
+		}
+		return $list;
+	}
+
+	/**
 	 * Return a list of tags the passed title is categorised in
 	 */
 	public static function getTags( $title ) {
