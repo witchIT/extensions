@@ -173,8 +173,8 @@ class Bliki {
 			// Get the article title, user and creation date
 			$title = Title::newFromID( $row->cl_from );
 			$id = $title->getArticleID();
-			$rev = $dbr->selectRow( 'revision', 'rev_user', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
-print_r($rev);
+			$rev = $dbr->selectRow( 'revision', '*', array( 'rev_page' => $id ), __METHOD__, array( 'ORDER BY' => 'rev_timestamp' ) );
+
 			// Get the tags for this item
 
 			// Get the article content
