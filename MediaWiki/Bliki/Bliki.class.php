@@ -151,7 +151,7 @@ class Bliki {
 		// Defaults
 		$limit = array_key_exists( 'limit', $args ) ? $args['limit'] : false;
 		$offset = array_key_exists( 'offset', $args ) ? $args['offset'] : false;
-		$desc = array_key_exists( 'desc', $args ) ? ' DESC' : '';
+		$desc = array_key_exists( 'reverse', $args ) ? '' : ' DESC';
 		$tmpl = array_key_exists( 'template', $args ) ? $args['template'] : $wgBlikiDefaultTemplate;
 		$cat = array_key_exists( 'tag', $args ) ? $args['template'] : $wgBlikiDefaultCat;
 
