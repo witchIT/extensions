@@ -127,7 +127,7 @@ class Bliki {
 	 * Prevpost parser-function returns the previous post in the passed cat or blog-items cat
 	 */
 	public static function expandPrev( $parser, $item, $cat = false ) {
-		global $wgBlikiDefaultCat;
+		global $wgBlikiDefaultCat, $wgBlikiDefaultBlogPage;
 		if( $cat == false ) $cat = $wgBlikiDefaultCat;
 		return array( $html, 'isHTML' => true, 'noparse' => true );
 	}
@@ -195,7 +195,8 @@ class Bliki {
 			$page = $title->getPrefixedText();
 			$user = User::newFromID( $rev->rev_user )->getName();
 			$content .= 'ts = ' . $rev->rev_timestamp;
-			$sig = wfMessage( 'bliki-sig', $user, $wgLang->date( $rev->rev_timestamp, true ), $wgLang->time( $rev->rev_timestamp, true ) )->text();
+			$link = Title::newFromText( $wgBlikiDefaultBlogPage )->getFullUrl( 'q=' . wfMessage( 'bliki-cat', $user )->text() );
+			$sig = wfMessage( 'bliki-sig', $link, $user, $wgLang->date( $rev->rev_timestamp, true ), $wgLang->time( $rev->rev_timestamp, true ) )->text();
 			$tags = 'foo';
 			$content = "{|class=blog\n|\n== [[$page]] ==\n|-\n!$sig\n|-\n|$tags\n|-\n|$content\n|}";
 
