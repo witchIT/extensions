@@ -136,7 +136,7 @@ class Bliki {
 	 * Blogroll parser-function
 	 */
 	public static function expandBlogroll( $parser ) {
-		global $wgLang, $wgBlikiDefaultCat;
+		global $wgLang, $wgBlikiDefaultCat, $wgBlikiDefaultBlogPage;
 
 		// Get args
 		$args = array();
