@@ -176,7 +176,7 @@ class Bliki {
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
 		// Subscribe link
-		$roll .= self::feedLink( $tag ) . '<div style="clear:both">';
+		$roll .= self::feedLink( $tag ) . '<div style="clear:both"></div>';
 
 		// Render each item
 		foreach( $res as $row ) {
