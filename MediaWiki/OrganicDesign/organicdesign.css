@@ -397,11 +397,11 @@ table.blog th a, .blog-sig a {
     font-weight: bold;
 }
 .bliki-pager a.selected {
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    -khtml-border-radius: 2px;
-    border-radius: 2px;
-    background-color: #666;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #333;
     color: white;
 }
 
