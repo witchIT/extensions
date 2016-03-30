@@ -164,7 +164,7 @@ class Bliki {
 
 		// First get the total count
 		$cat = Title::newFromText( $tag )->getDBkey();
-		$total = $dbr->selectOne( 'categorylinks', 'count(*) as total', array( 'cl_to' => $cat ), __METHOD__, $options )->total;
+		$total = $dbr->selectRow( 'categorylinks', 'count(*) as total', array( 'cl_to' => $cat ), __METHOD__, $options )->total;
 
 		// Do the query
 		if( $limit ) {
