@@ -230,9 +230,9 @@ class Bliki {
 	 * Return HTML for feed links
 	 */
 	private static function feedLink( $q = false ) {
-		global $wgScriptPath;
+		global $wgScriptPath, $wgBlikiDefaultCat;
 		$feedUrl = $wgScriptPath . '/api.php?action=blikifeed';
-		if( $q ) $feedUrl .= '&q=' . urlencode( $q );
+		if( $q && $q != $wgBlikiDefaultCat ) $feedUrl .= '&q=' . urlencode( $q );
 		return '<div class="subscribe" style="float:right"><b>' . wfMessage( 'bliki-subscribe' )->text()
 			. ':&nbsp;</b><a id="feed-rss" class="feedlink" title="' . wfMessage( 'bliki-pagefeed', 'RSS' )->text() . '" '
 			. 'type="application/rss+xml" rel="alternate" href="' . $feedUrl. '">RSS</a>&nbsp;'
