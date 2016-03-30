@@ -258,7 +258,7 @@ class Bliki {
 			$uri = preg_replace( '/[&?](offset|limit)=\d+/', '', $_SERVER['REQUEST_URI'] );
 			$uri .= preg_match( '/\?/', $url ) ? '&' : '?';
 			$uri .= "offset=$n&limit=$limit";
-			$html .= "<a$selected href=\"$uri/\">" . ($n+1) . '</a>';
+			$html .= "<a$selected href=\"$uri\">" . ($n+1) . '</a>';
 		}
 		$html .= '</div>';
 		return $html;
