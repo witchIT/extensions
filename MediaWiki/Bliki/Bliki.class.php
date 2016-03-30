@@ -162,18 +162,18 @@ class Bliki {
 		$tag = $wgRequest->getVal( 'q', array_key_exists( 'tag', $args ) ? $args['template'] : $wgBlikiDefaultCat );
 		$desc = $wgRequest->getBool( 'reverse', array_key_exists( 'reverse', $args ) ) ? '' : ' DESC';
 
-		// Convert args to SQL options
-		$options = array( 'ORDER BY' => "cl_timestamp$desc" );
-
 		// First get the total count
 		$cat = Title::newFromText( $tag )->getDBkey();
-		$total = $dbr->selectRow( 'categorylinks', 'count(*) as total', array( 'cl_to' => $cat ), __METHOD__, $options )->total;
+		$total = $dbr->selectRow( 'categorylinks', 'count(*) as total', array( 'cl_to' => $cat ), __METHOD__ )->total;
 
-		// Do the query
+		// Convert args to SQL options
+		$options = array( 'ORDER BY' => "cl_timestamp$desc" );
 		if( $limit ) {
 			$options['LIMIT'] = $limit;
 			if( $offset ) $options['OFFSET'] = $offset;
 		}
+
+		// Do the query
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
 		// Subscribe link and top pager
