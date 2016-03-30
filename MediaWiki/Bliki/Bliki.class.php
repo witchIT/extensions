@@ -213,6 +213,7 @@ class Bliki {
 			$roll .= $parser->parse( $content, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
 		}
 
+		// Add the pager after the roll
 		$roll .= self::pager( $offset, $limit, $total );
 
 		return array( $roll, 'isHTML' => true, 'noparse' => true );
@@ -242,10 +243,16 @@ class Bliki {
 	}
 
 	/**
-	 * Return HTML for pager
+	 * Return HTML for the pager after the blog roll
 	 */
 	private static function pager( $offset, $limit, $total ) {
-		return '';
+		$pagesf = $total / $limit;
+		$pages = int( $pagesf );
+		if( $pagesf > $pages ) $pages++;
+		$html = '<div "bliki-pager">';
+		for( $n = 1; $n <= $pages; $n++ ) $html .= '<a href="/">' . $n . '</a>';
+		$html .= '</div>';
+		return $html;
 	}
 
 	/**
