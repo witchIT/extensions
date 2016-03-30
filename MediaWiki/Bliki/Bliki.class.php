@@ -137,6 +137,7 @@ class Bliki {
 	 */
 	public static function expandBlogroll( $parser ) {
 		global $wgRequest, $wgLang, $wgBlikiDefaultCat;
+		$dbr = wfGetDB( DB_SLAVE );
 		$roll = '';
 
 		// No edit sections
@@ -160,23 +161,23 @@ class Bliki {
 
 		// Convert args to SQL options
 		$options = array( 'ORDER BY' => "cl_timestamp$desc" );
+
+		// First get the total count
+		$cat = Title::newFromText( $tag )->getDBkey();
+		$total = $dbr->selectOne( 'categorylinks', 'count(*) as total', array( 'cl_to' => $cat ), __METHOD__, $options )->total;
+
+		// Do the query
 		if( $limit ) {
 			$options['LIMIT'] = $limit;
 			if( $offset ) $options['OFFSET'] = $offset;
 		}
-
-		// Do the query
-		$dbr = wfGetDB( DB_SLAVE );
-		$cat = Title::newFromText( $tag )->getDBkey();
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
 		// Subscribe link
 		$roll .= self::feedLink( $tag ) . '<div style="clear:both">';
 
 		// Render each item
-		$total = 0;
 		foreach( $res as $row ) {
-			$total++;
 
 			// Get the title, article and first revision objects
 			$title = Title::newFromID( $row->cl_from );
