@@ -140,7 +140,8 @@ class Bliki {
 		$dbr = wfGetDB( DB_SLAVE );
 		$roll = '';
 
-		// ZSet up parser options
+		// Set up parser options
+		$parser->disableCache();
 		$opt = $parser->getOptions();
 		$opt->setEditSection( false );
 		$opt->enableLimitReport( false );
