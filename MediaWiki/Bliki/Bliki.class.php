@@ -136,12 +136,13 @@ class Bliki {
 	 * Blogroll parser-function
 	 */
 	public static function expandBlogroll( $parser ) {
-		global $wgLang, $wgBlikiDefaultCat;
+		global $wgRequest, $wgLang, $wgBlikiDefaultCat;
+		$roll = '';
 
 		// No edit sections
 		$parser->getOptions()->setEditSection( false );
 
-		// Get args
+		// Get parser-function args
 		$args = array();
 		foreach( func_get_args() as $arg ) {
 			if( !is_object( $arg ) ) {
@@ -151,11 +152,11 @@ class Bliki {
 			}
 		}
 
-		// Defaults
-		$limit = array_key_exists( 'limit', $args ) ? $args['limit'] : false;
-		$offset = array_key_exists( 'offset', $args ) ? $args['offset'] : false;
-		$desc = array_key_exists( 'reverse', $args ) ? '' : ' DESC';
-		$cat = array_key_exists( 'tag', $args ) ? $args['template'] : $wgBlikiDefaultCat;
+		// Allow query-string params to override arg values
+		$limit = $wgRequest->getVal( 'limit', array_key_exists( 'limit', $args ) ? $args['limit'] : false );
+		$offset = $wgRequest->getVal( 'offset', array_key_exists( 'offset', $args ) ? $args['offset'] : false );
+		$tag = $wgRequest->getVal( 'q', array_key_exists( 'tag', $args ) ? $args['template'] : $wgBlikiDefaultCat );
+		$desc = $wgRequest->getBool( 'reverse', array_key_exists( 'reverse', $args ) );
 
 		// Convert args to SQL options
 		$options = array( 'ORDER BY' => "cl_timestamp$desc" );
@@ -166,12 +167,16 @@ class Bliki {
 
 		// Do the query
 		$dbr = wfGetDB( DB_SLAVE );
-		$cat = Title::newFromText( $cat )->getDBkey();
+		$cat = Title::newFromText( $tag )->getDBkey();
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
+		// Subscribe link
+		$roll .= self::feedLink( $tag ) . '<div style="clear:both">';
+
 		// Render each item
-		$roll = '';
+		$total = 0;
 		foreach( $res as $row ) {
+			$total++;
 
 			// Get the title, article and first revision objects
 			$title = Title::newFromID( $row->cl_from );
@@ -208,15 +213,40 @@ class Bliki {
 			$roll .= $parser->parse( $content, $parser->getTitle(), $parser->getOptions(), true, false )->getText();
 		}
 
+		$roll .= self::pager( $offset, $limit, $total );
+
 		return array( $roll, 'isHTML' => true, 'noparse' => true );
 	}
 
 	/**
 	 * Return an URL to the blog with the passed query
 	 */
-	public static function blogLink( $q ) {
-		global $wgBlikiDefaultBlogPage;
-		return Title::newFromText( $wgBlikiDefaultBlogPage )->getFullUrl( 'q=' . urlencode( $q ) );
+	private static function blogLink( $q ) {
+		global $wgTitle;
+		return Title::newFromText( $wgTitle )->getFullUrl( 'q=' . urlencode( $q ) );
+	}
+
+	/**
+	 * Return HTML for feed links
+	 */
+	private static function feedLink( $q = false ) {
+		global $wgScriptPath;
+		$feedUrl = $wgScriptPath . '/api.php?action=blikifeed';
+		if( $q ) $feedUrl .= '?q=' . urlencode( $q );
+		$atom = ( $q ? '&' : '?' ) . 'feed=atom';
+		return '<div class="subscribe" style="float:right"><b>' . wfMessage( 'bliki-subscribe' )->text()
+			. ':&nbsp;</b><a id="feed-rss" class="feedlink" title="' . wfMessage( 'bliki-pagefeed', 'RSS' )->text() . '" '
+			. 'type="application/rss+xml" rel="alternate" href="' . $feedUrl. '">RSS</a>&nbsp;'
+			. '<a id="feed-atom" class="feedlink" title="' . wfMessage( 'bliki-pagefeed', 'RSS' )->text() . '" '
+			. 'type="application/atom+xml" rel="alternate" href="' . $feedUrl . $atom . '">Atom</a>'
+			. '</div>';
+	}
+
+	/**
+	 * Return HTML for pager
+	 */
+	private static pager( $offset, $limit, $total ) {
+		return '';
 	}
 
 	/**
