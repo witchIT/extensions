@@ -405,6 +405,9 @@ table.blog th a, .blog-sig a {
     color: white;
     cursor: default;
 }
+.bliki-pager a.selected:hover {
+	text-decoration: none;
+}
 
 /*
  * Blog item page
