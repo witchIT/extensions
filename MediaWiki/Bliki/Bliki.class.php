@@ -160,7 +160,7 @@ class Bliki {
 		$limit = $wgRequest->getVal( 'limit', array_key_exists( 'limit', $args ) ? $args['limit'] : false );
 		$offset = $wgRequest->getVal( 'offset', array_key_exists( 'offset', $args ) ? $args['offset'] : false );
 		$tag = $wgRequest->getVal( 'q', array_key_exists( 'tag', $args ) ? $args['template'] : $wgBlikiDefaultCat );
-		$desc = $wgRequest->getBool( 'reverse', array_key_exists( 'reverse', $args ) );
+		$desc = $wgRequest->getBool( 'reverse', array_key_exists( 'reverse', $args ) ) ? '' : ' DESC';
 
 		// Convert args to SQL options
 		$options = array( 'ORDER BY' => "cl_timestamp$desc" );
