@@ -245,7 +245,7 @@ class Bliki {
 	/**
 	 * Return HTML for pager
 	 */
-	private static pager( $offset, $limit, $total ) {
+	private static function pager( $offset, $limit, $total ) {
 		return '';
 	}
 
