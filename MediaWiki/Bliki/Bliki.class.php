@@ -232,13 +232,12 @@ class Bliki {
 	private static function feedLink( $q = false ) {
 		global $wgScriptPath;
 		$feedUrl = $wgScriptPath . '/api.php?action=blikifeed';
-		if( $q ) $feedUrl .= '?q=' . urlencode( $q );
-		$atom = ( $q ? '&' : '?' ) . 'feed=atom';
+		if( $q ) $feedUrl .= '&q=' . urlencode( $q );
 		return '<div class="subscribe" style="float:right"><b>' . wfMessage( 'bliki-subscribe' )->text()
 			. ':&nbsp;</b><a id="feed-rss" class="feedlink" title="' . wfMessage( 'bliki-pagefeed', 'RSS' )->text() . '" '
 			. 'type="application/rss+xml" rel="alternate" href="' . $feedUrl. '">RSS</a>&nbsp;'
 			. '<a id="feed-atom" class="feedlink" title="' . wfMessage( 'bliki-pagefeed', 'RSS' )->text() . '" '
-			. 'type="application/atom+xml" rel="alternate" href="' . $feedUrl . $atom . '">Atom</a>'
+			. 'type="application/atom+xml" rel="alternate" href="' . $feedUrl . '&feed=atom">Atom</a>'
 			. '</div>';
 	}
 
