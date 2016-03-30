@@ -403,6 +403,7 @@ table.blog th a, .blog-sig a {
     border-radius: 4px;
     background-color: #333;
     color: white;
+    cursor: default;
 }
 
 /*
