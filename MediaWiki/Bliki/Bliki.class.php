@@ -255,7 +255,10 @@ class Bliki {
 		$html = '<div class="bliki-pager">';
 		for( $n = 0; $n < $pages; $n++ ) {
 			$selected = ( $offset >= $n * $limit && $offset < ($n+1) * $limit ) ? ' class="selected"' : '';
-			$html .= "<a$selected href=\"/\">" . ($n+1) . '</a>';
+			$uri = preg_replace( '|[&?](offset|limit)=\d+|', '', $_SERVER['REQUEST_URI'] );
+			$uri .= preg_match( '|?|', $url ) ? '&' : '?';
+			$uri .= "offset=$n&limit=$limit";
+			$html .= "<a$selected href=\"$uri/\">" . ($n+1) . '</a>';
 		}
 		$html .= '</div>';
 		return $html;
