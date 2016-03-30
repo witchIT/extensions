@@ -247,7 +247,7 @@ class Bliki {
 	 */
 	private static function pager( $offset, $limit, $total ) {
 		$pagesf = $total / $limit;
-		$pages = int( $pagesf );
+		$pages = (int)$pagesf;
 		if( $pagesf > $pages ) $pages++;
 		$html = '<div "bliki-pager">';
 		for( $n = 1; $n <= $pages; $n++ ) $html .= '<a href="/">' . $n . '</a>';
