@@ -389,6 +389,21 @@ table.blog th a, .blog-sig a {
     font-size: 85%;
     color: #666;
 }
+.bliki-pager {
+    text-align: center;
+}
+.bliki-pager a {
+    padding: 0 4px;
+    font-weight: bold;
+}
+.bliki-pager a.selected {
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #666;
+    color: white;
+}
 
 /*
  * Blog item page

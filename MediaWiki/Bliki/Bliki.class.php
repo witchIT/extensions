@@ -253,7 +253,10 @@ class Bliki {
 		$pages = (int)$pagesf;
 		if( $pagesf > $pages ) $pages++;
 		$html = '<div class="bliki-pager">';
-		for( $n = 1; $n <= $pages; $n++ ) $html .= '<a href="/">' . $n . '</a>';
+		for( $n = 0; $n < $pages; $n++ ) {
+			$selected = ( $offset >= $n * $limit && $offset < ($n+1) * $limit ) ? ' class="selected"' : '';
+			$html .= '<a$selected href="/">' . $n . '</a>';
+		}
 		$html .= '</div>';
 		return $html;
 	}
