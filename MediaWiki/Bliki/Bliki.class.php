@@ -176,8 +176,10 @@ class Bliki {
 		}
 		$res = $dbr->select( 'categorylinks', 'cl_from', array( 'cl_to' => $cat ), __METHOD__, $options );
 
-		// Subscribe link
+		// Subscribe link and top pager
 		$roll .= self::feedLink( $tag ) . '<div style="clear:both"></div>';
+		$pager = self::pager( $offset, $limit, $total );
+		$roll .= $pager;
 
 		// Render each item
 		foreach( $res as $row ) {
@@ -218,7 +220,7 @@ class Bliki {
 		}
 
 		// Add the pager after the roll
-		$roll .= self::pager( $offset, $limit, $total );
+		$roll .= $pager;
 
 		return array( $roll, 'isHTML' => true, 'noparse' => true );
 	}
