@@ -223,8 +223,7 @@ class Bliki {
 	 */
 	private static function blogLink( $q ) {
 		global $wgTitle;
-		if( !is_object( $wgTitle ) ) return false;
-		return Title::newFromText( $wgTitle )->getFullUrl( 'q=' . urlencode( $q ) );
+		return $wgTitle->getFullUrl( 'q=' . urlencode( $q ) );
 	}
 
 	/**
