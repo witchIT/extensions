@@ -256,7 +256,7 @@ class Bliki {
 		for( $n = 0; $n < $pages; $n++ ) {
 			$selected = ( $offset >= $n * $limit && $offset < ($n+1) * $limit ) ? ' class="selected"' : '';
 			$uri = preg_replace( '/[&?](offset|limit)=\d+/', '', $_SERVER['REQUEST_URI'] );
-			$uri .= preg_match( '/?/', $url ) ? '&' : '?';
+			$uri .= preg_match( '/\?/', $url ) ? '&' : '?';
 			$uri .= "offset=$n&limit=$limit";
 			$html .= "<a$selected href=\"$uri/\">" . ($n+1) . '</a>';
 		}
