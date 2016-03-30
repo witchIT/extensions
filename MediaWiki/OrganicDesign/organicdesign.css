@@ -391,6 +391,7 @@ table.blog th a, .blog-sig a {
 }
 .bliki-pager {
     text-align: center;
+	padding-bottom: 10px;
 }
 .bliki-pager a {
     padding: 0 4px;
