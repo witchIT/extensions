@@ -250,7 +250,7 @@ class Bliki {
 		$pagesf = $total / $limit;
 		$pages = (int)$pagesf;
 		if( $pagesf > $pages ) $pages++;
-		$html = '<div "bliki-pager">';
+		$html = '<div class="bliki-pager">';
 		for( $n = 1; $n <= $pages; $n++ ) $html .= '<a href="/">' . $n . '</a>';
 		$html .= '</div>';
 		return $html;
