@@ -176,7 +176,7 @@ class OrganicDesign {
 				$<input style="width:35px" type="text" name="amount" value="5.00" />&nbsp;<input type="submit" value="' . wfMessage('checkout') . '" />
 			</form>
 		</div>
-		<h5 id="btcbest">' . wfMessage( 'btc-awesome', '<a href="/Bitcoin">Bitcoins</a>' )->plain() . '</h5>
+		<h5 id="btcbest">' . wfMessage( 'btc-awesome' )->parse() . '</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="18D9441cFFwRnoeTfezwSrZYbGKwGGymzh" onmouseover="this.select()" />
 		</div></div></div>' );
