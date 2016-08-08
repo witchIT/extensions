@@ -54,7 +54,7 @@ class OrganicDesign {
 			$od = preg_match( "|^www\.organicdesign\.(.+)$|", $host, $m );
 			$tld = $m[1] ? $m[1] : 'co.nz';
 			if( $wgUser->getName() == 'Nad' ) {
-				print "TLD $tld\nHost: $host";
+				print "TLD $tld\nHost: $host\nSSL: $ssl";
 				exit;
 			}
 			if( !$od || !$ssl ) {
