@@ -179,7 +179,9 @@ class OrganicDesign {
 		<h5 id="btcbest">' . wfMessage( 'btc-awesome' )->parse() . '</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 2px;">
 			<input style="width:139px;margin-left:23px" readonly="1" value="18D9441cFFwRnoeTfezwSrZYbGKwGGymzh" onmouseover="this.select()" />
-		</div></div></div>' );
+		</div>
+		<h5 id="paymentopts">' . wfMessage( 'see-donations'  )->parse() . '</h5>
+		</div></div>' );
 	}
 
 	public static function avatar( $out ) {
