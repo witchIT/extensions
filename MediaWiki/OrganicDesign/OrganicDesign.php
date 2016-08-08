@@ -38,7 +38,7 @@ class OrganicDesign {
 		$wgHooks['BeforePageDisplay'][] = $this;
 
 		// Set language to pt if it's the pt domain
-		if( preg_match( "/^pt\./", $_SERVER['HTTP_HOST'] ) ) $wgLanguageCode = 'pt-br';
+		if( preg_match( "/\.br$/", $_SERVER['HTTP_HOST'] ) ) $wgLanguageCode = 'pt-br';
 
 	}
 
@@ -51,10 +51,10 @@ class OrganicDesign {
 			$host = preg_match( "|^(.+):\d+$|", $_SERVER['HTTP_HOST'], $m ) ? $m[1] : $_SERVER['HTTP_HOST'];
 			$uri = $_SERVER['REQUEST_URI'];
 			$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'on';
-			$od = preg_match( "/^(www|pt)\.organicdesign\.co\.nz$/", $host, $m );
-			$www = $m[1] ? $m[1] : 'www';
+			$od = preg_match( "/^www\.organicdesign\.(.+)$/", $host, $m );
+			$tld = $m[1] ? $m[1] : 'co.nz';
 			if( !$od || !$ssl ) {
-				header( "Location: https://$www.organicdesign.co.nz$uri", true, 301 );
+				header( "Location: https://www.organicdesign.$tld$uri", true, 301 );
 				global $mediaWiki;
 				if( is_object( $mediaWiki ) ) $mediaWiki->restInPeace();
 				exit;
@@ -72,7 +72,7 @@ class OrganicDesign {
 		$wgOut->addStyle( "$path/organicdesign.css" );
 
 		// Force the recentchanges to the JS format
-		$wgUser->setOption( 'usenewrc', 1 );		
+		$wgUser->setOption( 'usenewrc', 1 );
 
 	}
 
@@ -146,7 +146,7 @@ class OrganicDesign {
 	public static function languages( $out ) {
 		$out->addHTML( '<div id="languages-wrapper" style="display:none"><div id="languages">
 			<a href="http://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
-			<a href="http://pt.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
+			<a href="http://www.organicdesign.com.br' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div></div>' );
 	}
 
