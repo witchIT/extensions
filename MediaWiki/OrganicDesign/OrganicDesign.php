@@ -53,11 +53,11 @@ class OrganicDesign {
 			$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'on';
 			$od = preg_match( "|^www\.organicdesign\.(.+)$|", $host, $m );
 			$tld = $m[1] ? $m[1] : 'co.nz';
+			if( !$od || !$ssl ) {
 			if( $wgUser->getName() == 'Nad' ) {
 				print "TLD $tld\nHost: $host\nSSL: $ssl";
 				exit;
 			}
-			if( !$od || !$ssl ) {
 				header( "Location: https://www.organicdesign.$tld$uri", true, 301 );
 				global $mediaWiki;
 				if( is_object( $mediaWiki ) ) $mediaWiki->restInPeace();
