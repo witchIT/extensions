@@ -53,7 +53,7 @@ class OrganicDesign {
 			$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'on';
 			$od = preg_match( "|^www\.organicdesign\.(.+)$|", $host, $m );
 			if( $wgUser->getName() == 'Nad' ) {
-				print "TLD $tld";
+				print "TLD $tld\nHost: $host";
 				exit;
 			}
 			$tld = $m[1] ? $m[1] : 'co.nz';
