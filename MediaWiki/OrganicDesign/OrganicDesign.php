@@ -52,7 +52,7 @@ class OrganicDesign {
 			$uri = $_SERVER['REQUEST_URI'];
 			$ssl = array_key_exists( 'HTTPS', $_SERVER ) && $_SERVER['HTTPS'] == 'on';
 			$od = preg_match( "|^www\.organicdesign\.(.+)$|", $host, $m );
-			if( $wgUser->getName() == 'Nad' ) 
+			if( $wgUser->getName() == 'Nad' ) {
 				print $tld;
 				exit;
 			}
