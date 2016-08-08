@@ -54,10 +54,6 @@ class OrganicDesign {
 			$od = preg_match( "|^www\.organicdesign\.(.+)$|", $host, $m );
 			$tld = $m[1] ? $m[1] : 'co.nz';
 			if( !$od || !$ssl ) {
-			if( $wgUser->getName() == 'Nad' ) {
-				print "TLD $tld\nHost: $host\nSSL: $ssl";
-				exit;
-			}
 				header( "Location: https://www.organicdesign.$tld$uri", true, 301 );
 				global $mediaWiki;
 				if( is_object( $mediaWiki ) ) $mediaWiki->restInPeace();
@@ -149,8 +145,8 @@ class OrganicDesign {
 
 	public static function languages( $out ) {
 		$out->addHTML( '<div id="languages-wrapper" style="display:none"><div id="languages">
-			<a href="http://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
-			<a href="http://www.organicdesign.com.br' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
+			<a href="https://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
+			<a href="https://www.organicdesign.com.br' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div></div>' );
 	}
 
