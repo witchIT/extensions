@@ -16,7 +16,7 @@ $messages['en'] = array(
 	'organicdesign' => "Organic Design",
 	'od-skin-desc' => "The Organic Design skin",
 	'specialpages-group-od' => "OrganicDesign admin pages",
-	'tips-welcome' => "Tips are welcome",
+	'tips-welcome' => "Donations",
 	'paypal-or-cc' => "We accept paypal or credit card",
 	'btc-awesome' => "but [[bitcoin]]s are best :-)",
 	'see-donations' => "See [[donations]] for more options",
@@ -249,7 +249,7 @@ $messages['en'] = array(
 );
 
 $messages['pt'] = array(
-	'tips-welcome' => "Doações são bem vindas",
+	'tips-welcome' => "Doações",
 	'paypal-or-cc' => "A gente aceita paypal,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou cartão de crédito",
 	'btc-awesome' => "Mas [[bitcoin]]s é melhor ainda :-)",
 	'see-donations' => "Veja [[doações]] para mais opções de pagamento",
