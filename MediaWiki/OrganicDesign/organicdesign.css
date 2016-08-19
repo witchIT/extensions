@@ -76,6 +76,9 @@ h1 {
 }
 table.od-message { margin-top: 3em; }
 #searchInput { width: 15.5em; }
+#column-one #p-search {
+	margin-bottom: 0;
+}
 
 /* Social */
 div#social {
