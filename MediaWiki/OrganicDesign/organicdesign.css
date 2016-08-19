@@ -88,7 +88,7 @@ div#social img {
 /* Donations */
 #donations h2, #p-search h3 {
 	position: static;
-	font-size: 15px;
+	font-size: 128%;
 	font-weight: bold;
 	text-align: left;
 	text-transform: none;
