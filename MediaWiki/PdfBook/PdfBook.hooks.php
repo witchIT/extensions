@@ -20,9 +20,10 @@ class PdfBookHooks {
 			$log->addEntry( 'book', $article->getTitle(), $msg );
 
 			// Initialise PDF variables
-			$format   = $wgRequest->getText( 'format' );
-			$notitle  = $wgRequest->getText( 'notitle' );
-			$comments = $wgAjaxComments ? $wgRequest->getText( 'comments' ) : '';
+			$format   = self::setProperty( 'format', '', '' );
+			$nothumbs = self::setProperty( 'nothumbs', '', '' );
+			$notitle  = self::setProperty( 'notitle', '', '' );
+			$comments = $wgAjaxComments ? self::setProperty( 'comments', '', false ) : '';
 			$layout   = $format == 'single' ? '--webpage' : '--firstpage toc';
 			$charset  = self::setProperty( 'Charset',     'iso-8859-1' );
 			$left     = self::setProperty( 'LeftMargin',  '1cm' );
@@ -136,14 +137,14 @@ class PdfBookHooks {
 
 
 	/**
-	 * Return a property for htmldoc using global, request or passed default
+	 * Return a sanitised property for htmldoc using global, request or passed default
 	 */
-	private static function setProperty( $name, $default ) {
+	private static function setProperty( $name, $val, $prefix = 'pdf' ) {
 		global $wgRequest;
-		if( $wgRequest->getText( "pdf$name" ) ) return $wgRequest->getText( "pdf$name" );
-		if( $wgRequest->getText( "amp;pdf$name" ) ) return $wgRequest->getText( "amp;pdf$name" ); // hack to handle ampersand entities in URL
-		if( isset( $GLOBALS["wgPdfBook$name"] ) ) return $GLOBALS["wgPdfBook$name"];
-		return $default;
+		if( $wgRequest->getText( "$prefix$name" ) ) $val = $wgRequest->getText( "$prefix$name" );
+		if( $wgRequest->getText( "amp;$prefix$name" ) ) $val = $wgRequest->getText( "amp;$prefix$name" ); // hack to handle ampersand entities in URL
+		if( isset( $GLOBALS["wgPdfBook$name"] ) ) $val = $GLOBALS["wgPdfBook$name"];
+		return preg_replace( '|[^-_:.a-z0-9]|i', '', $val );;
 	}
 
 
