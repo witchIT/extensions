@@ -5,11 +5,11 @@
  *
  * @package MediaWiki
  * @subpackage Extensions
- * @copyright © 2007 - 2011 Aran Dunkley
+ * @copyright © 2007 - 2016 Aran Dunkley
  * @licence GNU General Public Licence 2.0 or later
  */
 if( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
-define( 'EMAILTOWIKI_VERSION', '2.2.9, 2012-05-16' );
+define( 'EMAILTOWIKI_VERSION', '2.2.10, 2016-10-03' );
 
 // Set this if you want the attachments to be passed to a template
 $wgAttachmentTemplate = false;
@@ -90,8 +90,8 @@ class EmailToWiki {
 						$name = substr( basename( $file ), 2 );
 						preg_match( "/_(.+)/", $name, $m );
 						$attachment = $m[1];
-						$comment = wfMsg( 'emailtowiki_uploadcomment', $msg );
-						$text = wfMsg( 'emailtowiki_uploadtext', $msg );
+						$comment = wfMessage( 'emailtowiki_uploadcomment', $msg );
+						$text = wfMessage( 'emailtowiki_uploadtext', $msg );
 						$size = $this->filesize( $file );
 						$status = $this->upload( $file, $name, $comment, $text );
 						if( $status === true ) {
@@ -104,8 +104,8 @@ class EmailToWiki {
 
 					// Create article for bodytext
 					$article = new Article( $title );
-					if( $files ) $content .= "\n== " . wfMsg( 'emailtowiki_attachsection' ) . " ==\n$files";
-					$article->doEdit( $content, wfMsg( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
+					if( $files ) $content .= "\n== " . wfMessage( 'emailtowiki_attachsection' ) . " ==\n$files";
+					$article->doEdit( $content, wfMessage( 'emailtowiki_articlecomment' ), EDIT_NEW|EDIT_FORCE_BOT );
 					$nemails++;
 				} else $this->logAdd( "email \"$msg\" was blocked by the filter." );
 
