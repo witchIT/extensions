@@ -1,0 +1,18 @@
+{
+	"name": "LinkAttributes",
+	"version": "0.0.1, 2016-10-12",
+	"author": ["[http://www.organicdesign.co.nz/aran Aran Dunkley]"],
+	"url": "http://www.mediawiki.org/wiki/Extension:LinkAttributes",
+	"description": "Offers a simple method of adding attributes to external links using JSON syntax in the link text",
+	"license-name": "[https://www.gnu.org/licenses/gpl-2.0.html GNU General Public Licence 2.0] or later",
+	"type": "other",
+	"config": {
+		"AllowedLinkAttributes": ["class", "rel", "itemProp"], "@": "A list of attribute names that are allowed to be added to links"
+	},
+	"Hooks": {
+		"LinkerMakeExternalLink": ["LinkAttributes::onLinkerMakeExternalLink"]
+	},
+	"AutoloadClasses": {
+		"LinkAttributes": "LinkAttributes_body.php"
+	}
+}
