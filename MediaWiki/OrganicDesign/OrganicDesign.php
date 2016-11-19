@@ -145,8 +145,8 @@ class OrganicDesign {
 		self::avatar( $out );
 
 		// Microdata
-		$out->bodyText = str_replace(
-			$out->bodyText,
+		$out->mBodytext = str_replace(
+			$out->mBodytext,
 			'id="column-one"',
 			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"'
 		);
