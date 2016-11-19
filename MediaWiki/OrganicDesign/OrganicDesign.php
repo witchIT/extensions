@@ -148,7 +148,7 @@ class OrganicDesign {
 		$out->mBodytext = str_replace(
 			$out->mBodytext,
 			'<div id="column-one"',
-			'itemscope itemtype="<div http://www.schema.org/SiteNavigationElement" id="column-one"'
+			'<div itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"'
 		);
 
 		return true;
