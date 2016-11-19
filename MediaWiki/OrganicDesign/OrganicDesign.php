@@ -117,6 +117,10 @@ class OrganicDesign {
 		// Add hide-cats if in Category:Hide categories
 		if( self::inCat( 'Hide categories' ) ) $bodyAttrs['class'] .= ' hide-cats';
 
+		// Microdata
+		$bodyAttrs['itemscope'] = '';
+		$bodyAttrs['itemtype'] = 'http://schema.org/WebPage';
+
 		return true;
 	}
 

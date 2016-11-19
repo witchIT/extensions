@@ -154,19 +154,23 @@ if ( $wgOrganicDesignDonations ) {?>
 			?>
 		</form>
 	</div>
-</div><?php
+</div>
 
-// Sidebar
-global $wgUser,$wgTitle,$wgParser;
-$title = 'od-sidebar';
-$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ), 0 );
-$text = $article->getContent();
-if( empty( $text ) ) $text = wfMsg( $title );
-if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
-else { $psr = new Parser; $opt = NULL; }
-if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
-echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
-?></div></td>
+<div itemscope itemtype="http://www.schema.org/SiteNavigationElement">
+	<?php
+	// Sidebar
+	global $wgUser,$wgTitle,$wgParser;
+	$title = 'od-sidebar';
+	$article = new Article( Title::newFromText( $title, NS_MEDIAWIKI ), 0 );
+	$text = $article->getContent();
+	if( empty( $text ) ) $text = wfMsg( $title );
+	if( is_object( $wgParser ) ) { $psr = $wgParser; $opt = $wgParser->mOptions; }
+	else { $psr = new Parser; $opt = NULL; }
+	if( !is_object( $opt ) ) $opt = ParserOptions::newFromUser( $wgUser );
+	echo $psr->parse( $text, $wgTitle, $opt, true, true )->getText();
+	?>
+</div>
+</div></td>
 
 <!-- Main content area -->
 	<td id="contentWrapper">
