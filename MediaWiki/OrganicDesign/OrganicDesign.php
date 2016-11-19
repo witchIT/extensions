@@ -130,7 +130,7 @@ class OrganicDesign {
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new Article( $title );
 		$html = $out->parse( $article->getPage()->getContent()->getNativeData() );
-		$out->addHTML( "<div itemscope itemtype=\"http://www.schema.org/SiteNavigationElement\" id=\"wikitext-sidebar\" style=\"display:none\">$html</div>" );
+		$out->addHTML( "<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>" );
 
 		// Add footer content
 		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
@@ -143,6 +143,13 @@ class OrganicDesign {
 		self::donations( $out );
 		self::languages( $out );
 		self::avatar( $out );
+
+		// Microdata
+		$out->bodyText = str_replace(
+			$out->bodyText,
+			'id="column-one"',
+			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"'
+		);
 
 		return true;
 	}
