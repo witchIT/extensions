@@ -146,9 +146,9 @@ class OrganicDesign {
 
 		// Microdata
 		$out->mBodytext = str_replace(
-			$out->mBodytext,
-			'<div id="column-one"',
-			'<div itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"'
+			'id="column-one"',
+			'itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"',
+			$out->mBodytext
 		);
 
 		return true;
