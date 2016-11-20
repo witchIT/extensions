@@ -15,7 +15,7 @@ if (!defined('STATUSNET')) {
 class OrganicDesignPlugin extends Plugin {
 
 	function onStartShowHeadElements( $action ) {
-		print_r($action);
+		//print_r($action);
 		return true;
 	}
 
