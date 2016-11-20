@@ -2,7 +2,7 @@ body {
 	background-image: url( ../img/bg2.jpg );
 }
 address a {
-	background-image: url( ../img/odsocial.jpg );
+	background-image: url( ../img/odsocial.png );
 }
 #core, address {
 	background-color: transparent;
@@ -11,5 +11,5 @@ address a {
 	background-color: rgba(0,0,0,0.1);
 }
 #header {
-	background: url( ../img/pollen.jpg ) 0 0 no-repeat;
+	background: white url( ../img/pollen.jpg ) -110px -20px no-repeat;
 }
