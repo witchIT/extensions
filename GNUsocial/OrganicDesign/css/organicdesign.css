@@ -11,6 +11,5 @@ address a {
 	background-color: rgba(0,0,0,0.1);
 }
 #header {
-	background-image: url( ../img/pollen.jpg ) 0 0;
-	background-size: 592px 82px;
+	background: url( ../img/pollen.jpg ) 0 0 no-repeat;
 }
