@@ -2,7 +2,7 @@ body {
 	background-image: url( ../img/bg2.jpg );
 }
 address a {
-	background-image: url( ../img/odsocial.png );
+	background: transparent url( ../img/odsocial.png );
 }
 #core, address {
 	background-color: transparent;
