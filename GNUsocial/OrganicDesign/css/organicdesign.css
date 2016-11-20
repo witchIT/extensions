@@ -1,8 +1,12 @@
 body {
 	background-image: url( ../img/bg2.jpg );
 }
+address {
+	margin-left: -472px;
+}
 address a {
-	background: transparent url( ../img/odsocial.png );
+	background: transparent url( ../img/odsocial.png ) 0 -3px no-repeat;
+	width: 137px;
 }
 #core, address {
 	background-color: transparent;
