@@ -12,7 +12,7 @@ if (!defined('STATUSNET')) {
 	exit(1);
 }
 
-class OrganicDesign extends Plugin {
+class OrganicDesignPlugin extends Plugin {
 
 	function onStartShowHeadElements( $action ) {
 		print_r($action);
