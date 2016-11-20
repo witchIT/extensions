@@ -6,6 +6,7 @@ address a {
 }
 #core, address {
 	background-color: transparent;
+	background-image: none;
 }
 #aside_primary_wrapper {
 	background-color: rgba(0,0,0,0.1);
