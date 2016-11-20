@@ -15,7 +15,15 @@ if (!defined('STATUSNET')) {
 class OrganicDesignPlugin extends Plugin {
 
 	function onStartShowHeadElements( $action ) {
-		//print_r($action);
+		//$action->element( 'meta', array( 'name' => $metaname, 'content' => $content ) );
+		return true;
+	}
+
+	/**
+	 * Add a css
+	 */
+	function onEndShowStyles( $action ) {
+		$action->cssLink( $this->path( 'css/organicdesign.css' ) );
 		return true;
 	}
 
