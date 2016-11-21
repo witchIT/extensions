@@ -164,8 +164,8 @@ class OrganicDesign {
 	public static function social( $out ) {
 		$social = '<div id="social-wrapper" style="display:none"><div id="social">';
 		$social .= '<a title="GNU Social" href="https://social.organicdesign.co.nz"><img src="/files/0/0e/Gnusocial_32.png" alt="GNU Social" /></a>';
-		$social .= '<a title="Github" href="https://github.com/OrganicDesign"><img src="/files/c/c0/Github_32.png" alt="Github" /></a>';
 		$social .= '<a title="RSS" href="https://www.organicdesign.co.nz/wiki/api.php?action=blikifeed"><img src="/files/6/6d/Rss_32.png" alt="RSS" /></a>';
+		$social .= '<a title="Github" href="https://github.com/OrganicDesign"><img src="/files/c/c0/Github_32.png" alt="Github" /></a>';
 		$social .= '<a title="Email" href="https://www.organicdesign.co.nz/contact"><img src="/files/e/e6/Email_32.png" alt="Email" /></a>';
 		$social .= '<a title="Twitter" href="https://twitter.com/AranDunkley"><img src="/files/0/00/Twitter_32.png" alt="Twitter" /></a>';
 		$social .= '<a title="Facebook" href="https://www.facebook.com/organicdesign.co.nz"><img src="/files/8/81/Facebook_32.png" alt="Facebook" /></a>';
