@@ -181,7 +181,7 @@ pre {
 	border: none;
 	background: none;
 	font-size: 10pt;
-	width: 16.5em;
+	width: auto;
 }
 body.anon #p-personal {
 	left: 0.5em;
