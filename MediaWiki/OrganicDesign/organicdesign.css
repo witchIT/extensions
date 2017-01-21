@@ -24,7 +24,7 @@ div#column-content {
 	margin: 0 0 0.6em -16.5em;
 }
 #p-logo, #column-one #p-navigation, #p-tb, #f-poweredbyico, #footer $f-list {
-	display: none;
+	display: none !important;
 }
 #p-cactions {
 	top: 3.5em;
