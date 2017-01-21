@@ -35,7 +35,6 @@ class OrganicDesign {
 		$wgHooks['AjaxCommentsCheckTitle'][] = $this;
 		$wgHooks['jQueryUploadAddAttachLink'][] = $this;
 		$wgHooks['OutputPageBodyAttributes'][]  = $this;
-		$wgHooks['BeforePageDisplay'][] = $this;
 		$wgHooks['AfterFinalPageOutput'][] = $this;
 
 		// Set language to pt if it's the pt domain
