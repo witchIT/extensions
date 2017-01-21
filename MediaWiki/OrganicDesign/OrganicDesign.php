@@ -118,8 +118,8 @@ class OrganicDesign {
 		if( self::inCat( 'Hide categories' ) ) $bodyAttrs['class'] .= ' hide-cats';
 
 		// Microdata
-		$bodyAttrs['itemscope'] = '';
-		$bodyAttrs['itemtype'] = 'http://schema.org/WebPage';
+		//$bodyAttrs['itemscope'] = '';
+		//$bodyAttrs['itemtype'] = 'http://schema.org/WebPage';
 
 		return true;
 	}
@@ -143,13 +143,6 @@ class OrganicDesign {
 		self::donations( $out );
 		self::languages( $out );
 		self::avatar( $out );
-
-		// Microdata
-		$out->mBodytext = str_replace(
-			'id="column-one"',
-			'itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"',
-			$out->mBodytext
-		);
 
 		return true;
 	}
@@ -189,7 +182,7 @@ class OrganicDesign {
 		</div>
 		<h5 id="btcbest">' . wfMessage( 'btc-awesome' )->parse() . '</h5>
 		<div class="pBody" style="white-space:nowrap;vertical-align:top;background:url(/files/a/a0/Bitcoin-icon.png) no-repeat 5px 6px;">
-			<input style="width:139px;margin-left:23px" readonly="1" value="18D9441cFFwRnoeTfezwSrZYbGKwGGymzh" onmouseover="this.select()" />
+			<input style="width:139px;margin-left:23px" readonly="1" value="' . $wgOrganicDesignDonationsBTC . '" onmouseover="this.select()" />
 		</div>
 		<h5 id="paymentopts">' . wfMessage( 'see-donations'  )->parse() . '</h5>
 		</div></div>' );
