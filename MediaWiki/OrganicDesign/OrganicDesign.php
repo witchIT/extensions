@@ -134,7 +134,7 @@ class OrganicDesign {
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new Article( $title );
 		$html = $output->parse( $article->getPage()->getContent()->getNativeData() );
-		$xxxout = str_replace(
+		$out = str_replace(
 			$match = '<div class="portlet" id="p-tb"',
 			$html . $match,
 			$out
@@ -170,7 +170,12 @@ class OrganicDesign {
 		self::social( $out ) . self::donations( $out ) . self::avatar( $out );
 
 		// Languages
-		self::languages( $out );*/
+		;*/
+		$out = str_replace(
+			$match = 'id="column-content"',
+			self::languages() . $match,
+			$out
+		);
 
 		// Main content microdata
 		$out = str_replace(
