@@ -139,24 +139,24 @@ pre {
 /**
  * Recent activity in sidebar
  */
-#recent-activity {
+#recent-activity, #navigation {
 	width: 16.5em;
 	overflow: hidden;
 }
 #recent-activity {
 	padding: 0 0 5px 0;
 }
-#recent-activity a {
+#recent-activity a, #navigation a {
 	color: black;
 	font-family: Arial,Helvetica,sans-serif;
 	font-size: 11px;
 	white-space: nowrap;
 	text-decoration: none;
 }
-#recent-activity a:hover {
+#recent-activity a:hover, #navigation a:hover {
 	text-decoration: underline;
 }
-#recent-activity ul {
+#recent-activity ul, #navigation ul {
 	padding-left: 10px;
 	line-height: 1.4em;
 	list-style-type: none;
