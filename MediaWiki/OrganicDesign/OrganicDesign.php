@@ -153,24 +153,24 @@ class OrganicDesign {
 		$out = ob_get_clean();
 
 		// Main content
-		$out->mBodytext = str_replace(
+		$out = str_replace(
 			'id="content"',
 			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" id="column"',
-			$out->mBodytext
+			$out
 		);
 
 		// Sidebar
-		$out->mBodytext = str_replace(
+		$out = str_replace(
 			'id="column-one"',
 			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"',
-			$out->mBodytext
+			$out
 		);
 
 		// Footer
-		$out->mBodytext = str_replace(
+		$out = str_replace(
 			'id="footer"',
 			'itemscope itemtype="http://www.schema.org/WPFooter" id="column-one"',
-			$out->mBodytext
+			$out
 		);
 
 		ob_start();
