@@ -162,15 +162,15 @@ class OrganicDesign {
 	$('#p-logo').after( item.html() );
 	item.html('');
 
-	var item = $('#languages-wrapper');
-	$('#column-content').before( item.html() );
-	item.html('');
 
 		// Add the other items
-		self::social( $out ) . self::donations( $out ) . self::avatar( $out );
+		$out = preg_replace(
+			'#(id="p-logo".+?</div>)#s',
+			"$1\n" . self::avatar( $out ) . self::donations( $out ) . self::social( $out ),
+			$out
+		);
 
 		// Languages
-		;*/
 		$out = str_replace(
 			$match = '<div id="column-content"',
 			self::languages() . $match,
