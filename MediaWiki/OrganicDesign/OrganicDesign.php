@@ -118,8 +118,8 @@ class OrganicDesign {
 		if( self::inCat( 'Hide categories' ) ) $bodyAttrs['class'] .= ' hide-cats';
 
 		// Microdata
-		//$bodyAttrs['itemscope'] = '';
-		//$bodyAttrs['itemtype'] = 'http://schema.org/WebPage';
+		$bodyAttrs['itemscope'] = '';
+		$bodyAttrs['itemtype'] = 'http://schema.org/WebPage';
 
 		return true;
 	}
@@ -143,6 +143,18 @@ class OrganicDesign {
 		self::donations( $out );
 		self::languages( $out );
 		self::avatar( $out );
+
+		// Microdata
+		$out->mBodytext = str_replace(
+			'role="main"',
+			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" role="navigation"',
+			$out->mBodytext
+		);
+		$out->mBodytext = str_replace(
+			'role="navigation"',
+			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" role="navigation"',
+			$out->mBodytext
+		);
 
 		return true;
 	}
