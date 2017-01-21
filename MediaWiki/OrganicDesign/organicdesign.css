@@ -23,7 +23,7 @@ div#column-one #sidebartree h2 {
 div#column-content {
 	margin: 0 0 0.6em -16.5em;
 }
-#p-logo, #column-one #p-navigation, #p-tb, #footer {
+#p-logo, #column-one #p-navigation, #p-tb {
 	display: none;
 }
 #p-cactions {
