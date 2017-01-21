@@ -145,7 +145,7 @@ class OrganicDesign {
 		$article = new Article( $title );
 		$html = $output->parse( $article->getPage()->getContent()->getNativeData() );
 		$out = preg_replace(
-			'<div( id="footer".*?>)',
+			'#<div( id="footer".*?>)#',
 			"<div itemscope itemtype=\"http://www.schema.org/WPFooter\"$1\n<div id=\"od-footer\">$html</div>",
 			$out
 		);
