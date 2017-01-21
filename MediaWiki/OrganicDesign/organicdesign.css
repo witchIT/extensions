@@ -34,12 +34,12 @@ div#mw-panel div.portal div.body ul li a,
 #p-cactions li a,
 .mw-body a,
 #donations a,
+#od-footer a {
+	color: #217a28;
+}
 #footer {
 	background: none !important;
 	border: none !important;
-}
-#od-footer a {
-	color: #217a28;
 }
 a.new, #bodyContent a.new, #p-personal a.new, #p-cactions .pBody .new a {
 	color: #cc0000;
