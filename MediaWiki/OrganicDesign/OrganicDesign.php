@@ -36,6 +36,7 @@ class OrganicDesign {
 		$wgHooks['jQueryUploadAddAttachLink'][] = $this;
 		$wgHooks['OutputPageBodyAttributes'][]  = $this;
 		$wgHooks['BeforePageDisplay'][] = $this;
+		$wgHooks['AfterFinalPageOutput'][] = $this;
 
 		// Set language to pt if it's the pt domain
 		if( preg_match( "/\.br$/", $_SERVER['HTTP_HOST'] ) ) $wgLanguageCode = 'pt-br';
@@ -143,19 +144,37 @@ class OrganicDesign {
 		self::donations( $out );
 		self::languages( $out );
 		self::avatar( $out );
+	}
 
-		// Microdata
+	/**
+	 * Modify the whole page to add microdata (except for body attribute)
+	 */
+	public static function onAfterFinalPageOutput( $output ) {
+		$out = ob_get_clean();
+
+		// Main content
 		$out->mBodytext = str_replace(
-			'role="main"',
-			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" role="main"',
+			'id="content"',
+			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" id="column"',
 			$out->mBodytext
 		);
+
+		// Sidebar
 		$out->mBodytext = str_replace(
-			'role="navigation"',
-			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" role="navigation"',
+			'id="column-one"',
+			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"',
 			$out->mBodytext
 		);
 
+		// Footer
+		$out->mBodytext = str_replace(
+			'id="footer"',
+			'itemscope itemtype="http://www.schema.org/WPFooter" id="column-one"',
+			$out->mBodytext
+		);
+
+		ob_start();
+		echo $out;
 		return true;
 	}
 
