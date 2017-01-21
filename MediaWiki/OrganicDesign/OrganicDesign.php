@@ -147,7 +147,7 @@ class OrganicDesign {
 		// Microdata
 		$out->mBodytext = str_replace(
 			'role="main"',
-			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" role="navigation"',
+			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" role="main"',
 			$out->mBodytext
 		);
 		$out->mBodytext = str_replace(
