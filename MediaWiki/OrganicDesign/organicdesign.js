@@ -1,30 +1,6 @@
 /* Move and show additional content items such as sidebar, footer, avatar etc */
 $(document).ready( function() {
 
-	var item = $('#wikitext-sidebar');
-	$('#p-search').after( item.html() );
-	item.html('');
-
-	var item = $('#wikitext-footer');
-	$('#footer').after( item.html() );
-	item.html('');
-
-	var item = $('#donations-wrapper');
-	$('#p-logo').after( item.html() );
-	item.html('');
-
-	var item = $('#social-wrapper');
-	$('#p-logo').after( item.html() );
-	item.html('');
-
-	var item = $('#avatar-wrapper');
-	$('#p-logo').after( item.html() );
-	item.html('');
-
-	var item = $('#languages-wrapper');
-	$('#column-content').before( item.html() );
-	item.html('');
-
 	/* Make recent changes look nicer - replaces old TransformChanges extension */
 	$('table.mw-enhanced-rc').each(function() {
 		var row = $(this);

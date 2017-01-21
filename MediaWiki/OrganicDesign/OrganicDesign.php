@@ -125,32 +125,53 @@ class OrganicDesign {
 		return true;
 	}
 
-	public static function onBeforePageDisplay( $out, $skin ) {
-
-		// Add sidebar content
-		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
-		$article = new Article( $title );
-		$html = $out->parse( $article->getPage()->getContent()->getNativeData() );
-		$out->addHTML( "<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>" );
-
-		// Add footer content
-		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
-		$article = new Article( $title );
-		$html = $out->parse( $article->getPage()->getContent()->getNativeData() );
-		$out->addHTML( "<div id=\"wikitext-footer\" style=\"display:none\"><div id=\"od-footer\">$html</div></div>" );
-
-		// Add the other items
-		self::social( $out );
-		self::donations( $out );
-		self::languages( $out );
-		self::avatar( $out );
-	}
-
 	/**
-	 * Modify the whole page to add microdata (except for body attribute)
+	 * Modify the page before output
 	 */
 	public static function onAfterFinalPageOutput( $output ) {
 		$out = ob_get_clean();
+
+		// Sidebar
+		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
+		$article = new Article( $title );
+		$html = $output->parse( $article->getPage()->getContent()->getNativeData() );
+		$out = str_replace(
+			'<div class="portlet" id="p-tb"',
+			"<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>\n<div class=\"portlet\" id=\"p-tb\"",
+			$out
+		);
+
+		// Footer
+		$title = Title::newFromText( 'Footer', NS_MEDIAWIKI );
+		$article = new Article( $title );
+		$html = $output->parse( $article->getPage()->getContent()->getNativeData() );
+		$out = preg_replace(
+			'<div( id="footer".*?>)',
+			"<div itemscope itemtype=\"http://www.schema.org/WPFooter\"$1\n<div id=\"od-footer\">$html</div>",
+			$out
+		);
+
+/*	var item = $('#donations-wrapper');
+	$('#p-logo').after( item.html() );
+	item.html('');
+
+	var item = $('#social-wrapper');
+	$('#p-logo').after( item.html() );
+	item.html('');
+
+	var item = $('#avatar-wrapper');
+	$('#p-logo').after( item.html() );
+	item.html('');
+
+	var item = $('#languages-wrapper');
+	$('#column-content').before( item.html() );
+	item.html('');
+
+		// Add the other items
+		self::social( $out ) . self::donations( $out ) . self::avatar( $out );
+
+		// Languages
+		self::languages( $out );*/
 
 		// Main content
 		$out = str_replace(
@@ -166,26 +187,19 @@ class OrganicDesign {
 			$out
 		);
 
-		// Footer
-		$out = str_replace(
-			'id="footer"',
-			'itemscope itemtype="http://www.schema.org/WPFooter" id="footer"',
-			$out
-		);
-
 		ob_start();
 		echo $out;
 		return true;
 	}
 
-	public static function languages( $out ) {
-		$out->addHTML( '<div id="languages-wrapper" style="display:none"><div id="languages">
+	public static function languages() {
+		return '<div id="languages-wrapper" style="display:none"><div id="languages">
 			<a href="https://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="https://www.organicdesign.com.br' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
-		</div></div>' );
+		</div></div>';
 	}
 
-	public static function social( $out ) {
+	public static function social() {
 		$social = '<div id="social-wrapper" style="display:none"><div id="social">';
 		$social .= '<a title="GNU Social" href="https://social.organicdesign.co.nz"><img src="/files/0/0e/Gnusocial_32.png" alt="GNU Social" /></a>';
 		$social .= '<a title="RSS" href="https://www.organicdesign.co.nz/wiki/api.php?action=blikifeed"><img src="/files/6/6d/Rss_32.png" alt="RSS" /></a>';
@@ -194,12 +208,12 @@ class OrganicDesign {
 		$social .= '<a title="Twitter" href="https://twitter.com/AranDunkley"><img src="/files/0/00/Twitter_32.png" alt="Twitter" /></a>';
 		$social .= '<a title="Facebook" href="https://www.facebook.com/organicdesign.co.nz"><img src="/files/8/81/Facebook_32.png" alt="Facebook" /></a>';
 		$social .= '</div></div>';
-		$out->addHTML( $social );
+		return $social;
 	}
 
-	public static function donations( $out ) {
+	public static function donations() {
 		global $wgOrganicDesignDonations;
-		$out->addHTML( '<div id="donations-wrapper" style="display:none"><div class="portlet" id="donations">
+		return '<div id="donations-wrapper" style="display:none"><div class="portlet" id="donations">
 		<h2 style="white-space:nowrap">' . wfMessage('tips-welcome') . '</h2>
 		<h5>' . wfMessage('paypal-or-cc') . '</h5>
 		<div class="pBody">
@@ -216,25 +230,26 @@ class OrganicDesign {
 			<input style="width:139px;margin-left:23px" readonly="1" value="' . $wgOrganicDesignDonationsBTC . '" onmouseover="this.select()" />
 		</div>
 		<h5 id="paymentopts">' . wfMessage( 'see-donations'  )->parse() . '</h5>
-		</div></div>' );
+		</div></div>';
 	}
 
-	public static function avatar( $out ) {
+	public static function avatar() {
 		global $wgUploadDirectory, $wgUploadPath, $wgUser;
 		if( $wgUser->isLoggedIn() ) {
-			$out->addHTML( '<div id="avatar-wrapper" style="display:none"><div id="p-avatar">' );
+			$out = '<div id="avatar-wrapper" style="display:none"><div id="p-avatar">';
 			$name  = $wgUser->getName();
 			$img = wfLocalFile( "$name.png" );
 			if( is_object( $img  ) && $img->exists() ) {
 				$url = $img->transform( array( 'width' => 50 ) )->getUrl();
-				$out->addHTML( "<a href=\"" . $wgUser->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>" );
+				$out .= "<a href=\"" . $wgUser->getUserPage()->getLocalUrl() . "\"><img src=\"$url\" alt=\"$name\"></a>";
 			} else {
 				$upload = Title::newFromText( 'Upload', NS_SPECIAL );
 				$url = $upload->getLocalUrl( "wpDestFile=$name.png" );
-				$out->addHTML( "<a href=\"$url\" class=\"new\"><br>user<br>icon</a>" );
+				$out .= "<a href=\"$url\" class=\"new\"><br>user<br>icon</a>";
 			}
-			$out->addHTML( '</div></div>' );
-		}
+			$out .= '</div></div>';
+		} else $out = '';
+		return $out;
 	}
 
 	/**
