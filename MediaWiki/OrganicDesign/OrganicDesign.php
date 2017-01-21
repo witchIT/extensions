@@ -136,7 +136,7 @@ class OrganicDesign {
 		$html = $output->parse( $article->getPage()->getContent()->getNativeData() );
 		$out = str_replace(
 			'<div class="portlet" id="p-tb"',
-			"<div id=\"wikitext-sidebar\" style=\"display:none\">$html</div>\n<div class=\"portlet\" id=\"p-tb\"",
+			"$html\n<div class=\"portlet\" id=\"p-tb\"",
 			$out
 		);
 
