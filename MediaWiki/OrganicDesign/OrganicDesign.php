@@ -197,10 +197,10 @@ class OrganicDesign {
 	}
 
 	public static function languages() {
-		return '<div id="languages-wrapper" style="display:none"><div id="languages">
+		return '<div id="languages">
 			<a href="https://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="https://www.organicdesign.com.br' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
-		</div></div>';
+		</div>';
 	}
 
 	public static function social() {
