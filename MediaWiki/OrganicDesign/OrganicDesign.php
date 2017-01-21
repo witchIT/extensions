@@ -155,7 +155,7 @@ class OrganicDesign {
 		// Main content
 		$out = str_replace(
 			'id="content"',
-			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" id="column"',
+			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" id="content"',
 			$out
 		);
 
@@ -169,7 +169,7 @@ class OrganicDesign {
 		// Footer
 		$out = str_replace(
 			'id="footer"',
-			'itemscope itemtype="http://www.schema.org/WPFooter" id="column-one"',
+			'itemscope itemtype="http://www.schema.org/WPFooter" id="footer"',
 			$out
 		);
 
