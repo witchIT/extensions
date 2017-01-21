@@ -157,17 +157,10 @@ class OrganicDesign {
 			$out
 		);
 
-		// Languages
+		// Languages and content microdata
 		$out = str_replace(
 			$match = '<div id="column-content"',
-			self::languages() . $match,
-			$out
-		);
-
-		// Main content microdata
-		$out = str_replace(
-			'id="content"',
-			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" id="content"',
+			self::languages() . $match . ' itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement"',
 			$out
 		);
 
@@ -184,7 +177,7 @@ class OrganicDesign {
 	}
 
 	public static function languages() {
-		return '<div id="languages">
+		return '<div id="languages" itemscope itemtype="http://www.schema.org/SiteNavigationElement">
 			<a href="https://www.organicdesign.co.nz' . $_SERVER['REQUEST_URI'] . '" title="English"><img src="/wiki/skins/organicdesign/uk.png" /></a>
 			<a href="https://www.organicdesign.com.br' . $_SERVER['REQUEST_URI'] . '" title="Português brasileiro"><img src="/wiki/skins/organicdesign/br.png" /></a>
 		</div>';
