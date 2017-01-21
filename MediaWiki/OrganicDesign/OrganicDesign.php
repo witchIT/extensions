@@ -134,9 +134,9 @@ class OrganicDesign {
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new Article( $title );
 		$html = $output->parse( $article->getPage()->getContent()->getNativeData() );
-		$out = str_replace(
-			'<div class="portlet" id="p-tb"',
-			"$html\n<div class=\"portlet\" id=\"p-tb\"",
+		$xxxout = str_replace(
+			$match = '<div class="portlet" id="p-tb"',
+			$html . $match,
 			$out
 		);
 
@@ -172,14 +172,14 @@ class OrganicDesign {
 		// Languages
 		self::languages( $out );*/
 
-		// Main content
+		// Main content microdata
 		$out = str_replace(
 			'id="content"',
 			'itemprop="mainContentOfPage" itemscope itemtype="http://schema.org/WebPageElement" id="content"',
 			$out
 		);
 
-		// Sidebar
+		// Sidebar microdata
 		$out = str_replace(
 			'id="column-one"',
 			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"',
