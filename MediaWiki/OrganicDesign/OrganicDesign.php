@@ -203,7 +203,7 @@ class OrganicDesign {
 	}
 
 	public static function donations() {
-		global $wgOrganicDesignDonations;
+		global $wgOrganicDesignDonations, $wgOrganicDesignDonationsBTC;
 		return '<div class="portlet" id="donations">
 		<h2 style="white-space:nowrap">' . wfMessage('tips-welcome') . '</h2>
 		<h5>' . wfMessage('paypal-or-cc') . '</h5>
