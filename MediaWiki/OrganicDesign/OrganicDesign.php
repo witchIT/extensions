@@ -172,7 +172,7 @@ class OrganicDesign {
 		// Languages
 		;*/
 		$out = str_replace(
-			$match = 'id="column-content"',
+			$match = '<div id="column-content"',
 			self::languages() . $match,
 			$out
 		);
