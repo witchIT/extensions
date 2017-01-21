@@ -142,8 +142,6 @@ pre {
 #recent-activity, #navigation {
 	width: 16.5em;
 	overflow: hidden;
-}
-#recent-activity {
 	padding: 0 0 5px 0;
 }
 #recent-activity a, #navigation a {
