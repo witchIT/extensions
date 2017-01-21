@@ -153,7 +153,7 @@ class OrganicDesign {
 		// Add the other items
 		$out = preg_replace(
 			'#(id="p-logo".+?</div>)#s',
-			"$1\n" . self::avatar( $out ) . self::donations( $out ) . self::social( $out ),
+			"$1\n" . self::avatar( $out ) . self::social( $out ) . self::donations( $out ),
 			$out
 		);
 
