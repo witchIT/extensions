@@ -150,19 +150,6 @@ class OrganicDesign {
 			$out
 		);
 
-/*	var item = $('#donations-wrapper');
-	$('#p-logo').after( item.html() );
-	item.html('');
-
-	var item = $('#social-wrapper');
-	$('#p-logo').after( item.html() );
-	item.html('');
-
-	var item = $('#avatar-wrapper');
-	$('#p-logo').after( item.html() );
-	item.html('');
-
-
 		// Add the other items
 		$out = preg_replace(
 			'#(id="p-logo".+?</div>)#s',
