@@ -130,6 +130,13 @@ class OrganicDesign {
 	public static function onAfterFinalPageOutput( $output ) {
 		$out = ob_get_clean();
 
+		// Heading
+		$out = str_replace(
+			$match = '<h1 id="firstHeading"',
+			$match . ' itemprop="name"',
+			$out
+		);
+
 		// Sidebar
 		$title = Title::newFromText( 'Od-sidebar', NS_MEDIAWIKI );
 		$article = new Article( $title );
@@ -167,7 +174,7 @@ class OrganicDesign {
 		// Sidebar microdata
 		$out = str_replace(
 			'id="column-one"',
-			'itemscope itemtype="http://www.schema.org/SiteNavigationElement" id="column-one"',
+			'itemscope itemtype="http://www.schema.org/WPSideBar" id="column-one"',
 			$out
 		);
 
