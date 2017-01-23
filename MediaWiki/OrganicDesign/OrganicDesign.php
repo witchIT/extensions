@@ -173,8 +173,8 @@ class OrganicDesign {
 
 		// Sidebar microdata
 		$out = str_replace(
-			'id="column-one"',
-			'itemscope itemtype="http://www.schema.org/WPSideBar" id="column-one"',
+			$match = 'id="column-one"',
+			$match . ' itemscope itemtype="http://www.schema.org/WPSideBar"',
 			$out
 		);
 
