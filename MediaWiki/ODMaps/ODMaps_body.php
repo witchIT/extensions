@@ -8,7 +8,7 @@ class ODMaps {
 	 * Called if there is a map in the page
 	 */
 	public static function setup() {
-		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $IP, $wgAutoloadClasses;
+		global $wgOut, $wgResourceModules, $wgExtensionAssetsPath, $IP, $wgAutoloadClasses, $wgGoogleMapsKey;
 
 		// This gets the remote path even if it's a symlink (MW1.25+)
 		$path = $wgExtensionAssetsPath . str_replace( "$IP/extensions", '', dirname( $wgAutoloadClasses[__CLASS__] ) );
@@ -22,7 +22,7 @@ class ODMaps {
 		$wgOut->addJsConfigVars( 'odMapsPath', $path );
 
 		// Add the google maps API
-		$wgOut->addHeadItem( 'GoogleMaps', '<script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>' );
+		$wgOut->addHeadItem( 'GoogleMaps', '<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDp5-98pepmIEoIeA94i6mPJS2dk5L9be0" type="text/javascript"></script>' );
 		$wgOut->addHeadItem( 'MarkerWithLabel', '<script src="' . $path . '/modules/markerwithlabel.js" type="text/javascript"></script>' );
 	}
 
