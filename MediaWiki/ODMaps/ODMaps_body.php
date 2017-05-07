@@ -22,7 +22,7 @@ class ODMaps {
 		$wgOut->addJsConfigVars( 'odMapsPath', $path );
 
 		// Add the google maps API
-		$wgOut->addHeadItem( 'GoogleMaps', '<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDp5-98pepmIEoIeA94i6mPJS2dk5L9be0" type="text/javascript"></script>' );
+		$wgOut->addHeadItem( 'GoogleMaps', '<script src="https://maps.googleapis.com/maps/api/js?key=' . $wgGoogleMapsKey . '" type="text/javascript"></script>' );
 		$wgOut->addHeadItem( 'MarkerWithLabel', '<script src="' . $path . '/modules/markerwithlabel.js" type="text/javascript"></script>' );
 	}
 
